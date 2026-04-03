@@ -1,5 +1,5 @@
-name: scp_docs
-description: "SCP Foundation Wiki hybrid reader (SCP Docs)."
+name: scp_reader
+description: "SCP Foundation JP reader prototype."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -34,24 +34,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_inappwebview: ^6.1.5
-  flutter_riverpod: ^3.3.1
-  riverpod_annotation: ^4.0.2
-  # 公式 isar + isar_generator は現行 build_runner / analyzer と解決しづらいため、
-  # 互換 API の isar-community（isar + isar_flutter_libs 相当）を使用。
-  isar_community: ^3.3.2
-  isar_community_flutter_libs: ^3.3.2
-  connectivity_plus: ^7.1.0
-  share_plus: ^12.0.2
-  google_mobile_ads: ^7.0.0
-  path_provider: ^2.1.5
+  webview_flutter: ^4.13.0
+  shared_preferences: ^2.5.3
+  google_fonts: ^6.3.3
+  provider: ^6.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  build_runner: ^2.4.13
-  isar_community_generator: ^3.3.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

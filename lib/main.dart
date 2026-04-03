@@ -1,40 +1,38 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 
-import 'screens/main_screen.dart';
-import 'theme/app_theme.dart';
+import 'data/category_catalog.dart';
+import 'providers/favorites_controller.dart';
+import 'screens/splash_screen.dart';
+import 'theme/scp_reader_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  assert(
+    kCategoriesById.length == kAllCategories.length,
+    'kCategoriesById と kAllCategories を同期してください',
+  );
+  final favorites = FavoritesController();
+  await favorites.load();
 
-  if (!kIsWeb &&
-      (defaultTargetPlatform == TargetPlatform.android ||
-          defaultTargetPlatform == TargetPlatform.iOS)) {
-    await MobileAds.instance.initialize();
-  }
-
-  final appTheme = AppTheme.defaults();
   runApp(
-    ProviderScope(
-      child: ScpDocsApp(theme: appTheme, home: const MainScreen()),
+    ChangeNotifierProvider<FavoritesController>.value(
+      value: favorites,
+      child: const ScpReaderApp(),
     ),
   );
 }
 
-class ScpDocsApp extends StatelessWidget {
-  const ScpDocsApp({super.key, required this.theme, required this.home});
-
-  final AppTheme theme;
-  final Widget home;
+class ScpReaderApp extends StatelessWidget {
+  const ScpReaderApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SCP Docs',
-      theme: theme.toMaterialTheme(),
-      home: home,
+      title: 'SCP Reader',
+      debugShowCheckedModeBanner: false,
+      theme: ScpReaderTheme.build(),
+      home: const SplashScreen(),
     );
   }
 }
