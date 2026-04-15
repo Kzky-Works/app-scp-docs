@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'data/category_catalog.dart';
-import 'providers/favorites_controller.dart';
-import 'screens/splash_screen.dart';
-import 'theme/scp_reader_theme.dart';
+import 'core/constants/category_catalog.dart';
+import 'core/theme/scp_reader_theme.dart';
+import 'data/repositories/favorites_repository.dart';
+import 'ui/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

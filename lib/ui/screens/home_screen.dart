@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../data/category_catalog.dart';
-import '../theme/scp_reader_theme.dart';
+import '../../core/constants/category_catalog.dart';
+import '../../core/theme/scp_reader_theme.dart';
+import '../widgets/dock_layout.dart';
 import '../widgets/stark_card.dart';
 import 'category_detail_screen.dart';
 
@@ -10,12 +11,13 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dock = DockLayout.bottomInsetOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('SCP READER // JP'),
       ),
       body: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: EdgeInsets.fromLTRB(12, 12, 12, 12 + dock),
         itemCount: kAllCategories.length,
         separatorBuilder: (context, _) => const SizedBox(height: 8),
         itemBuilder: (context, index) {

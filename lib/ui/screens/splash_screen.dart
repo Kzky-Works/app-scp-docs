@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/scp_reader_theme.dart';
-import 'home_screen.dart';
+import '../../core/theme/scp_reader_theme.dart';
+import 'persistent_tab_shell.dart';
 
 /// 財団ロゴ（プレースホルダ）とアクセス文言。
 class SplashScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
-          builder: (_) => const HomeScreen(),
+          builder: (_) => const PersistentTabShell(),
         ),
       );
     });

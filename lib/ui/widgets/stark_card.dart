@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/scp_reader_theme.dart';
+import '../../core/theme/scp_reader_theme.dart';
 
 /// 無機質なカード（角丸 4px、細いアクセント枠）。
 class StarkCard extends StatelessWidget {

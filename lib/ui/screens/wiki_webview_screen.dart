@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../data/wiki_readability_script.dart';
-import '../providers/favorites_controller.dart';
-import '../theme/scp_reader_theme.dart';
+import '../../core/utils/wiki_readability_script.dart';
+import '../../core/theme/scp_reader_theme.dart';
+import '../../data/repositories/favorites_repository.dart';
+import '../widgets/dock_layout.dart';
 
 /// Wikidot 表示 + 履歴に応じた戻る制御（[PopScope] でシステム戻るを処理）。
 class WikiWebViewScreen extends StatefulWidget {
@@ -88,36 +89,40 @@ class _WikiWebViewScreenState extends State<WikiWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     final url = _currentUrl ?? widget.initialUrl;
+    final dock = DockLayout.bottomInsetOf(context);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         await _onSystemBack();
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.pageTitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: dock),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.pageTitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-        body: Stack(
-          children: [
-            WebViewWidget(controller: _controller),
-            if (_loading)
-              const LinearProgressIndicator(
-                minHeight: 2,
-                color: ScpReaderTheme.accent,
-                backgroundColor: Color(0xFF222222),
-              ),
-          ],
-        ),
-        bottomNavigationBar: _WebBottomBar(
-          onBack: _goBack,
-          onForward: _goForward,
-          onReload: _reload,
-          currentUrl: url,
+          body: Stack(
+            children: [
+              WebViewWidget(controller: _controller),
+              if (_loading)
+                const LinearProgressIndicator(
+                  minHeight: 2,
+                  color: ScpReaderTheme.accent,
+                  backgroundColor: Color(0xFF222222),
+                ),
+            ],
+          ),
+          bottomNavigationBar: _WebBottomBar(
+            onBack: _goBack,
+            onForward: _goForward,
+            onReload: _reload,
+            currentUrl: url,
+          ),
         ),
       ),
     );

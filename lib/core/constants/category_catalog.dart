@@ -32,67 +32,38 @@ class CategoryDefinition {
   final bool isLibraryOnly;
 }
 
+/// 財団内物語-JP インデックス（著者別一覧の取得元）。
+const String kFoundationTalesJpHubUrl =
+    'http://scp-jp.wikidot.com/foundation-tales-jp';
+
+/// 連作ハブ-JP（連作一覧・目次の取得元）。
+const String kSeriesHubJpUrl = 'http://scp-jp.wikidot.com/series-hub-jp';
+
 /// モック: Wikidot の実 URL。404 のものは後から差し替え可能。
 final List<CategoryDefinition> kAllCategories = [
   CategoryDefinition(
     id: 'scp_reports',
-    titleJa: '【報告書アーカイヴ】',
-    titleEn: 'SCP Reports',
-    entries: const [
-      SubMenuLink(
-        label: 'シリーズ I（001–999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-jp',
-      ),
-      SubMenuLink(
-        label: 'シリーズ II（1000–1999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-jp-2',
-      ),
-      SubMenuLink(
-        label: 'シリーズ III（2000–2999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-jp-3',
-      ),
-      SubMenuLink(
-        label: 'シリーズ IV（3000–3999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-jp-4',
-      ),
-      SubMenuLink(
-        label: 'シリーズ V（4000–4999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-jp-5',
-      ),
-      SubMenuLink(
-        label: 'シリーズ VI（5000–5999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-6',
-      ),
-      SubMenuLink(
-        label: 'シリーズ VII（6000–6999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-7',
-      ),
-      SubMenuLink(
-        label: 'シリーズ VIII（7000–7999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-8',
-      ),
-      SubMenuLink(
-        label: 'シリーズ IX（8000–8999）',
-        url: 'http://scp-jp.wikidot.com/scp-series-9',
-      ),
-    ],
+    titleJa: '【SCPデータベース】',
+    titleEn: 'SCP Database',
+    /// シリーズ一覧はサイトのナビから [discoverScpJpSeriesListings] で動的取得。
+    entries: const [],
   ),
   CategoryDefinition(
-    id: 'tales',
-    titleJa: '【物語・外伝】',
-    titleEn: 'Tales & Canon',
+    id: 'scp_library',
+    titleJa: '【SCPライブラリ】',
+    titleEn: 'SCP Library',
     entries: const [
       SubMenuLink(
-        label: '物語ハブ',
-        url: 'http://scp-jp.wikidot.com/tales-jp-hub',
+        label: 'Tales-JP',
+        url: kFoundationTalesJpHubUrl,
       ),
       SubMenuLink(
-        label: 'カノンハブ',
+        label: 'カノン-JP',
         url: 'http://scp-jp.wikidot.com/canon-hub-jp',
       ),
       SubMenuLink(
-        label: '短編集',
-        url: 'http://scp-jp.wikidot.com/short-stories-jp',
+        label: '連作-JP',
+        url: kSeriesHubJpUrl,
       ),
       SubMenuLink(
         label: 'GoI フォーマット',
