@@ -55,6 +55,7 @@
 
 /* Article */
 "article.toolbar.bookmark" = "Bookmark";
+"article.offline_badge" = "Viewing saved copy offline";
 
 /* Settings */
 "settings.title" = "Settings";

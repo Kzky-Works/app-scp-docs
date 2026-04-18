@@ -8,9 +8,10 @@ protocol ArticleRepositoryProtocol: AnyObject {
     func markAsRead(url: URL)
     func isRead(url: URL) -> Bool
     func recordHistory(url: URL)
-    func recentHistoryURLs(maxCount: Int) -> [URL]
-    func toggleBookmark(url: URL)
+    @discardableResult
+    func toggleBookmark(url: URL) -> Bool
     func isBookmarked(url: URL) -> Bool
+    func isOfflineReady(url: URL) -> Bool
     func allBookmarks() -> [URL]
     func allHistory() -> [URL]
     func clearAllHistory()
@@ -29,14 +30,16 @@ final class ArticleRepository: ArticleRepositoryProtocol {
 
     private let defaults: UserDefaults
     private let maxHistoryEntries: Int
+    private let offlineStore: OfflineStore
 
     private(set) var readURLKeys: Set<String>
     private(set) var historyURLKeys: [String]
     private(set) var bookmarkURLKeys: Set<String>
 
-    init(defaults: UserDefaults = .standard, maxHistoryEntries: Int = 200) {
+    init(defaults: UserDefaults = .standard, maxHistoryEntries: Int = 200, offlineStore: OfflineStore = .shared) {
         self.defaults = defaults
         self.maxHistoryEntries = max(1, maxHistoryEntries)
+        self.offlineStore = offlineStore
         if let saved = defaults.array(forKey: StorageKey.readURLs) as? [String] {
             self.readURLKeys = Set(saved)
         } else {
@@ -84,20 +87,29 @@ final class ArticleRepository: ArticleRepositoryProtocol {
         return historyURLKeys.prefix(limit).compactMap { URL(string: $0) }
     }
 
-    func toggleBookmark(url: URL) {
+    /// トグル後にお気に入りに含まれる場合は `true`（新規追加直後にスナップショット取得へ使う）。
+    @discardableResult
+    func toggleBookmark(url: URL) -> Bool {
         let key = Self.storageKey(for: url)
         var next = bookmarkURLKeys
-        if next.contains(key) {
+        let wasBookmarked = next.contains(key)
+        if wasBookmarked {
             next.remove(key)
+            offlineStore.deleteHTML(for: url)
         } else {
             next.insert(key)
         }
         bookmarkURLKeys = next
         persistBookmarks()
+        return !wasBookmarked
     }
 
     func isBookmarked(url: URL) -> Bool {
         bookmarkURLKeys.contains(Self.storageKey(for: url))
+    }
+
+    func isOfflineReady(url: URL) -> Bool {
+        offlineStore.loadHTML(for: url) != nil
     }
 
     func allBookmarks() -> [URL] {
@@ -116,6 +128,7 @@ final class ArticleRepository: ArticleRepositoryProtocol {
     func clearAllBookmarks() {
         bookmarkURLKeys = []
         persistBookmarks()
+        offlineStore.deleteAllSnapshots()
     }
 
     private func persistReadSet() {
@@ -127,7 +140,7 @@ final class ArticleRepository: ArticleRepositoryProtocol {
     }
 
     /// フラグメントを除き、同一ページ判定がぶれないよう正規化したキー。
-    static func storageKey(for url: URL) -> String {
+    nonisolated static func storageKey(for url: URL) -> String {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
             return url.absoluteString
         }

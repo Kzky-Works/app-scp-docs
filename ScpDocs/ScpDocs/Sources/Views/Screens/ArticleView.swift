@@ -6,6 +6,7 @@ struct ArticleView: View {
     @Bindable var articleRepository: ArticleRepository
 
     @State private var webViewModel = WebViewModel()
+    @Bindable var connectivity = ConnectivityMonitor.shared
 
     private var shareURL: URL {
         webViewModel.currentURL ?? entryURL
@@ -42,12 +43,23 @@ struct ArticleView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    articleRepository.toggleBookmark(url: shareURL)
+                    let added = articleRepository.toggleBookmark(url: shareURL)
+                    if added {
+                        webViewModel.captureSnapshot(for: shareURL)
+                    }
                 } label: {
                     Image(systemName: articleRepository.isBookmarked(url: shareURL) ? "bookmark.fill" : "bookmark")
                         .foregroundStyle(AppTheme.accentPrimary)
                 }
                 .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarBookmark)))
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                if !connectivity.isPathSatisfied, articleRepository.isOfflineReady(url: entryURL) {
+                    Image(systemName: "icloud.slash")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.accentPrimary.opacity(0.9))
+                        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleOfflineBadge)))
+                }
             }
             ToolbarItem(placement: .topBarTrailing) {
                 ShareLink(item: shareURL) {

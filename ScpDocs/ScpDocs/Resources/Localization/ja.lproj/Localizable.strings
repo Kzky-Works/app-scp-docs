@@ -55,6 +55,7 @@
 
 /* Article */
 "article.toolbar.bookmark" = "お気に入り";
+"article.offline_badge" = "オフラインで保存済みのコピーを表示中";
 
 /* Settings */
 "settings.title" = "設定";

@@ -1,8 +1,11 @@
 import Foundation
+import OSLog
 import WebKit
 
 /// `WKWebView` の構成と、バンドル化された注入スクリプトの読み込み。
 enum WebViewService {
+    private static let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "ScpDocs", category: "WebViewService")
+
     private static let cleanUIScriptFileName = "CleanUI"
     private static let cleanUIScriptExtension = "js"
     private static let cleanUIScriptSubdirectory = "Injections"
@@ -38,19 +41,23 @@ enum WebViewService {
     }
 
     private static func loadCleanUIScript() -> String {
-        guard
-            let url = Bundle.main.url(
+        // Xcode の「グループ」に置いたリソースはバンドル直下にコピーされることが多く、
+        // `Injections/` サブフォルダは付かない。フォルダ参照で入れた場合はサブパスがある。
+        let candidates: [URL?] = [
+            Bundle.main.url(
                 forResource: cleanUIScriptFileName,
                 withExtension: cleanUIScriptExtension,
                 subdirectory: cleanUIScriptSubdirectory
             ),
-            let data = try? Data(contentsOf: url),
-            let text = String(data: data, encoding: .utf8)
-        else {
-            assertionFailure("Missing CleanUI.js in app bundle (expected Resources/Injections/CleanUI.js).")
-            return ""
+            Bundle.main.url(forResource: cleanUIScriptFileName, withExtension: cleanUIScriptExtension),
+        ]
+        for case let url? in candidates {
+            if let data = try? Data(contentsOf: url), let text = String(data: data, encoding: .utf8) {
+                return text
+            }
         }
-        return text
+        log.error("Missing CleanUI.js in app bundle (tried Injections/ and bundle root).")
+        return ""
     }
 
     /// 既定の `WKWebsiteDataStore` に蓄積されたキャッシュ・Cookie 等を消去する。

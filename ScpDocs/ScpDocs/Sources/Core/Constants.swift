@@ -66,4 +66,5 @@ enum LocalizationKey {
     static let libraryEmptyHistoryDescription = "library.empty.history.description"
     static let searchJumpToSCP = "home.search.jump_scp"
     static let articleToolbarBookmark = "article.toolbar.bookmark"
+    static let articleOfflineBadge = "article.offline_badge"
 }

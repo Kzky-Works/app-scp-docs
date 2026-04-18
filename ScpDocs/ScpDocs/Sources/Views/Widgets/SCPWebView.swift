@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 import UIKit
 import WebKit
@@ -29,11 +30,13 @@ struct SCPWebView: UIViewRepresentable {
     func updateUIView(_ webView: WKWebView, context: Context) {
         context.coordinator.viewModel = viewModel
         context.coordinator.navigationRouter = navigationRouter
+        viewModel.webView = webView
         viewModel.flushPendingCommands(into: webView)
         context.coordinator.syncNavigationChrome(for: webView)
     }
 
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
+        coordinator.viewModel?.webView = nil
         coordinator.teardown()
     }
 
@@ -197,6 +200,7 @@ struct SCPWebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            if Self.isCancelledNavigation(error) { return }
             viewModel?.setLoading(false)
             viewModel?.updateStateFromWebView(webView)
             syncNavigationChrome(for: webView)
@@ -207,9 +211,16 @@ struct SCPWebView: UIViewRepresentable {
             didFailProvisionalNavigation navigation: WKNavigation!,
             withError error: Error
         ) {
+            if Self.isCancelledNavigation(error) { return }
             viewModel?.setLoading(false)
             viewModel?.updateStateFromWebView(webView)
             syncNavigationChrome(for: webView)
+        }
+
+        /// 新しい `load` で置き換えられたときなど、意図したキャンセルは無視する。
+        private static func isCancelledNavigation(_ error: Error) -> Bool {
+            let ns = error as NSError
+            return ns.domain == NSURLErrorDomain && ns.code == NSURLErrorCancelled
         }
 
         // MARK: - UIGestureRecognizerDelegate
