@@ -56,6 +56,9 @@
 /* Article */
 "article.toolbar.bookmark" = "お気に入り";
 "article.offline_badge" = "オフラインで保存済みのコピーを表示中";
+"article.load.timeout" = "読み込みがタイムアウトしました。通信状況を確認してから再試行してください。";
+"article.load.failed" = "ページを読み込めませんでした。";
+"article.load.retry" = "再試行";
 
 /* Settings */
 "settings.title" = "設定";

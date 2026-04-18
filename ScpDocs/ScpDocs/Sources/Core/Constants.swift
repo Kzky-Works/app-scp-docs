@@ -67,4 +67,7 @@ enum LocalizationKey {
     static let searchJumpToSCP = "home.search.jump_scp"
     static let articleToolbarBookmark = "article.toolbar.bookmark"
     static let articleOfflineBadge = "article.offline_badge"
+    static let articleLoadTimeout = "article.load.timeout"
+    static let articleLoadFailed = "article.load.failed"
+    static let articleLoadRetry = "article.load.retry"
 }

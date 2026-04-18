@@ -56,6 +56,9 @@
 /* Article */
 "article.toolbar.bookmark" = "Bookmark";
 "article.offline_badge" = "Viewing saved copy offline";
+"article.load.timeout" = "The page took too long to load. Check your network and try again.";
+"article.load.failed" = "Could not load this page.";
+"article.load.retry" = "Retry";
 
 /* Settings */
 "settings.title" = "Settings";

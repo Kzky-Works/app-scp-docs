@@ -32,6 +32,26 @@ struct ArticleView: View {
                     .tint(AppTheme.accentPrimary)
                     .scaleEffect(1.15)
             }
+
+            if let failure = webViewModel.loadFailureMessage {
+                VStack(spacing: 16) {
+                    Text(failure)
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.accentPrimary.opacity(0.95))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                    Button {
+                        webViewModel.load(url: entryURL)
+                    } label: {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.articleLoadRetry)))
+                            .font(.body.weight(.semibold))
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.accentPrimary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(AppTheme.backgroundPrimary.opacity(0.94))
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
