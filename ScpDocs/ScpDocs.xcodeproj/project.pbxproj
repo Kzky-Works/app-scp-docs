@@ -1,0 +1,530 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BF0000000000000000000001 /* ScpDocsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000001 /* ScpDocsApp.swift */; };
+		BF0000000000000000000002 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000002 /* Constants.swift */; };
+		BF0000000000000000000003 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000003 /* Theme.swift */; };
+		BF0000000000000000000004 /* Branch.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000004 /* Branch.swift */; };
+		BF0000000000000000000005 /* BranchCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000005 /* BranchCatalog.swift */; };
+		BF0000000000000000000006 /* ContentGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000006 /* ContentGateway.swift */; };
+		BF0000000000000000000007 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000007 /* HomeViewModel.swift */; };
+		BF0000000000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000009 /* Assets.xcassets */; };
+		BF000000000000000000000A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = VG0000000000000000000001 /* Localizable.strings */; };
+		BF000000000000000000000B /* WebViewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000000C /* WebViewService.swift */; };
+		BF000000000000000000000C /* WebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000000D /* WebViewModel.swift */; };
+		BF000000000000000000000D /* SCPWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000000E /* SCPWebView.swift */; };
+		BF000000000000000000000E /* CleanUI.js in Resources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000000F /* CleanUI.js */; };
+		BF000000000000000000000F /* NavigationRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000010 /* NavigationRoute.swift */; };
+		BF0000000000000000000010 /* ArticleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000011 /* ArticleRepository.swift */; };
+		BF0000000000000000000011 /* NavigationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000012 /* NavigationRouter.swift */; };
+		BF0000000000000000000012 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000013 /* ArticleView.swift */; };
+		BF0000000000000000000013 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000014 /* HomeView.swift */; };
+		BF0000000000000000000014 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000015 /* LibraryView.swift */; };
+		BF0000000000000000000015 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000016 /* MainView.swift */; };
+		BF0000000000000000000016 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000017 /* SettingsRepository.swift */; };
+		BF0000000000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000018 /* SettingsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FR0000000000000000000000 /* ScpDocs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScpDocs.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FR0000000000000000000001 /* ScpDocsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScpDocsApp.swift; sourceTree = "<group>"; };
+		FR0000000000000000000002 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FR0000000000000000000003 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		FR0000000000000000000004 /* Branch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Branch.swift; sourceTree = "<group>"; };
+		FR0000000000000000000005 /* BranchCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchCatalog.swift; sourceTree = "<group>"; };
+		FR0000000000000000000006 /* ContentGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentGateway.swift; sourceTree = "<group>"; };
+		FR0000000000000000000007 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		FR0000000000000000000009 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FR000000000000000000000A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FR000000000000000000000B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FR000000000000000000000C /* WebViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewService.swift; sourceTree = "<group>"; };
+		FR000000000000000000000D /* WebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewModel.swift; sourceTree = "<group>"; };
+		FR000000000000000000000E /* SCPWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPWebView.swift; sourceTree = "<group>"; };
+		FR000000000000000000000F /* CleanUI.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = CleanUI.js; sourceTree = "<group>"; };
+		FR0000000000000000000010 /* NavigationRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRoute.swift; sourceTree = "<group>"; };
+		FR0000000000000000000011 /* ArticleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRepository.swift; sourceTree = "<group>"; };
+		FR0000000000000000000012 /* NavigationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouter.swift; sourceTree = "<group>"; };
+		FR0000000000000000000013 /* ArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000014 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000015 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000016 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000017 /* SettingsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
+		FR0000000000000000000018 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FP0000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		GR0000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				GR0000000000000000000003 /* ScpDocs */,
+				GR0000000000000000000002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000000 /* ScpDocs.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000003 /* ScpDocs */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000001 /* ScpDocsApp.swift */,
+				FR0000000000000000000016 /* MainView.swift */,
+				GR0000000000000000000004 /* Sources */,
+				GR000000000000000000000A /* Resources */,
+			);
+			path = ScpDocs;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000004 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				GR0000000000000000000005 /* Core */,
+				GR0000000000000000000006 /* Data */,
+				GR0000000000000000000009 /* ViewModels */,
+				GR000000000000000000000B /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000005 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000002 /* Constants.swift */,
+				FR0000000000000000000003 /* Theme.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000006 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				GR0000000000000000000007 /* Models */,
+				GR0000000000000000000008 /* Repositories */,
+				GR000000000000000000000C /* Services */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000007 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000004 /* Branch.swift */,
+				FR0000000000000000000010 /* NavigationRoute.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000008 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000005 /* BranchCatalog.swift */,
+				FR0000000000000000000011 /* ArticleRepository.swift */,
+				FR0000000000000000000017 /* SettingsRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000009 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000007 /* HomeViewModel.swift */,
+				FR000000000000000000000D /* WebViewModel.swift */,
+				FR0000000000000000000012 /* NavigationRouter.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		GR000000000000000000000A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000009 /* Assets.xcassets */,
+				GR0000000000000000000010 /* Injections */,
+				GR000000000000000000000F /* Localization */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		GR000000000000000000000B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				GR000000000000000000000D /* Screens */,
+				GR000000000000000000000E /* Widgets */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		GR000000000000000000000C /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000006 /* ContentGateway.swift */,
+				FR000000000000000000000C /* WebViewService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		GR000000000000000000000D /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000014 /* HomeView.swift */,
+				FR0000000000000000000015 /* LibraryView.swift */,
+				FR0000000000000000000013 /* ArticleView.swift */,
+				FR0000000000000000000018 /* SettingsView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		GR000000000000000000000E /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				FR000000000000000000000E /* SCPWebView.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+		GR000000000000000000000F /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				VG0000000000000000000001 /* Localizable.strings */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000010 /* Injections */ = {
+			isa = PBXGroup;
+			children = (
+				FR000000000000000000000F /* CleanUI.js */,
+			);
+			path = Injections;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		NT0000000000000000000001 /* ScpDocs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CL0000000000000000000002 /* Build configuration list for PBXNativeTarget "ScpDocs" */;
+			buildPhases = (
+				SRC0000000000000000000001 /* Sources */,
+				FP0000000000000000000001 /* Frameworks */,
+				RES0000000000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ScpDocs;
+			productName = ScpDocs;
+			productReference = FR0000000000000000000000 /* ScpDocs.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		PR0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					NT0000000000000000000001 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = CL0000000000000000000001 /* Build configuration list for PBXProject "ScpDocs" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				ja,
+			);
+			mainGroup = GR0000000000000000000001;
+			productRefGroup = GR0000000000000000000002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				NT0000000000000000000001 /* ScpDocs */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		RES0000000000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF0000000000000000000009 /* Assets.xcassets in Resources */,
+				BF000000000000000000000E /* CleanUI.js in Resources */,
+				BF000000000000000000000A /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		SRC0000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF0000000000000000000001 /* ScpDocsApp.swift in Sources */,
+				BF0000000000000000000002 /* Constants.swift in Sources */,
+				BF0000000000000000000003 /* Theme.swift in Sources */,
+				BF0000000000000000000004 /* Branch.swift in Sources */,
+				BF0000000000000000000005 /* BranchCatalog.swift in Sources */,
+				BF0000000000000000000006 /* ContentGateway.swift in Sources */,
+				BF0000000000000000000007 /* HomeViewModel.swift in Sources */,
+				BF000000000000000000000B /* WebViewService.swift in Sources */,
+				BF000000000000000000000C /* WebViewModel.swift in Sources */,
+				BF000000000000000000000D /* SCPWebView.swift in Sources */,
+				BF000000000000000000000F /* NavigationRoute.swift in Sources */,
+				BF0000000000000000000010 /* ArticleRepository.swift in Sources */,
+				BF0000000000000000000011 /* NavigationRouter.swift in Sources */,
+				BF0000000000000000000012 /* ArticleView.swift in Sources */,
+				BF0000000000000000000013 /* HomeView.swift in Sources */,
+				BF0000000000000000000014 /* LibraryView.swift in Sources */,
+				BF0000000000000000000015 /* MainView.swift in Sources */,
+				BF0000000000000000000016 /* SettingsRepository.swift in Sources */,
+				BF0000000000000000000017 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		VG0000000000000000000001 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FR000000000000000000000A /* en */,
+				FR000000000000000000000B /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BC0000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BC0000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BC0000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "SCP docs";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.scpreader.app.scpdocs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BC0000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "SCP docs";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.scpreader.app.scpdocs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CL0000000000000000000001 /* Build configuration list for PBXProject "ScpDocs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC0000000000000000000001 /* Debug */,
+				BC0000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CL0000000000000000000002 /* Build configuration list for PBXNativeTarget "ScpDocs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC0000000000000000000003 /* Debug */,
+				BC0000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = PR0000000000000000000001 /* Project object */;
+}

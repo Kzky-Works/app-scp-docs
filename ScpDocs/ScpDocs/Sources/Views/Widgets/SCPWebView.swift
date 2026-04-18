@@ -1,0 +1,282 @@
+import SwiftUI
+import UIKit
+import WebKit
+
+/// `WKWebView` の SwiftUI ラッパー。`WebViewModel` と `Coordinator` で状態を同期する。
+struct SCPWebView: UIViewRepresentable {
+    @Bindable var viewModel: WebViewModel
+    /// 設定時のみ、Wikidot 内部リンクの遷移をキャンセルしてアプリ側ナビへ委譲する。
+    var navigationRouter: NavigationRouter? = nil
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    func makeUIView(context: Context) -> WKWebView {
+        let configuration = WebViewService.makeConfiguration()
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.navigationDelegate = context.coordinator
+        webView.isOpaque = false
+        webView.backgroundColor = AppTheme.backgroundPrimaryUIKit
+        webView.scrollView.backgroundColor = AppTheme.backgroundPrimaryUIKit
+        if #available(iOS 15.0, *) {
+            webView.underPageBackgroundColor = AppTheme.backgroundPrimaryUIKit
+        }
+        context.coordinator.prepare(webView: webView, viewModel: viewModel)
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        context.coordinator.viewModel = viewModel
+        context.coordinator.navigationRouter = navigationRouter
+        viewModel.flushPendingCommands(into: webView)
+        context.coordinator.syncNavigationChrome(for: webView)
+    }
+
+    static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
+        coordinator.teardown()
+    }
+
+    @MainActor
+    final class Coordinator: NSObject, WKNavigationDelegate, UIGestureRecognizerDelegate {
+        private weak var webView: WKWebView?
+        weak var viewModel: WebViewModel?
+        weak var navigationRouter: NavigationRouter?
+
+        private var edgeBackGesture: UIScreenEdgePanGestureRecognizer?
+        private weak var trackedNavigationController: UINavigationController?
+        private var originalPopGestureDelegate: UIGestureRecognizerDelegate?
+
+        private var isObservingWebView = false
+
+        func prepare(webView: WKWebView, viewModel: WebViewModel) {
+            self.webView = webView
+            self.viewModel = viewModel
+
+            if !isObservingWebView {
+                webView.addObserver(
+                    self,
+                    forKeyPath: #keyPath(WKWebView.canGoBack),
+                    options: [.new],
+                    context: nil
+                )
+                webView.addObserver(
+                    self,
+                    forKeyPath: #keyPath(WKWebView.url),
+                    options: [.new],
+                    context: nil
+                )
+                isObservingWebView = true
+            }
+
+            if edgeBackGesture == nil {
+                let gesture = UIScreenEdgePanGestureRecognizer(
+                    target: self,
+                    action: #selector(handleEdgeBack(_:))
+                )
+                gesture.edges = .left
+                gesture.delegate = self
+                webView.addGestureRecognizer(gesture)
+                edgeBackGesture = gesture
+            }
+
+            viewModel.updateStateFromWebView(webView)
+            syncNavigationChrome(for: webView)
+        }
+
+        func teardown() {
+            guard let attachedWebView = webView else {
+                edgeBackGesture = nil
+                restorePopGestureDelegate()
+                viewModel = nil
+                return
+            }
+
+            if isObservingWebView {
+                attachedWebView.removeObserver(self, forKeyPath: #keyPath(WKWebView.canGoBack))
+                attachedWebView.removeObserver(self, forKeyPath: #keyPath(WKWebView.url))
+                isObservingWebView = false
+            }
+
+            if let edgeBackGesture {
+                attachedWebView.removeGestureRecognizer(edgeBackGesture)
+            }
+            edgeBackGesture = nil
+
+            restorePopGestureDelegate()
+            webView = nil
+            viewModel = nil
+        }
+
+        func syncNavigationChrome(for webView: WKWebView) {
+            let navigationController = owningNavigationController(from: webView)
+            if navigationController !== trackedNavigationController {
+                restorePopGestureDelegate()
+                trackedNavigationController = navigationController
+                if let pop = navigationController?.interactivePopGestureRecognizer {
+                    originalPopGestureDelegate = pop.delegate
+                    pop.delegate = self
+                }
+            }
+
+            edgeBackGesture?.isEnabled = webView.canGoBack
+        }
+
+        private func owningNavigationController(from webView: WKWebView) -> UINavigationController? {
+            var responder: UIResponder? = webView
+            while let current = responder {
+                if let viewController = current as? UIViewController {
+                    if let navigationController = viewController.navigationController {
+                        return navigationController
+                    }
+                }
+                responder = current.next
+            }
+            return nil
+        }
+
+        private func restorePopGestureDelegate() {
+            trackedNavigationController?.interactivePopGestureRecognizer?.delegate = originalPopGestureDelegate
+            trackedNavigationController = nil
+            originalPopGestureDelegate = nil
+        }
+
+        @objc private func handleEdgeBack(_ gesture: UIScreenEdgePanGestureRecognizer) {
+            guard let webView, webView.canGoBack else { return }
+            guard gesture.state == .ended else { return }
+            let translation = gesture.translation(in: webView)
+            let velocity = gesture.velocity(in: webView)
+            if translation.x > 72 || velocity.x > 420 {
+                webView.goBack()
+            }
+        }
+
+        // MARK: - WKNavigationDelegate
+
+        func webView(
+            _ webView: WKWebView,
+            decidePolicyFor navigationAction: WKNavigationAction,
+            decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+        ) {
+            guard
+                navigationAction.navigationType == .linkActivated,
+                navigationAction.targetFrame?.isMainFrame != false,
+                let url = navigationAction.request.url,
+                let router = navigationRouter
+            else {
+                decisionHandler(.allow)
+                return
+            }
+
+            guard Self.isInternalSCPJapanLink(url) else {
+                decisionHandler(.allow)
+                return
+            }
+
+            if Self.isSameDocumentFragmentChange(webView: webView, target: url) {
+                decisionHandler(.allow)
+                return
+            }
+
+            Task { @MainActor in
+                router.pushArticle(url: url)
+            }
+            decisionHandler(.cancel)
+        }
+
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            viewModel?.setLoading(true)
+            viewModel?.updateStateFromWebView(webView)
+            syncNavigationChrome(for: webView)
+        }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            viewModel?.setLoading(false)
+            viewModel?.updateStateFromWebView(webView)
+            syncNavigationChrome(for: webView)
+        }
+
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            viewModel?.setLoading(false)
+            viewModel?.updateStateFromWebView(webView)
+            syncNavigationChrome(for: webView)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            didFailProvisionalNavigation navigation: WKNavigation!,
+            withError error: Error
+        ) {
+            viewModel?.setLoading(false)
+            viewModel?.updateStateFromWebView(webView)
+            syncNavigationChrome(for: webView)
+        }
+
+        // MARK: - UIGestureRecognizerDelegate
+
+        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+            guard let webView else { return true }
+
+            if gestureRecognizer === edgeBackGesture {
+                return webView.canGoBack
+            }
+
+            if
+                let navigation = trackedNavigationController,
+                gestureRecognizer === navigation.interactivePopGestureRecognizer
+            {
+                return !webView.canGoBack
+            }
+
+            return true
+        }
+
+        // MARK: - KVO
+
+        override func observeValue(
+            forKeyPath keyPath: String?,
+            of object: Any?,
+            change: [NSKeyValueChangeKey: Any]?,
+            context: UnsafeMutableRawPointer?
+        ) {
+            guard let webView = object as? WKWebView, webView === self.webView else {
+                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+                return
+            }
+
+            if keyPath == #keyPath(WKWebView.canGoBack) || keyPath == #keyPath(WKWebView.url) {
+                Task { @MainActor in
+                    self.viewModel?.updateStateFromWebView(webView)
+                    self.edgeBackGesture?.isEnabled = webView.canGoBack
+                    self.syncNavigationChrome(for: webView)
+                }
+            } else {
+                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            }
+        }
+
+        private static let scpJapanHost = "scp-jp.wikidot.com"
+
+        private static func isInternalSCPJapanLink(_ url: URL) -> Bool {
+            guard let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
+                return false
+            }
+            return url.host?.caseInsensitiveCompare(scpJapanHost) == .orderedSame
+        }
+
+        private static func isSameDocumentFragmentChange(webView: WKWebView, target: URL) -> Bool {
+            guard let current = webView.url,
+                  let targetComponents = URLComponents(url: target, resolvingAgainstBaseURL: true),
+                  let currentComponents = URLComponents(url: current, resolvingAgainstBaseURL: true)
+            else {
+                return false
+            }
+
+            let sameScheme = targetComponents.scheme?.lowercased() == currentComponents.scheme?.lowercased()
+            let sameHost = targetComponents.host?.lowercased() == currentComponents.host?.lowercased()
+            let samePath = targetComponents.path == currentComponents.path
+            let fragmentDiffers = targetComponents.fragment != currentComponents.fragment
+            return sameScheme && sameHost && samePath && fragmentDiffers
+        }
+    }
+}

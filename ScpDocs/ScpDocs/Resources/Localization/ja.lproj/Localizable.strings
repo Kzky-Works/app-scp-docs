@@ -1,0 +1,77 @@
+/* App */
+"app_name" = "SCP docs";
+
+/* Home */
+"home.title" = "ホーム";
+"home.branch_url_label" = "支部のベース URL";
+
+/* Categories */
+"category.site_top" = "サイトトップ";
+"category.series_jp_1" = "SCP-JP 一覧（001–999）";
+"category.series_jp_2" = "SCP-JP 一覧（1000–1999）";
+"category.series_jp_3" = "SCP-JP 一覧（2000–2999）";
+"category.series_jp_4" = "SCP-JP 一覧（3000–3999）";
+"category.tales_jp" = "財団物語（日本支部）";
+"category.credits" = "翻訳クレジット";
+
+/* Branches */
+"branch.name.scp_jp" = "SCP財団 日本支部";
+"branch.name.scp_en" = "SCP財団 本部（英語）";
+"branch.name.scp_int" = "SCP International（国際）";
+
+/* EN categories */
+"category.en.site_top" = "サイトトップ";
+"category.en.series_1" = "SCP シリーズ I（001–999）";
+"category.en.series_2" = "SCP シリーズ II（1000–1999）";
+"category.en.series_3" = "SCP シリーズ III（2000–2999）";
+"category.en.series_4" = "SCP シリーズ IV（3000–3999）";
+"category.en.series_5" = "SCP シリーズ V（5000–5999）";
+"category.en.tales" = "財団物語（英語）";
+"category.en.licensing" = "ライセンスガイド";
+
+/* INT categories */
+"category.int.site_top" = "サイトトップ";
+"category.int.branches" = "各支部ハブ（国際）";
+"category.int.rules" = "サイトルール";
+"category.int.tag_guide" = "タグガイド";
+"category.int.chat" = "チャット参加";
+
+/* Tabs */
+"tab.home" = "ホーム";
+"tab.library" = "書庫";
+"tab.settings" = "設定";
+
+/* Library */
+"library.title" = "書庫";
+"library.segment.bookmarks" = "お気に入り";
+"library.segment.history" = "履歴";
+"library.empty.bookmarks.title" = "お気に入りはまだありません";
+"library.empty.bookmarks.description" = "記事表示中のツールバーから追加できます。";
+"library.empty.history.title" = "履歴はまだありません";
+"library.empty.history.description" = "開いた記事がここに表示されます。";
+
+/* Search */
+"home.search.jump_scp" = "SCP 番号でジャンプ";
+
+/* Article */
+"article.toolbar.bookmark" = "お気に入り";
+
+/* Settings */
+"settings.title" = "設定";
+"settings.section.branch" = "支部";
+"settings.branch_picker" = "コンテンツ支部";
+"settings.section.data" = "データ管理";
+"settings.clear_history" = "閲覧履歴をすべて削除";
+"settings.clear_bookmarks" = "ブックマークをすべて削除";
+"settings.clear_web_cache" = "WebView のキャッシュを消去";
+"settings.web_cache_cleared" = "Web のサイトデータを消去しました。";
+"settings.section.about" = "アプリ情報";
+"settings.app_version" = "バージョン";
+"settings.license.title" = "コンテンツのライセンス";
+"settings.license.body" = "SCP 財団コミュニティのコンテンツは、各ページに別段の記載がない限り、Creative Commons Attribution-ShareAlike 3.0（CC BY-SA 3.0）でライセンスされることが一般的です。";
+"settings.license.link" = "CC BY-SA 3.0（ライセンス全文）";
+"settings.confirm.title" = "実行しますか？";
+"settings.confirm.delete" = "削除する";
+"settings.confirm.cancel" = "キャンセル";
+"settings.confirm.history_message" = "アプリに保存されている閲覧履歴がすべて削除されます。";
+"settings.confirm.bookmarks_message" = "アプリに保存されているブックマークがすべて削除されます。";

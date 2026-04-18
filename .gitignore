@@ -1,34 +1,29 @@
-# General
-*.class
-*.log
-*.pyc
-*.swp
+# macOS
 .DS_Store
-.atom/
-.history
-.svn/
-.swiftpm/
-
-# IDE
-*.iml
-*.ipr
-*.iws
-.idea/
 
 # Xcode
-xcuserdata/
-*.xcuserstate
-
-# Android / Gradle
-native/android/.gradle/
-native/android/**/build/
-*.apk
-*.aab
-local.properties
-
-# Legacy (removed toolchain artifacts — safe to delete locally if present)
-.dart_tool/
-.pub/
-.pub-cache/
 build/
-coverage/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods (将来用)
+Pods/
+
+# Carthage (将来用)
+Carthage/Build/
+
+# IDE
+.idea/
+*.iml

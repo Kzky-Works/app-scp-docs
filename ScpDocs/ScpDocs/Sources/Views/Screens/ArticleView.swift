@@ -1,0 +1,67 @@
+import SwiftUI
+
+struct ArticleView: View {
+    let entryURL: URL
+    @Bindable var navigationRouter: NavigationRouter
+    @Bindable var articleRepository: ArticleRepository
+
+    @State private var webViewModel = WebViewModel()
+
+    private var shareURL: URL {
+        webViewModel.currentURL ?? entryURL
+    }
+
+    private var navigationHeadline: String {
+        if let title = webViewModel.pageTitle, !title.isEmpty {
+            return title
+        }
+        return entryURL.lastPathComponent.isEmpty ? entryURL.host ?? entryURL.absoluteString : entryURL.lastPathComponent
+    }
+
+    var body: some View {
+        ZStack {
+            AppTheme.backgroundPrimary
+                .ignoresSafeArea()
+
+            SCPWebView(viewModel: webViewModel, navigationRouter: navigationRouter)
+                .ignoresSafeArea(edges: .bottom)
+
+            if webViewModel.isLoading {
+                ProgressView()
+                    .tint(AppTheme.accentPrimary)
+                    .scaleEffect(1.15)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(navigationHeadline)
+                    .font(.headline)
+                    .foregroundStyle(AppTheme.accentPrimary)
+                    .lineLimit(1)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    articleRepository.toggleBookmark(url: shareURL)
+                } label: {
+                    Image(systemName: articleRepository.isBookmarked(url: shareURL) ? "bookmark.fill" : "bookmark")
+                        .foregroundStyle(AppTheme.accentPrimary)
+                }
+                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarBookmark)))
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                ShareLink(item: shareURL) {
+                    Image(systemName: "square.and.arrow.up")
+                        .foregroundStyle(AppTheme.accentPrimary)
+                }
+            }
+        }
+        .task(id: ArticleRepository.storageKey(for: entryURL)) {
+            articleRepository.markAsRead(url: entryURL)
+            articleRepository.recordHistory(url: entryURL)
+            webViewModel.load(url: entryURL)
+        }
+        .preferredColorScheme(.dark)
+        .tint(AppTheme.accentPrimary)
+    }
+}
