@@ -4,6 +4,7 @@ struct HomeView: View {
     @Bindable var navigationRouter: NavigationRouter
     private let homeViewModel: HomeViewModel
     @Bindable var purchaseRepository: PurchaseRepository
+    private let onOpenScpLibrary: () -> Void
 
     @State private var searchText = ""
 
@@ -15,18 +16,22 @@ struct HomeView: View {
     init(
         navigationRouter: NavigationRouter,
         homeViewModel: HomeViewModel,
-        purchaseRepository: PurchaseRepository
+        purchaseRepository: PurchaseRepository,
+        onOpenScpLibrary: @escaping () -> Void
     ) {
         self.navigationRouter = navigationRouter
         self.homeViewModel = homeViewModel
         self._purchaseRepository = Bindable(purchaseRepository)
+        self.onOpenScpLibrary = onOpenScpLibrary
     }
 
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 16) {
                     branchHeader
+
+                    randomAccessRow
 
                     LazyVGrid(columns: gridColumns, spacing: 12) {
                         ForEach(HomeSection.dashboard) { section in
@@ -83,18 +88,80 @@ struct HomeView: View {
         .padding(.vertical, 4)
     }
 
+    private var randomAccessRow: some View {
+        HStack(alignment: .top, spacing: 12) {
+            randomAccessCard(
+                title: localized(LocalizationKey.homeRandomCurrentBranchTitle),
+                systemImageName: "shuffle",
+                action: {
+                    Haptics.medium()
+                    navigationRouter.pushArticle(url: homeViewModel.selectedBranch.randomSCPURL)
+                }
+            )
+            randomAccessCard(
+                title: localized(LocalizationKey.homeRandomInternationalTitle),
+                systemImageName: "globe",
+                action: {
+                    Haptics.medium()
+                    navigationRouter.pushArticle(url: Branch.internationalHubRandomSCPURL)
+                }
+            )
+        }
+    }
+
+    private func randomAccessCard(title: String, systemImageName: String, action: @escaping () -> Void) -> some View {
+        let cornerRadius: CGFloat = 6
+        return Button(action: action) {
+            HStack(alignment: .center, spacing: 10) {
+                Image(systemName: systemImageName)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(AppTheme.accentPrimary)
+                    .frame(width: 26, alignment: .center)
+
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.accentPrimary)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.85)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(AppTheme.backgroundPrimary)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(AppTheme.accentPrimary.opacity(0.55), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
     @ViewBuilder
     private func dashboardTile(for section: HomeSection) -> some View {
         let branch = homeViewModel.selectedBranch
         switch section {
-        case .archive:
+        case .jpArchive:
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
                 systemImageName: section.systemImageName,
                 onTap: {
                     Haptics.medium()
-                    navigationRouter.push(.archiveIndex(branchId: homeViewModel.selectedBranch.id))
+                    homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
+                    navigationRouter.push(.scpJapanArchiveSeries)
+                }
+            )
+        case .enArchive:
+            SectionTile(
+                title: localized(section.titleLocalizationKey),
+                subtitle: localized(section.subtitleLocalizationKey),
+                systemImageName: section.systemImageName,
+                onTap: {
+                    Haptics.medium()
+                    homeViewModel.selectBranch(id: BranchIdentifier.scpWikiEN)
+                    navigationRouter.push(.archiveIndex(branchId: BranchIdentifier.scpWikiEN))
                 }
             )
         case .scpLibrary:
@@ -104,7 +171,7 @@ struct HomeView: View {
                 systemImageName: section.systemImageName,
                 onTap: {
                     Haptics.medium()
-                    navigationRouter.push(.libraryIndex)
+                    onOpenScpLibrary()
                 }
             )
         case .international:
@@ -115,17 +182,7 @@ struct HomeView: View {
                 onTap: {
                     Haptics.medium()
                     homeViewModel.selectBranch(id: BranchIdentifier.scpInternational)
-                    navigationRouter.push(.category(Branch.international.siteTopHubURL()))
-                }
-            )
-        case .goiAndPersonnel:
-            SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
-                onTap: {
-                    Haptics.medium()
-                    navigationRouter.push(.goiPortal)
+                    navigationRouter.push(.category(Branch.international.internationalBranchesPortalURL()))
                 }
             )
         case .guide:
@@ -164,7 +221,8 @@ struct HomeView: View {
         HomeView(
             navigationRouter: router,
             homeViewModel: vm,
-            purchaseRepository: purchases
+            purchaseRepository: purchases,
+            onOpenScpLibrary: {}
         )
     }
 }

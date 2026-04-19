@@ -40,6 +40,7 @@ struct Branch: Sendable, Equatable, Identifiable {
             BranchHomeCategory(id: "jp_series_2", titleLocalizationKey: LocalizationKey.categorySeriesJP2, url: URL(string: "https://scp-jp.wikidot.com/scp-series-jp-2")!),
             BranchHomeCategory(id: "jp_series_3", titleLocalizationKey: LocalizationKey.categorySeriesJP3, url: URL(string: "https://scp-jp.wikidot.com/scp-series-jp-3")!),
             BranchHomeCategory(id: "jp_series_4", titleLocalizationKey: LocalizationKey.categorySeriesJP4, url: URL(string: "https://scp-jp.wikidot.com/scp-series-jp-4")!),
+            BranchHomeCategory(id: "jp_series_5", titleLocalizationKey: LocalizationKey.categorySeriesJP5, url: URL(string: "https://scp-jp.wikidot.com/scp-series-jp-5")!),
             BranchHomeCategory(id: "jp_tales", titleLocalizationKey: LocalizationKey.categoryTalesJP, url: URL(string: "https://scp-jp.wikidot.com/foundation-tales-jp")!),
             BranchHomeCategory(id: "jp_credits", titleLocalizationKey: LocalizationKey.categoryCredits, url: URL(string: "https://scp-jp.wikidot.com/credits")!)
         ]
@@ -93,6 +94,15 @@ struct Branch: Sendable, Equatable, Identifiable {
         default:
             japan
         }
+    }
+
+    /// 国際支部の「各支部ハブ」一覧（`scp-international`）。ポータル動線用。
+    func internationalBranchesPortalURL() -> URL {
+        if id == BranchIdentifier.scpInternational,
+           let url = homeCategories.first(where: { $0.id == "int_branches" })?.url {
+            return url
+        }
+        return siteTopHubURL()
     }
 
     /// 各支部の「サイトトップ」相当のハブ（`homeCategories` の `*_site_top`）。
@@ -211,6 +221,23 @@ struct Branch: Sendable, Equatable, Identifiable {
             return nil
         default:
             return URL(string: "https://scp-wiki.wikidot.com/highest-rated-scps")!
+        }
+    }
+
+    /// SCP-INT（国際ハブ）のランダム報告書（翻訳記事プール）。
+    static let internationalHubRandomSCPURL = URL(string: "https://scp-int.wikidot.com/random:random-scp")!
+
+    /// 当該支部サイトの Wikidot ランダム SCP ページ。
+    var randomSCPURL: URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/random:random-scp")!
+        case BranchIdentifier.scpWikiEN:
+            return URL(string: "https://scp-wiki.wikidot.com/random:random-scp")!
+        case BranchIdentifier.scpInternational:
+            return Self.internationalHubRandomSCPURL
+        default:
+            return Branch.japan.randomSCPURL
         }
     }
 }

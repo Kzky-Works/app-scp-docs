@@ -14,7 +14,12 @@ struct MainView: View {
                 HomeView(
                     navigationRouter: homeNavigationRouter,
                     homeViewModel: homeViewModel,
-                    purchaseRepository: purchaseRepository
+                    purchaseRepository: purchaseRepository,
+                    onOpenScpLibrary: {
+                        libraryNavigationRouter.popToRoot()
+                        libraryNavigationRouter.push(.libraryIndex)
+                        selectedTab = .library
+                    }
                 )
                 .navigationDestination(for: NavigationRoute.self) { route in
                     articleDestination(for: route, navigationRouter: homeNavigationRouter)
@@ -76,6 +81,14 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 branch: Branch.branchForArchiveIndex(id: branchId)
             )
+        case .scpJapanArchiveSeries:
+            ArchiveSeriesListView(navigationRouter: navigationRouter)
+        case .scpJapanArchiveArticles(let seriesOrdinal):
+            if let series = SCPJPSeries(rawValue: seriesOrdinal) {
+                ArchiveArticleListView(navigationRouter: navigationRouter, series: series)
+            } else {
+                EmptyView()
+            }
         case .libraryIndex:
             LibraryIndexView(
                 navigationRouter: navigationRouter,

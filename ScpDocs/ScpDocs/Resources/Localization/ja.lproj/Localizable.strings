@@ -11,6 +11,7 @@
 "category.series_jp_2" = "SCP-JP 一覧（1000–1999）";
 "category.series_jp_3" = "SCP-JP 一覧（2000–2999）";
 "category.series_jp_4" = "SCP-JP 一覧（3000–3999）";
+"category.series_jp_5" = "SCP-JP 一覧（4000–4999）";
 "category.tales_jp" = "財団物語（日本支部）";
 "category.credits" = "翻訳クレジット";
 
@@ -62,15 +63,19 @@
 /* Search */
 "home.search.jump_scp" = "SCP 番号でジャンプ";
 
+/* Home random access */
+"home.random.current_branch.title" = "ランダムな報告書（Random Entry）";
+"home.random.international.title" = "国際支部ランダム（International）";
+
 /* Home dashboard（6 ピラー） */
-"home.section.archive.title" = "報告書アーカイヴ";
-"home.section.archive.subtitle" = "設定中の支部の番号順インデックス（100番単位）";
+"home.section.jp_archive.title" = "SCP-JP";
+"home.section.jp_archive.subtitle" = "日本支部アーカイヴ（シリーズ→100件リスト）";
+"home.section.en_archive.title" = "SCP（英語）";
+"home.section.en_archive.subtitle" = "EN アーカイヴ（番号順インデックス）";
 "home.section.scp_library.title" = "SCPライブラリ";
-"home.section.scp_library.subtitle" = "物語・カノン・連作（ネイティブ一覧）";
-"home.section.international.title" = "世界各国の報告書";
-"home.section.international.subtitle" = "各国支部のハブ — scp-int.wikidot.com";
-"home.section.goi_personnel.title" = "要注意団体と登場人物";
-"home.section.goi_personnel.subtitle" = "GoI のネイティブ一覧と人事ファイル";
+"home.section.scp_library.subtitle" = "書庫タブで物語・カノン・連作（ネイティブ一覧）";
+"home.section.international.title" = "SCP International";
+"home.section.international.subtitle" = "各国支部ハブ — scp-int.wikidot.com";
 "home.section.guide.title" = "新人職員ガイドと規約";
 "home.section.guide.subtitle" = "ルール・ライセンス・オブジェクトクラス";
 "home.section.events.title" = "イベントとコンテスト";
@@ -87,6 +92,10 @@
 "archive.title.jp" = "SCP-JP 報告書";
 "archive.title.en" = "SCP Wiki（英語）報告書";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
+"archive.jp.series_list.title" = "SCP-JP シリーズ";
+"archive.jp.segment_picker.accessibility" = "100件セグメント";
+"archive.jp.open_wiki_index" = "Wiki の一覧ページを開く";
+"archive.jp.scp.row_title_format" = "SCP-%@-JP";
 
 /* Library index (native) */
 "library.index.title" = "SCPライブラリ";

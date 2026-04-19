@@ -24,6 +24,7 @@ enum LocalizationKey {
     static let categorySeriesJP2 = "category.series_jp_2"
     static let categorySeriesJP3 = "category.series_jp_3"
     static let categorySeriesJP4 = "category.series_jp_4"
+    static let categorySeriesJP5 = "category.series_jp_5"
     static let categoryTalesJP = "category.tales_jp"
     static let categoryCredits = "category.credits"
 
@@ -80,14 +81,17 @@ enum LocalizationKey {
     static let libraryEmptyHistoryDescription = "library.empty.history.description"
     static let searchJumpToSCP = "home.search.jump_scp"
 
-    static let homeSectionArchiveTitle = "home.section.archive.title"
-    static let homeSectionArchiveSubtitle = "home.section.archive.subtitle"
+    static let homeRandomCurrentBranchTitle = "home.random.current_branch.title"
+    static let homeRandomInternationalTitle = "home.random.international.title"
+
+    static let homeSectionJpArchiveTitle = "home.section.jp_archive.title"
+    static let homeSectionJpArchiveSubtitle = "home.section.jp_archive.subtitle"
+    static let homeSectionEnArchiveTitle = "home.section.en_archive.title"
+    static let homeSectionEnArchiveSubtitle = "home.section.en_archive.subtitle"
     static let homeSectionScpLibraryTitle = "home.section.scp_library.title"
     static let homeSectionScpLibrarySubtitle = "home.section.scp_library.subtitle"
     static let homeSectionInternationalTitle = "home.section.international.title"
     static let homeSectionInternationalSubtitle = "home.section.international.subtitle"
-    static let homeSectionGoIPersonnelTitle = "home.section.goi_personnel.title"
-    static let homeSectionGoIPersonnelSubtitle = "home.section.goi_personnel.subtitle"
     static let homeSectionGuideTitle = "home.section.guide.title"
     static let homeSectionGuideSubtitle = "home.section.guide.subtitle"
     static let homeSectionEventsTitle = "home.section.events.title"
@@ -119,6 +123,11 @@ enum LocalizationKey {
     static let archiveTitleJP = "archive.title.jp"
     static let archiveTitleEN = "archive.title.en"
     static let archiveSegmentLabelTemplate = "archive.segment.label_template"
+
+    static let archiveJpSeriesListTitle = "archive.jp.series_list.title"
+    static let archiveJpSegmentPickerAccessibility = "archive.jp.segment_picker.accessibility"
+    static let archiveJpOpenWikiIndex = "archive.jp.open_wiki_index"
+    static let archiveJpScpRowTitleFormat = "archive.jp.scp.row_title_format"
 
     static let libraryIndexTitle = "library.index.title"
     static let libraryCategoryTalesTitle = "library.category.tales.title"

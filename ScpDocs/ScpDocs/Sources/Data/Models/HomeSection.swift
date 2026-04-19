@@ -2,27 +2,27 @@ import Foundation
 
 /// ホームダッシュボードの 6 ピラー（2×3）。
 enum HomeSection: String, CaseIterable, Sendable, Identifiable {
-    /// 報告書アーカイヴ（設定中の支部・100 番ブロック）。
-    case archive
-    /// SCP ライブラリ（物語／カノン／連作のネイティブ階層）。
+    /// SCP-JP 報告書アーカイヴ（100 番ブロック）。
+    case jpArchive
+    /// SCP Wiki（英語）報告書アーカイヴ。
+    case enArchive
+    /// SCP ライブラリ（書庫タブで `LibraryIndexView`）。
     case scpLibrary
-    /// 世界各国の報告書（国際ハブ）。
+    /// SCP International（国際ハブ）。
     case international
-    /// 要注意団体・人事ファイル。
-    case goiAndPersonnel
-    /// 新人職員ガイド・規約・ライセンス等。
+    /// 新人職員ガイド・規約。
     case guide
-    /// イベント・コンテスト・ランキング。
+    /// イベント・コンテスト。
     case events
 
     var id: String { rawValue }
 
     var titleLocalizationKey: String {
         switch self {
-        case .archive: LocalizationKey.homeSectionArchiveTitle
+        case .jpArchive: LocalizationKey.homeSectionJpArchiveTitle
+        case .enArchive: LocalizationKey.homeSectionEnArchiveTitle
         case .scpLibrary: LocalizationKey.homeSectionScpLibraryTitle
         case .international: LocalizationKey.homeSectionInternationalTitle
-        case .goiAndPersonnel: LocalizationKey.homeSectionGoIPersonnelTitle
         case .guide: LocalizationKey.homeSectionGuideTitle
         case .events: LocalizationKey.homeSectionEventsTitle
         }
@@ -30,10 +30,10 @@ enum HomeSection: String, CaseIterable, Sendable, Identifiable {
 
     var subtitleLocalizationKey: String {
         switch self {
-        case .archive: LocalizationKey.homeSectionArchiveSubtitle
+        case .jpArchive: LocalizationKey.homeSectionJpArchiveSubtitle
+        case .enArchive: LocalizationKey.homeSectionEnArchiveSubtitle
         case .scpLibrary: LocalizationKey.homeSectionScpLibrarySubtitle
         case .international: LocalizationKey.homeSectionInternationalSubtitle
-        case .goiAndPersonnel: LocalizationKey.homeSectionGoIPersonnelSubtitle
         case .guide: LocalizationKey.homeSectionGuideSubtitle
         case .events: LocalizationKey.homeSectionEventsSubtitle
         }
@@ -41,17 +41,17 @@ enum HomeSection: String, CaseIterable, Sendable, Identifiable {
 
     var systemImageName: String {
         switch self {
-        case .archive: "building.columns.fill"
+        case .jpArchive: "building.columns.fill"
+        case .enArchive: "globe.americas.fill"
         case .scpLibrary: "books.vertical.fill"
         case .international: "globe"
-        case .goiAndPersonnel: "person.3.sequence.fill"
         case .guide: "map"
         case .events: "calendar"
         }
     }
 
     static let dashboard: [HomeSection] = [
-        .archive, .scpLibrary, .international,
-        .goiAndPersonnel, .guide, .events
+        .jpArchive, .enArchive, .scpLibrary,
+        .international, .guide, .events
     ]
 }

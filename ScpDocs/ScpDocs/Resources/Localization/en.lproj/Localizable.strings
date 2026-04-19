@@ -11,6 +11,7 @@
 "category.series_jp_2" = "SCP-JP (1000–1999)";
 "category.series_jp_3" = "SCP-JP (2000–2999)";
 "category.series_jp_4" = "SCP-JP (3000–3999)";
+"category.series_jp_5" = "SCP-JP (4000–4999)";
 "category.tales_jp" = "Foundation Tales (JP)";
 "category.credits" = "Translation credits";
 
@@ -62,15 +63,19 @@
 /* Search */
 "home.search.jump_scp" = "Jump to SCP (number)";
 
+/* Home random access */
+"home.random.current_branch.title" = "Random report (Random Entry)";
+"home.random.international.title" = "International random (International)";
+
 /* Home dashboard (six pillars) */
-"home.section.archive.title" = "Report archive";
-"home.section.archive.subtitle" = "100-block index for the branch selected in Settings";
+"home.section.jp_archive.title" = "SCP-JP";
+"home.section.jp_archive.subtitle" = "Japanese branch archive (series → 100-block list)";
+"home.section.en_archive.title" = "SCP (English)";
+"home.section.en_archive.subtitle" = "English wiki archive (100-block index)";
 "home.section.scp_library.title" = "SCP Library";
-"home.section.scp_library.subtitle" = "Tales, canons, and series — native lists";
-"home.section.international.title" = "Worldwide branches";
+"home.section.scp_library.subtitle" = "Tales, canons, and series — opens in the Library tab";
+"home.section.international.title" = "SCP International";
 "home.section.international.subtitle" = "International hub — scp-int.wikidot.com";
-"home.section.goi_personnel.title" = "GoI & personnel";
-"home.section.goi_personnel.subtitle" = "Groups of interest and character dossiers";
 "home.section.guide.title" = "Staff guide & policy";
 "home.section.guide.subtitle" = "Rules, license, and object classes";
 "home.section.events.title" = "Events & contests";
@@ -87,6 +92,10 @@
 "archive.title.jp" = "SCP-JP reports";
 "archive.title.en" = "SCP Wiki (EN) reports";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
+"archive.jp.series_list.title" = "SCP-JP series";
+"archive.jp.segment_picker.accessibility" = "Hundred-block segment";
+"archive.jp.open_wiki_index" = "Open list on wiki";
+"archive.jp.scp.row_title_format" = "SCP-%@-JP";
 
 /* Library index (native) */
 "library.index.title" = "SCP Library";
