@@ -65,13 +65,12 @@
 
 /* Home random access */
 "home.random.current_branch.title" = "ランダムな報告書（Random Entry）";
-"home.random.international.title" = "国際支部ランダム（International）";
 
 /* Home dashboard（6 ピラー） */
 "home.section.jp_archive.title" = "SCP-JP";
-"home.section.jp_archive.subtitle" = "日本支部アーカイヴ（シリーズ→100件リスト）";
+"home.section.jp_archive.subtitle" = "日本支部 001–4999（1000 / 100 のピッカー）";
 "home.section.en_archive.title" = "SCP（英語）";
-"home.section.en_archive.subtitle" = "EN アーカイヴ（番号順インデックス）";
+"home.section.en_archive.subtitle" = "英語 Wiki 001–4999（1000 / 100 のピッカー）";
 "home.section.scp_library.title" = "SCPライブラリ";
 "home.section.scp_library.subtitle" = "書庫タブで物語・カノン・連作（ネイティブ一覧）";
 "home.section.international.title" = "SCP International";
@@ -93,9 +92,21 @@
 "archive.title.en" = "SCP Wiki（英語）報告書";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
 "archive.jp.series_list.title" = "SCP-JP シリーズ";
+"archive.jp.series_picker.accessibility" = "シリーズ（1000件ブロック）";
 "archive.jp.segment_picker.accessibility" = "100件セグメント";
 "archive.jp.open_wiki_index" = "Wiki の一覧ページを開く";
 "archive.jp.scp.row_title_format" = "SCP-%@-JP";
+"archive.jp.article.title_unknown" = "[DATA UNKNOWN]";
+"archive.en.series_block.1" = "シリーズ I（001–999）";
+"archive.en.series_block.2" = "シリーズ II（1000–1999）";
+"archive.en.series_block.3" = "シリーズ III（2000–2999）";
+"archive.en.series_block.4" = "シリーズ IV（3000–3999）";
+"archive.en.series_block.5" = "シリーズ V（4000–4999）";
+"archive.en.series_picker.accessibility" = "シリーズ（1000件ブロック）";
+"archive.en.segment_picker.accessibility" = "100件セグメント";
+"archive.en.open_wiki_index" = "Wiki の一覧ページを開く";
+"archive.en.scp.row_title_format" = "SCP-%@";
+"archive.article.title_unknown" = "[DATA UNKNOWN]";
 
 /* Library index (native) */
 "library.index.title" = "SCPライブラリ";
@@ -277,6 +288,11 @@
 
 /* Article */
 "article.toolbar.bookmark" = "お気に入り";
+"article.quick_reader.accessibility" = "文字サイズ";
+"article.quick_reader.larger" = "大きく";
+"article.quick_reader.smaller" = "小さく";
+"article.toolbar.actions_hub" = "記事ツール";
+"article.toolbar.share" = "共有";
 "article.offline_badge" = "オフラインで保存済みのコピーを表示中";
 "article.load.timeout" = "読み込みがタイムアウトしました。通信状況を確認してから再試行してください。";
 "article.load.failed" = "ページを読み込めませんでした。";

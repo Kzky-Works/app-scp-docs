@@ -65,13 +65,12 @@
 
 /* Home random access */
 "home.random.current_branch.title" = "Random report (Random Entry)";
-"home.random.international.title" = "International random (International)";
 
 /* Home dashboard (six pillars) */
 "home.section.jp_archive.title" = "SCP-JP";
-"home.section.jp_archive.subtitle" = "Japanese branch archive (series → 100-block list)";
+"home.section.jp_archive.subtitle" = "Japanese branch reports 001–4999 (1000 / 100 pickers)";
 "home.section.en_archive.title" = "SCP (English)";
-"home.section.en_archive.subtitle" = "English wiki archive (100-block index)";
+"home.section.en_archive.subtitle" = "English wiki reports 001–4999 (1000 / 100 pickers)";
 "home.section.scp_library.title" = "SCP Library";
 "home.section.scp_library.subtitle" = "Tales, canons, and series — opens in the Library tab";
 "home.section.international.title" = "SCP International";
@@ -93,9 +92,21 @@
 "archive.title.en" = "SCP Wiki (EN) reports";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
 "archive.jp.series_list.title" = "SCP-JP series";
+"archive.jp.series_picker.accessibility" = "Series (1000-block)";
 "archive.jp.segment_picker.accessibility" = "Hundred-block segment";
 "archive.jp.open_wiki_index" = "Open list on wiki";
 "archive.jp.scp.row_title_format" = "SCP-%@-JP";
+"archive.jp.article.title_unknown" = "[DATA UNKNOWN]";
+"archive.en.series_block.1" = "Series I (001–999)";
+"archive.en.series_block.2" = "Series II (1000–1999)";
+"archive.en.series_block.3" = "Series III (2000–2999)";
+"archive.en.series_block.4" = "Series IV (3000–3999)";
+"archive.en.series_block.5" = "Series V (4000–4999)";
+"archive.en.series_picker.accessibility" = "Series (1000-block)";
+"archive.en.segment_picker.accessibility" = "Hundred-block segment";
+"archive.en.open_wiki_index" = "Open list on wiki";
+"archive.en.scp.row_title_format" = "SCP-%@";
+"archive.article.title_unknown" = "[DATA UNKNOWN]";
 
 /* Library index (native) */
 "library.index.title" = "SCP Library";
@@ -277,6 +288,11 @@
 
 /* Article */
 "article.toolbar.bookmark" = "Bookmark";
+"article.quick_reader.accessibility" = "Text size";
+"article.quick_reader.larger" = "Larger";
+"article.quick_reader.smaller" = "Smaller";
+"article.toolbar.actions_hub" = "Article tools";
+"article.toolbar.share" = "Share";
 "article.offline_badge" = "Viewing saved copy offline";
 "article.load.timeout" = "The page took too long to load. Check your network and try again.";
 "article.load.failed" = "Could not load this page.";

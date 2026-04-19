@@ -5,6 +5,8 @@ struct LibraryItem: Identifiable, Hashable, Sendable {
     let id: String
     /// `Localizable.strings` のキー（`en` / `ja` の両方に定義）。
     let titleLocalizationKey: String
+    /// HTML 等から注入する表示用タイトル。`nil` のときは `titleLocalizationKey` を表示。
+    let title: String?
     let url: URL
     /// サイトの掲載順（「作成順」など）。大きいほど新しい。
     let wikiCreationOrder: Int
@@ -216,6 +218,7 @@ enum LibraryStaticData: Sendable {
                     LibraryItem(
                         id: stableId,
                         titleLocalizationKey: link.titleLocalizationKey,
+                        title: nil,
                         url: link.url,
                         wikiCreationOrder: order,
                         primaryAuthorSortKey: ""
@@ -274,6 +277,7 @@ enum LibraryStaticData: Sendable {
                 LibraryItem(
                     id: path,
                     titleLocalizationKey: key,
+                    title: nil,
                     url: base.appendingPathComponent(path),
                     wikiCreationOrder: order,
                     primaryAuthorSortKey: ""
@@ -295,6 +299,7 @@ enum LibraryStaticData: Sendable {
         return LibraryItem(
             id: path,
             titleLocalizationKey: titleKey,
+            title: nil,
             url: url,
             wikiCreationOrder: wikiCreationOrder,
             primaryAuthorSortKey: primaryAuthorSortKey

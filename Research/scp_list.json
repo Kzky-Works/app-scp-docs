@@ -1,0 +1,26 @@
+{
+  "listVersion": 1,
+  "schemaVersion": 1,
+  "generatedAt": "2026-04-19T00:00:00Z",
+  "entries": [
+    {
+      "series": 0,
+      "scpNumber": 1,
+      "title": "機密解除待ち[アクセス禁止]",
+      "lastModified": "2026-01-01T00:00:00Z"
+    },
+    {
+      "series": 0,
+      "scpNumber": 173,
+      "title": "新タイトル例（差分で上書き）",
+      "lastModified": "2026-04-19T00:00:00Z"
+    },
+    {
+      "series": 4,
+      "scpNumber": 4001,
+      "title": "ざこざこ同位体♡短小半減期♡",
+      "lastModified": "2026-04-19T00:00:00Z"
+    }
+  ],
+  "hubLinkedPaths": []
+}

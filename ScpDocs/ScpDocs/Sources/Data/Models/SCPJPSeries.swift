@@ -67,6 +67,17 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         }
     }
 
+    /// 英語アーカイヴの 1000 件ブロックピッカー用（001–4999）。
+    var englishThousandBlockLocalizationKey: String {
+        switch self {
+        case .series1: LocalizationKey.archiveEnSeriesBlock1
+        case .series2: LocalizationKey.archiveEnSeriesBlock2
+        case .series3: LocalizationKey.archiveEnSeriesBlock3
+        case .series4: LocalizationKey.archiveEnSeriesBlock4
+        case .series5: LocalizationKey.archiveEnSeriesBlock5
+        }
+    }
+
     /// シリーズに対応する Wikidot 一覧ページ（参照用・外部ブラウザ用）。
     var wikidotSeriesIndexURL: URL {
         let path: String
@@ -79,6 +90,30 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         }
         return URL(string: "https://scp-jp.wikidot.com/\(path)")!
     }
+
+    /// 英語メイン Wiki の報告書 URL（`NavigationRouter.pushJumpToSCPIfPossible` と同じスラッグ規則）。
+    static func englishArticleURL(scpNumber: Int) -> URL {
+        let slug: String
+        if scpNumber < 1000 {
+            slug = String(format: "scp-%03d", scpNumber)
+        } else {
+            slug = "scp-\(scpNumber)"
+        }
+        return URL(string: "https://scp-wiki.wikidot.com/\(slug)")!
+    }
+
+    /// 英語メイン Wiki のシリーズ一覧ページ（`Branch.englishMain.homeCategories` と対応）。
+    var englishWikidotSeriesIndexURL: URL {
+        let path: String
+        switch self {
+        case .series1: path = "scp-series"
+        case .series2: path = "scp-series-2"
+        case .series3: path = "scp-series-3"
+        case .series4: path = "scp-series-4"
+        case .series5: path = "scp-series-5"
+        }
+        return URL(string: "https://scp-wiki.wikidot.com/\(path)")!
+    }
 }
 
 /// 日本支部アーカイヴの 1 行（`LibraryStaticData` が生成）。
@@ -86,20 +121,7 @@ struct JapanSCPArchiveEntry: Identifiable, Hashable, Sendable {
     let id: String
     let scpNumber: Int
     let url: URL
+    /// HTML 一覧から注入されたタイトル。`nil` の場合は UI でフォールバック表示。
+    let articleTitle: String?
 }
 
-extension LibraryStaticData {
-    /// 指定シリーズ・100 件セグメントの報告書一覧（番号順・URL のみ）。
-    static func japanSCPArchiveEntries(series: SCPJPSeries, segmentStart: Int) -> [JapanSCPArchiveEntry] {
-        series.numbersInSegment(segmentStart: segmentStart).map { n in
-            let url = series.articleURL(scpNumber: n)
-            let slug: String
-            if n < 1000 {
-                slug = String(format: "scp-%03d-jp", n)
-            } else {
-                slug = "scp-\(n)-jp"
-            }
-            return JapanSCPArchiveEntry(id: slug, scpNumber: n, url: url)
-        }
-    }
-}

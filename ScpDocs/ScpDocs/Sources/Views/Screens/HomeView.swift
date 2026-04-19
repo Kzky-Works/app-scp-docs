@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @Bindable var navigationRouter: NavigationRouter
     private let homeViewModel: HomeViewModel
+    private let japanSCPListMetadataStore: JapanSCPListMetadataStore
     @Bindable var purchaseRepository: PurchaseRepository
     private let onOpenScpLibrary: () -> Void
 
@@ -16,11 +17,13 @@ struct HomeView: View {
     init(
         navigationRouter: NavigationRouter,
         homeViewModel: HomeViewModel,
+        japanSCPListMetadataStore: JapanSCPListMetadataStore,
         purchaseRepository: PurchaseRepository,
         onOpenScpLibrary: @escaping () -> Void
     ) {
         self.navigationRouter = navigationRouter
         self.homeViewModel = homeViewModel
+        self.japanSCPListMetadataStore = japanSCPListMetadataStore
         self._purchaseRepository = Bindable(purchaseRepository)
         self.onOpenScpLibrary = onOpenScpLibrary
     }
@@ -89,24 +92,25 @@ struct HomeView: View {
     }
 
     private var randomAccessRow: some View {
-        HStack(alignment: .top, spacing: 12) {
-            randomAccessCard(
-                title: localized(LocalizationKey.homeRandomCurrentBranchTitle),
-                systemImageName: "shuffle",
-                action: {
-                    Haptics.medium()
-                    navigationRouter.pushArticle(url: homeViewModel.selectedBranch.randomSCPURL)
+        let poolCount = japanSCPListMetadataStore.officialJapaneseTranslationRandomPool.count
+        return randomAccessCard(
+            title: localized(LocalizationKey.homeRandomCurrentBranchTitle),
+            systemImageName: "shuffle",
+            action: {
+                Haptics.medium()
+                let branch = homeViewModel.selectedBranch
+                if branch.id == BranchIdentifier.scpJapan {
+                    if let url = japanSCPListMetadataStore.randomOfficialJapaneseTranslationURL() {
+                        navigationRouter.pushArticle(url: url)
+                    } else {
+                        navigationRouter.pushArticle(url: branch.randomSCPURL)
+                    }
+                } else {
+                    navigationRouter.pushArticle(url: branch.randomSCPURL)
                 }
-            )
-            randomAccessCard(
-                title: localized(LocalizationKey.homeRandomInternationalTitle),
-                systemImageName: "globe",
-                action: {
-                    Haptics.medium()
-                    navigationRouter.pushArticle(url: Branch.internationalHubRandomSCPURL)
-                }
-            )
-        }
+            }
+        )
+        .id(poolCount)
     }
 
     private func randomAccessCard(title: String, systemImageName: String, action: @escaping () -> Void) -> some View {
@@ -150,7 +154,7 @@ struct HomeView: View {
                 onTap: {
                     Haptics.medium()
                     homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-                    navigationRouter.push(.scpJapanArchiveSeries)
+                    navigationRouter.push(.scpJapanArchive)
                 }
             )
         case .enArchive:
@@ -161,7 +165,7 @@ struct HomeView: View {
                 onTap: {
                     Haptics.medium()
                     homeViewModel.selectBranch(id: BranchIdentifier.scpWikiEN)
-                    navigationRouter.push(.archiveIndex(branchId: BranchIdentifier.scpWikiEN))
+                    navigationRouter.push(.scpEnglishArchive)
                 }
             )
         case .scpLibrary:
@@ -221,6 +225,7 @@ struct HomeView: View {
         HomeView(
             navigationRouter: router,
             homeViewModel: vm,
+            japanSCPListMetadataStore: JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository()),
             purchaseRepository: purchases,
             onOpenScpLibrary: {}
         )

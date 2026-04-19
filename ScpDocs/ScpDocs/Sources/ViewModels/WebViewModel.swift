@@ -83,6 +83,7 @@ final class WebViewModel {
         let pct = Int(round(readerFontSizeMultiplier * 100))
         let js = """
         (function(){
+          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
           var p = \(pct);
           var root = document.documentElement;
           if (root && root.style) {
@@ -91,6 +92,10 @@ final class WebViewModel {
           var b = document.body;
           if (b && b.style) {
             b.style.webkitTextSizeAdjust = p + '%';
+          }
+          window.scrollTo(0, y);
+          if (window.requestAnimationFrame) {
+            window.requestAnimationFrame(function() { window.scrollTo(0, y); });
           }
         })();
         """

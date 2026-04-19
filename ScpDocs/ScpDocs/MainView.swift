@@ -6,7 +6,11 @@ struct MainView: View {
     @Bindable var libraryNavigationRouter: NavigationRouter
     @Bindable var articleRepository: ArticleRepository
     @Bindable var purchaseRepository: PurchaseRepository
+    let japanSCPListMetadataStore: JapanSCPListMetadataStore
+    let scpListCacheRepository: SCPListCacheRepository
     @Binding var selectedTab: AppRootTab
+
+    private let scpListSyncService = SCPListSyncService()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -14,6 +18,7 @@ struct MainView: View {
                 HomeView(
                     navigationRouter: homeNavigationRouter,
                     homeViewModel: homeViewModel,
+                    japanSCPListMetadataStore: japanSCPListMetadataStore,
                     purchaseRepository: purchaseRepository,
                     onOpenScpLibrary: {
                         libraryNavigationRouter.popToRoot()
@@ -69,6 +74,12 @@ struct MainView: View {
         .environment(\.locale, homeViewModel.resolvedLocale)
         .preferredColorScheme(.dark)
         .tint(AppTheme.accentPrimary)
+        .task {
+            await scpListSyncService.syncIfNeeded(
+                metadataStore: japanSCPListMetadataStore,
+                cacheRepository: scpListCacheRepository
+            )
+        }
     }
 
     @ViewBuilder
@@ -81,14 +92,17 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 branch: Branch.branchForArchiveIndex(id: branchId)
             )
-        case .scpJapanArchiveSeries:
-            ArchiveSeriesListView(navigationRouter: navigationRouter)
-        case .scpJapanArchiveArticles(let seriesOrdinal):
-            if let series = SCPJPSeries(rawValue: seriesOrdinal) {
-                ArchiveArticleListView(navigationRouter: navigationRouter, series: series)
-            } else {
-                EmptyView()
-            }
+        case .scpJapanArchive:
+            ArchiveArticleListView(
+                navigationRouter: navigationRouter,
+                articleRepository: articleRepository,
+                japanSCPListMetadataStore: japanSCPListMetadataStore
+            )
+        case .scpEnglishArchive:
+            ArchiveArticleListView(
+                navigationRouter: navigationRouter,
+                articleRepository: articleRepository
+            )
         case .libraryIndex:
             LibraryIndexView(
                 navigationRouter: navigationRouter,
@@ -113,7 +127,7 @@ struct MainView: View {
         case .category(let url), .article(let url):
             ArticleView(
                 entryURL: url,
-                fontSizeMultiplier: homeViewModel.fontSizeMultiplier,
+                homeViewModel: homeViewModel,
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository
             )

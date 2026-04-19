@@ -15,7 +15,10 @@
     style.id = STYLE_ID;
     style.type = "text/css";
     style.textContent =
-      "html, body { background: #121212 !important; color: #C0C0C0 !important; }" +
+      "html, body { background: #121212 !important; color: #C0C0C0 !important; " +
+      "overflow-x: hidden !important; max-width: 100% !important; box-sizing: border-box !important; " +
+      "padding-left: env(safe-area-inset-left, 0px) !important; " +
+      "padding-right: env(safe-area-inset-right, 0px) !important; }" +
       "a, a:visited { color: #C0C0C0 !important; }" +
       "a:hover { color: #e0e0e0 !important; }" +
       "#header, #top-bar, #side-bar, #footer, .action-area, " +
@@ -23,7 +26,8 @@
       ".page-options-bottom, .footer-wikiwalk-nav, .licensebox { " +
       "display: none !important; visibility: hidden !important; }" +
       "#container, #content-wrap, #main-content, #page-content { " +
-      "max-width: 100% !important; margin: 0 !important; padding: 12px !important; }" +
+      "max-width: 100% !important; margin: 0 !important; " +
+      "padding: 10px 4px !important; box-sizing: border-box !important; }" +
       "#container { background: #121212 !important; }";
 
     (document.head || document.documentElement).appendChild(style);

@@ -28,6 +28,13 @@ enum WebViewService {
               if(!r){return;}
               r.style.backgroundColor='#121212';
               r.style.color='#C0C0C0';
+              var head=document.head;
+              if(head && !head.querySelector('meta[name="viewport"]')){
+                var m=document.createElement('meta');
+                m.name='viewport';
+                m.content='width=device-width, initial-scale=1, viewport-fit=cover';
+                head.insertBefore(m, head.firstChild);
+              }
             })();
             """,
             injectionTime: .atDocumentStart,

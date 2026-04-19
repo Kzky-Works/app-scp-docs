@@ -82,7 +82,6 @@ enum LocalizationKey {
     static let searchJumpToSCP = "home.search.jump_scp"
 
     static let homeRandomCurrentBranchTitle = "home.random.current_branch.title"
-    static let homeRandomInternationalTitle = "home.random.international.title"
 
     static let homeSectionJpArchiveTitle = "home.section.jp_archive.title"
     static let homeSectionJpArchiveSubtitle = "home.section.jp_archive.subtitle"
@@ -125,9 +124,23 @@ enum LocalizationKey {
     static let archiveSegmentLabelTemplate = "archive.segment.label_template"
 
     static let archiveJpSeriesListTitle = "archive.jp.series_list.title"
+    static let archiveJpSeriesPickerAccessibility = "archive.jp.series_picker.accessibility"
     static let archiveJpSegmentPickerAccessibility = "archive.jp.segment_picker.accessibility"
     static let archiveJpOpenWikiIndex = "archive.jp.open_wiki_index"
     static let archiveJpScpRowTitleFormat = "archive.jp.scp.row_title_format"
+    /// 一覧 HTML に項目が無い・タイトル抽出できない場合のフォールバック。
+    static let archiveJpArticleTitleUnknown = "archive.jp.article.title_unknown"
+    static let archiveEnSeriesBlock1 = "archive.en.series_block.1"
+    static let archiveEnSeriesBlock2 = "archive.en.series_block.2"
+    static let archiveEnSeriesBlock3 = "archive.en.series_block.3"
+    static let archiveEnSeriesBlock4 = "archive.en.series_block.4"
+    static let archiveEnSeriesBlock5 = "archive.en.series_block.5"
+    static let archiveEnSeriesPickerAccessibility = "archive.en.series_picker.accessibility"
+    static let archiveEnSegmentPickerAccessibility = "archive.en.segment_picker.accessibility"
+    static let archiveEnOpenWikiIndex = "archive.en.open_wiki_index"
+    static let archiveEnScpRowTitleFormat = "archive.en.scp.row_title_format"
+    /// JP / EN アーカイヴ共通のタイトル不明フォールバック。
+    static let archiveArticleTitleUnknown = "archive.article.title_unknown"
 
     static let libraryIndexTitle = "library.index.title"
     static let libraryCategoryTalesTitle = "library.category.tales.title"
@@ -203,6 +216,11 @@ enum LocalizationKey {
     static let goiIndexHubYumemi = "goi.index.hub.yumemi"
 
     static let articleToolbarBookmark = "article.toolbar.bookmark"
+    static let articleQuickReaderAccessibility = "article.quick_reader.accessibility"
+    static let articleQuickReaderLarger = "article.quick_reader.larger"
+    static let articleQuickReaderSmaller = "article.quick_reader.smaller"
+    static let articleToolbarActionsHub = "article.toolbar.actions_hub"
+    static let articleToolbarShare = "article.toolbar.share"
     static let articleOfflineBadge = "article.offline_badge"
     static let articleLoadTimeout = "article.load.timeout"
     static let articleLoadFailed = "article.load.failed"
@@ -214,4 +232,25 @@ enum LocalizationKey {
     static let settingsWebViewMinimalFooter = "settings.webview.minimal_footer"
     static let settingsWebViewProbe = "settings.webview.probe"
     static let settingsWebViewProbeFooter = "settings.webview.probe_footer"
+}
+
+// MARK: - Phase 13 リモート一覧（Plan B）
+
+/// GitHub Pages / 自前サーバーに配置する `scp_list.json` の取得先。
+enum AppRemoteConfig {
+    /// `SCPListRemotePayload` の `schemaVersion` と一致させる。
+    static let scpListSchemaVersion = 1
+
+    /// 空文字のときはリモート同期を行わない（埋め込み `JapanSCPArchiveTitleData` のみ）。
+    /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
+    static let scpListJSONURLString = ""
+
+    static func resolvedSCPListJSONURL() -> URL? {
+        let trimmed = scpListJSONURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, let url = URL(string: trimmed) else { return nil }
+        guard let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
+            return nil
+        }
+        return url
+    }
 }

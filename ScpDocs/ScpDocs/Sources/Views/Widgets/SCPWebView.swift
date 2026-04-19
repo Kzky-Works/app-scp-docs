@@ -23,6 +23,10 @@ struct SCPWebView: UIViewRepresentable {
         webView.isOpaque = false
         webView.backgroundColor = AppTheme.backgroundPrimaryUIKit
         webView.scrollView.backgroundColor = AppTheme.backgroundPrimaryUIKit
+        // 本文が数 px でもビューポートより広いと横バウンド・横スクロールが発生し「左右にブレる」ように見える。
+        webView.scrollView.alwaysBounceHorizontal = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.clipsToBounds = true
         if #available(iOS 15.0, *) {
             webView.underPageBackgroundColor = AppTheme.backgroundPrimaryUIKit
         }

@@ -34,7 +34,10 @@ struct LibraryListView: View {
     }
 
     private func localizedTitle(_ item: LibraryItem) -> String {
-        String(localized: String.LocalizationValue(item.titleLocalizationKey))
+        if let injected = item.title, !injected.isEmpty {
+            return injected
+        }
+        return String(localized: String.LocalizationValue(item.titleLocalizationKey))
     }
 
     private var filteredItems: [LibraryItem] {
