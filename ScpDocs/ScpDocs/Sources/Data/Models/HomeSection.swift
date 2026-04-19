@@ -2,9 +2,9 @@ import Foundation
 
 /// ホームダッシュボードの 6 ピラー（2×3）。
 enum HomeSection: String, CaseIterable, Sendable, Identifiable {
-    /// SCP-JP 報告書アーカイヴ（100 番ブロック）。
+    /// 左（広い）: 日本支部オリジナル（`scp-series-jp` / `scp-NNN-jp`）。
     case jpArchive
-    /// 本家メインリストの日本語訳（`scp-jp.wikidot.com/scp-series` 系）アーカイヴ。
+    /// 右: 本家メインリストの日本語訳（`scp-series` 系 / `scp-NNN` on scp-jp）。
     case enArchive
     /// SCP ライブラリ（書庫タブで `LibraryIndexView`）。
     case scpLibrary

@@ -84,6 +84,12 @@ enum LocalizationKey {
     static let libraryEmptyHistoryTitle = "library.empty.history.title"
     static let libraryEmptyHistoryDescription = "library.empty.history.description"
     static let searchJumpToSCP = "home.search.jump_scp"
+    static let homeSearchTitle = "home.search.screen.title"
+    static let homeSearchPlaceholder = "home.search.screen.placeholder"
+    static let homeSearchHint = "home.search.screen.hint"
+    static let homeSearchButtonAccessibility = "home.search.button.accessibility"
+    static let homeSearchEmpty = "home.search.screen.empty"
+    static let homeSearchNoIndex = "home.search.screen.no_index"
 
     static let homeRandomCurrentBranchTitle = "home.random.current_branch.title"
     static let homeRandomAccessCaption = "home.random.access.caption"
@@ -277,7 +283,7 @@ enum AppRemoteConfig {
 
     /// 空文字のときはリモート同期を行わない（埋め込み `JapanSCPArchiveTitleData` のみ）。
     /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
-    static let scpListJSONURLString = ""
+    static let scpListJSONURLString = "https://kzky-works.github.io/data-scp-docs/scp_list.json"
 
     static func resolvedSCPListJSONURL() -> URL? {
         let trimmed = scpListJSONURLString.trimmingCharacters(in: .whitespacesAndNewlines)

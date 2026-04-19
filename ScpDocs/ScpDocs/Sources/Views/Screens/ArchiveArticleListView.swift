@@ -91,11 +91,6 @@ struct ArchiveArticleListView: View {
                                     monospacedTitleDigits: true,
                                     trailing: {
                                         HStack(spacing: 10) {
-                                            if articleRepository.isBookmarked(url: entry.url) {
-                                                Image(systemName: "bookmark.fill")
-                                                    .foregroundStyle(AppTheme.textPrimary)
-                                                    .imageScale(.medium)
-                                            }
                                             if articleRepository.isRead(url: entry.url) {
                                                 Image(systemName: "checkmark.circle.fill")
                                                     .foregroundStyle(AppTheme.textPrimary)
@@ -124,6 +119,7 @@ struct ArchiveArticleListView: View {
         }
         .navigationTitle(archiveNavigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {

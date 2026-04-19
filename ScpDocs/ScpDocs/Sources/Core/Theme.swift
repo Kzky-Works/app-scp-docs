@@ -78,8 +78,10 @@ enum AppTheme {
 
     static let shadowCard = Color.black.opacity(0.06)
 
-    /// AdMob 標準バナー（`GADAdSizeBanner`）に合わせた帯の高さ。ルート `safeAreaInset` 用。
-    static let adBannerStripeHeight: CGFloat = 50
+    /// `GADAdSizeBanner` の論理高さ（50pt）。
+    static let adBannerContentHeight: CGFloat = 50
+    /// 広告帯コンテナの総高さ（バナー＋クリップ余白）。
+    static let adBannerStripeHeight: CGFloat = 54
 
     // MARK: UIKit（WKWebView 等）
 
@@ -171,4 +173,18 @@ enum AppTheme {
         }
     }
 #endif
+}
+
+// MARK: - Home tab（広告帯とタイルのレイアウト）
+
+private struct HomeAdBottomReserveKey: EnvironmentKey {
+    static let defaultValue: CGFloat = 0
+}
+
+extension EnvironmentValues {
+    /// ホームのタイル列の下に追加する余白（主に旧レイアウト用。既定は `0`）。
+    var scpHomeAdBottomReserve: CGFloat {
+        get { self[HomeAdBottomReserveKey.self] }
+        set { self[HomeAdBottomReserveKey.self] = newValue }
+    }
 }

@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// ホームダッシュボード用の先頭アイコン（SF Symbols またはアセット）。
 enum SectionTileLeading: Equatable {
@@ -14,6 +17,8 @@ struct SectionTile: View {
     var leading: SectionTileLeading = .none
     /// アーカイヴなど、ホームの主タイトルを一段大きくする。
     var emphasizeTitle: Bool = false
+    /// `emphasizeTitle` 時に `title2` の約 2 倍（Dynamic Type 連動）で主タイトルを表示する。
+    var archiveTitleDoubleSize: Bool = false
     var isWide: Bool = false
     var style: FoundationCardStyle = .standard
     /// タイル上部の等幅バッジ（例: `01 • ARCHIVE [JP]`）。
@@ -30,6 +35,7 @@ struct SectionTile: View {
         subtitle: String,
         leading: SectionTileLeading = .none,
         emphasizeTitle: Bool = false,
+        archiveTitleDoubleSize: Bool = false,
         isWide: Bool = false,
         style: FoundationCardStyle = .standard,
         badge: String? = nil,
@@ -41,6 +47,7 @@ struct SectionTile: View {
         self.subtitle = subtitle
         self.leading = leading
         self.emphasizeTitle = emphasizeTitle
+        self.archiveTitleDoubleSize = archiveTitleDoubleSize
         self.isWide = isWide
         self.style = style
         self.badge = badge
@@ -83,7 +90,17 @@ struct SectionTile: View {
     }
 
     private var titleFont: Font {
-        emphasizeTitle ? .title2.weight(.semibold) : .title3.weight(.semibold)
+        if archiveTitleDoubleSize {
+#if canImport(UIKit)
+            let base = UIFont.preferredFont(forTextStyle: .title2)
+            let doubled = base.withSize(base.pointSize * 2)
+            let scaled = UIFontMetrics(forTextStyle: .title2).scaledFont(for: doubled)
+            return Font(scaled)
+#else
+            return .largeTitle.weight(.semibold)
+#endif
+        }
+        return emphasizeTitle ? .title2.weight(.semibold) : .title3.weight(.semibold)
     }
 
     var body: some View {
@@ -101,6 +118,8 @@ struct SectionTile: View {
                     Text(title)
                         .font(titleFont)
                         .foregroundStyle(titleColor)
+                        .lineLimit(archiveTitleDoubleSize ? 3 : nil)
+                        .minimumScaleFactor(archiveTitleDoubleSize ? 0.45 : 1)
                         .multilineTextAlignment(.leading)
                     Text(subtitle)
                         .font(.caption.weight(.medium))

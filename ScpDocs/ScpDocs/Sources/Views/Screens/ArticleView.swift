@@ -29,9 +29,17 @@ struct ArticleView: View {
             AppTheme.backgroundPrimary
                 .ignoresSafeArea()
 
-            SCPWebView(viewModel: webViewModel, navigationRouter: navigationRouter)
+            SCPWebView(
+                viewModel: webViewModel,
+                navigationRouter: navigationRouter,
+                showsNativeVerticalScrollIndicator: false
+            )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 // 下部ナビ・広告帯の下まで本文を伸ばし、透過 UI の背後に記事が見えるようにする。
+                .ignoresSafeArea(edges: [.horizontal, .bottom])
+
+            WebViewTrailingScrollIndicator(viewModel: webViewModel)
+                .allowsHitTesting(false)
                 .ignoresSafeArea(edges: [.horizontal, .bottom])
 
             if webViewModel.isLoading {
@@ -75,6 +83,8 @@ struct ArticleView: View {
             readerBottomChrome
         }
         .navigationBarTitleDisplayMode(.inline)
+        /// ホームが `.toolbar(.hidden, for: .navigationBar)` のため、同一 `NavigationStack` 内で非表示が子に伝わる。記事では明示的に表示へ戻す。
+        .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(navigationHeadline)

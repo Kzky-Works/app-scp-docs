@@ -19,6 +19,8 @@ enum NavigationRoute: Hashable, Sendable {
     case goiPortal
     /// SCP-JP：新人職員向けガイド・規約ページへのネイティブ索引。
     case staffGuideIndex
+    /// ホーム: 番号・タイトル・タグ・オブジェクトクラスで scp-jp 報告書を検索。
+    case homeScpSearch
     case category(URL)
     case article(URL)
 }

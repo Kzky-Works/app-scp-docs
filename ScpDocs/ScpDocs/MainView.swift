@@ -29,6 +29,7 @@ struct MainView: View {
                     articleDestination(for: route, navigationRouter: homeNavigationRouter)
                 }
             }
+            .tabRootAdBannerLayout(isAdRemovalActive: purchaseRepository.isAdRemovalActive)
             .tabItem {
                 Label(
                     String(localized: String.LocalizationValue(LocalizationKey.tabHome)),
@@ -47,6 +48,7 @@ struct MainView: View {
                     articleDestination(for: route, navigationRouter: libraryNavigationRouter)
                 }
             }
+            .tabRootAdBannerLayout(isAdRemovalActive: purchaseRepository.isAdRemovalActive)
             .tabItem {
                 Label(
                     String(localized: String.LocalizationValue(LocalizationKey.tabLibrary)),
@@ -62,6 +64,7 @@ struct MainView: View {
                     purchaseRepository: purchaseRepository
                 )
             }
+            .tabRootAdBannerLayout(isAdRemovalActive: purchaseRepository.isAdRemovalActive)
             .tabItem {
                 Label(
                     String(localized: String.LocalizationValue(LocalizationKey.tabSettings)),
@@ -71,13 +74,6 @@ struct MainView: View {
             .tag(AppRootTab.settings)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            if !purchaseRepository.isAdRemovalActive {
-                AdBannerView()
-                    .frame(height: AppTheme.adBannerStripeHeight)
-                    .frame(maxWidth: .infinity)
-            }
-        }
         .environment(\.locale, homeViewModel.resolvedLocale)
         .tint(AppTheme.brandAccent)
         .task {
@@ -134,6 +130,13 @@ struct MainView: View {
             )
         case .staffGuideIndex:
             StaffGuideIndexView(navigationRouter: navigationRouter)
+        case .homeScpSearch:
+            HomeSearchView(
+                navigationRouter: navigationRouter,
+                articleRepository: articleRepository,
+                homeViewModel: homeViewModel,
+                japanSCPListMetadataStore: japanSCPListMetadataStore
+            )
         case .category(let url), .article(let url):
             ArticleView(
                 entryURL: url,
@@ -141,6 +144,23 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository
             )
+        }
+    }
+}
+
+private extension View {
+    /// 広告を `NavigationStack` の **兄弟**として `VStack` 最下段に固定し、`safeAreaInset` 由来の重なり・ヒットテストずれを避ける。
+    @ViewBuilder
+    func tabRootAdBannerLayout(isAdRemovalActive: Bool) -> some View {
+        if isAdRemovalActive {
+            self
+        } else {
+            VStack(spacing: 0) {
+                self
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                AdBannerStripeContainer()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

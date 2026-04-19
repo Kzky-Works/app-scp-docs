@@ -58,7 +58,10 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
     /// `SCPJPSeries.rawValue`（0 … 4）。
     var series: Int
     var scpNumber: Int
+    /// `scp-series-jp` 一覧由来。日本支部オリジナル（`scp-NNN-jp`）アーカイヴの行タイトル用。
     var title: String
+    /// `scp-series` / `scp-series-2` … 一覧由来。本家メインリスト和訳（`scp-NNN`）アーカイヴの行タイトル用。未設定時は UI はタイトル不明表示（`title` にはフォールバックしない）。
+    var mainlistTranslationTitle: String?
     /// 記事または一覧行の最終更新（監査用。任意）。
     var lastModified: Date?
     /// Phase 14: オブジェクトクラス（例: Safe, Euclid）。`scp_list.json` 同期で任意。
@@ -70,6 +73,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         case series
         case scpNumber
         case title
+        case mainlistTranslationTitle
         case lastModified
         case objectClass
         case tags
@@ -82,6 +86,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         series: Int,
         scpNumber: Int,
         title: String,
+        mainlistTranslationTitle: String? = nil,
         lastModified: Date? = nil,
         objectClass: String? = nil,
         tags: [String] = []
@@ -89,6 +94,8 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         self.series = series
         self.scpNumber = scpNumber
         self.title = title
+        let mt = mainlistTranslationTitle?.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.mainlistTranslationTitle = (mt?.isEmpty == false) ? mt : nil
         self.lastModified = lastModified
         let oc = objectClass?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.objectClass = (oc?.isEmpty == false) ? oc : nil
@@ -100,6 +107,12 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         series = try c.decode(Int.self, forKey: .series)
         scpNumber = try c.decode(Int.self, forKey: .scpNumber)
         title = try c.decode(String.self, forKey: .title)
+        if let raw = try c.decodeIfPresent(String.self, forKey: .mainlistTranslationTitle) {
+            let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            mainlistTranslationTitle = t.isEmpty ? nil : t
+        } else {
+            mainlistTranslationTitle = nil
+        }
         lastModified = try c.decodeIfPresent(Date.self, forKey: .lastModified)
         if let raw = try c.decodeIfPresent(String.self, forKey: .objectClass) {
             let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -115,6 +128,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         try c.encode(series, forKey: .series)
         try c.encode(scpNumber, forKey: .scpNumber)
         try c.encode(title, forKey: .title)
+        try c.encodeIfPresent(mainlistTranslationTitle, forKey: .mainlistTranslationTitle)
         try c.encodeIfPresent(lastModified, forKey: .lastModified)
         try c.encodeIfPresent(objectClass, forKey: .objectClass)
         if !tags.isEmpty {

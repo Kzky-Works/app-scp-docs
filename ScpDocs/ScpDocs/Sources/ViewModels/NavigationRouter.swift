@@ -16,6 +16,23 @@ final class NavigationRouter {
         path.append(NavigationRoute.article(url))
     }
 
+    /// 数字のみ、または `scp-173` 形式を **scp-jp.wikidot.com** の報告書 URL に変換して遷移する。
+    @discardableResult
+    func pushSCPJPArticleIfPossible(query: String) -> Bool {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+        if trimmed.allSatisfy(\.isNumber) {
+            return pushJumpToSCPIfPossible(query: trimmed, branchBaseURL: Branch.japan.baseURL)
+        }
+        let lower = trimmed.lowercased()
+        if lower.hasPrefix("scp-") {
+            let rest = lower.dropFirst(4).filter(\.isNumber)
+            guard !rest.isEmpty, let value = Int(String(rest)), value > 0 else { return false }
+            return pushJumpToSCPIfPossible(query: "\(value)", branchBaseURL: Branch.japan.baseURL)
+        }
+        return false
+    }
+
     /// 数字のみのクエリ（例: `173`）を現在支部の SCP 記事 URL に変換して遷移する。
     /// - Returns: ジャンプに成功したとき `true`。
     @discardableResult

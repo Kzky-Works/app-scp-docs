@@ -8,6 +8,8 @@ struct SCPWebView: UIViewRepresentable {
     @Bindable var viewModel: WebViewModel
     /// 設定時のみ、Wikidot 内部リンクの遷移をキャンセルしてアプリ側ナビへ委譲する。
     var navigationRouter: NavigationRouter? = nil
+    /// 記事画面で右端のカスタムスクロールバーを使うときは `false` にし、二重表示を避ける。
+    var showsNativeVerticalScrollIndicator: Bool = true
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -27,6 +29,7 @@ struct SCPWebView: UIViewRepresentable {
         // 本文が数 px でもビューポートより広いと横バウンド・横スクロールが発生し「左右にブレる」ように見える。
         webView.scrollView.alwaysBounceHorizontal = false
         webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.showsVerticalScrollIndicator = showsNativeVerticalScrollIndicator
         webView.scrollView.clipsToBounds = true
         context.coordinator.colorScheme = scheme
         context.coordinator.prepare(webView: webView, viewModel: viewModel)
@@ -34,6 +37,7 @@ struct SCPWebView: UIViewRepresentable {
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
+        webView.scrollView.showsVerticalScrollIndicator = showsNativeVerticalScrollIndicator
         context.coordinator.viewModel = viewModel
         context.coordinator.navigationRouter = navigationRouter
         viewModel.webView = webView

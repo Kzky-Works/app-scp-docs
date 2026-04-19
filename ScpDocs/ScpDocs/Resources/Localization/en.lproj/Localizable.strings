@@ -67,13 +67,19 @@
 
 /* Search */
 "home.search.jump_scp" = "Jump to SCP (number)";
+"home.search.screen.title" = "Search reports";
+"home.search.screen.placeholder" = "Number, title, tag, or object class";
+"home.search.screen.hint" = "Examples: 173, scp-049, Keter, a tag, or part of a title. A plain number opens that article.";
+"home.search.button.accessibility" = "Search reports";
+"home.search.screen.empty" = "No matching reports";
+"home.search.screen.no_index" = "Try another keyword, or wait for the list data to sync.";
 
 /* Home random access */
 "home.random.current_branch.title" = "Random report (Random Entry)";
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
-"home.pillar.en_badge" = "02 • [EN]";
+"home.pillar.en_badge" = "02 • ARCHIVE [EN]";
 "home.pillar.library_badge" = "03 • LIBRARY";
 "home.pillar.international_badge" = "04 • INT";
 "home.pillar.guide_badge" = "05 • GUIDE";
@@ -83,7 +89,7 @@
 "home.section.jp_archive.title" = "SCP-JP";
 "home.section.jp_archive.subtitle" = "Japanese branch reports 001–4999 (1000 / 100 pickers)";
 "home.section.en_archive.title" = "SCP";
-"home.section.en_archive.subtitle" = "Japanese translations of mainlist 001–4999 — scp-jp.wikidot.com/scp-series (same layout as SCP-JP)";
+"home.section.en_archive.subtitle" = "Mainlist Japanese translations 001–4999 (1000 / 100 pickers — same UX as SCP-JP)";
 "home.section.scp_library.title" = "SCP Library";
 "home.section.scp_library.subtitle" = "Tales, canons, and series — opens in the Library tab";
 "home.section.international.title" = "SCP International";

@@ -67,13 +67,19 @@
 
 /* Search */
 "home.search.jump_scp" = "SCP 番号でジャンプ";
+"home.search.screen.title" = "報告書を検索";
+"home.search.screen.placeholder" = "番号・タイトル・タグ・オブジェクトクラス";
+"home.search.screen.hint" = "例: 173、scp-049、Keter、タグ名、タイトルの一部。番号のみのときはその記事を開きます。";
+"home.search.button.accessibility" = "報告書を検索";
+"home.search.screen.empty" = "該当する報告書がありません";
+"home.search.screen.no_index" = "一覧データがまだ同期されていないか、別のキーワードを試してください。";
 
 /* Home random access */
 "home.random.current_branch.title" = "ランダムな報告書（Random Entry）";
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
-"home.pillar.en_badge" = "02 • [EN]";
+"home.pillar.en_badge" = "02 • ARCHIVE [EN]";
 "home.pillar.library_badge" = "03 • LIBRARY";
 "home.pillar.international_badge" = "04 • INT";
 "home.pillar.guide_badge" = "05 • GUIDE";
@@ -83,7 +89,7 @@
 "home.section.jp_archive.title" = "SCP-JP";
 "home.section.jp_archive.subtitle" = "日本支部 001–4999（1000 / 100 のピッカー）";
 "home.section.en_archive.title" = "SCP";
-"home.section.en_archive.subtitle" = "本家メインリストの日本語訳 001–4999（scp-jp.wikidot.com/scp-series・SCP-JP と同じ表示）";
+"home.section.en_archive.subtitle" = "本家メインリスト和訳 001–4999（1000 / 100 のピッカー・SCP-JP と同じ操作）";
 "home.section.scp_library.title" = "SCPライブラリ";
 "home.section.scp_library.subtitle" = "書庫タブで物語・カノン・連作（ネイティブ一覧）";
 "home.section.international.title" = "SCP International";
