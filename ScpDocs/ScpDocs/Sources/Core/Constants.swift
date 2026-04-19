@@ -47,6 +47,10 @@ enum LocalizationKey {
     static let tabLibrary = "tab.library"
     static let tabSettings = "tab.settings"
 
+    static let dockTapToShowNav = "dock.tap_to_show_nav"
+    static let dockOperations = "dock.operations"
+    static let dockOperationsNeedArticle = "dock.operations.need_article"
+
     static let settingsTitle = "settings.title"
     static let settingsSectionBranch = "settings.section.branch"
     static let settingsBranchPicker = "settings.branch_picker"
@@ -82,6 +86,15 @@ enum LocalizationKey {
     static let searchJumpToSCP = "home.search.jump_scp"
 
     static let homeRandomCurrentBranchTitle = "home.random.current_branch.title"
+    static let homeRandomAccessCaption = "home.random.access.caption"
+    static let homeDashboardMotto = "home.dashboard.motto"
+
+    static let homePillarJpBadge = "home.pillar.jp_badge"
+    static let homePillarEnBadge = "home.pillar.en_badge"
+    static let homePillarLibraryBadge = "home.pillar.library_badge"
+    static let homePillarInternationalBadge = "home.pillar.international_badge"
+    static let homePillarGuideBadge = "home.pillar.guide_badge"
+    static let homePillarEventsBadge = "home.pillar.events_badge"
 
     static let homeSectionJpArchiveTitle = "home.section.jp_archive.title"
     static let homeSectionJpArchiveSubtitle = "home.section.jp_archive.subtitle"
@@ -93,6 +106,12 @@ enum LocalizationKey {
     static let homeSectionInternationalSubtitle = "home.section.international.subtitle"
     static let homeSectionGuideTitle = "home.section.guide.title"
     static let homeSectionGuideSubtitle = "home.section.guide.subtitle"
+    static let guideIndexItemAboutFoundation = "guide.index.item.about_foundation"
+    static let guideIndexItemFAQ = "guide.index.item.faq"
+    static let guideIndexItemContact = "guide.index.item.contact"
+    static let guideIndexItemSiteRules = "guide.index.item.site_rules"
+    static let guideIndexItemLicensing = "guide.index.item.licensing"
+    static let guideIndexItemJoinSite = "guide.index.item.join_site"
     static let homeSectionEventsTitle = "home.section.events.title"
     static let homeSectionEventsSubtitle = "home.section.events.subtitle"
 
@@ -141,6 +160,17 @@ enum LocalizationKey {
     static let archiveEnScpRowTitleFormat = "archive.en.scp.row_title_format"
     /// JP / EN アーカイヴ共通のタイトル不明フォールバック。
     static let archiveArticleTitleUnknown = "archive.article.title_unknown"
+
+    // Phase 14: タグ／オブジェクトクラス フィルタ
+    static let archiveFilterTagsSection = "archive.filter.tags.section"
+    static let archiveFilterClear = "archive.filter.clear"
+    static let archiveFilterTagSearchPlaceholder = "archive.filter.tag_search.placeholder"
+    static let archiveFilterNoResults = "archive.filter.no_results"
+    static let archiveFilterNoResultsHint = "archive.filter.no_results.hint"
+    static let archiveFilterObjectClassAccessibility = "archive.filter.object_class.accessibility"
+    static let archiveFilterNoTagsInSegment = "archive.filter.no_tags_in_segment"
+    /// アーカイヴ一覧: 各行にタグチップを常時表示するトグル（フィルタ適用時は自動表示）。
+    static let archiveListRowTagsToggleAccessibility = "archive.list.row_tags.accessibility"
 
     static let libraryIndexTitle = "library.index.title"
     static let libraryCategoryTalesTitle = "library.category.tales.title"
@@ -214,6 +244,10 @@ enum LocalizationKey {
     static let goiIndexHubMujinGetsudo = "goi.index.hub.mujin_getsudo"
     static let goiIndexHubYamizushi = "goi.index.hub.yamizushi"
     static let goiIndexHubYumemi = "goi.index.hub.yumemi"
+
+    static let articleReaderNavTapHint = "article.reader_nav.tap_hint"
+    static let articleReaderNavCollapseA11y = "article.reader_nav.collapse.a11y"
+    static let articleReaderNavBackA11y = "article.reader_nav.back.a11y"
 
     static let articleToolbarBookmark = "article.toolbar.bookmark"
     static let articleQuickReaderAccessibility = "article.quick_reader.accessibility"

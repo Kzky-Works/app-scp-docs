@@ -14,22 +14,21 @@ struct SCPWebView: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> WKWebView {
-        let configuration = WebViewService.makeConfiguration()
+        let scheme = context.environment.colorScheme
+        let palette = AppTheme.webContentPalette(isDark: scheme == .dark)
+        let configuration = WebViewService.makeConfiguration(palette: palette)
         let webView = WKWebView(frame: .zero, configuration: configuration)
         if !WebViewDiagnostics.usesMinimalWebViewConfiguration {
             webView.customUserAgent = Self.mobileSafariLikeUserAgent()
         }
         webView.navigationDelegate = context.coordinator
         webView.isOpaque = false
-        webView.backgroundColor = AppTheme.backgroundPrimaryUIKit
-        webView.scrollView.backgroundColor = AppTheme.backgroundPrimaryUIKit
+        Self.applyChromeColors(to: webView)
         // 本文が数 px でもビューポートより広いと横バウンド・横スクロールが発生し「左右にブレる」ように見える。
         webView.scrollView.alwaysBounceHorizontal = false
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.clipsToBounds = true
-        if #available(iOS 15.0, *) {
-            webView.underPageBackgroundColor = AppTheme.backgroundPrimaryUIKit
-        }
+        context.coordinator.colorScheme = scheme
         context.coordinator.prepare(webView: webView, viewModel: viewModel)
         return webView
     }
@@ -38,8 +37,23 @@ struct SCPWebView: UIViewRepresentable {
         context.coordinator.viewModel = viewModel
         context.coordinator.navigationRouter = navigationRouter
         viewModel.webView = webView
+        let scheme = context.environment.colorScheme
+        if context.coordinator.colorScheme != scheme {
+            context.coordinator.colorScheme = scheme
+            Self.applyChromeColors(to: webView)
+            let palette = AppTheme.webContentPalette(isDark: scheme == .dark)
+            viewModel.applyWebContentPalette(palette)
+        }
         viewModel.flushPendingCommands(into: webView)
         context.coordinator.syncNavigationChrome(for: webView)
+    }
+
+    private static func applyChromeColors(to webView: WKWebView) {
+        webView.backgroundColor = AppTheme.backgroundPrimaryUIKit
+        webView.scrollView.backgroundColor = AppTheme.backgroundPrimaryUIKit
+        if #available(iOS 15.0, *) {
+            webView.underPageBackgroundColor = AppTheme.backgroundPrimaryUIKit
+        }
     }
 
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
@@ -60,6 +74,7 @@ struct SCPWebView: UIViewRepresentable {
         private weak var webView: WKWebView?
         weak var viewModel: WebViewModel?
         weak var navigationRouter: NavigationRouter?
+        var colorScheme: ColorScheme = .light
 
         private var edgeBackGesture: UIScreenEdgePanGestureRecognizer?
         private weak var trackedNavigationController: UINavigationController?

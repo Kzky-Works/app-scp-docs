@@ -6,70 +6,50 @@ struct GoIPortalView: View {
     let branch: Branch
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                Button {
-                    Haptics.medium()
-                    navigationRouter.push(.libraryList(.goi))
-                } label: {
-                    portalRow(
-                        titleKey: LocalizationKey.goiPortalNativeListTitle,
-                        subtitleKey: LocalizationKey.goiPortalNativeListSubtitle,
-                        systemImage: "person.3.fill"
-                    )
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    Haptics.medium()
-                    navigationRouter.push(.category(branch.personnelDossierHubURL()))
-                } label: {
-                    portalRow(
-                        titleKey: LocalizationKey.goiPortalPersonnelTitle,
-                        subtitleKey: LocalizationKey.goiPortalPersonnelSubtitle,
-                        systemImage: "person.text.rectangle"
-                    )
-                }
-                .buttonStyle(.plain)
+        List {
+            Button {
+                Haptics.medium()
+                navigationRouter.push(.libraryList(.goi))
+            } label: {
+                FoundationIndexRow(
+                    title: String(localized: String.LocalizationValue(LocalizationKey.goiPortalNativeListTitle)),
+                    subtitle: String(localized: String.LocalizationValue(LocalizationKey.goiPortalNativeListSubtitle)),
+                    leadingSystemImage: "person.3.fill",
+                    trailing: {
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                )
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .buttonStyle(DashboardPressButtonStyle())
+            .indexListRowChrome()
+
+            Button {
+                Haptics.medium()
+                navigationRouter.push(.category(branch.personnelDossierHubURL()))
+            } label: {
+                FoundationIndexRow(
+                    title: String(localized: String.LocalizationValue(LocalizationKey.goiPortalPersonnelTitle)),
+                    subtitle: String(localized: String.LocalizationValue(LocalizationKey.goiPortalPersonnelSubtitle)),
+                    leadingSystemImage: "person.text.rectangle",
+                    trailing: {
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                )
+            }
+            .buttonStyle(DashboardPressButtonStyle())
+            .indexListRowChrome()
         }
-        .background(AppTheme.backgroundPrimary)
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.mainBackground)
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.goiPortalTitle)))
         .navigationBarTitleDisplayMode(.inline)
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
-    }
-
-    private func portalRow(titleKey: String, subtitleKey: String, systemImage: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: systemImage)
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(AppTheme.accentPrimary)
-                .frame(width: 28, alignment: .center)
-            VStack(alignment: .leading, spacing: 6) {
-                Text(String(localized: String.LocalizationValue(titleKey)))
-                    .font(.headline.weight(.semibold))
-                    .foregroundStyle(AppTheme.accentPrimary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(String(localized: String.LocalizationValue(subtitleKey)))
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.78))
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(AppTheme.accentPrimary.opacity(0.45))
-        }
-        .padding(16)
-        .background(AppTheme.backgroundPrimary)
-        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .stroke(AppTheme.accentPrimary.opacity(0.5), lineWidth: 1)
-        )
+        .tint(AppTheme.textPrimary)
     }
 }
 

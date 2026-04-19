@@ -4,6 +4,8 @@ SCP-JP シリーズ一覧（Wikidot）からタイトルを取得し、アプリ
 
 要件: ScpDocs の SCPListRemotePayload / SCPListRemoteEntry（series: 0…4, scpNumber: Int）に一致。
 `hubLinkedPaths` は scp-international から辿る国際支部和訳（/scp-数字-2文字、-jp 以外）。
+Phase 14: 各エントリに任意フィールド `objectClass`（文字列）・`tags`（文字列配列）を付けられる。
+個別記事からの取得は `--with-article-metadata`（負荷が高いため遅延秒数に注意）。
 """
 
 from __future__ import annotations
@@ -15,7 +17,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import unquote, urljoin, urlparse, urlunparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -45,6 +47,30 @@ SERIES_PAGES: list[tuple[int, str]] = [
 INTERNATIONAL_HUB_URL = "https://scp-jp.wikidot.com/scp-international"
 
 SCP_HREF_RE = re.compile(r"^/scp-(\d+)-jp$")
+OBJECT_CLASS_RE = re.compile(
+    r"<strong>\s*(?:オブジェクトクラス|Object Class)\s*:\s*</strong>\s*([A-Za-z][A-Za-z\-]*)",
+    re.IGNORECASE,
+)
+OBJECT_CLASS_RE_LOOSE = re.compile(
+    r"(?:オブジェクトクラス|Object Class)\s*[:：]\s*([A-Za-z][A-Za-z\-]*)",
+    re.IGNORECASE,
+)
+
+# page-tags に付くメタ的タグ（本番 UI の「語」タグとしては除外）
+_TAG_SKIP_LOWER = {
+    "scp",
+    "jp",
+    "euclid",
+    "keter",
+    "safe",
+    "thaumiel",
+    "explained",
+    "neutralized",
+    "apollyon",
+    "デマーカー",
+    "提案中",
+    "アーカイブ",
+}
 # 国際支部の和訳記事（2 文字コード）。`-jp` はメインシリーズ側で扱うため除外。
 INTL_SCP_ARTICLE_PATH_RE = re.compile(r"^/scp-\d+-[a-z]{2}$")
 
@@ -199,6 +225,59 @@ def fetch_international_hub_article_paths(session: requests.Session) -> list[str
     return sorted(articles)
 
 
+def extract_object_class_from_html(html: str) -> str | None:
+    m = OBJECT_CLASS_RE.search(html)
+    if not m:
+        m = OBJECT_CLASS_RE_LOOSE.search(html)
+    if not m:
+        return None
+    oc = m.group(1).strip()
+    return oc if oc else None
+
+
+def extract_article_tags_from_html(html: str, object_class: str | None) -> list[str]:
+    soup = BeautifulSoup(html, "html.parser")
+    div = soup.select_one("div.page-tags")
+    if not div:
+        return []
+    out: list[str] = []
+    seen: set[str] = set()
+    for a in div.find_all("a", href=True):
+        href = (a.get("href") or "").strip()
+        m = re.search(r"/system:page-tags/tag/([^#]+)", href)
+        if not m:
+            continue
+        raw = unquote(m.group(1)).strip()
+        if not raw:
+            continue
+        low = raw.lower()
+        if low in _TAG_SKIP_LOWER:
+            continue
+        if object_class and low == object_class.strip().lower():
+            continue
+        if re.match(r"^\d+jp$", low):
+            continue
+        if raw not in seen:
+            seen.add(raw)
+            out.append(raw)
+    return out
+
+
+def fetch_article_metadata(
+    session: requests.Session, article_path: str, *, delay_sec: float
+) -> tuple[str | None, list[str]]:
+    """個別記事からオブジェクトクラスとタグを取得。"""
+    url = urljoin("https://scp-jp.wikidot.com/", article_path)
+    time.sleep(delay_sec)
+    r = session.get(url, headers=HTTP_HEADERS, timeout=90)
+    r.raise_for_status()
+    r.encoding = r.encoding or "utf-8"
+    html = r.text
+    oc = extract_object_class_from_html(html)
+    tags = extract_article_tags_from_html(html, oc)
+    return oc, tags
+
+
 def fetch_series_entries(series: int, url: str, session: requests.Session) -> list[dict[str, Any]]:
     time.sleep(REQUEST_DELAY_SEC)
     r = session.get(url, headers=HTTP_HEADERS, timeout=60)
@@ -272,8 +351,24 @@ def validate_payload(payload: dict[str, Any]) -> None:
             raise ValueError(f"duplicate entry series={s} scpNumber={n}")
         seen.add(key)
 
+        oc = e.get("objectClass")
+        if oc is not None and not isinstance(oc, str):
+            raise ValueError(f"entries[{i}].objectClass must be string or omitted, got {oc!r}")
+        tg = e.get("tags")
+        if tg is not None:
+            if not isinstance(tg, list):
+                raise ValueError(f"entries[{i}].tags must be a list")
+            for j, tag in enumerate(tg):
+                if not isinstance(tag, str) or not tag.strip():
+                    raise ValueError(f"entries[{i}].tags[{j}] invalid")
 
-def scrape_all() -> dict[str, Any]:
+
+def scrape_all(
+    *,
+    with_article_metadata: bool = False,
+    metadata_delay_sec: float | None = None,
+    metadata_max_articles: int | None = None,
+) -> dict[str, Any]:
     session = requests.Session()
     all_entries: list[dict[str, Any]] = []
 
@@ -284,6 +379,27 @@ def scrape_all() -> dict[str, Any]:
         all_entries.extend(rows)
 
     all_entries.sort(key=lambda e: (e["series"], e["scpNumber"]))
+
+    if with_article_metadata:
+        delay = metadata_delay_sec if metadata_delay_sec is not None else REQUEST_DELAY_SEC
+        n_done = 0
+        for e in all_entries:
+            if metadata_max_articles is not None and n_done >= metadata_max_articles:
+                break
+            n = int(e["scpNumber"])
+            slug = f"/scp-{n:03d}-jp" if n < 1000 else f"/scp-{n}-jp"
+            try:
+                oc, tags = fetch_article_metadata(session, slug, delay_sec=delay)
+            except Exception as ex:
+                print(f"WARN: metadata {slug}: {ex}", file=sys.stderr)
+                continue
+            if oc:
+                e["objectClass"] = oc
+            if tags:
+                e["tags"] = tags
+            n_done += 1
+            if n_done % 50 == 0:
+                print(f"… metadata {n_done} articles", file=sys.stderr)
 
     hub_paths = fetch_international_hub_article_paths(session)
 
@@ -303,9 +419,42 @@ def scrape_all() -> dict[str, Any]:
 
 
 def main() -> int:
-    out_path = "scp_list.json"
+    import argparse
+
+    p = argparse.ArgumentParser(description="Generate SCPListRemotePayload JSON (scp_list.json).")
+    p.add_argument(
+        "--out",
+        default="scp_list.json",
+        help="Output path (default: scp_list.json)",
+    )
+    p.add_argument(
+        "--with-article-metadata",
+        action="store_true",
+        help=(
+            "Fetch each -JP article page to fill objectClass and tags (slow; "
+            f"uses ~{REQUEST_DELAY_SEC}s delay between requests by default)."
+        ),
+    )
+    p.add_argument(
+        "--metadata-delay-sec",
+        type=float,
+        default=None,
+        help="Override delay between article metadata requests (seconds).",
+    )
+    p.add_argument(
+        "--metadata-max-articles",
+        type=int,
+        default=None,
+        help="Stop after this many article fetches (for testing).",
+    )
+    args = p.parse_args()
+    out_path = args.out
     try:
-        data = scrape_all()
+        data = scrape_all(
+            with_article_metadata=args.with_article_metadata,
+            metadata_delay_sec=args.metadata_delay_sec,
+            metadata_max_articles=args.metadata_max_articles,
+        )
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 1

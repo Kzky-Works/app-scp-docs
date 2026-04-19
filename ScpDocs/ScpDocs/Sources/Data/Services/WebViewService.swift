@@ -10,8 +10,8 @@ enum WebViewService {
     private static let cleanUIScriptExtension = "js"
     private static let cleanUIScriptSubdirectory = "Injections"
 
-    /// `CleanUI.js` を読み込み終端で注入する構成を返す。
-    static func makeConfiguration() -> WKWebViewConfiguration {
+    /// `CleanUI.js` を読み込み終端で注入する構成を返す。テーマは `palette` と同期する。
+    static func makeConfiguration(palette: WebContentPalette) -> WKWebViewConfiguration {
         if WebViewDiagnostics.usesMinimalWebViewConfiguration {
             let configuration = WKWebViewConfiguration()
             configuration.defaultWebpagePreferences.allowsContentJavaScript = true
@@ -22,21 +22,7 @@ enum WebViewService {
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
 
         let paletteBootstrap = WKUserScript(
-            source: """
-            (function(){
-              var r=document.documentElement;
-              if(!r){return;}
-              r.style.backgroundColor='#121212';
-              r.style.color='#C0C0C0';
-              var head=document.head;
-              if(head && !head.querySelector('meta[name="viewport"]')){
-                var m=document.createElement('meta');
-                m.name='viewport';
-                m.content='width=device-width, initial-scale=1, viewport-fit=cover';
-                head.insertBefore(m, head.firstChild);
-              }
-            })();
-            """,
+            source: paletteBootstrapSource(palette: palette),
             injectionTime: .atDocumentStart,
             forMainFrameOnly: true
         )
@@ -53,9 +39,32 @@ enum WebViewService {
         return configuration
     }
 
+    private static func paletteBootstrapSource(palette: WebContentPalette) -> String {
+        """
+        (function(){
+          window.__SCPDOCS_THEME__ = {
+            background: '\(palette.backgroundHex)',
+            text: '\(palette.textHex)',
+            link: '\(palette.linkHex)',
+            linkHover: '\(palette.linkHoverHex)',
+            container: '\(palette.containerHex)'
+          };
+          var r=document.documentElement;
+          if(!r){return;}
+          r.style.backgroundColor=window.__SCPDOCS_THEME__.background;
+          r.style.color=window.__SCPDOCS_THEME__.text;
+          var head=document.head;
+          if(head && !head.querySelector('meta[name="viewport"]')){
+            var m=document.createElement('meta');
+            m.name='viewport';
+            m.content='width=device-width, initial-scale=1, viewport-fit=cover';
+            head.insertBefore(m, head.firstChild);
+          }
+        })();
+        """
+    }
+
     private static func loadCleanUIScript() -> String {
-        // Xcode の「グループ」に置いたリソースはバンドル直下にコピーされることが多く、
-        // `Injections/` サブフォルダは付かない。フォルダ参照で入れた場合はサブパスがある。
         let candidates: [URL?] = [
             Bundle.main.url(
                 forResource: cleanUIScriptFileName,

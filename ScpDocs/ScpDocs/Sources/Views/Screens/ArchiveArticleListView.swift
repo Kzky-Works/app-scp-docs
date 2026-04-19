@@ -10,33 +10,24 @@ struct ArchiveArticleListView: View {
     @Bindable var navigationRouter: NavigationRouter
     let kind: Kind
     let articleRepository: ArticleRepository
-    private let japanSCPListMetadataStore: JapanSCPListMetadataStore?
+    private let japanSCPListMetadataStore: JapanSCPListMetadataStore
 
     @State private var selectedSeries: SCPJPSeries
     @State private var selectedSegmentStart: Int
+    @State private var filterModel = ArchiveArticleViewModel()
+    /// 一覧行にタグチップを常時表示（フィルタ／タグ検索入力時は自動で表示）。
+    @State private var showDetailRowTags = false
 
     init(
         navigationRouter: NavigationRouter,
         articleRepository: ArticleRepository,
+        kind: Kind,
         japanSCPListMetadataStore: JapanSCPListMetadataStore
     ) {
         self.navigationRouter = navigationRouter
-        self.kind = .japan
+        self.kind = kind
         self.articleRepository = articleRepository
         self.japanSCPListMetadataStore = japanSCPListMetadataStore
-        let initialSeries = SCPJPSeries.series1
-        self._selectedSeries = State(initialValue: initialSeries)
-        self._selectedSegmentStart = State(initialValue: initialSeries.segmentStarts.first ?? 1)
-    }
-
-    init(
-        navigationRouter: NavigationRouter,
-        articleRepository: ArticleRepository
-    ) {
-        self.navigationRouter = navigationRouter
-        self.kind = .english
-        self.articleRepository = articleRepository
-        self.japanSCPListMetadataStore = nil
         let initialSeries = SCPJPSeries.series1
         self._selectedSeries = State(initialValue: initialSeries)
         self._selectedSegmentStart = State(initialValue: initialSeries.segmentStarts.first ?? 1)
@@ -45,11 +36,20 @@ struct ArchiveArticleListView: View {
     private var entries: [JapanSCPArchiveEntry] {
         switch kind {
         case .japan:
-            guard let store = japanSCPListMetadataStore else { return [] }
-            return store.japanSCPArchiveEntries(series: selectedSeries, segmentStart: selectedSegmentStart)
+            japanSCPListMetadataStore.japanSCPArchiveEntries(series: selectedSeries, segmentStart: selectedSegmentStart)
         case .english:
-            return Self.englishEntries(series: selectedSeries, segmentStart: selectedSegmentStart)
+            japanSCPListMetadataStore.englishMainlistTranslationArchiveEntries(series: selectedSeries, segmentStart: selectedSegmentStart)
         }
+    }
+
+    private var displayedEntries: [JapanSCPArchiveEntry] {
+        filterModel.filteredEntries(from: entries)
+    }
+
+    private var archiveRowTagVisibilityActive: Bool {
+        showDetailRowTags
+            || filterModel.hasActiveFilters
+            || !filterModel.tagSearchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     private var archiveNavigationTitle: String {
@@ -62,54 +62,79 @@ struct ArchiveArticleListView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        IndexScreenLayout {
             List {
-                ForEach(entries) { entry in
-                    Button {
-                        Haptics.medium()
-                        navigationRouter.pushArticle(url: entry.url)
-                    } label: {
-                        HStack(alignment: .top, spacing: 12) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(formattedRowTitle(scpNumber: entry.scpNumber))
-                                    .font(.body.weight(.semibold))
-                                    .foregroundStyle(AppTheme.accentPrimary)
-                                    .multilineTextAlignment(.leading)
-                                Text(resolvedSubtitle(entry))
-                                    .font(.caption)
-                                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.78))
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(3)
+                Section {
+                    if displayedEntries.isEmpty {
+                        ContentUnavailableView(
+                            String(localized: String.LocalizationValue(LocalizationKey.archiveFilterNoResults)),
+                            systemImage: "line.3.horizontal.decrease.circle",
+                            description: Text(String(localized: String.LocalizationValue(LocalizationKey.archiveFilterNoResultsHint)))
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 20)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 20, trailing: 16))
+                    } else {
+                        ForEach(displayedEntries) { entry in
+                            Button {
+                                Haptics.medium()
+                                navigationRouter.pushArticle(url: entry.url)
+                            } label: {
+                                FoundationIndexRow(
+                                    layout: .twoLine,
+                                    title: formattedRowTitle(scpNumber: entry.scpNumber),
+                                    subtitle: resolvedSubtitle(entry),
+                                    tags: entry.tags,
+                                    showsTags: archiveRowTagVisibilityActive,
+                                    monospacedTitleDigits: true,
+                                    trailing: {
+                                        HStack(spacing: 10) {
+                                            if articleRepository.isBookmarked(url: entry.url) {
+                                                Image(systemName: "bookmark.fill")
+                                                    .foregroundStyle(AppTheme.textPrimary)
+                                                    .imageScale(.medium)
+                                            }
+                                            if articleRepository.isRead(url: entry.url) {
+                                                Image(systemName: "checkmark.circle.fill")
+                                                    .foregroundStyle(AppTheme.textPrimary)
+                                                    .imageScale(.medium)
+                                            }
+                                        }
+                                    }
+                                )
                             }
-                            Spacer(minLength: 0)
-                            if articleRepository.isBookmarked(url: entry.url) {
-                                Image(systemName: "bookmark.fill")
-                                    .foregroundStyle(AppTheme.accentPrimary)
-                                    .imageScale(.medium)
-                            }
-                            if articleRepository.isRead(url: entry.url) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(AppTheme.accentPrimary)
-                                    .imageScale(.medium)
-                            }
+                            .buttonStyle(.plain)
+                            .indexListRowChrome()
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .buttonStyle(.plain)
-                    .listRowBackground(AppTheme.backgroundPrimary)
+                } header: {
+                    TagFilterView(model: filterModel, segmentEntries: entries, listChrome: .listSectionHeader)
                 }
             }
             .listStyle(.plain)
+            .listSectionSeparator(.hidden)
             .scrollContentBackground(.hidden)
-
-            seriesPicker
-            segmentPicker
+        } bottomAccessory: {
+            VStack(spacing: 0) {
+                seriesPicker
+                segmentPicker
+            }
         }
-        .background(AppTheme.backgroundPrimary)
         .navigationTitle(archiveNavigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    Haptics.light()
+                    showDetailRowTags.toggle()
+                } label: {
+                    Image(systemName: showDetailRowTags ? "tag.fill" : "tag")
+                        .foregroundStyle(showDetailRowTags ? AppTheme.brandAccent : AppTheme.textPrimary)
+                }
+                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.archiveListRowTagsToggleAccessibility)))
+
                 Button {
                     Haptics.medium()
                     navigationRouter.push(.category(wikidotIndexURLForToolbar))
@@ -120,14 +145,18 @@ struct ArchiveArticleListView: View {
             }
         }
         .onChange(of: selectedSeries) { _, newSeries in
+            filterModel.clearFilters()
             let starts = newSeries.segmentStarts
             guard !starts.isEmpty else { return }
             if !starts.contains(selectedSegmentStart) {
                 selectedSegmentStart = starts[0]
             }
         }
+        .onChange(of: selectedSegmentStart) { _, _ in
+            filterModel.clearFilters()
+        }
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.textPrimary)
     }
 
     private var wikidotIndexURLForToolbar: URL {
@@ -135,7 +164,7 @@ struct ArchiveArticleListView: View {
         case .japan:
             selectedSeries.wikidotSeriesIndexURL
         case .english:
-            selectedSeries.englishWikidotSeriesIndexURL
+            selectedSeries.wikidotEnglishMainlistTranslationSeriesIndexURL
         }
     }
 
@@ -160,17 +189,17 @@ struct ArchiveArticleListView: View {
                     } label: {
                         Text(seriesPickerLabel(series))
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppTheme.accentPrimary)
+                            .foregroundStyle(AppTheme.textPrimary)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background(
                                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .fill(isSelected ? AppTheme.accentPrimary.opacity(0.22) : AppTheme.backgroundPrimary)
+                                    .fill(isSelected ? AppTheme.textPrimary.opacity(0.14) : AppTheme.mainBackground)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                                     .stroke(
-                                        AppTheme.accentPrimary.opacity(isSelected ? 0.85 : 0.45),
+                                        AppTheme.borderSubtle.opacity(isSelected ? 1.0 : 0.6),
                                         lineWidth: 1
                                     )
                             )
@@ -182,7 +211,7 @@ struct ArchiveArticleListView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
         }
-        .background(AppTheme.backgroundPrimary.opacity(0.98))
+        .background(AppTheme.mainBackground.opacity(0.98))
         .accessibilityElement(children: .contain)
         .accessibilityLabel(String(localized: String.LocalizationValue(seriesPickerAccessibilityKey)))
     }
@@ -199,17 +228,17 @@ struct ArchiveArticleListView: View {
                     } label: {
                         Text(segmentPickerLabel(start))
                             .font(.caption.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(AppTheme.accentPrimary)
+                            .foregroundStyle(AppTheme.textPrimary)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background(
                                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .fill(isSelected ? AppTheme.accentPrimary.opacity(0.22) : AppTheme.backgroundPrimary)
+                                    .fill(isSelected ? AppTheme.textPrimary.opacity(0.14) : AppTheme.mainBackground)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                                     .stroke(
-                                        AppTheme.accentPrimary.opacity(isSelected ? 0.85 : 0.45),
+                                        AppTheme.borderSubtle.opacity(isSelected ? 1.0 : 0.6),
                                         lineWidth: 1
                                     )
                             )
@@ -221,7 +250,7 @@ struct ArchiveArticleListView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
         }
-        .background(AppTheme.backgroundPrimary.opacity(0.98))
+        .background(AppTheme.mainBackground.opacity(0.98))
         .accessibilityElement(children: .contain)
         .accessibilityLabel(String(localized: String.LocalizationValue(segmentPickerAccessibilityKey)))
     }
@@ -279,19 +308,6 @@ struct ArchiveArticleListView: View {
         }
         return String(localized: String.LocalizationValue(LocalizationKey.archiveArticleTitleUnknown))
     }
-
-    private static func englishEntries(series: SCPJPSeries, segmentStart: Int) -> [JapanSCPArchiveEntry] {
-        series.numbersInSegment(segmentStart: segmentStart).map { n in
-            let url = SCPJPSeries.englishArticleURL(scpNumber: n)
-            let slug: String
-            if n < 1000 {
-                slug = String(format: "scp-%03d", n)
-            } else {
-                slug = "scp-\(n)"
-            }
-            return JapanSCPArchiveEntry(id: slug, scpNumber: n, url: url, articleTitle: nil)
-        }
-    }
 }
 
 #Preview("JP") {
@@ -302,6 +318,7 @@ struct ArchiveArticleListView: View {
         ArchiveArticleListView(
             navigationRouter: router,
             articleRepository: repo,
+            kind: .japan,
             japanSCPListMetadataStore: meta
         )
     }
@@ -310,10 +327,13 @@ struct ArchiveArticleListView: View {
 #Preview("EN") {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var repo = ArticleRepository()
+    let meta = JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository())
     NavigationStack {
         ArchiveArticleListView(
             navigationRouter: router,
-            articleRepository: repo
+            articleRepository: repo,
+            kind: .english,
+            japanSCPListMetadataStore: meta
         )
     }
 }

@@ -162,7 +162,8 @@ enum LibraryStaticData: Sendable {
                 item("practical-examination-hub", "library.item.practical_examination_hub", base, 21, "jiraku_mogana")
             ]
         case .goi:
-            return japanGoIItems()
+            // 日本支部の要注意団体は `GoILibraryHierarchyData`＋`LibraryListView` の階層表示を使う。
+            return []
         case .series:
             return [
                 item("bounenkai", "library.item.bounenkai", base, 1),
@@ -205,32 +206,6 @@ enum LibraryStaticData: Sendable {
                 item("undertokyo-hub", "library.item.undertokyo_hub", base, 38)
             ]
         }
-    }
-
-    /// 日本支部：要注意団体マスターおよび `goi-formats-jp` 由来のハブ一覧。
-    private static func japanGoIItems() -> [LibraryItem] {
-        var order = 1
-        var result: [LibraryItem] = []
-        func appendLinks(_ links: [GoIFormatsIndexData.IndexLink]) {
-            for link in links {
-                let stableId = "jp_goi_\(link.id.replacingOccurrences(of: "#", with: "_"))"
-                result.append(
-                    LibraryItem(
-                        id: stableId,
-                        titleLocalizationKey: link.titleLocalizationKey,
-                        title: nil,
-                        url: link.url,
-                        wikiCreationOrder: order,
-                        primaryAuthorSortKey: ""
-                    )
-                )
-                order += 1
-            }
-        }
-        appendLinks(GoIFormatsIndexData.portals)
-        appendLinks(GoIFormatsIndexData.englishFormatHubs)
-        appendLinks(GoIFormatsIndexData.japanFormatHubs)
-        return result
     }
 
     /// 英語メインサイト：要注意団体の代表的ハブ（`groups-of-interest` および主要団体ページ）。

@@ -4,153 +4,235 @@ struct HomeView: View {
     @Bindable var navigationRouter: NavigationRouter
     private let homeViewModel: HomeViewModel
     private let japanSCPListMetadataStore: JapanSCPListMetadataStore
-    @Bindable var purchaseRepository: PurchaseRepository
     private let onOpenScpLibrary: () -> Void
 
     @State private var searchText = ""
-
-    private let gridColumns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
 
     init(
         navigationRouter: NavigationRouter,
         homeViewModel: HomeViewModel,
         japanSCPListMetadataStore: JapanSCPListMetadataStore,
-        purchaseRepository: PurchaseRepository,
         onOpenScpLibrary: @escaping () -> Void
     ) {
         self.navigationRouter = navigationRouter
         self.homeViewModel = homeViewModel
         self.japanSCPListMetadataStore = japanSCPListMetadataStore
-        self._purchaseRepository = Bindable(purchaseRepository)
         self.onOpenScpLibrary = onOpenScpLibrary
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    branchHeader
+            VStack(spacing: 8) {
+                dashboardHeaderCard
 
-                    randomAccessRow
+                homeSearchField
 
-                    LazyVGrid(columns: gridColumns, spacing: 12) {
-                        ForEach(HomeSection.dashboard) { section in
-                            dashboardTile(for: section)
+                randomAccessRow
+
+                GeometryReader { geo in
+                    let rowGap: CGFloat = 8
+                    let hStackGap: CGFloat = 12
+                    let innerW = geo.size.width
+                    let totalH = geo.size.height
+
+                    if innerW.isFinite, totalH.isFinite, innerW > 0, totalH > 0 {
+                        let bigH = max(0, (totalH - 2 * rowGap) / 2)
+                        let smallH = max(0, bigH / 2)
+                        let jpW = max(0, (innerW - hStackGap) * 3 / 5)
+                        let enW = max(0, (innerW - hStackGap) * 2 / 5)
+
+                        VStack(spacing: rowGap) {
+                            HStack(spacing: hStackGap) {
+                                dashboardTile(for: .jpArchive, stretchVertically: true)
+                                    .frame(width: jpW, height: bigH)
+                                dashboardTile(for: .enArchive, stretchVertically: true)
+                                    .frame(width: enW, height: bigH)
+                            }
+                            .frame(height: bigH)
+
+                            HStack(spacing: hStackGap) {
+                                dashboardTile(for: .scpLibrary, stretchVertically: true)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                dashboardTile(for: .international, stretchVertically: true)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            }
+                            .frame(height: smallH)
+
+                            HStack(spacing: hStackGap) {
+                                dashboardTile(for: .guide, stretchVertically: true)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                dashboardTile(for: .events, stretchVertically: true)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            }
+                            .frame(height: smallH)
                         }
+                        .frame(width: innerW, height: totalH, alignment: .top)
+                    } else {
+                        Color.clear
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
+                .frame(maxHeight: .infinity)
             }
-
-            if !purchaseRepository.isAdRemovalActive {
-                AdBannerView()
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
-            }
+            .padding(.horizontal, 16)
+            .padding(.top, 2)
+            .padding(.bottom, 8)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .background(AppTheme.backgroundPrimary)
-        .navigationTitle(homeViewModel.screenTitle)
-        .navigationBarTitleDisplayMode(.large)
-        .searchable(
-            text: $searchText,
-            prompt: String(localized: String.LocalizationValue(LocalizationKey.searchJumpToSCP))
-        )
-        .onSubmit(of: .search) {
-            if navigationRouter.pushJumpToSCPIfPossible(
-                query: searchText,
-                branchBaseURL: homeViewModel.selectedBranch.baseURL
-            ) {
-                Haptics.medium()
-            }
-            searchText = ""
-        }
-        .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .toolbar(.hidden, for: .navigationBar)
+        .tint(AppTheme.brandAccent)
     }
 
-    private var branchHeader: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(homeViewModel.branchDisplayTitle)
-                .font(.title3.weight(.medium))
-                .foregroundStyle(AppTheme.accentPrimary)
+    private var homeSearchField: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(AppTheme.textSecondary)
+                .frame(width: 22, alignment: .center)
 
-            Text(homeViewModel.branchURLLabel)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(AppTheme.accentPrimary.opacity(0.85))
-
-            Text(homeViewModel.branchBaseURLDisplay)
-                .font(.body.monospaced())
-                .foregroundStyle(AppTheme.accentPrimary.opacity(0.95))
-                .textSelection(.enabled)
+            TextField(
+                "",
+                text: $searchText,
+                prompt: Text(String(localized: String.LocalizationValue(LocalizationKey.searchJumpToSCP)))
+                    .foregroundStyle(AppTheme.textSecondary)
+            )
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .submitLabel(.search)
+            .onSubmit(performSearchSubmit)
+            .foregroundStyle(AppTheme.textPrimary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(AppTheme.surfaceCard)
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cornerRadiusCard, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cornerRadiusCard, style: .continuous)
+                .stroke(AppTheme.borderSubtle, lineWidth: AppTheme.borderWidthHairline)
+        )
+    }
+
+    private func performSearchSubmit() {
+        if navigationRouter.pushJumpToSCPIfPossible(
+            query: searchText,
+            branchBaseURL: homeViewModel.selectedBranch.baseURL
+        ) {
+            Haptics.medium()
+        }
+        searchText = ""
+    }
+
+    private var dashboardHeaderCard: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "shield.checkered")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(AppTheme.brandAccent)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Menu {
+                    ForEach(homeViewModel.availableBranches, id: \.id) { branch in
+                        Button {
+                            homeViewModel.selectBranch(id: branch.id)
+                            Haptics.medium()
+                        } label: {
+                            Text(String(localized: String.LocalizationValue(branch.displayNameKey)))
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(homeViewModel.branchDisplayTitle)
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Text(String(localized: String.LocalizationValue(LocalizationKey.homeDashboardMotto)))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .monospaced()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .foundationCard(style: .standard)
     }
 
     private var randomAccessRow: some View {
         let poolCount = japanSCPListMetadataStore.officialJapaneseTranslationRandomPool.count
-        return randomAccessCard(
-            title: localized(LocalizationKey.homeRandomCurrentBranchTitle),
-            systemImageName: "shuffle",
-            action: {
-                Haptics.medium()
-                let branch = homeViewModel.selectedBranch
-                if branch.id == BranchIdentifier.scpJapan {
-                    if let url = japanSCPListMetadataStore.randomOfficialJapaneseTranslationURL() {
-                        navigationRouter.pushArticle(url: url)
-                    } else {
-                        navigationRouter.pushArticle(url: branch.randomSCPURL)
-                    }
+        return Button {
+            Haptics.medium()
+            let branch = homeViewModel.selectedBranch
+            if branch.id == BranchIdentifier.scpJapan {
+                if let url = japanSCPListMetadataStore.randomOfficialJapaneseTranslationURL() {
+                    navigationRouter.pushArticle(url: url)
                 } else {
                     navigationRouter.pushArticle(url: branch.randomSCPURL)
                 }
+            } else {
+                navigationRouter.pushArticle(url: branch.randomSCPURL)
             }
-        )
+        } label: {
+            HStack(alignment: .center, spacing: 12) {
+                Image(systemName: "dice.fill")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(AppTheme.brandAccent)
+                    .frame(width: 28, alignment: .center)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomAccessCaption)))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .monospaced()
+                        .textCase(.uppercase)
+                    Text(localized(LocalizationKey.homeRandomCurrentBranchTitle))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.85)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: "arrow.right")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(AppTheme.brandAccent)
+            }
+            .padding(14)
+            .foundationCard(style: .standard)
+        }
+        .buttonStyle(DashboardPressButtonStyle())
         .id(poolCount)
     }
 
-    private func randomAccessCard(title: String, systemImageName: String, action: @escaping () -> Void) -> some View {
-        let cornerRadius: CGFloat = 6
-        return Button(action: action) {
-            HStack(alignment: .center, spacing: 10) {
-                Image(systemName: systemImageName)
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(AppTheme.accentPrimary)
-                    .frame(width: 26, alignment: .center)
-
-                Text(title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.accentPrimary)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.85)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppTheme.backgroundPrimary)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(AppTheme.accentPrimary.opacity(0.55), lineWidth: 1)
-            )
-        }
-        .buttonStyle(.plain)
-    }
-
     @ViewBuilder
-    private func dashboardTile(for section: HomeSection) -> some View {
+    private func dashboardTile(for section: HomeSection, stretchVertically: Bool = false) -> some View {
         let branch = homeViewModel.selectedBranch
+        let badge = String(localized: String.LocalizationValue(section.badgeLocalizationKey))
+        let style: FoundationCardStyle = switch section {
+        case .jpArchive: .inverted
+        case .events: .danger
+        default: .standard
+        }
+        let isWide = section == .jpArchive
+
         switch section {
         case .jpArchive:
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
+                leading: .asset("HomeScpLogo"),
+                emphasizeTitle: true,
+                isWide: isWide,
+                style: style,
+                badge: badge,
+                stretchVertically: stretchVertically,
                 onTap: {
                     Haptics.medium()
                     homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
@@ -161,7 +243,12 @@ struct HomeView: View {
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
+                leading: .none,
+                emphasizeTitle: true,
+                isWide: false,
+                style: style,
+                badge: badge,
+                stretchVertically: stretchVertically,
                 onTap: {
                     Haptics.medium()
                     homeViewModel.selectBranch(id: BranchIdentifier.scpWikiEN)
@@ -172,7 +259,11 @@ struct HomeView: View {
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
+                leading: .none,
+                isWide: isWide,
+                style: style,
+                badge: badge,
+                stretchVertically: stretchVertically,
                 onTap: {
                     Haptics.medium()
                     onOpenScpLibrary()
@@ -182,7 +273,11 @@ struct HomeView: View {
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
+                leading: .none,
+                isWide: isWide,
+                style: style,
+                badge: badge,
+                stretchVertically: stretchVertically,
                 onTap: {
                     Haptics.medium()
                     homeViewModel.selectBranch(id: BranchIdentifier.scpInternational)
@@ -193,17 +288,25 @@ struct HomeView: View {
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
+                leading: .none,
+                isWide: isWide,
+                style: style,
+                badge: badge,
+                stretchVertically: stretchVertically,
                 onTap: {
                     Haptics.medium()
-                    navigationRouter.push(.category(branch.guideHubURL()))
+                    navigationRouter.push(.staffGuideIndex)
                 }
             )
         case .events:
             SectionTile(
                 title: localized(section.titleLocalizationKey),
                 subtitle: localized(section.subtitleLocalizationKey),
-                systemImageName: section.systemImageName,
+                leading: .none,
+                isWide: isWide,
+                style: style,
+                badge: badge,
+                stretchVertically: stretchVertically,
                 onTap: {
                     Haptics.medium()
                     navigationRouter.push(.category(branch.eventsHubURL()))
@@ -220,13 +323,11 @@ struct HomeView: View {
 #Preview {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var vm = HomeViewModel(settingsRepository: SettingsRepository())
-    @Previewable @State var purchases = PurchaseRepository()
     NavigationStack {
         HomeView(
             navigationRouter: router,
             homeViewModel: vm,
             japanSCPListMetadataStore: JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository()),
-            purchaseRepository: purchases,
             onOpenScpLibrary: {}
         )
     }

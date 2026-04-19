@@ -5,7 +5,8 @@ import SwiftUI
 @Observable
 @MainActor
 final class NavigationRouter {
-    var path = NavigationPath()
+    /// `NavigationStack` 連携用。最終要素で「閲覧中」等を判定する。
+    var path: [NavigationRoute] = []
 
     func push(_ route: NavigationRoute) {
         path.append(route)
@@ -40,6 +41,11 @@ final class NavigationRouter {
     }
 
     func popToRoot() {
-        path = NavigationPath()
+        path.removeAll()
+    }
+
+    func pop() {
+        guard !path.isEmpty else { return }
+        path.removeLast()
     }
 }

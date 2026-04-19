@@ -5,11 +5,6 @@ struct ArchiveIndexView: View {
     @Bindable var navigationRouter: NavigationRouter
     let branch: Branch
 
-    private let columns = [
-        GridItem(.flexible(), spacing: 10),
-        GridItem(.flexible(), spacing: 10)
-    ]
-
     private var segments: [SCPArchiveSegment] {
         SCPArchiveSegmentBuilder.segments(for: branch)
     }
@@ -26,38 +21,35 @@ struct ArchiveIndexView: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(segments) { segment in
-                    Button {
-                        Haptics.medium()
-                        navigationRouter.push(.category(segment.url))
-                    } label: {
-                        Text(segment.label)
-                            .font(.caption.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(AppTheme.accentPrimary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 4)
-                            .background(AppTheme.backgroundPrimary)
-                            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .stroke(AppTheme.accentPrimary.opacity(0.55), lineWidth: 1)
-                            )
-                    }
-                    .buttonStyle(.plain)
+        List {
+            ForEach(segments) { segment in
+                Button {
+                    Haptics.medium()
+                    navigationRouter.push(.category(segment.url))
+                } label: {
+                    FoundationIndexRow(
+                        layout: .compact,
+                        title: segment.label,
+                        subtitle: nil,
+                        monospacedTitleDigits: true,
+                        trailing: {
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.textSecondary)
+                        }
+                    )
                 }
+                .buttonStyle(DashboardPressButtonStyle())
+                .indexListRowChrome()
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
         }
-        .background(AppTheme.backgroundPrimary)
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.mainBackground)
         .navigationTitle(archiveNavigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.textPrimary)
     }
 }
 
@@ -93,11 +85,20 @@ enum SCPArchiveSegmentBuilder {
         switch branch.id {
         case BranchIdentifier.scpJapan:
             return japanListURL(blockStart: blockStart)
+        case BranchIdentifier.scpWikiEN:
+            return japanEnglishMainlistTranslationListURL(blockStart: blockStart)
         case BranchIdentifier.scpInternational:
             return englishMainListURL(blockStart: blockStart)
         default:
             return englishMainListURL(blockStart: blockStart)
         }
+    }
+
+    /// 本家メインリスト和訳の一覧（`scp-jp.wikidot.com/scp-series` 系）。パス規則は英語 Wiki と同じ。
+    private static func japanEnglishMainlistTranslationListURL(blockStart: Int) -> URL {
+        let (path, fragment) = englishSeriesPathAndFragment(blockStart: blockStart)
+        let base = URL(string: "https://scp-jp.wikidot.com/\(path)")!
+        return urlWithFragment(base, fragment: fragment)
     }
 
     private static func englishMainListURL(blockStart: Int) -> URL {

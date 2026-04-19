@@ -7,6 +7,8 @@ import Observation
 final class JapanSCPListMetadataStore {
     private let cacheRepository: SCPListCacheRepository
     private var titleByMergeKey: [String: String] = [:]
+    private var objectClassByMergeKey: [String: String] = [:]
+    private var tagsByMergeKey: [String: [String]] = [:]
     /// ホーム「ランダムな報告書」用: 公式和訳プール（`entries` の JP 番号記事 + `hubLinkedPaths`）。
     private(set) var officialJapaneseTranslationRandomPool: [URL] = []
 
@@ -18,10 +20,14 @@ final class JapanSCPListMetadataStore {
     func reloadFromCache() {
         guard let payload = cacheRepository.loadPersistedPayload() else {
             titleByMergeKey = [:]
+            objectClassByMergeKey = [:]
+            tagsByMergeKey = [:]
             officialJapaneseTranslationRandomPool = []
             return
         }
         titleByMergeKey = Self.buildTitleIndex(from: payload)
+        objectClassByMergeKey = Self.buildObjectClassIndex(from: payload)
+        tagsByMergeKey = Self.buildTagsIndex(from: payload)
         officialJapaneseTranslationRandomPool = Self.buildOfficialJapaneseTranslationRandomPool(from: payload)
     }
 
@@ -50,7 +56,42 @@ final class JapanSCPListMetadataStore {
                 slug = "scp-\(n)-jp"
             }
             let injected = resolvedArticleTitle(scpNumber: n, series: series)
-            return JapanSCPArchiveEntry(id: slug, scpNumber: n, url: url, articleTitle: injected)
+            let key = Self.mergeKey(series: series, scpNumber: n)
+            let oc = objectClassByMergeKey[key]
+            let tags = tagsByMergeKey[key] ?? []
+            return JapanSCPArchiveEntry(
+                id: slug,
+                scpNumber: n,
+                url: url,
+                articleTitle: injected,
+                objectClass: oc,
+                tags: tags
+            )
+        }
+    }
+
+    /// 本家メインリストの日本語訳（`scp-jp.wikidot.com/scp-series` 系）の一覧。タイトル解決は JP アーカイヴと同一キー。
+    func englishMainlistTranslationArchiveEntries(series: SCPJPSeries, segmentStart: Int) -> [JapanSCPArchiveEntry] {
+        series.numbersInSegment(segmentStart: segmentStart).map { n in
+            let url = series.englishMainlistTranslationArticleURL(scpNumber: n)
+            let slug: String
+            if n < 1000 {
+                slug = String(format: "scp-%03d", n)
+            } else {
+                slug = "scp-\(n)"
+            }
+            let injected = resolvedArticleTitle(scpNumber: n, series: series)
+            let key = Self.mergeKey(series: series, scpNumber: n)
+            let oc = objectClassByMergeKey[key]
+            let tags = tagsByMergeKey[key] ?? []
+            return JapanSCPArchiveEntry(
+                id: slug,
+                scpNumber: n,
+                url: url,
+                articleTitle: injected,
+                objectClass: oc,
+                tags: tags
+            )
         }
     }
 
@@ -68,6 +109,26 @@ final class JapanSCPListMetadataStore {
             if !t.isEmpty {
                 out[key] = t
             }
+        }
+        return out
+    }
+
+    private static func buildObjectClassIndex(from payload: SCPListRemotePayload) -> [String: String] {
+        var out: [String: String] = [:]
+        for e in payload.entries {
+            guard let s = SCPJPSeries(rawValue: e.series), s.scpNumberRange.contains(e.scpNumber) else { continue }
+            guard let oc = e.objectClass, !oc.isEmpty else { continue }
+            out[e.mergeKey] = oc
+        }
+        return out
+    }
+
+    private static func buildTagsIndex(from payload: SCPListRemotePayload) -> [String: [String]] {
+        var out: [String: [String]] = [:]
+        for e in payload.entries {
+            guard let s = SCPJPSeries(rawValue: e.series), s.scpNumberRange.contains(e.scpNumber) else { continue }
+            guard !e.tags.isEmpty else { continue }
+            out[e.mergeKey] = e.tags
         }
         return out
     }

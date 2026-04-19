@@ -91,15 +91,15 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         return URL(string: "https://scp-jp.wikidot.com/\(path)")!
     }
 
-    /// 英語メイン Wiki の報告書 URL（`NavigationRouter.pushJumpToSCPIfPossible` と同じスラッグ規則）。
-    static func englishArticleURL(scpNumber: Int) -> URL {
+    /// 本家メインリストの日本語訳（`https://scp-jp.wikidot.com/scp-series` 系）の記事 URL。
+    func englishMainlistTranslationArticleURL(scpNumber: Int) -> URL {
         let slug: String
         if scpNumber < 1000 {
             slug = String(format: "scp-%03d", scpNumber)
         } else {
             slug = "scp-\(scpNumber)"
         }
-        return URL(string: "https://scp-wiki.wikidot.com/\(slug)")!
+        return URL(string: "https://scp-jp.wikidot.com/\(slug)")!
     }
 
     /// 英語メイン Wiki のシリーズ一覧ページ（`Branch.englishMain.homeCategories` と対応）。
@@ -114,6 +114,19 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         }
         return URL(string: "https://scp-wiki.wikidot.com/\(path)")!
     }
+
+    /// 本家メインリスト和訳の Wikidot 一覧（`scp-series` / `scp-series-2` …）。
+    var wikidotEnglishMainlistTranslationSeriesIndexURL: URL {
+        let path: String
+        switch self {
+        case .series1: path = "scp-series"
+        case .series2: path = "scp-series-2"
+        case .series3: path = "scp-series-3"
+        case .series4: path = "scp-series-4"
+        case .series5: path = "scp-series-5"
+        }
+        return URL(string: "https://scp-jp.wikidot.com/\(path)")!
+    }
 }
 
 /// 日本支部アーカイヴの 1 行（`LibraryStaticData` が生成）。
@@ -123,5 +136,25 @@ struct JapanSCPArchiveEntry: Identifiable, Hashable, Sendable {
     let url: URL
     /// HTML 一覧から注入されたタイトル。`nil` の場合は UI でフォールバック表示。
     let articleTitle: String?
+    /// Phase 14: リモート `scp_list.json` 由来。未同期時は `nil` / 空。
+    let objectClass: String?
+    /// Phase 14: リモート JSON のタグ一覧。
+    let tags: [String]
+
+    init(
+        id: String,
+        scpNumber: Int,
+        url: URL,
+        articleTitle: String?,
+        objectClass: String? = nil,
+        tags: [String] = []
+    ) {
+        self.id = id
+        self.scpNumber = scpNumber
+        self.url = url
+        self.articleTitle = articleTitle
+        self.objectClass = objectClass
+        self.tags = tags
+    }
 }
 

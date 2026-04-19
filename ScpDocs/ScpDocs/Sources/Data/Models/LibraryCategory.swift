@@ -9,8 +9,8 @@ enum LibraryCategory: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// ホーム「SCPライブラリ」ポータルに出すカテゴリ（物語・カノン・連作のみ）。
-    static let scpLibraryPortalCategories: [LibraryCategory] = [.tales, .canons, .series]
+    /// ホーム「SCPライブラリ」ポータルに出すカテゴリ（物語・カノン・連作・要注意団体）。
+    static let scpLibraryPortalCategories: [LibraryCategory] = [.tales, .canons, .series, .goi]
 
     var titleLocalizationKey: String {
         switch self {

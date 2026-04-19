@@ -13,6 +13,7 @@ struct ScpDocsApp: App {
         let scpCache = SCPListCacheRepository()
         _scpListCacheRepository = State(wrappedValue: scpCache)
         _japanSCPListMetadataStore = State(wrappedValue: JapanSCPListMetadataStore(cacheRepository: scpCache))
+        AppTheme.configureTabBarAppearance()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
     }
     @State private var homeNavigationRouter = NavigationRouter()

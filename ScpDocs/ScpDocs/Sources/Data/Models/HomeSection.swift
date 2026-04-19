@@ -4,7 +4,7 @@ import Foundation
 enum HomeSection: String, CaseIterable, Sendable, Identifiable {
     /// SCP-JP 報告書アーカイヴ（100 番ブロック）。
     case jpArchive
-    /// SCP Wiki（英語）報告書アーカイヴ。
+    /// 本家メインリストの日本語訳（`scp-jp.wikidot.com/scp-series` 系）アーカイヴ。
     case enArchive
     /// SCP ライブラリ（書庫タブで `LibraryIndexView`）。
     case scpLibrary
@@ -39,14 +39,14 @@ enum HomeSection: String, CaseIterable, Sendable, Identifiable {
         }
     }
 
-    var systemImageName: String {
+    var badgeLocalizationKey: String {
         switch self {
-        case .jpArchive: "building.columns.fill"
-        case .enArchive: "globe.americas.fill"
-        case .scpLibrary: "books.vertical.fill"
-        case .international: "globe"
-        case .guide: "map"
-        case .events: "calendar"
+        case .jpArchive: LocalizationKey.homePillarJpBadge
+        case .enArchive: LocalizationKey.homePillarEnBadge
+        case .scpLibrary: LocalizationKey.homePillarLibraryBadge
+        case .international: LocalizationKey.homePillarInternationalBadge
+        case .guide: LocalizationKey.homePillarGuideBadge
+        case .events: LocalizationKey.homePillarEventsBadge
         }
     }
 

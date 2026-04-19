@@ -78,6 +78,25 @@ final class WebViewModel {
     }
 
     /// WebView 内の本文に `-webkit-text-size-adjust` 等を適用する（読み込み完了後や倍率変更時に呼ぶ）。
+    /// 外観モード変更時に、既に読み込み済みの DOM へ CleanUI テーマを再適用する。
+    func applyWebContentPalette(_ palette: WebContentPalette) {
+        guard let webView, !WebViewDiagnostics.usesMinimalWebViewConfiguration else { return }
+        let js = """
+        (function(){
+          if (window.__SCPDOCS_applyCleanUITheme) {
+            window.__SCPDOCS_applyCleanUITheme({
+              background: '\(palette.backgroundHex)',
+              text: '\(palette.textHex)',
+              link: '\(palette.linkHex)',
+              linkHover: '\(palette.linkHoverHex)',
+              container: '\(palette.containerHex)'
+            });
+          }
+        })();
+        """
+        webView.evaluateJavaScript(js, completionHandler: nil)
+    }
+
     func applyReaderFontPresentation() {
         guard let webView else { return }
         let pct = Int(round(readerFontSizeMultiplier * 100))

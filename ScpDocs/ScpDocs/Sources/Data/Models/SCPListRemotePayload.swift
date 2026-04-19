@@ -61,7 +61,76 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
     var title: String
     /// 記事または一覧行の最終更新（監査用。任意）。
     var lastModified: Date?
+    /// Phase 14: オブジェクトクラス（例: Safe, Euclid）。`scp_list.json` 同期で任意。
+    var objectClass: String?
+    /// Phase 14: 付随タグ（和文タグ名など）。同期 JSON で任意。
+    var tags: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case series
+        case scpNumber
+        case title
+        case lastModified
+        case objectClass
+        case tags
+    }
 
     /// マージキー（`series_scpNumber`）。
     var mergeKey: String { "\(series)_\(scpNumber)" }
+
+    init(
+        series: Int,
+        scpNumber: Int,
+        title: String,
+        lastModified: Date? = nil,
+        objectClass: String? = nil,
+        tags: [String] = []
+    ) {
+        self.series = series
+        self.scpNumber = scpNumber
+        self.title = title
+        self.lastModified = lastModified
+        let oc = objectClass?.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.objectClass = (oc?.isEmpty == false) ? oc : nil
+        self.tags = Self.normalizedTags(tags)
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        series = try c.decode(Int.self, forKey: .series)
+        scpNumber = try c.decode(Int.self, forKey: .scpNumber)
+        title = try c.decode(String.self, forKey: .title)
+        lastModified = try c.decodeIfPresent(Date.self, forKey: .lastModified)
+        if let raw = try c.decodeIfPresent(String.self, forKey: .objectClass) {
+            let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            objectClass = t.isEmpty ? nil : t
+        } else {
+            objectClass = nil
+        }
+        tags = Self.normalizedTags(try c.decodeIfPresent([String].self, forKey: .tags) ?? [])
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(series, forKey: .series)
+        try c.encode(scpNumber, forKey: .scpNumber)
+        try c.encode(title, forKey: .title)
+        try c.encodeIfPresent(lastModified, forKey: .lastModified)
+        try c.encodeIfPresent(objectClass, forKey: .objectClass)
+        if !tags.isEmpty {
+            try c.encode(tags, forKey: .tags)
+        }
+    }
+
+    private static func normalizedTags(_ raw: [String]) -> [String] {
+        var seen = Set<String>()
+        var out: [String] = []
+        for s in raw {
+            let t = s.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !t.isEmpty, !seen.contains(t) else { continue }
+            seen.insert(t)
+            out.append(t)
+        }
+        return out
+    }
 }

@@ -1,26 +1,64 @@
 /**
  * Wikidot (scp-wiki / scp-jp) 向けの読み取り用クリーンアップ。
- * Android 版でも同じファイルをバンドルに含めて再利用すること。
+ * テーマ色は `window.__SCPDOCS_THEME__`（Swift の documentStart 注入）と同期する。
  */
 (function () {
   "use strict";
 
   var STYLE_ID = "scpdocs-clean-ui";
 
-  function injectStyle() {
-    if (document.getElementById(STYLE_ID)) {
-      return;
+  function defaultTheme() {
+    return {
+      background: "#0A0A0A",
+      text: "#C0C0C0",
+      link: "#C0C0C0",
+      linkHover: "#E0E0E0",
+      container: "#0A0A0A",
+    };
+  }
+
+  function theme() {
+    var t = window.__SCPDOCS_THEME__;
+    if (!t || typeof t !== "object") {
+      return defaultTheme();
     }
-    var style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.type = "text/css";
+    var d = defaultTheme();
+    return {
+      background: t.background || d.background,
+      text: t.text || d.text,
+      link: t.link || d.link,
+      linkHover: t.linkHover || d.linkHover,
+      container: t.container || d.container,
+    };
+  }
+
+  function injectStyle() {
+    var T = theme();
+    var style = document.getElementById(STYLE_ID);
+    if (!style) {
+      style = document.createElement("style");
+      style.id = STYLE_ID;
+      style.type = "text/css";
+      (document.head || document.documentElement).appendChild(style);
+    }
     style.textContent =
-      "html, body { background: #121212 !important; color: #C0C0C0 !important; " +
+      "html, body { background: " +
+      T.background +
+      " !important; color: " +
+      T.text +
+      " !important; " +
+      "font-family: -apple-system, system-ui, sans-serif !important; " +
       "overflow-x: hidden !important; max-width: 100% !important; box-sizing: border-box !important; " +
       "padding-left: env(safe-area-inset-left, 0px) !important; " +
       "padding-right: env(safe-area-inset-right, 0px) !important; }" +
-      "a, a:visited { color: #C0C0C0 !important; }" +
-      "a:hover { color: #e0e0e0 !important; }" +
+      "a, a:visited { color: " +
+      T.link +
+      " !important; text-decoration-color: " +
+      T.link +
+      " !important; }" +
+      "a:hover { color: " +
+      T.linkHover +
+      " !important; }" +
       "#header, #top-bar, #side-bar, #footer, .action-area, " +
       "#login-status, #search-top-box, #page-options-container, " +
       ".page-options-bottom, .footer-wikiwalk-nav, .licensebox { " +
@@ -28,9 +66,9 @@
       "#container, #content-wrap, #main-content, #page-content { " +
       "max-width: 100% !important; margin: 0 !important; " +
       "padding: 10px 4px !important; box-sizing: border-box !important; }" +
-      "#container { background: #121212 !important; }";
-
-    (document.head || document.documentElement).appendChild(style);
+      "#container { background: " +
+      T.container +
+      " !important; }";
   }
 
   function hideLegacyNodes() {
@@ -53,7 +91,7 @@
           el.style.setProperty("display", "none", "important");
         });
       } catch (e) {
-        /* ignore invalid selector environments */
+        /* ignore */
       }
     });
   }
@@ -62,6 +100,13 @@
     injectStyle();
     hideLegacyNodes();
   }
+
+  window.__SCPDOCS_applyCleanUITheme = function (T) {
+    if (T && typeof T === "object") {
+      window.__SCPDOCS_THEME__ = T;
+    }
+    apply();
+  };
 
   apply();
 

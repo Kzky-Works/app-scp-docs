@@ -19,7 +19,6 @@ struct MainView: View {
                     navigationRouter: homeNavigationRouter,
                     homeViewModel: homeViewModel,
                     japanSCPListMetadataStore: japanSCPListMetadataStore,
-                    purchaseRepository: purchaseRepository,
                     onOpenScpLibrary: {
                         libraryNavigationRouter.popToRoot()
                         libraryNavigationRouter.push(.libraryIndex)
@@ -71,9 +70,16 @@ struct MainView: View {
             }
             .tag(AppRootTab.settings)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if !purchaseRepository.isAdRemovalActive {
+                AdBannerView()
+                    .frame(height: AppTheme.adBannerStripeHeight)
+                    .frame(maxWidth: .infinity)
+            }
+        }
         .environment(\.locale, homeViewModel.resolvedLocale)
-        .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.brandAccent)
         .task {
             await scpListSyncService.syncIfNeeded(
                 metadataStore: japanSCPListMetadataStore,
@@ -96,12 +102,15 @@ struct MainView: View {
             ArchiveArticleListView(
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
+                kind: .japan,
                 japanSCPListMetadataStore: japanSCPListMetadataStore
             )
         case .scpEnglishArchive:
             ArchiveArticleListView(
                 navigationRouter: navigationRouter,
-                articleRepository: articleRepository
+                articleRepository: articleRepository,
+                kind: .english,
+                japanSCPListMetadataStore: japanSCPListMetadataStore
             )
         case .libraryIndex:
             LibraryIndexView(
@@ -114,8 +123,7 @@ struct MainView: View {
                 category: category,
                 branch: homeViewModel.selectedBranch,
                 articleRepository: articleRepository,
-                homeViewModel: homeViewModel,
-                purchaseRepository: purchaseRepository
+                homeViewModel: homeViewModel
             )
         case .goiFormatsIndex:
             GoIFormatsIndexView(navigationRouter: navigationRouter)
@@ -124,6 +132,8 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 branch: homeViewModel.selectedBranch
             )
+        case .staffGuideIndex:
+            StaffGuideIndexView(navigationRouter: navigationRouter)
         case .category(let url), .article(let url):
             ArticleView(
                 entryURL: url,

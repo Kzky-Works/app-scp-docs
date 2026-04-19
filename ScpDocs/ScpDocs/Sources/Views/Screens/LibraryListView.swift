@@ -7,7 +7,6 @@ struct LibraryListView: View {
     let branch: Branch
     let articleRepository: ArticleRepository
     private let homeViewModel: HomeViewModel
-    @Bindable var purchaseRepository: PurchaseRepository
 
     @State private var searchText = ""
     @State private var sortMode: LibraryListSortMode
@@ -17,15 +16,13 @@ struct LibraryListView: View {
         category: LibraryCategory,
         branch: Branch,
         articleRepository: ArticleRepository,
-        homeViewModel: HomeViewModel,
-        purchaseRepository: PurchaseRepository
+        homeViewModel: HomeViewModel
     ) {
         self.navigationRouter = navigationRouter
         self.category = category
         self.branch = branch
         self.articleRepository = articleRepository
         self.homeViewModel = homeViewModel
-        self._purchaseRepository = Bindable(purchaseRepository)
         _sortMode = State(initialValue: homeViewModel.loadLibraryListSortMode(for: category))
     }
 
@@ -59,51 +56,160 @@ struct LibraryListView: View {
         )
     }
 
-    var body: some View {
-        VStack(spacing: 0) {
-            List {
-                ForEach(filteredItems) { item in
-                    Button {
-                        Haptics.medium()
-                        navigationRouter.pushArticle(url: item.url)
-                    } label: {
-                        HStack(alignment: .center, spacing: 12) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(localizedTitle(item))
-                                    .font(.body.weight(.medium))
-                                    .foregroundStyle(AppTheme.accentPrimary)
-                                    .multilineTextAlignment(.leading)
-                                Text(item.url.absoluteString)
-                                    .font(.caption2)
-                                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.65))
-                                    .lineLimit(2)
-                            }
-                            Spacer(minLength: 0)
-                            if articleRepository.isBookmarked(url: item.url) {
-                                Image(systemName: "bookmark.fill")
-                                    .foregroundStyle(AppTheme.accentPrimary)
-                                    .imageScale(.medium)
-                            }
-                            if articleRepository.isRead(url: item.url) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(AppTheme.accentPrimary)
-                                    .imageScale(.medium)
-                            }
+    /// 日本支部の要注意団体（`goi-formats-jp`）：団体ハブと子の GoI フォーマット記事を階層表示する。
+    private var showsJapanGoIHierarchy: Bool {
+        category == .goi && branch.id == BranchIdentifier.scpJapan
+    }
+
+    private var filteredJapanGoIGroups: [GoILibraryHierarchyData.Group] {
+        let base = GoILibraryHierarchyData.japanGoIFormatGroups
+        let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { return base }
+        let query = trimmed.lowercased()
+        return base.compactMap { group in
+            if group.hubTitle.lowercased().contains(query) { return group }
+            let articles = group.articles.filter { $0.title.lowercased().contains(query) }
+            if articles.isEmpty { return nil }
+            return GoILibraryHierarchyData.Group(
+                id: group.id,
+                hubTitle: group.hubTitle,
+                hubURL: group.hubURL,
+                articles: articles
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func goiOrganizationBlock(_ group: GoILibraryHierarchyData.Group) -> some View {
+        if let hubURL = group.hubURL {
+            Button {
+                Haptics.medium()
+                navigationRouter.pushArticle(url: hubURL)
+            } label: {
+                FoundationIndexRow(
+                    title: group.hubTitle,
+                    subtitle: hubURL.absoluteString,
+                    leadingSystemImage: "person.3.fill",
+                    trailing: {
+                        HStack(spacing: 10) {
+                            goiArticleStatusIcons(for: hubURL)
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.textSecondary)
                         }
                     }
-                    .listRowBackground(AppTheme.backgroundPrimary)
+                )
+            }
+            .buttonStyle(.plain)
+            .indexListRowChrome()
+        } else {
+            FoundationIndexRow(
+                title: group.hubTitle,
+                subtitle: nil,
+                leadingSystemImage: "person.3.fill",
+                trailing: { EmptyView() }
+            )
+            .indexListRowChrome()
+        }
+
+        ForEach(group.articles) { article in
+            Button {
+                Haptics.medium()
+                navigationRouter.pushArticle(url: article.url)
+            } label: {
+                FoundationIndexRow(
+                    title: article.title,
+                    subtitle: article.url.absoluteString,
+                    trailing: {
+                        goiArticleStatusIcons(for: article.url)
+                    }
+                )
+            }
+            .buttonStyle(.plain)
+            .indexListRowChromeIndented()
+        }
+    }
+
+    @ViewBuilder
+    private func goiArticleStatusIcons(for url: URL) -> some View {
+        HStack(spacing: 10) {
+            if articleRepository.isBookmarked(url: url) {
+                Image(systemName: "bookmark.fill")
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .imageScale(.medium)
+            }
+            if articleRepository.isRead(url: url) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .imageScale(.medium)
+            }
+        }
+    }
+
+    var body: some View {
+        IndexScreenLayout {
+            List {
+                if showsJapanGoIHierarchy {
+                    Section {
+                        ForEach(GoIFormatsIndexData.portals) { link in
+                            Button {
+                                Haptics.medium()
+                                navigationRouter.pushArticle(url: link.url)
+                            } label: {
+                                FoundationIndexRow(
+                                    title: String(localized: String.LocalizationValue(link.titleLocalizationKey)),
+                                    subtitle: link.url.absoluteString,
+                                    trailing: {
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(AppTheme.textSecondary)
+                                    }
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            .indexListRowChrome()
+                        }
+                    } header: {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.goiIndexSectionPortals)))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                    .listRowBackground(AppTheme.mainBackground)
+
+                    ForEach(filteredJapanGoIGroups) { group in
+                        goiOrganizationBlock(group)
+                    }
+                } else {
+                    ForEach(filteredItems) { item in
+                        Button {
+                            Haptics.medium()
+                            navigationRouter.pushArticle(url: item.url)
+                        } label: {
+                            FoundationIndexRow(
+                                title: localizedTitle(item),
+                                subtitle: item.url.absoluteString,
+                                trailing: {
+                                    HStack(spacing: 10) {
+                                        if articleRepository.isBookmarked(url: item.url) {
+                                            Image(systemName: "bookmark.fill")
+                                                .foregroundStyle(AppTheme.textPrimary)
+                                                .imageScale(.medium)
+                                        }
+                                        if articleRepository.isRead(url: item.url) {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .foregroundStyle(AppTheme.textPrimary)
+                                                .imageScale(.medium)
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .indexListRowChrome()
+                    }
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(AppTheme.backgroundPrimary)
-
-            if !purchaseRepository.isAdRemovalActive {
-                AdBannerView()
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
-            }
         }
-        .background(AppTheme.backgroundPrimary)
         .navigationTitle(String(localized: String.LocalizationValue(category.titleLocalizationKey)))
         .navigationBarTitleDisplayMode(.inline)
         .searchable(
@@ -111,29 +217,31 @@ struct LibraryListView: View {
             prompt: String(localized: String.LocalizationValue(LocalizationKey.libraryListSearchPrompt))
         )
         .toolbar {
-            Menu {
-                ForEach(LibraryListSortMode.allCases) { mode in
-                    Button {
-                        Haptics.light()
-                        sortMode = mode
-                        homeViewModel.saveLibraryListSortMode(mode, for: category)
-                    } label: {
-                        HStack {
-                            Text(String(localized: String.LocalizationValue(mode.localizationKey)))
-                            if sortMode == mode {
-                                Spacer(minLength: 8)
-                                Image(systemName: "checkmark")
+            if !showsJapanGoIHierarchy {
+                Menu {
+                    ForEach(LibraryListSortMode.allCases) { mode in
+                        Button {
+                            Haptics.light()
+                            sortMode = mode
+                            homeViewModel.saveLibraryListSortMode(mode, for: category)
+                        } label: {
+                            HStack {
+                                Text(String(localized: String.LocalizationValue(mode.localizationKey)))
+                                if sortMode == mode {
+                                    Spacer(minLength: 8)
+                                    Image(systemName: "checkmark")
+                                }
                             }
                         }
                     }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down.circle")
                 }
-            } label: {
-                Image(systemName: "arrow.up.arrow.down.circle")
+                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.librarySortToolbarAccessibility)))
             }
-            .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.librarySortToolbarAccessibility)))
         }
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.textPrimary)
     }
 }
 
@@ -141,15 +249,13 @@ struct LibraryListView: View {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var repo = ArticleRepository()
     @Previewable @State var vm = HomeViewModel(settingsRepository: SettingsRepository())
-    @Previewable @State var purchases = PurchaseRepository()
     NavigationStack {
         LibraryListView(
             navigationRouter: router,
             category: .canons,
             branch: .japan,
             articleRepository: repo,
-            homeViewModel: vm,
-            purchaseRepository: purchases
+            homeViewModel: vm
         )
     }
 }

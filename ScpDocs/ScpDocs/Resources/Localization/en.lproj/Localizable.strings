@@ -42,6 +42,11 @@
 "tab.library" = "Library";
 "tab.settings" = "Settings";
 
+/* Root dock */
+"dock.tap_to_show_nav" = "Tap to show navigation";
+"dock.operations" = "Actions";
+"dock.operations.need_article" = "Text size, bookmarks, and sharing are available while an article is open.";
+
 /* Monetization */
 "settings.section.monetization" = "Ads & purchases";
 "settings.purchase.remove_ads" = "Remove ads (¥150)";
@@ -56,7 +61,7 @@
 "library.segment.bookmarks" = "Bookmarks";
 "library.segment.history" = "History";
 "library.empty.bookmarks.title" = "No bookmarks yet";
-"library.empty.bookmarks.description" = "Use the bookmark button while reading an article.";
+"library.empty.bookmarks.description" = "Add bookmarks from Actions while reading an article.";
 "library.empty.history.title" = "No history yet";
 "library.empty.history.description" = "Articles you open will appear here.";
 
@@ -65,18 +70,32 @@
 
 /* Home random access */
 "home.random.current_branch.title" = "Random report (Random Entry)";
+"home.random.access.caption" = "RANDOM ACCESS";
+"home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
+"home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
+"home.pillar.en_badge" = "02 • [EN]";
+"home.pillar.library_badge" = "03 • LIBRARY";
+"home.pillar.international_badge" = "04 • INT";
+"home.pillar.guide_badge" = "05 • GUIDE";
+"home.pillar.events_badge" = "06 • LIVE";
 
 /* Home dashboard (six pillars) */
 "home.section.jp_archive.title" = "SCP-JP";
 "home.section.jp_archive.subtitle" = "Japanese branch reports 001–4999 (1000 / 100 pickers)";
-"home.section.en_archive.title" = "SCP (English)";
-"home.section.en_archive.subtitle" = "English wiki reports 001–4999 (1000 / 100 pickers)";
+"home.section.en_archive.title" = "SCP";
+"home.section.en_archive.subtitle" = "Japanese translations of mainlist 001–4999 — scp-jp.wikidot.com/scp-series (same layout as SCP-JP)";
 "home.section.scp_library.title" = "SCP Library";
 "home.section.scp_library.subtitle" = "Tales, canons, and series — opens in the Library tab";
 "home.section.international.title" = "SCP International";
 "home.section.international.subtitle" = "International hub — scp-int.wikidot.com";
 "home.section.guide.title" = "Staff guide & policy";
 "home.section.guide.subtitle" = "Rules, license, and object classes";
+"guide.index.item.about_foundation" = "About the SCP Foundation";
+"guide.index.item.faq" = "FAQ";
+"guide.index.item.contact" = "Contact staff";
+"guide.index.item.site_rules" = "Site rules";
+"guide.index.item.licensing" = "Licensing guide";
+"guide.index.item.join_site" = "Joining the site";
 "home.section.events.title" = "Events & contests";
 "home.section.events.subtitle" = "Contests, seasonal hubs, and rankings";
 
@@ -89,7 +108,7 @@
 /* Archive index */
 "archive.title" = "SCP reports";
 "archive.title.jp" = "SCP-JP reports";
-"archive.title.en" = "SCP Wiki (EN) reports";
+"archive.title.en" = "SCP";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
 "archive.jp.series_list.title" = "SCP-JP series";
 "archive.jp.series_picker.accessibility" = "Series (1000-block)";
@@ -107,6 +126,14 @@
 "archive.en.open_wiki_index" = "Open list on wiki";
 "archive.en.scp.row_title_format" = "SCP-%@";
 "archive.article.title_unknown" = "[DATA UNKNOWN]";
+"archive.filter.tags.section" = "Filters";
+"archive.filter.clear" = "Clear";
+"archive.filter.tag_search.placeholder" = "Search tags";
+"archive.filter.no_results" = "No matching reports";
+"archive.filter.no_results.hint" = "Change object class or tags, or tap Clear.";
+"archive.filter.object_class.accessibility" = "Object class filters";
+"archive.filter.no_tags_in_segment" = "No tag metadata in this block. Sync scp_list.json with tags from the generator script.";
+"archive.list.row_tags.accessibility" = "Toggle showing tags on each list row. Tags also appear while filters or tag search are active.";
 
 /* Library index (native) */
 "library.index.title" = "SCP Library";
@@ -287,6 +314,9 @@
 "library.item.undertokyo_hub" = "Under Tokyo";
 
 /* Article */
+"article.reader_nav.tap_hint" = "Tap to show navigation";
+"article.reader_nav.collapse.a11y" = "Hide navigation bar";
+"article.reader_nav.back.a11y" = "Back to list";
 "article.toolbar.bookmark" = "Bookmark";
 "article.quick_reader.accessibility" = "Text size";
 "article.quick_reader.larger" = "Larger";

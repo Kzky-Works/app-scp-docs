@@ -14,10 +14,6 @@ struct LibraryView: View {
 
     @State private var segment: LibrarySegment = .bookmarks
 
-    private var contentBranch: Branch {
-        homeViewModel.selectedBranch
-    }
-
     private var urls: [URL] {
         switch segment {
         case .bookmarks:
@@ -47,7 +43,7 @@ struct LibraryView: View {
 
     var body: some View {
         ZStack {
-            AppTheme.backgroundPrimary
+            AppTheme.mainBackground
                 .ignoresSafeArea()
 
             List {
@@ -59,7 +55,7 @@ struct LibraryView: View {
                             .tag(LibrarySegment.history)
                     }
                     .pickerStyle(.segmented)
-                    .listRowBackground(AppTheme.backgroundPrimary)
+                    .listRowBackground(AppTheme.mainBackground)
                 }
 
                 if urls.isEmpty {
@@ -69,8 +65,8 @@ struct LibraryView: View {
                         } description: {
                             Text(emptyDescription)
                         }
-                        .foregroundStyle(AppTheme.accentPrimary.opacity(0.85))
-                        .listRowBackground(AppTheme.backgroundPrimary)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .listRowBackground(AppTheme.mainBackground)
                     }
                 } else {
                     Section {
@@ -78,26 +74,20 @@ struct LibraryView: View {
                             Button {
                                 navigationRouter.pushArticle(url: url)
                             } label: {
-                                HStack(alignment: .center, spacing: 12) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(url.lastPathComponent.isEmpty ? (url.host ?? url.absoluteString) : url.lastPathComponent)
-                                            .font(.body.weight(.medium))
-                                            .foregroundStyle(AppTheme.accentPrimary)
-                                            .lineLimit(2)
-                                        Text(url.absoluteString)
-                                            .font(.caption2)
-                                            .foregroundStyle(AppTheme.accentPrimary.opacity(0.65))
-                                            .lineLimit(1)
+                                FoundationIndexRow(
+                                    title: url.lastPathComponent.isEmpty ? (url.host ?? url.absoluteString) : url.lastPathComponent,
+                                    subtitle: url.absoluteString,
+                                    trailing: {
+                                        if articleRepository.isRead(url: url) {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .foregroundStyle(AppTheme.textPrimary)
+                                                .imageScale(.medium)
+                                        }
                                     }
-                                    Spacer(minLength: 0)
-                                    if articleRepository.isRead(url: url) {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundStyle(AppTheme.accentPrimary)
-                                            .imageScale(.medium)
-                                    }
-                                }
+                                )
                             }
-                            .listRowBackground(AppTheme.backgroundPrimary)
+                            .buttonStyle(.plain)
+                            .indexListRowChrome()
                         }
                     }
                 }
@@ -107,7 +97,7 @@ struct LibraryView: View {
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.libraryTitle)))
         .navigationBarTitleDisplayMode(.inline)
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.textPrimary)
     }
 }
 

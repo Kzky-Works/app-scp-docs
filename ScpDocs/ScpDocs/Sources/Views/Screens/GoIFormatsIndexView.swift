@@ -12,9 +12,9 @@ struct GoIFormatsIndexView: View {
                 }
             } header: {
                 Text(String(localized: String.LocalizationValue(LocalizationKey.goiIndexSectionPortals)))
-                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.85))
+                    .foregroundStyle(AppTheme.textSecondary)
             }
-            .listRowBackground(AppTheme.backgroundPrimary)
+            .listRowBackground(AppTheme.mainBackground)
 
             Section {
                 ForEach(GoIFormatsIndexData.englishFormatHubs) { link in
@@ -22,9 +22,9 @@ struct GoIFormatsIndexView: View {
                 }
             } header: {
                 Text(String(localized: String.LocalizationValue(LocalizationKey.goiIndexSectionEN)))
-                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.85))
+                    .foregroundStyle(AppTheme.textSecondary)
             }
-            .listRowBackground(AppTheme.backgroundPrimary)
+            .listRowBackground(AppTheme.mainBackground)
 
             Section {
                 ForEach(GoIFormatsIndexData.japanFormatHubs) { link in
@@ -32,16 +32,16 @@ struct GoIFormatsIndexView: View {
                 }
             } header: {
                 Text(String(localized: String.LocalizationValue(LocalizationKey.goiIndexSectionJP)))
-                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.85))
+                    .foregroundStyle(AppTheme.textSecondary)
             }
-            .listRowBackground(AppTheme.backgroundPrimary)
+            .listRowBackground(AppTheme.mainBackground)
         }
         .scrollContentBackground(.hidden)
-        .background(AppTheme.backgroundPrimary)
+        .background(AppTheme.mainBackground)
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.goiIndexTitle)))
         .navigationBarTitleDisplayMode(.inline)
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.textPrimary)
     }
 
     private func goiLinkButton(_ link: GoIFormatsIndexData.IndexLink) -> some View {
@@ -49,23 +49,18 @@ struct GoIFormatsIndexView: View {
             Haptics.medium()
             navigationRouter.pushArticle(url: link.url)
         } label: {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: String.LocalizationValue(link.titleLocalizationKey)))
-                        .font(.body.weight(.medium))
-                        .foregroundStyle(AppTheme.accentPrimary)
-                        .multilineTextAlignment(.leading)
-                    Text(link.url.absoluteString)
-                        .font(.caption2)
-                        .foregroundStyle(AppTheme.accentPrimary.opacity(0.65))
-                        .lineLimit(2)
+            FoundationIndexRow(
+                title: String(localized: String.LocalizationValue(link.titleLocalizationKey)),
+                subtitle: link.url.absoluteString,
+                trailing: {
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.accentPrimary.opacity(0.45))
-            }
+            )
         }
+        .buttonStyle(.plain)
+        .indexListRowChrome()
     }
 }
 

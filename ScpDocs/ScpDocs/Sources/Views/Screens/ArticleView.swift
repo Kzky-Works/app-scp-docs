@@ -7,7 +7,8 @@ struct ArticleView: View {
     @Bindable var articleRepository: ArticleRepository
 
     @State private var webViewModel = WebViewModel()
-    @State private var articleToolsPresented = false
+    @State private var readerBottomNavExpanded = false
+
     @Bindable var connectivity = ConnectivityMonitor.shared
 
     @AppStorage(WebViewDiagnostics.minimalConfigurationDefaultsKey) private var webViewDiagnosticMinimal = false
@@ -30,12 +31,12 @@ struct ArticleView: View {
 
             SCPWebView(viewModel: webViewModel, navigationRouter: navigationRouter)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                // 下部ナビバー（ツールバー）とタブバーの上に本文が収まるよう、下端はセーフエリアを尊重する。
-                .ignoresSafeArea(edges: .horizontal)
+                // 下部ナビ・広告帯の下まで本文を伸ばし、透過 UI の背後に記事が見えるようにする。
+                .ignoresSafeArea(edges: [.horizontal, .bottom])
 
             if webViewModel.isLoading {
                 ProgressView()
-                    .tint(AppTheme.accentPrimary)
+                    .tint(AppTheme.brandAccent)
                     .scaleEffect(1.15)
             }
 
@@ -53,7 +54,7 @@ struct ArticleView: View {
                             .font(.body.weight(.semibold))
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.accentPrimary)
+                    .tint(AppTheme.brandAccent)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppTheme.backgroundPrimary.opacity(0.94))
@@ -70,6 +71,9 @@ struct ArticleView: View {
                     .background(AppTheme.backgroundPrimary.opacity(0.92))
             }
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            readerBottomChrome
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -78,40 +82,16 @@ struct ArticleView: View {
                     .foregroundStyle(AppTheme.accentPrimary)
                     .lineLimit(1)
             }
-            /// タブバーの直上（ナビの下部バー）。右から2番目＝ツールハブ、右端＝オフライン表示。
-            ToolbarItem(placement: .bottomBar) {
-                HStack(spacing: 14) {
-                    Spacer(minLength: 0)
-                    Button {
-                        articleToolsPresented = true
-                    } label: {
-                        Image(systemName: "slider.horizontal.3")
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(AppTheme.accentPrimary)
-                    }
-                    .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarActionsHub)))
-                    .popover(isPresented: $articleToolsPresented, attachmentAnchor: .point(.top)) {
-                        HStack(spacing: 28) {
-                            readerFontMenu
-                            bookmarkToolbarButton
-                            shareToolbarControl
-                        }
-                        .padding(.horizontal, 22)
-                        .padding(.vertical, 16)
-                        .frame(minWidth: 260)
-                        .background(AppTheme.backgroundPrimary)
-                        .presentationCompactAdaptation(.popover)
-                    }
-                    if !connectivity.isPathSatisfied, articleRepository.isOfflineReady(url: entryURL) {
-                        Image(systemName: "icloud.slash")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppTheme.accentPrimary.opacity(0.9))
-                            .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleOfflineBadge)))
-                    }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if !connectivity.isPathSatisfied, articleRepository.isOfflineReady(url: entryURL) {
+                    Image(systemName: "icloud.slash")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.accentPrimary.opacity(0.9))
+                        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleOfflineBadge)))
                 }
-                .frame(maxWidth: .infinity)
             }
         }
+        .toolbar(.hidden, for: .tabBar)
         .task(id: ArticleRepository.storageKey(for: entryURL)) {
             webViewModel.readerFontSizeMultiplier = homeViewModel.fontSizeMultiplier
             articleRepository.markAsRead(url: entryURL)
@@ -123,17 +103,83 @@ struct ArticleView: View {
             webViewModel.applyReaderFontPresentation()
         }
         .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+        .tint(AppTheme.brandAccent)
     }
 
-    private func adjustReaderFont(by delta: Double) {
-        let before = homeViewModel.fontSizeMultiplier
-        homeViewModel.updateFontSizeMultiplier(before + delta)
-        guard homeViewModel.fontSizeMultiplier != before else { return }
-        Haptics.medium()
+    // MARK: - Bottom reader navigation（タブバー非表示時・広告枠の上）
+
+    private var readerBottomChrome: some View {
+        Group {
+            if readerBottomNavExpanded {
+                expandedReaderNavigationBar
+            } else {
+                collapsedReaderNavHint
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
     }
 
-    private var readerFontMenu: some View {
+    private var collapsedReaderNavHint: some View {
+        Button {
+            Haptics.light()
+            readerBottomNavExpanded = true
+        } label: {
+            Text(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavTapHint)))
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(AppTheme.textPrimary.opacity(0.92))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 7)
+                .background(.ultraThinMaterial.opacity(0.55))
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+    }
+
+    private var expandedReaderNavigationBar: some View {
+        VStack(spacing: 10) {
+            Button {
+                Haptics.light()
+                readerBottomNavExpanded = false
+            } label: {
+                Capsule()
+                    .fill(AppTheme.textSecondary.opacity(0.4))
+                    .frame(width: 36, height: 5)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavCollapseA11y)))
+
+            HStack(spacing: 4) {
+                Button {
+                    Haptics.medium()
+                    navigationRouter.pop()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavBackA11y)))
+
+                readerFontMenuCompact
+                bookmarkNavButton
+                shareNavButton
+            }
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 8)
+        .background(.ultraThinMaterial.opacity(0.72))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(AppTheme.borderSubtle.opacity(0.35), lineWidth: AppTheme.borderWidthHairline)
+        )
+    }
+
+    private var readerFontMenuCompact: some View {
         Menu {
             Text("\(Int((homeViewModel.fontSizeMultiplier * 100).rounded()))%")
                 .font(.body.monospacedDigit())
@@ -166,19 +212,20 @@ struct ArticleView: View {
                 in: 0.75 ... 2.0,
                 step: 0.05
             )
-            .tint(AppTheme.accentPrimary)
+            .tint(AppTheme.brandAccent)
         } label: {
             Image(systemName: "textformat.size")
-                .font(.title2)
-                .foregroundStyle(AppTheme.accentPrimary)
-                .frame(width: 44, height: 44)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(AppTheme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
                 .contentShape(Rectangle())
         }
         .menuActionDismissBehavior(.disabled)
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderAccessibility)))
     }
 
-    private var bookmarkToolbarButton: some View {
+    private var bookmarkNavButton: some View {
         Button {
             let added = articleRepository.toggleBookmark(url: shareURL)
             if added {
@@ -187,25 +234,34 @@ struct ArticleView: View {
             } else {
                 Haptics.light()
             }
-            articleToolsPresented = false
         } label: {
             Image(systemName: articleRepository.isBookmarked(url: shareURL) ? "bookmark.fill" : "bookmark")
-                .font(.title2)
-                .foregroundStyle(AppTheme.accentPrimary)
-                .frame(width: 44, height: 44)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(AppTheme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
                 .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarBookmark)))
     }
 
-    private var shareToolbarControl: some View {
+    private var shareNavButton: some View {
         ShareLink(item: shareURL) {
             Image(systemName: "square.and.arrow.up")
-                .font(.title2)
-                .foregroundStyle(AppTheme.accentPrimary)
-                .frame(width: 44, height: 44)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(AppTheme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
                 .contentShape(Rectangle())
         }
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarShare)))
+    }
+
+    private func adjustReaderFont(by delta: Double) {
+        let before = homeViewModel.fontSizeMultiplier
+        homeViewModel.updateFontSizeMultiplier(before + delta)
+        guard homeViewModel.fontSizeMultiplier != before else { return }
+        Haptics.medium()
     }
 }
