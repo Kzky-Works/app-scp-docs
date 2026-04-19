@@ -3,9 +3,14 @@ import SwiftUI
 struct SettingsView: View {
     @Bindable var homeViewModel: HomeViewModel
     @Bindable var articleRepository: ArticleRepository
+    @Bindable var purchaseRepository: PurchaseRepository
 
     @State private var dataAction: DataManagementAction?
     @State private var cacheClearDone = false
+    @State private var networkProbeResult: String?
+    @State private var networkProbeRunning = false
+
+    @AppStorage(WebViewDiagnostics.minimalConfigurationDefaultsKey) private var webViewMinimalConfiguration = false
 
     private var appVersionLabel: String {
         func trimmedNonEmpty(_ raw: String?) -> String? {
@@ -45,6 +50,132 @@ struct SettingsView: View {
                     .pickerStyle(.navigationLink)
                 } header: {
                     Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionBranch)))
+                }
+
+                Section {
+                    Picker(
+                        String(localized: String.LocalizationValue(LocalizationKey.settingsUILanguagePicker)),
+                        selection: Binding(
+                            get: { homeViewModel.uiLanguage },
+                            set: { homeViewModel.updateUILanguage($0) }
+                        )
+                    ) {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.settingsUILanguageSystem)))
+                            .tag(AppUILanguage.system)
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.settingsUILanguageJapanese)))
+                            .tag(AppUILanguage.japanese)
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.settingsUILanguageEnglish)))
+                            .tag(AppUILanguage.english)
+                    }
+                    .pickerStyle(.navigationLink)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.settingsReaderFontSize)))
+                            Spacer()
+                            Text("\(Int((homeViewModel.fontSizeMultiplier * 100).rounded()))%")
+                                .font(.body.monospacedDigit())
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(
+                            value: Binding(
+                                get: { homeViewModel.fontSizeMultiplier },
+                                set: { homeViewModel.updateFontSizeMultiplier($0) }
+                            ),
+                            in: 0.75 ... 2.0,
+                            step: 0.05
+                        )
+                        .tint(AppTheme.accentPrimary)
+                    }
+                } header: {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionLocaleReader)))
+                } footer: {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.settingsReaderFontSizeFooter)))
+                }
+
+                Section {
+                    if purchaseRepository.isAdRemovalActive {
+                        Label(
+                            String(localized: String.LocalizationValue(LocalizationKey.settingsPurchaseAdFreeActive)),
+                            systemImage: "checkmark.seal.fill"
+                        )
+                        .foregroundStyle(AppTheme.accentPrimary)
+                    } else {
+                        Button {
+                            Task { await purchaseRepository.purchaseAdRemoval() }
+                        } label: {
+                            HStack {
+                                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsPurchaseRemoveAds)))
+                                Spacer(minLength: 8)
+                                if purchaseRepository.isPurchaseInProgress {
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(purchaseRepository.isPurchaseInProgress)
+
+                        Button {
+                            Task { await purchaseRepository.restorePurchases() }
+                        } label: {
+                            HStack {
+                                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsPurchaseRestore)))
+                                Spacer(minLength: 8)
+                                if purchaseRepository.isPurchaseInProgress {
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(purchaseRepository.isPurchaseInProgress)
+                    }
+
+                    if let err = purchaseRepository.lastErrorDescription {
+                        Text(err)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                    }
+                } header: {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionMonetization)))
+                }
+
+                Section {
+                    Toggle(
+                        String(localized: String.LocalizationValue(LocalizationKey.settingsWebViewMinimalToggle)),
+                        isOn: $webViewMinimalConfiguration
+                    )
+                    Button {
+                        Task {
+                            networkProbeRunning = true
+                            networkProbeResult = nil
+                            let line = await WebViewDiagnostics.NetworkProbe.fetchStatusLine(
+                                for: WebViewDiagnostics.NetworkProbe.defaultProbeURL
+                            )
+                            networkProbeResult = line
+                            networkProbeRunning = false
+                        }
+                    } label: {
+                        HStack {
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.settingsWebViewProbe)))
+                            if networkProbeRunning {
+                                Spacer(minLength: 8)
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(networkProbeRunning)
+                } header: {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionWebViewDebug)))
+                } footer: {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.settingsWebViewMinimalFooter)))
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.settingsWebViewProbeFooter)))
+                        if let networkProbeResult {
+                            Text(networkProbeResult)
+                                .font(.caption.monospaced())
+                                .foregroundStyle(.secondary)
+                                .textSelection(.enabled)
+                        }
+                    }
                 }
 
                 Section {
@@ -158,5 +289,6 @@ struct SettingsView: View {
 #Preview {
     @Previewable @State var homeViewModel = HomeViewModel(settingsRepository: SettingsRepository())
     @Previewable @State var articleRepository = ArticleRepository()
-    SettingsView(homeViewModel: homeViewModel, articleRepository: articleRepository)
+    @Previewable @State var purchaseRepository = PurchaseRepository()
+    SettingsView(homeViewModel: homeViewModel, articleRepository: articleRepository, purchaseRepository: purchaseRepository)
 }

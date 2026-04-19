@@ -5,14 +5,16 @@ struct MainView: View {
     @Bindable var homeNavigationRouter: NavigationRouter
     @Bindable var libraryNavigationRouter: NavigationRouter
     @Bindable var articleRepository: ArticleRepository
+    @Bindable var purchaseRepository: PurchaseRepository
+    @Binding var selectedTab: AppRootTab
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             NavigationStack(path: $homeNavigationRouter.path) {
                 HomeView(
                     navigationRouter: homeNavigationRouter,
-                    articleRepository: articleRepository,
-                    homeViewModel: homeViewModel
+                    homeViewModel: homeViewModel,
+                    purchaseRepository: purchaseRepository
                 )
                 .navigationDestination(for: NavigationRoute.self) { route in
                     articleDestination(for: route, navigationRouter: homeNavigationRouter)
@@ -24,11 +26,13 @@ struct MainView: View {
                     systemImage: "house.fill"
                 )
             }
+            .tag(AppRootTab.home)
 
             NavigationStack(path: $libraryNavigationRouter.path) {
                 LibraryView(
                     navigationRouter: libraryNavigationRouter,
-                    articleRepository: articleRepository
+                    articleRepository: articleRepository,
+                    homeViewModel: homeViewModel
                 )
                 .navigationDestination(for: NavigationRoute.self) { route in
                     articleDestination(for: route, navigationRouter: libraryNavigationRouter)
@@ -40,11 +44,13 @@ struct MainView: View {
                     systemImage: "books.vertical.fill"
                 )
             }
+            .tag(AppRootTab.library)
 
             NavigationStack {
                 SettingsView(
                     homeViewModel: homeViewModel,
-                    articleRepository: articleRepository
+                    articleRepository: articleRepository,
+                    purchaseRepository: purchaseRepository
                 )
             }
             .tabItem {
@@ -53,7 +59,9 @@ struct MainView: View {
                     systemImage: "gearshape"
                 )
             }
+            .tag(AppRootTab.settings)
         }
+        .environment(\.locale, homeViewModel.resolvedLocale)
         .preferredColorScheme(.dark)
         .tint(AppTheme.accentPrimary)
     }
@@ -63,9 +71,36 @@ struct MainView: View {
         switch route {
         case .home:
             EmptyView()
+        case .archiveIndex(let branchId):
+            ArchiveIndexView(
+                navigationRouter: navigationRouter,
+                branch: Branch.branchForArchiveIndex(id: branchId)
+            )
+        case .libraryIndex:
+            LibraryIndexView(
+                navigationRouter: navigationRouter,
+                branch: homeViewModel.selectedBranch
+            )
+        case .libraryList(let category):
+            LibraryListView(
+                navigationRouter: navigationRouter,
+                category: category,
+                branch: homeViewModel.selectedBranch,
+                articleRepository: articleRepository,
+                homeViewModel: homeViewModel,
+                purchaseRepository: purchaseRepository
+            )
+        case .goiFormatsIndex:
+            GoIFormatsIndexView(navigationRouter: navigationRouter)
+        case .goiPortal:
+            GoIPortalView(
+                navigationRouter: navigationRouter,
+                branch: homeViewModel.selectedBranch
+            )
         case .category(let url), .article(let url):
             ArticleView(
                 entryURL: url,
+                fontSizeMultiplier: homeViewModel.fontSizeMultiplier,
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository
             )

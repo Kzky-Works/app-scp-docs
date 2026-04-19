@@ -41,6 +41,15 @@
 "tab.library" = "書庫";
 "tab.settings" = "設定";
 
+/* Monetization */
+"settings.section.monetization" = "広告と購入";
+"settings.purchase.remove_ads" = "広告を除去（150円）";
+"settings.purchase.restore" = "購入を復元";
+"settings.purchase.busy" = "処理中…";
+"settings.purchase.adfree_active" = "広告は表示されません（ありがとうございます）";
+"settings.purchase.product_unavailable" = "現在 App Store でこのプロダクトを取得できません。";
+"settings.purchase.verification_failed" = "購入を検証できませんでした。";
+
 /* Library */
 "library.title" = "書庫";
 "library.segment.bookmarks" = "お気に入り";
@@ -53,17 +62,233 @@
 /* Search */
 "home.search.jump_scp" = "SCP 番号でジャンプ";
 
+/* Home dashboard（6 ピラー） */
+"home.section.archive.title" = "報告書アーカイヴ";
+"home.section.archive.subtitle" = "設定中の支部の番号順インデックス（100番単位）";
+"home.section.scp_library.title" = "SCPライブラリ";
+"home.section.scp_library.subtitle" = "物語・カノン・連作（ネイティブ一覧）";
+"home.section.international.title" = "世界各国の報告書";
+"home.section.international.subtitle" = "各国支部のハブ — scp-int.wikidot.com";
+"home.section.goi_personnel.title" = "要注意団体と登場人物";
+"home.section.goi_personnel.subtitle" = "GoI のネイティブ一覧と人事ファイル";
+"home.section.guide.title" = "新人職員ガイドと規約";
+"home.section.guide.subtitle" = "ルール・ライセンス・オブジェクトクラス";
+"home.section.events.title" = "イベントとコンテスト";
+"home.section.events.subtitle" = "コンテスト・季節行事・ランキング";
+
+"goi.portal.title" = "要注意団体と登場人物";
+"goi.portal.native_list.title" = "要注意団体（ネイティブ一覧）";
+"goi.portal.native_list.subtitle" = "支部に応じた主要 GoI ハブを一覧表示します。";
+"goi.portal.personnel.title" = "人事ファイル";
+"goi.portal.personnel.subtitle" = "タグ付けされた職員・登場人物のハブへ移動します。";
+
+/* Archive index */
+"archive.title" = "報告書アーカイヴ";
+"archive.title.jp" = "SCP-JP 報告書";
+"archive.title.en" = "SCP Wiki（英語）報告書";
+"archive.segment.label_template" = "SCP-%1$@–%2$@";
+
+/* Library index (native) */
+"library.index.title" = "SCPライブラリ";
+"library.category.goi.title" = "要注意団体";
+"library.category.goi.subtitle" = "主要な GoI ハブ（ネイティブ一覧）";
+"library.item.goi_hub_master_en" = "要注意団体（ハブ）";
+"library.category.tales.title" = "物語 (Tales)";
+"library.category.tales.subtitle" = "著者別・投稿日・タグなど、物語のメインハブ。";
+"library.category.canons.title" = "カノン (Canons)";
+"library.category.canons.subtitle" = "共通の世界観設定に基づくストーリー群のハブ。";
+"library.category.series.title" = "連作 (Series)";
+"library.category.series.subtitle" = "シリーズ化された短編と、そのハブ一覧。";
+"library.list.search_prompt" = "タイトルや URL で検索";
+
+"library.sort.wiki_order" = "サイト掲載順";
+"library.sort.title_asc" = "タイトル A→Z";
+"library.sort.title_desc" = "タイトル Z→A";
+"library.sort.newest" = "掲載が新しい順";
+"library.sort.oldest" = "掲載が古い順";
+"library.sort.author_asc" = "主著者名 A→Z";
+"library.sort.author_hub_count" = "同一著者の掲載数が多い順";
+"library.sort.toolbar_accessibility" = "並べ替え";
+
+/* GoI formats index (goi-formats-jp) */
+"goi.index.title" = "GoIフォーマット索引";
+"goi.index.section.portals" = "案内・関連索引";
+"goi.index.section.en" = "要注意団体-EN（ハブ）";
+"goi.index.section.jp" = "要注意団体-JP（ハブ・索引内）";
+"goi.index.portal.goi_master_jp" = "要注意団体-JP（団体一覧ハブ）";
+"goi.index.portal.goi_formats_en" = "GoIフォーマット（英語圏・本家索引）";
+"goi.index.portal.international_formats" = "各国支部・GoIフォーマット（国際索引）";
+"goi.index.hub.alexylva" = "Alexylva大学";
+"goi.index.hub.ambrose" = "アンブローズ・レストラン";
+"goi.index.hub.anderson" = "アンダーソン・ロボティクス";
+"goi.index.hub.arcadia" = "アルカディア";
+"goi.index.hub.awcy" = "Are We Cool Yet?";
+"goi.index.hub.black_queen" = "黒の女王";
+"goi.index.hub.ci" = "カオス・インサージェンシー";
+"goi.index.hub.chicago" = "シカゴ・スピリット";
+"goi.index.hub.cotbg" = "壊れた神の教会";
+"goi.index.hub.cotsh" = "第二ハイトス教会";
+"goi.index.hub.deer" = "ディア大学";
+"goi.index.hub.factory" = "ザ・ファクトリー";
+"goi.index.hub.fifthist" = "第五教会";
+"goi.index.hub.goc" = "世界オカルト連合（GOC）";
+"goi.index.hub.gru_p" = "ロシア連邦軍参謀本部情報総局「P」部局";
+"goi.index.hub.herman_fuller" = "ハーマン・フラーの不気味サーカス";
+"goi.index.hub.hi" = "境界線イニシアチブ";
+"goi.index.hub.ijamea" = "大日本帝国異常事例調査局（IJAMEA）";
+"goi.index.hub.mcf" = "マナによる慈善財団";
+"goi.index.hub.mcd" = "マーシャル・カーター＆ダーク株式会社";
+"goi.index.hub.nobody" = "「何者でもない」";
+"goi.index.hub.oria" = "イスラム・アーティファクト開発事務局（ORIA）";
+"goi.index.hub.oneiroi" = "オネイロイ・コレクティブ";
+"goi.index.hub.parawatch" = "パラウォッチ";
+"goi.index.hub.prometheus" = "株式会社プロメテウス研究所";
+"goi.index.hub.sh" = "蛇の手";
+"goi.index.hub.spc" = "サメ殴りセンター";
+"goi.index.hub.tmi" = "三ツ月イニシアチブ";
+"goi.index.hub.uiu" = "連邦捜査局（FBI）異常事件課（UIU）";
+"goi.index.hub.w" = "堂守連盟";
+"goi.index.hub.wws" = "ウィルソンズ・ワイルドライフ・ソリューションズ";
+"goi.index.hub.aodaisho" = "青大将";
+"goi.index.hub.pamwac" = "アニメキャラクターと結婚するための研究計画局（PAMWAC）";
+"goi.index.hub.imaginanimal" = "Imaginanimal";
+"goi.index.hub.elma" = "エルマ外教";
+"goi.index.hub.tokuzika" = "警視庁公安部特事課";
+"goi.index.hub.koigarezaki" = "恋昏崎新聞社";
+"goi.index.hub.saigaha" = "犀賀派";
+"goi.index.hub.shushuin" = "蒐集院";
+"goi.index.hub.sekiryu_club" = "石榴倶楽部";
+"goi.index.hub.tono" = "遠野妖怪保護区";
+"goi.index.hub.joicle" = "日本生類創研（カタログ・ハブ）";
+"goi.index.hub.jagpato" = "日本超常組織平和友好条約機構";
+"goi.index.hub.meiteigai" = "酩酊街";
+"goi.index.hub.mujin_getsudo" = "無尽月導衆";
+"goi.index.hub.yamizushi" = "闇寿司";
+"goi.index.hub.yumemi" = "夢見テクノロジー";
+
+/* Library static list (EN site) */
+"library.item.curated_tale_series" = "キュレーション物語シリーズ";
+"library.item.featured_tale_archive_ii" = "特集物語アーカイヴ II";
+"library.item.joke_scps_tales_edition" = "ジョークSCP（物語版）";
+"library.item.explained_scps_tales_edition" = "Explained SCP（物語版）";
+"library.item.foundation_tales_audio_edition" = "財団物語（音声版）";
+"library.item.creepy_pasta" = "クリーピーパスタ";
+"library.item.incident_reports_eye_witness" = "インシデント報告・目撃談話";
+"library.item.curated_lists" = "キュレーション一覧";
+"library.item.broken_masquerade_hub" = "ブロークン・マスカレード";
+"library.item.third_law_hub" = "サード・ロー";
+"library.item.end_of_death_hub" = "死の終焉";
+"library.item.rat_s_nest_hub" = "ラッツ・ネスト";
+"library.item.cool_war_2_hub" = "クール・ウォー 2";
+"library.item.pitch_haven_hub" = "ピッチ・ヘイヴン";
+"library.item.only_game_in_town_hub" = "オンリー・ゲーム・イン・タウン";
+"library.item.the_coldest_war_hub" = "最も冷たい戦争";
+"library.item.competitive_eschatology_hub" = "競争的終末論";
+"library.item.dread_circuses_hub" = "ドレッド・アンド・サーカス";
+"library.item.antimemetics_division_hub" = "アンチメメティクス部門ハブ";
+"library.item.anabasis_hub" = "アナバシス・ハブ";
+"library.item.deadlined_hub" = "デッドラインド・ハブ";
+"library.item.on_mount_golgotha_hub" = "ゴルゴタの丘にてハブ";
+"library.item.bury_the_survivors_hub" = "生存者を葬るハブ";
+"library.item.creative_destruction_hub" = "創造的破壊ハブ";
+"library.item.hecatoncheires_cycle_hub" = "ヘカトンケイレス・サイクル";
+"library.item.integration_program_hub" = "統合プログラムハブ";
+
+/* Library static list (JP site) */
+"library.item.anthology_hub_jp" = "アンソロジーハブ";
+"library.item.collaboration_hub_jp" = "コラボレーションハブ";
+"library.item.event_archive_jp" = "イベントアーカイヴ";
+"library.item.1200_taletaletale_hub" = "1200物語ハブ";
+"library.item.archives_f" = "Archives F";
+"library.item.gamers_against_weed_hub" = "ギャマーズ・アゲインスト・ウィード";
+"library.item.guide_for_newbies" = "新人職員向けガイド";
+"library.item.hyogaki_hub" = "氷我記ハブ";
+"library.item.1998_hub" = "1998ハブ";
+"library.item.canon_jp_2" = "カノン・ハブ（日本支部・第2集）";
+"library.item.sushiblade_hub" = "スシブレードハブ";
+"library.item.foundation_collective_hub" = "財団コレクティヴハブ";
+"library.item.yotsujikigeki_hub" = "四辻喜劇";
+"library.item.making_2000_hub" = "メイキング2000ハブ";
+"library.item.holding_grails_hub" = "ホールディング・グレイルズ";
+"library.item.kyouikaireki_hub" = "共異廻歴";
+"library.item.prosopagnosia_hub" = "相貌失認ハブ";
+"library.item.chiisanazaidan_hub" = "小さな財団ハブ";
+"library.item.1998_911_hub" = "1998-911ハブ";
+"library.item.after_party_hub" = "アフターパーティハブ";
+"library.item.aonibiiro_hub" = "青ニビーロハブ";
+"library.item.autopsy_hub" = "解剖ハブ";
+"library.item.end_of_death_hub_jp_series" = "死の終焉ハブ（日本支部・連作）";
+"library.item.goede_film_hub" = "グーデ・フィルムハブ";
+"library.item.grayscale_hub" = "グレースケールハブ";
+"library.item.h_e_r_operation_hub" = "H/E/R オペレーションハブ";
+
+"library.item.series_archive_jp" = "シリーズアーカイブ-JP";
+"library.item.supplement_hub_jp" = "補足ページ-JP";
+"library.item.officer_doctor_soldier_spy_hub" = "〈オフィサー、ドクター、ソルジャー、スパイ〉";
+"library.item.fusouki" = "扶桑紀";
+"library.item.absinthiana_dream" = "アブサンの夢";
+"library.item.polar_light" = "極夜灯";
+"library.item.double_hometown_hub" = "二重の故郷";
+"library.item.thanatomania_hub" = "Thanatomania";
+"library.item.taisho150_hub" = "大正150年";
+"library.item.poor_foundation_hub" = "まずしいざいだん";
+"library.item.kaiki_meimeiden_hub" = "怪奇銘々伝";
+"library.item.practical_examination_hub" = "実技試験";
+"library.item.bounenkai" = "財団日本支部年中行事（2013年忘年会）";
+"library.item.foundation_summer_festival" = "財団夏祭り";
+"library.item.tataro_yoke" = "タタールの軛";
+"library.item.monster_decisive_battle_hub" = "大怪獣決戦テイルシリーズ";
+"library.item.shironose_hub" = "白色家系図録";
+"library.item.rror_hub" = "rror";
+"library.item.purple_hub" = "PURPLE";
+"library.item.les_tueurs_d_eris_hub" = "レ・テュウール・デリ";
+"library.item.quartet_hub" = "蛇と焚書のカルテット";
+"library.item.humankind_hub" = "人内魔境";
+"library.item.foundation_detective_hub" = "財団探偵";
+"library.item.yidan_hub" = "依談";
+"library.item.critics_hub" = "CRITICS";
+"library.item.why_quiet_world_hub" = "そしてこの世の終わりが来て、静かなる世界で彼はなぜいい天気だと言ったのか？";
+"library.item.miyazawakenji_hub" = "PoI-1933";
+"library.item.myo_rei_ji" = "妙麗寺";
+"library.item.doden" = "Døden";
+"library.item.oblivion_adium" = "忘却のアディウム";
+"library.item.q9alt_hub" = "Q9ALT";
+"library.item.jin_you_hub" = "人妖大戦";
+"library.item.out_of_scp_universe_hub" = "外側の賑わい";
+"library.item.kamiyotsugi_hub" = "神世継";
+"library.item.foundation_arbeiter_hub" = "財団アルバイター";
+"library.item.d_is_not_for_hub" = "D is NOT for...";
+"library.item.seiten_hub" = "生典";
+"library.item.matchmaking2020" = "財団日本支部お見合い計画2020";
+"library.item.seikuken_hub" = "制空権";
+"library.item.widely_containment_cases_hub" = "財団指定 広域怪異収容事例記録";
+"library.item.foundation_radio_bureau_hub" = "財団ラジオ放送局";
+"library.item.darum_tracer_hub" = "dārum tracer";
+"library.item.undertokyo_hub" = "地下東京奇譚";
+
 /* Article */
 "article.toolbar.bookmark" = "お気に入り";
 "article.offline_badge" = "オフラインで保存済みのコピーを表示中";
 "article.load.timeout" = "読み込みがタイムアウトしました。通信状況を確認してから再試行してください。";
 "article.load.failed" = "ページを読み込めませんでした。";
 "article.load.retry" = "再試行";
+"article.diagnostic.minimal_banner" = "診断: 最小 WebView（注入スクリプトなし）";
 
-/* Settings */
+"settings.section.webview_debug" = "WebView 切り分け";
+"settings.webview.minimal_toggle" = "最小の WebView（注入スクリプトなし）";
+"settings.webview.minimal_footer" = "オンにしたらホームから記事を開き直してください。表示できれば、注入スクリプトや WebView の追加設定が原因の可能性が高いです。";
+"settings.webview.probe" = "疎通テスト（URLSession → scp-jp）";
+"settings.webview.probe_footer" = "URLSession です（WKWebView ではありません）。ここがすぐ成功するのにアプリ内だけ失敗するなら、WebKit 側の問題として切り分けます。";
 "settings.title" = "設定";
 "settings.section.branch" = "支部";
 "settings.branch_picker" = "コンテンツ支部";
+"settings.section.locale_reader" = "表示と読書";
+"settings.ui_language.picker" = "アプリの表示言語";
+"settings.ui_language.system" = "システムに合わせる";
+"settings.ui_language.japanese" = "日本語";
+"settings.ui_language.english" = "English";
+"settings.reader.font_size" = "記事の文字サイズ";
+"settings.reader.font_size.footer" = "WebView 内の記事表示に反映されます。閲覧中のピンチ操作でも拡大・縮小できます。";
 "settings.section.data" = "データ管理";
 "settings.clear_history" = "閲覧履歴をすべて削除";
 "settings.clear_bookmarks" = "ブックマークをすべて削除";

@@ -30,6 +30,23 @@
 		BF0000000000000000000016 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000017 /* SettingsRepository.swift */; };
 		BF0000000000000000000017 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000018 /* SettingsView.swift */; };
 		BF0000000000000000000018 /* OfflineStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000019 /* OfflineStore.swift */; };
+		BF0000000000000000000019 /* WebViewDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001A /* WebViewDiagnostics.swift */; };
+		BF000000000000000000001C /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001B /* Haptics.swift */; };
+		BF000000000000000000001D /* AppUILanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001C /* AppUILanguage.swift */; };
+		BF000000000000000000001E /* HomeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001D /* HomeSection.swift */; };
+		BF000000000000000000001F /* SectionTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001E /* SectionTile.swift */; };
+		BF0000000000000000000020 /* ArchiveIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001F /* ArchiveIndexView.swift */; };
+		BF0000000000000000000021 /* LibraryIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000020 /* LibraryIndexView.swift */; };
+		BF0000000000000000000022 /* LibraryCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000021 /* LibraryCategory.swift */; };
+		BF0000000000000000000023 /* LibraryStaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000022 /* LibraryStaticData.swift */; };
+		BF0000000000000000000024 /* LibraryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000023 /* LibraryListView.swift */; };
+		BF0000000000000000000025 /* LibraryListSortMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000024 /* LibraryListSortMode.swift */; };
+		BF0000000000000000000026 /* GoIFormatsIndexData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000025 /* GoIFormatsIndexData.swift */; };
+		BF0000000000000000000027 /* GoIFormatsIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000026 /* GoIFormatsIndexView.swift */; };
+		BF0000000000000000000028 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = PKGPROD0000000000000000000001 /* GoogleMobileAds */; };
+		BF0000000000000000000029 /* PurchaseRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000027 /* PurchaseRepository.swift */; };
+		BF000000000000000000002A /* AdBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000028 /* AdBannerView.swift */; };
+		BF000000000000000000002B /* GoIPortalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000029 /* GoIPortalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +75,22 @@
 		FR0000000000000000000017 /* SettingsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
 		FR0000000000000000000018 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FR0000000000000000000019 /* OfflineStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineStore.swift; sourceTree = "<group>"; };
+		FR000000000000000000001A /* WebViewDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewDiagnostics.swift; sourceTree = "<group>"; };
+		FR000000000000000000001B /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		FR000000000000000000001C /* AppUILanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUILanguage.swift; sourceTree = "<group>"; };
+		FR000000000000000000001D /* HomeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSection.swift; sourceTree = "<group>"; };
+		FR000000000000000000001E /* SectionTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTile.swift; sourceTree = "<group>"; };
+		FR000000000000000000001F /* ArchiveIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveIndexView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000020 /* LibraryIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryIndexView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000021 /* LibraryCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCategory.swift; sourceTree = "<group>"; };
+		FR0000000000000000000022 /* LibraryStaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStaticData.swift; sourceTree = "<group>"; };
+		FR0000000000000000000023 /* LibraryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000024 /* LibraryListSortMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListSortMode.swift; sourceTree = "<group>"; };
+		FR0000000000000000000025 /* GoIFormatsIndexData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoIFormatsIndexData.swift; sourceTree = "<group>"; };
+		FR0000000000000000000026 /* GoIFormatsIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoIFormatsIndexView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000027 /* PurchaseRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseRepository.swift; sourceTree = "<group>"; };
+		FR0000000000000000000028 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000029 /* GoIPortalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoIPortalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF0000000000000000000028 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +148,8 @@
 			children = (
 				FR0000000000000000000002 /* Constants.swift */,
 				FR0000000000000000000003 /* Theme.swift */,
+				FR000000000000000000001A /* WebViewDiagnostics.swift */,
+				FR000000000000000000001B /* Haptics.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -122,17 +158,31 @@
 			isa = PBXGroup;
 			children = (
 				GR0000000000000000000007 /* Models */,
+				GR0000000000000000000011 /* Resources */,
 				GR0000000000000000000008 /* Repositories */,
 				GR000000000000000000000C /* Services */,
 			);
 			path = Data;
 			sourceTree = "<group>";
 		};
+		GR0000000000000000000011 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000022 /* LibraryStaticData.swift */,
+				FR0000000000000000000025 /* GoIFormatsIndexData.swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		GR0000000000000000000007 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				FR0000000000000000000004 /* Branch.swift */,
+				FR000000000000000000001D /* HomeSection.swift */,
+				FR0000000000000000000021 /* LibraryCategory.swift */,
+				FR0000000000000000000024 /* LibraryListSortMode.swift */,
 				FR0000000000000000000010 /* NavigationRoute.swift */,
+				FR000000000000000000001C /* AppUILanguage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -143,6 +193,7 @@
 				FR0000000000000000000005 /* BranchCatalog.swift */,
 				FR0000000000000000000011 /* ArticleRepository.swift */,
 				FR0000000000000000000017 /* SettingsRepository.swift */,
+				FR0000000000000000000027 /* PurchaseRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -190,6 +241,11 @@
 			isa = PBXGroup;
 			children = (
 				FR0000000000000000000014 /* HomeView.swift */,
+				FR000000000000000000001F /* ArchiveIndexView.swift */,
+				FR0000000000000000000020 /* LibraryIndexView.swift */,
+				FR0000000000000000000023 /* LibraryListView.swift */,
+				FR0000000000000000000026 /* GoIFormatsIndexView.swift */,
+				FR0000000000000000000029 /* GoIPortalView.swift */,
 				FR0000000000000000000015 /* LibraryView.swift */,
 				FR0000000000000000000013 /* ArticleView.swift */,
 				FR0000000000000000000018 /* SettingsView.swift */,
@@ -201,6 +257,8 @@
 			isa = PBXGroup;
 			children = (
 				FR000000000000000000000E /* SCPWebView.swift */,
+				FR000000000000000000001E /* SectionTile.swift */,
+				FR0000000000000000000028 /* AdBannerView.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -237,6 +295,9 @@
 			dependencies = (
 			);
 			name = ScpDocs;
+			packageProductDependencies = (
+				PKGPROD0000000000000000000001 /* GoogleMobileAds */,
+			);
 			productName = ScpDocs;
 			productReference = FR0000000000000000000000 /* ScpDocs.app */;
 			productType = "com.apple.product-type.application";
@@ -269,6 +330,9 @@
 			productRefGroup = GR0000000000000000000002 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
+			packageReferences = (
+				PKGREF0000000000000000000001 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			targets = (
 				NT0000000000000000000001 /* ScpDocs */,
 			);
@@ -296,6 +360,7 @@
 				BF0000000000000000000001 /* ScpDocsApp.swift in Sources */,
 				BF0000000000000000000002 /* Constants.swift in Sources */,
 				BF0000000000000000000003 /* Theme.swift in Sources */,
+				BF0000000000000000000019 /* WebViewDiagnostics.swift in Sources */,
 				BF0000000000000000000004 /* Branch.swift in Sources */,
 				BF0000000000000000000005 /* BranchCatalog.swift in Sources */,
 				BF0000000000000000000006 /* ContentGateway.swift in Sources */,
@@ -313,6 +378,21 @@
 				BF0000000000000000000016 /* SettingsRepository.swift in Sources */,
 				BF0000000000000000000017 /* SettingsView.swift in Sources */,
 				BF0000000000000000000018 /* OfflineStore.swift in Sources */,
+				BF000000000000000000001C /* Haptics.swift in Sources */,
+				BF000000000000000000001D /* AppUILanguage.swift in Sources */,
+				BF000000000000000000001E /* HomeSection.swift in Sources */,
+				BF000000000000000000001F /* SectionTile.swift in Sources */,
+				BF0000000000000000000020 /* ArchiveIndexView.swift in Sources */,
+				BF0000000000000000000021 /* LibraryIndexView.swift in Sources */,
+				BF0000000000000000000022 /* LibraryCategory.swift in Sources */,
+				BF0000000000000000000023 /* LibraryStaticData.swift in Sources */,
+				BF0000000000000000000024 /* LibraryListView.swift in Sources */,
+				BF0000000000000000000025 /* LibraryListSortMode.swift in Sources */,
+				BF0000000000000000000026 /* GoIFormatsIndexData.swift in Sources */,
+				BF0000000000000000000027 /* GoIFormatsIndexView.swift in Sources */,
+				BF0000000000000000000029 /* PurchaseRepository.swift in Sources */,
+				BF000000000000000000002A /* AdBannerView.swift in Sources */,
+				BF000000000000000000002B /* GoIPortalView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,6 +543,7 @@
 				DEVELOPMENT_TEAM = 4Y7UDGM5VH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScpDocs/Info-ATS.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "SCP docs";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -493,6 +574,7 @@
 				DEVELOPMENT_TEAM = 4Y7UDGM5VH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScpDocs/Info-ATS.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "SCP docs";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -536,6 +618,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		PKGREF0000000000000000000001 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		PKGPROD0000000000000000000001 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = PKGREF0000000000000000000001 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = PR0000000000000000000001 /* Project object */;
 }

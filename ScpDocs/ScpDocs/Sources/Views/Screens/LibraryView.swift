@@ -10,8 +10,13 @@ private enum LibrarySegment: Int, CaseIterable, Identifiable {
 struct LibraryView: View {
     @Bindable var navigationRouter: NavigationRouter
     @Bindable var articleRepository: ArticleRepository
+    let homeViewModel: HomeViewModel
 
     @State private var segment: LibrarySegment = .bookmarks
+
+    private var contentBranch: Branch {
+        homeViewModel.selectedBranch
+    }
 
     private var urls: [URL] {
         switch segment {
@@ -45,19 +50,20 @@ struct LibraryView: View {
             AppTheme.backgroundPrimary
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                Picker("", selection: $segment) {
-                    Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentBookmarks)))
-                        .tag(LibrarySegment.bookmarks)
-                    Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentHistory)))
-                        .tag(LibrarySegment.history)
+            List {
+                Section {
+                    Picker("", selection: $segment) {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentBookmarks)))
+                            .tag(LibrarySegment.bookmarks)
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentHistory)))
+                            .tag(LibrarySegment.history)
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowBackground(AppTheme.backgroundPrimary)
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
 
-                List {
-                    if urls.isEmpty {
+                if urls.isEmpty {
+                    Section {
                         ContentUnavailableView {
                             Label(emptyTitle, systemImage: segment == .bookmarks ? "bookmark" : "clock.arrow.circlepath")
                         } description: {
@@ -65,7 +71,9 @@ struct LibraryView: View {
                         }
                         .foregroundStyle(AppTheme.accentPrimary.opacity(0.85))
                         .listRowBackground(AppTheme.backgroundPrimary)
-                    } else {
+                    }
+                } else {
+                    Section {
                         ForEach(urls, id: \.self) { url in
                             Button {
                                 navigationRouter.pushArticle(url: url)
@@ -93,8 +101,8 @@ struct LibraryView: View {
                         }
                     }
                 }
-                .scrollContentBackground(.hidden)
             }
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.libraryTitle)))
         .navigationBarTitleDisplayMode(.inline)
@@ -106,7 +114,8 @@ struct LibraryView: View {
 #Preview {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var repo = ArticleRepository()
+    @Previewable @State var vm = HomeViewModel(settingsRepository: SettingsRepository())
     NavigationStack {
-        LibraryView(navigationRouter: router, articleRepository: repo)
+        LibraryView(navigationRouter: router, articleRepository: repo, homeViewModel: vm)
     }
 }

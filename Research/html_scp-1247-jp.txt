@@ -1,0 +1,2246 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja-corrections" lang="ja-corrections">
+
+<head>
+    <title>SCP-1247-JP - SCP財団</title>
+    
+    
+    
+    <script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--javascript/init.combined.js"></script>
+    <script  type="text/javascript">
+        var URL_HOST = 'www.wikidot.com';
+        var URL_DOMAIN = 'wikidot.com';
+        var USE_SSL =  true ;
+        var URL_STATIC = 'http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc';
+        // global request information
+        
+        var WIKIREQUEST = {};
+        WIKIREQUEST.info = {};
+        
+        WIKIREQUEST.info.domain = "scp-jp.wikidot.com";
+        WIKIREQUEST.info.siteId = 578002;
+        WIKIREQUEST.info.siteUnixName = "scp-jp";
+        WIKIREQUEST.info.categoryId = 3777353;
+        WIKIREQUEST.info.themeId = 1;
+        WIKIREQUEST.info.requestPageName = "scp-1247-jp";
+        OZONE.request.timestamp = 1776527861;
+        OZONE.request.date = new Date();
+        WIKIREQUEST.info.lang = 'ja-corrections';
+                WIKIREQUEST.info.pageUnixName = "scp-1247-jp";
+        WIKIREQUEST.info.pageId = 1457506788;
+                        WIKIREQUEST.info.lang = "ja-corrections";
+        OZONE.lang = "ja-corrections";
+        var isUAMobile = !!/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    </script>
+    
+    
+
+
+    
+        <script  type="text/javascript">
+    
+        require.config({
+            baseUrl: URL_STATIC + '/common--javascript',
+            paths: {
+                'jquery.ui': 'jquery-ui.min',
+                'jquery.form': 'jquery.form'
+            }
+        });
+    
+    </script>
+    
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+                            <meta name="robots" content="index,follow"/>
+                                <meta name="language" content="ja,jp-ja"/>
+                                                            <meta name="keywords" content="SCP,財団,SCP財団,Foundation,Wiki"/>
+                                <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+                                <meta name="referrer" content="no-referrer-when-downgrade"/>
+                                <meta name="google-site-verification" content="XCpcYRSKk2KOx262-45XuXn3Rd3vo7ST8aB2TdPmOy8"/>
+                            
+    
+    
+    
+    
+    <meta http-equiv="content-language" content="ja,jp-ja"/>
+    <script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--javascript/WIKIDOT.combined.js"></script>
+        
+    
+    <style type="text/css" id="internal-style">
+        
+        /* modules */
+@import url(http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--modules/css/pagerate/PageRateWidgetModule.css);
+
+
+        
+                
+        /* theme */
+                    @import url(http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--theme/base/css/style.css);
+                    @import url(https://scp-jp.github.io/files/util/main/styles/sigma-9.min.css);
+            </style>
+    
+        
+        
+        
+    <link rel="shortcut icon" href="/local--favicon/favicon.gif"/>
+    <link rel="icon" type="image/gif" href="/local--favicon/favicon.gif"/>
+    
+            <link rel="apple-touch-icon" href="/local--iosicon/iosicon_57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/local--iosicon/iosicon_72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/local--iosicon/iosicon.png" />    
+        
+            <meta name="msapplication-TileImage" content="/local--wp8icon/wp8icon.png"/>
+                    <meta name="msapplication-TileColor" content="#00245F"/>
+                
+            <link rel="alternate" type="application/wiki" title="Edit this page" href="javascript:WIKIDOT.page.listeners.editClick()"/>
+    
+        <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-18234656-1']);
+        _gaq.push(['_setDomainName', 'none']);
+        _gaq.push(['_setAllowLinker', true]);
+        _gaq.push(['_trackPageview']);
+
+        _gaq.push(['old._setAccount', 'UA-68540-5']);
+        _gaq.push(['old._setDomainName', 'none']);
+        _gaq.push(['old._setAllowLinker', true]);
+        _gaq.push(['old._trackPageview']);
+
+                _gaq.push(['userTracker._setAccount', 'UA-84647256-2']);
+        _gaq.push(['userTracker._trackPageview']);
+            </script>
+    
+    <script type="text/javascript">
+        window.google_analytics_uacct = 'UA-18234656-1';
+        window.google_analytics_domain_name = 'none';
+    </script>
+    
+        <link rel="manifest" href="/onesignal/manifest.json" />
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" acync=""></script>
+    <script>
+        var OneSignal = window.OneSignal || [];
+        OneSignal.push(function() {
+          OneSignal.init({
+            appId: null,
+          });
+        });
+    </script>
+        
+<style>
+#side-bar .scpnet-interwiki-wrapper iframe.scpnet-interwiki-frame {
+    width: calc(100% + 10px);
+    max-width: unset;
+    margin: -5px;
+}
+@media (max-width: 768px) {
+    #side-bar .scpnet-interwiki-wrapper iframe.scpnet-interwiki-frame{
+         margin-bottom: 2em !important;
+     }
+}
+</style>
+<style>
+/* source: http://ah-sandbox.wikidot.com/component:collapsible-sidebar-x1 */
+
+#top-bar .open-menu a {
+        position: fixed;
+        bottom: 0.5em;
+        left: 0.5em;
+        z-index: 15;
+        font-family: san-serif;
+        font-size: 30px;
+        font-weight: 700;
+        width: 30px;
+        height: 30px;
+        line-height: 0.9em;
+        text-align: center;
+        border: 0.2em solid #888 !important;
+        background-color: #fff !important;
+        border-radius: 3em;
+        color: #888 !important;
+        text-decoration: none!important;
+}
+
+@media (min-width: 768px) {
+
+    .mobile-top-bar {
+        display: block;
+    }
+
+    .mobile-top-bar li {
+        display: none;
+    }
+
+    #main-content {
+        max-width: 708px;
+        margin: 0 auto;
+        padding: 0;
+        transition: max-width 0.2s ease-in-out;
+    }
+
+    #side-bar {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: -25em;
+        width: 17em;
+        height: 100%;
+        background-color: rgb(184, 134, 134);
+        overflow-y: auto;
+        z-index: 10;
+        padding: 1em 1em 0 1em;
+        -webkit-transition: left 0.5s ease-in-out 0.1s;
+        -moz-transition: left 0.5s ease-in-out 0.1s;
+        -ms-transition: left 0.5s ease-in-out 0.1s;
+        -o-transition: left 0.5s ease-in-out 0.1s;
+        transition: left 0.5s ease-in-out 0.1s;
+    }
+
+    #side-bar:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 0;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+
+    }
+
+    #side-bar:target {
+        display: block;
+        left: 0;
+        width: 17em;
+        margin: 0;
+        border: 1px solid #dedede;
+        z-index: 10;
+    }
+
+    #side-bar:target + #main-content {
+        left: 0;
+    }
+
+    #side-bar:target .close-menu {
+        display: block;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0,0,0,0.3) 1px 1px repeat;
+        z-index: -1;
+    }
+}
+</style>
+<style>
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;display=swap);
+
+/* Centered Header Sigma-9
+ * [2021 Wikidot Component]
+ * By Lt Flops (CC BY-SA 3.0)
+ * Forked from:
+   * Penumbra Theme by EstrellaYoshte
+ * Also based on:
+   * Centered Header BHL by Woedenaz
+**/
+
+/* ---- VARS ---- */
+ :root{
+     --titleColor: hsl(0, 0%, 95%);
+     --subtitleColor: hsl(60, 62%, 85%);
+     --lgurl: url("https://scp-jp-storage.wdfiles.com/local--files/file%3A7522555-167-g69b/logo.svg");
+}
+
+/* ---- SITE BANNER ---- */
+ #header,
+ div#header{
+     background-image: none;
+}
+
+ #header::before{
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     content: "";
+
+     background-image: var(--lgurl);
+     background-position: center top;
+     background-repeat: no-repeat;
+     background-size: auto 10.55em;
+     opacity: .33;
+}
+
+ #header h1,
+ #header h2{
+     float: none;
+     margin-left: 0;
+
+     text-align: center;
+}
+
+ #header h1 span,
+ #header h2 span{
+   /* Hide the Existing Text */
+     display: none;
+}
+
+ #header h1 a::before,
+ #header h2::before{
+   /* Style the New Text */
+     font-family: "Montserrat", "Arial", sans-serif;
+     text-shadow: none;
+}
+
+ #header h1 a::before{
+     position: relative;
+     bottom: .15em;
+
+     color: var(--titleColor);
+
+     font-size: 115%;
+     font-weight: 700;
+}
+
+ #header h2::before{
+     position: relative;
+     top: .1em;
+
+     color: var(--subtitleColor);
+
+     font-size: 130%;
+     font-weight: 600;
+}
+
+ #header h1 a::before{
+   /* Set the New Text's Content From Variable */
+     content: var(--header-title, "SCP財団");
+}
+
+ #header h2::before{
+     content: var(--header-subtitle, "確保 - 収容 - 保護");
+}
+
+/* ---- SEARCH ---- */
+ #search-top-box{
+     top: 1em;
+     right: 0;
+}
+
+ #search-top-box-form input.button{
+     margin-right: 0;
+}
+
+ #search-top-box-input,
+ #search-top-box-input:hover,
+ #search-top-box-input:focus,
+ #search-top-box-form input[type=submit],
+ #search-top-box-form input[type=submit]:hover,
+ #search-top-box-form input[type=submit]:focus{
+     border-radius: 0;
+     box-shadow: none;
+
+     font-size: 100%;
+}
+
+/* ---- TOP BAR ---- */
+ #top-bar{
+     right: 0;
+     display: flex;
+     justify-content: center;
+}
+
+ #top-bar ul li ul{
+     border-bottom: 1px solid hsl(0, 0%, 40%);
+     box-shadow: none;
+}
+
+/* ---- LOGIN ---- */
+ #login-status{
+     top: 1.1em;
+     right: initial;
+
+     color: hsl(0, 0%, 87%);
+}
+
+ #account-topbutton{
+     border-color: hsl(0, 0%, 87%);
+
+     font-size: 100%;
+}
+
+/* ---- PAGE TITLE ---- */
+ .meta-title,
+ #page-title{
+     text-align: center;
+}
+
+/* ---- BREADCRUMBS ---- */
+ .pseudocrumbs,
+ #breadcrumbs{
+     text-align: center;
+}
+
+/* ---- MOBILE DISPLAY ---- */
+ @media (max-width: 767px){
+     #search-top-box{
+          top: 1.85em;
+          width: unset;
+    }
+
+     .mobile-top-bar{
+          position: relative;
+          left: 0;
+          display: flex;
+          justify-content: center;
+    }
+
+     #login-status{
+          top: 0;
+          right: 0;
+    }
+
+     #header .printuser{
+          font-size: 0;
+    }
+
+     #header .printuser img.small{
+          margin: 0;
+
+          transform: translate(6px, 4px);
+    }
+
+     #my-account{
+          display: none;
+    }
+
+     #account-topbutton{
+          margin-left: 2px;
+    }
+}
+</style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&amp;display=swap');
+
+body {
+    background: #EDEDED;
+}
+
+:root{
+     --header-title: "FOUNDATION";
+     --header-subtitle: " ";
+     --titleColor: #FFFFFF;
+     --subtitleColor: #FFFFFF;
+}
+
+a, .side-block, #action-area, #page-title, #search-top-box, #top-bar ul li {
+    filter: grayscale(100%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Verdana;
+}
+
+.creditRate.creditModule {
+    justify-content: center;
+    margin: 0 auto .8em;
+    width: 100%;
+}
+
+#page-content .rate-box-with-credit-button .creditButton {
+    background-color: #000 !important;
+    border: solid 1px #000 !important;
+    padding: 1px 0;
+}
+#page-content .rate-box-with-credit-button .creditButton a:hover {
+    color: #A5A5A5;
+}
+div.page-rate-widget-box,
+div.page-rate-widget-box span.rate-points,
+div.page-rate-widget-box span.cancel {
+    background-color: #000 !important;
+    border: solid 1px #000 !important;
+}
+div.page-rate-widget-box span.rateup,
+div.page-rate-widget-box span.ratedown {
+    border: solid #000 !important;
+    border-width: 1px 0 !important;
+}
+div.page-rate-widget-box span.rate-points,
+div.page-rate-widget-box span.cancel a,
+div.page-rate-widget-box span.cancel a:hover {
+    color: #fff;
+}
+div.page-rate-widget-box span.rateup,
+div.page-rate-widget-box span.ratedown {
+    background-color: #fff !important;
+}
+div.page-rate-widget-box span.rateup a,
+div.page-rate-widget-box span.ratedown a {
+    color: #000 !important;
+}
+div.page-rate-widget-box span.cancel a:hover,
+div.page-rate-widget-box span.rateup a:hover,
+div.page-rate-widget-box span.ratedown a:hover {
+    background: transparent !important;
+    color: #A5A5A5 !important;
+}
+
+div#container-wrap {
+    background: url(https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-49-u3t0/SB-V-header.png) top left repeat-x;
+}
+
+#side-bar {
+    background-color: rgb(134, 134, 134);
+}
+
+.scp-image-block img {
+    width: 100%;
+}
+.scp-image-block .scp-image-caption {
+    width: 100%;
+}
+
+div.obj {
+    --swatch-text-light: 237, 237, 237;
+}
+
+.earthworm {
+    width: calc(100% - 34px);
+    margin-inline: auto !important;
+}
+.earthworm div:nth-child(1) {
+    background: linear-gradient(to left, #eee, #fff);
+}
+.earthworm div:nth-child(3) {
+    background: linear-gradient(to left, #fff, #eee);
+}
+
+.classified-bar-wrapper {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    margin-bottom: 1em;
+}
+.classified-bar-text {
+    position: absolute;
+    font-family: "Orbitron", serif;
+    font-weight: bold;
+    font-size: 16px;
+    white-space: nowrap;
+    color: #FFFFFF;
+    mix-blend-mode: difference;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.level {
+    position: relative;
+    grid-area: 1 / 1 / 2 / 2;
+    height: 60px;
+    margin: 1px;
+    background: linear-gradient(135deg, #FFFFFF calc(100% - 42.5px), #000000 calc(100% - 42.5px));
+    border-top: solid 3px #000000;
+    border-bottom: solid 3px #000000;
+    border-right: solid 3px #000000;
+    clip-path: polygon(60px 0, 100% 0, 100% 100%, 0 100%);
+}
+.classified {
+    position: relative;
+    grid-area: 2 / 1 / 3 / 2;
+    height: 60px;
+    margin: 1px;
+    background: linear-gradient(45deg, #FFFFFF calc(100% - 42.5px), #000000 calc(100% - 42.5px));
+    border-top: solid 3px #000000;
+    border-bottom: solid 3px #000000;
+    border-right: solid 3px #000000;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 60px 100%);
+}
+.item-number {
+    position: relative;
+    grid-area: 1 / 2 / 2 / 3;
+    height: 60px;
+    margin: 1px;
+    background: linear-gradient(-135deg, #FFFFFF calc(100% - 42.5px), #000000 calc(100% - 42.5px));
+    border-top: solid 3px #000000;
+    border-bottom: solid 3px #000000;
+    border-left: solid 3px #000000;
+    clip-path: polygon(0 0, calc(100% - 60px) 0, 100% 100%, 0 100%);
+}
+.class {
+    position: relative;
+    grid-area: 2 / 2 / 3 / 3;
+    height: 60px;
+    margin: 1px;
+    background: linear-gradient(-45deg, #FFFFFF calc(100% - 42.5px), #000000 calc(100% - 42.5px));
+    border-top: solid 3px #000000;
+    border-bottom: solid 3px #000000;
+    border-left: solid 3px #000000;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 60px) 100%, 0 100%);
+}
+.icon {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #EDEDED url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg version='1.2' baseProfile='tiny' id='Euclid' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 144 144' overflow='visible' xml:space='preserve'%3E%3Cpath d='M72,0C32.24,0,0,32.24,0,72c0,39.76,32.24,72,72,72c39.76,0,72-32.24,72-72C144,32.24,111.76,0,72,0z M97.8,36.17 l-13.7,13.7v-9.5c0,0,0-0.1,0-0.2l11.7-11.7C97.21,30.72,97.89,33.4,97.8,36.17z M84.2,21.87c2.5,0,4.8,0.6,6.8,1.8l-11.9,11.9h-9.7 l13.8-13.7H84.2z M46,39.67l17.8-17.8h9.7L46,49.37V39.67z M33.7,71.37c0.64-0.26,11.37-12.33,12.3-11.7c0-0.13,0-0.56,0-0.7 l13.7-13.7v9.7l-26.4,26.4C33.4,78.99,33,73.64,33.7,71.37z M33.3,91.07l31.6-31.6h9.7l-41.3,41.3C33.3,100.5,33.3,91.35,33.3,91.07 z M35.4,108.27l62.4-62.4v9.7l-57.7,57.7C38.2,111.97,36.6,110.27,35.4,108.27z M47.2,115.77l54.8-54.8c2.1,1,3.8,2.4,5.3,4.1 l-50.8,50.8C55.51,115.87,48,115.92,47.2,115.77z M110.7,100.27l-15.5,15.6h-9.7l25.2-25.3V100.27z M110.7,80.97l-34.8,34.9h-9.7 l44.2-44.2C110.9,73.7,110.64,78.81,110.7,80.97z'/%3E%3C/svg%3E%0A") center no-repeat;
+    background-size: cover;
+    border: solid 3px transparent;
+    border-radius: 50%;
+}
+
+@media (max-width: 767px) {
+  .classified-bar-text {
+    font-size: 12px;
+  }
+}
+</style>
+<style>
+@import url('https://scp-jp.github.io/files/util/common/credit/style/style.css');
+
+.creditRate.no-rate .page-rate-widget-box {
+    visibility:hidden;
+}
+
+.creditRate.creditModule.no-rate ~ #u-credit-view .creditBottomRate > div:nth-of-type(2) {
+    display: none;
+}
+</style>
+<style>
+.earthworm {
+  --earthworm-segment-border-color: rgba(150,150,150,0.5);
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  margin: 1em 0;
+  clear: both;
+  min-height: 36px;
+}
+.earthworm a {
+  word-break: normal;
+}
+.earthworm__previous, .earthworm__hub, .earthworm__next {
+  display: flex;
+  align-items: center;
+}
+.earthworm p {
+  margin: 0 0.8em;
+  text-align: center;
+}
+.earthworm__previous, .earthworm__next {
+  border-top: 2px solid var(--earthworm-segment-border-color);
+  border-bottom: 2px solid var(--earthworm-segment-border-color);
+  position: relative;
+}
+.earthworm__hub {
+  margin: -3px 0;
+  border: 3px solid var(--earthworm-segment-border-color);
+  background: linear-gradient(10deg, rgba(150,150,150,0.1), rgba(150,150,150,0));
+  position: relative;
+}
+.earthworm__arrowhead {
+  width: auto;
+  height: calc(100% + 2px);
+  top: -2.5px;
+  display: block;
+  position: absolute;
+  border-style: solid;
+  border-color: var(--earthworm-segment-border-color);
+}
+.earthworm__arrowhead--left {
+  left: 0;
+  transform: scale(0.707) rotate(-45deg);
+  border-width: 2.8px 0 0 2.8px;
+  transform-origin: 0% 100%;
+  clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+}
+.earthworm__arrowhead--right {
+  right: 0;
+  transform: scale(0.707) rotate(45deg);
+  border-width: 2.8px 2.8px 0 0;
+  transform-origin: 100% 100%;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+}
+
+/* Hide segments that have url=/ AND (title= OR title=/) */
+.earthworm__previous:has(a[href="/"]):is([data-title="\{\$previous-title\}"], [data-title="/"]),
+.earthworm__next:has(a[href="/"]):is([data-title="\{\$next-title\}"], [data-title="/"]),
+.earthworm__hub:is([data-title="\{\$next-title\}"], [data-title="/"]) a[href="/"] {
+  display: none;
+}
+
+/* Style href=/ links to look like plain text */
+.earthworm a[href="/"] {
+  color: #333;
+  text-decoration: none;
+  cursor: text;
+  pointer-events: none;
+}
+
+/* Backwards compatibility: support old syntax */
+.earthworm--old-syntax-first-true .earthworm__previous,
+.earthworm--old-syntax-last-true .earthworm__next,
+.earthworm--old-syntax-hub-no .earthworm__hub a {
+  display: none;
+}
+</style>
+<style>
+/****暫定ファイルアップロード対策用CSS****/
+#file-action-area p:nth-child(3) {
+    font-size: 0;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 10px;
+    line-height: 30px;
+}
+
+#file-action-area p:nth-child(3)::before {
+    content:'\f06a';
+    font-size: 20px;
+    font-family: 'FontAwesome';
+    margin-right: 8px;
+    color: #b01;
+}
+
+#file-action-area p:nth-child(3)::after{
+    content:"\a本Wikiにファイルをアップロードする場合は、1項目あたりのサイズを100kB以下にしてください。100kB制限がある本Wikiの代わりに、SCP-JPファイルストレージの利用を推奨します。";
+    color:#b01;
+    font-size: 20px;
+    font-weight: bold;
+}
+/****このCSSは容量問題が解決したら取り外してください****/
+</style>
+<script data-cfasync="false">window.nitroAds=window.nitroAds||{createAd:function(){return new Promise(e=>{window.nitroAds.queue.push(["createAd",arguments,e])})},addUserToken:function(){window.nitroAds.queue.push(["addUserToken",arguments])},queue:[]};</script>
+<script data-cfasync="false" async src="https://s.nitropay.com/ads-143.js"></script>
+<script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--modules/js/list/ListPagesModule.js"></script>
+<script type="text/javascript" src="http://d3g0gp89917ko0.cloudfront.net/v--7690939296dc/common--modules/js/pagerate/PageRateWidgetModule.js"></script>
+</head>
+<body id="html-body">
+<div id="skrollr-body">
+<a name="page-top"></a>
+
+
+
+
+
+<div id="container-wrap-wrap">
+    <div id="container-wrap">
+        <div id="container">
+            <div id="header">
+              <h1><a href="/"><span>SCP財団</span></a></h1>
+                
+                    <h2><span>確保、収容、保護</span></h2>
+                
+                
+                <!-- google_ad_section_start(weight=ignore) -->
+                
+                <div id="search-top-box" class="form-search">
+    <form id="search-top-box-form" action="dummy" class="input-append">
+        <input id="search-top-box-input" class="text empty search-query" type="text" size="15" name="query" value="サイト検索" onfocus="if(YAHOO.util.Dom.hasClass(this, 'empty')){YAHOO.util.Dom.removeClass(this,'empty'); this.value='';}"/><input class="button btn" type="submit" name="search" value="検索"/>
+    </form>
+</div>
+                
+                
+                    <div id="top-bar">
+                        
+
+<div class="top-bar">
+<ul>
+<li><a href="javascript:;">SCPシリーズ</a>
+<ul>
+<li><a href="/scp-series">シリーズI(001-999)</a></li>
+<li><a href="/scp-series-2">シリーズII(1000-1999)</a></li>
+<li><a href="/scp-series-3">シリーズIII(2000-2999)</a></li>
+<li><a href="/scp-series-4">シリーズIV(3000-3999)</a></li>
+<li><a href="/scp-series-5">シリーズV(4000-4999)</a></li>
+<li><a href="/scp-series-6">シリーズVI(5000-5999)</a></li>
+<li><a href="/scp-series-7">シリーズVII(6000-6999)</a></li>
+<li><a href="/scp-series-8">シリーズVIII(7000-7999)</a></li>
+<li><a href="/scp-series-9">シリーズIX(8000-8999)</a></li>
+<li><a href="/scp-series-10">シリーズX(9000-9999)</a></li>
+<li><a href="/joke-scps">Joke SCP</a></li>
+<li><a href="/archived-scps">Archived SCP</a></li>
+<li><a href="/scp-ex">Explained SCP</a></li>
+<li><a href="/log-of-anomalous-items">Anomalousアイテム記録</a></li>
+<li><a href="/log-of-extranormal-events">超常現象記録</a></li>
+<li><a href="/log-of-unexplained-locations">未解明領域記録</a></li>
+<li><a href="/foundation-tales">財団Tales</a></li>
+<li><a href="/canon-hub">カノンハブ</a></li>
+<li><a href="/goi-formats">GoIフォーマット</a></li>
+<li><a href="/incident-reports-eye-witness-interviews-and-personal-logs">事件ファイル</a></li>
+<li><a href="/audio-adaptations">音声記録</a></li>
+<li><a href="/creepy-pasta">Creepy Pasta保管</a></li>
+<li><a href="/contest-archive">コンテストアーカイブ国際版</a></li>
+</ul>
+</li>
+<li><a href="javascript:;">SCP-JPシリーズ</a>
+<ul>
+<li><a href="/scp-series-jp">JPシリーズI(001-999)</a></li>
+<li><a href="/scp-series-jp-2">JPシリーズII(1000-1999)</a></li>
+<li><a href="/scp-series-jp-3">JPシリーズIII(2000-2999)</a></li>
+<li><a href="/scp-series-jp-4">JPシリーズIV(3000-3999)</a></li>
+<li><a href="/scp-series-jp-5">JPシリーズV(4000-4999)</a></li>
+<li><a href="/heritage-collection-jp">殿堂入りコレクション-JP</a></li>
+<li><a href="/joke-scps-jp">ジョーク-JP</a></li>
+<li><a href="/archived-scps-jp">Archived SCP-JP</a></li>
+<li><a href="/scp-jp-ex">Explained SCP-JP</a></li>
+<li><a href="/log-of-anomalous-items-jp">Anomalousアイテム記録-JP</a></li>
+<li><a href="/log-of-extranormal-events-jp">超常現象記録-JP</a></li>
+<li><a href="http://scp-jp.wikidot.com/log-of-unexplained-locations-jp">未解明領域記録-JP</a></li>
+<li><a href="/foundation-tales-jp">財団Tales-JP</a></li>
+<li><a href="/canon-hub-jp">カノンハブ-JP</a></li>
+<li><a href="/series-hub-jp">連作ハブ-JP</a></li>
+<li><a href="/goi-formats-jp">GoIフォーマット-JP</a></li>
+<li><a href="/collaboration-hub-jp">合作-JP</a></li>
+<li><a href="/supplement-hub-jp">補足ページ-JP</a></li>
+<li><a href="/event-archive-jp">イベントアーカイブ-JP</a></li>
+<li><a href="/anthology-hub-jp">アンソロジー-JP</a></li>
+</ul>
+</li>
+<li><a href="/scp-international">SCP国際版</a>
+<ul>
+<li><a href="/scp-list-ru">SCP-RU一覧</a></li>
+<li><a href="/scp-series-ko">SCP-KOシリーズ-I</a></li>
+<li><a href="/scp-series-ko-2">SCP-KOシリーズ-II</a></li>
+<li><a href="/scp-series-cn">SCP-CNシリーズ-I</a></li>
+<li><a href="/scp-series-cn-2">SCP-CNシリーズ-II</a></li>
+<li><a href="/scp-series-cn-3">SCP-CNシリーズ-III</a></li>
+<li><a href="/scp-series-cn-4">SCP-CNシリーズ-IV</a></li>
+<li><a href="/scp-series-cn-5">SCP-CNシリーズ-V</a></li>
+<li><a href="/liste-fr">SCP-FR一覧</a></li>
+<li><a href="/lista-pl">SCP-PL一覧</a></li>
+<li><a href="/serie-scp-es">SCP-ES一覧</a></li>
+<li><a href="/scp-series-th">SCP-TH一覧</a></li>
+<li><a href="/scp-serie-de">SCP-DE一覧</a></li>
+<li><a href="/scp-it-serie-i">SCP-IT一覧</a></li>
+<li><a href="/scp-series-ua">SCP-UA一覧</a></li>
+<li><a href="/series-1-pt">SCP-PT一覧</a></li>
+<li><a href="/scp-series-cs">SCP-CS一覧</a></li>
+<li><a href="/scp-series-zh">SCP-ZH一覧</a></li>
+<li><a href="/scp-series-vn">SCP-VN一覧</a></li>
+<li><a href="/foundation-tales-ru">Tales-RU一覧</a></li>
+<li><a href="/foundation-tales-ko">Tales-KO一覧</a></li>
+<li><a href="/foundation-tales-cn">Tales-CN一覧</a></li>
+<li><a href="/foundation-tales-fr">Tales-FR一覧</a></li>
+<li><a href="/foundation-tales-pl">Tales-PL一覧</a></li>
+<li><a href="/foundation-tales-es">Tales-ES一覧</a></li>
+<li><a href="/foundation-tales-th">Tales-TH一覧</a></li>
+<li><a href="/foundation-tales-de">Tales-DE一覧</a></li>
+<li><a href="/foundation-tales-it">Tales-IT一覧</a></li>
+<li><a href="/foundation-tales-ua">Tales-UA一覧</a></li>
+<li><a href="/foundation-tales-pt">Tales-PT一覧</a></li>
+<li><a href="/foundation-tales-cs">Tales-CS一覧</a></li>
+<li><a href="/foundation-tales-zh">Tales-ZH一覧</a></li>
+</ul>
+</li>
+<li><a href="javascript:;">SCPの世界観</a>
+<ul>
+<li><a href="/about-the-scp-foundation">財団とは</a></li>
+<li><a href="/object-classes">オブジェクトクラス</a></li>
+<li><a href="/security-clearance-levels">セキュリティ&amp;クリアランス</a></li>
+<li><a href="/groups-of-interest">要注意団体</a></li>
+<li><a href="/secure-facilities-locations">セキュリティ施設</a></li>
+<li><a href="/departments">内部部門</a></li>
+<li><a href="/task-forces">機動部隊</a></li>
+<li><a href="/personnel-and-character-dossier">職員・人物</a></li>
+<li><a href="/groups-of-interest-jp">要注意団体-JP</a></li>
+<li><a href="/secure-facilities-locations-jp">セキュリティ施設-JP</a></li>
+<li><a href="/departments-jp">内部部門-JP</a></li>
+<li><a href="/front-jp">財団フロント-JP</a></li>
+<li><a href="/task-forces-jp">機動部隊-JP</a></li>
+<li><a href="/locations-of-interest-jp">要注意領域-JP</a></li>
+<li><a href="/personnel-and-character-dossier-jp">職員・人物-JP</a></li>
+</ul>
+</li>
+<li><a href="javascript:;">ガイド</a>
+<ul>
+<li><a href="/guide-hub">ガイドハブ</a></li>
+<li><a href="/guide-for-newbies">初めての方へ</a></li>
+<li><a href="/how-to-write:how-to-write">記事を作成するには？</a></li>
+<li><a href="/discord-guideline">チャット(Discord)ガイド</a></li>
+<li><a href="/faq-jp">よくある質問</a></li>
+<li><a href="/site-rules">サイトルール</a></li>
+<li><a href="/deletions-guide">削除ガイドライン</a></li>
+<li><a href="/meet-the-staff-jp">スタッフ一覧</a></li>
+<li><a href="/links">リンク集</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="mobile-top-bar">
+<div class="open-menu">
+<p><a href="#side-bar">≡</a></p>
+</div>
+<ul>
+<li><a href="javascript:;">SCP記事</a>
+<ul>
+<li><a href="/scp-series-jp">JPシリーズI 001-JP - 999-JP</a></li>
+<li><a href="/scp-series-jp-2">JPシリーズII 1000-JP - 1999-JP</a></li>
+<li><a href="/scp-series-jp-3">JPシリーズIII 2000-JP - 2999-JP</a></li>
+<li><a href="/scp-series-jp-4">JPシリーズIV 3000-JP - 3999-JP</a></li>
+<li><a href="/scp-series-jp-5">JPシリーズV 4000-JP - 4999-JP</a></li>
+<li><a href="/heritage-collection-jp">殿堂入りコレクション-JP</a></li>
+<li><a href="/scp-series">シリーズI 001 - 999</a></li>
+<li><a href="/scp-series-2">シリーズII 1000 - 1999</a></li>
+<li><a href="/scp-series-3">シリーズIII 2000 - 2999</a></li>
+<li><a href="/scp-series-4">シリーズIV 3000 - 3999</a></li>
+<li><a href="/scp-series-5">シリーズV 4000 - 4999</a></li>
+<li><a href="/scp-series-6">シリーズVI 5000 - 5999</a></li>
+<li><a href="/scp-series-7">シリーズVII 6000 - 6999</a></li>
+<li><a href="/scp-series-8">シリーズVIII 7000 - 7999</a></li>
+<li><a href="/scp-series-9">シリーズIX 8000 - 8999</a></li>
+<li><a href="/scp-series-10">シリーズX 9000 - 9999</a></li>
+<li><a href="/scp-international">SCP国際版</a></li>
+<li><a href="/joke-scps">Joke SCP</a></li>
+<li><a href="/archived-scps">Archived SCP</a></li>
+<li><a href="/scp-ex">Explained SCP</a></li>
+<li><a href="/log-of-anomalous-items">Anomalousアイテム記録</a></li>
+<li><a href="/log-of-extranormal-events">超常現象記録</a></li>
+<li><a href="/log-of-unexplained-locations">未解明領域記録</a></li>
+<li><a href="/joke-scps-jp">ジョーク-JP</a></li>
+<li><a href="/archived-scps-jp">Archived SCP-JP</a></li>
+<li><a href="/scp-jp-ex">Explained SCP-JP</a></li>
+<li><a href="/log-of-anomalous-items-jp">Anomalousアイテム記録-JP</a></li>
+<li><a href="/log-of-extranormal-events-jp">超常現象記録-JP</a></li>
+<li><a href="http://scp-jp.wikidot.com/log-of-unexplained-locations-jp">未解明領域記録-JP</a></li>
+<li><a href="/incident-reports-eye-witness-interviews-and-personal-logs">事件ファイル</a></li>
+</ul>
+</li>
+<li><a href="javascript:;">情報とライブラリ</a>
+<ul>
+<li><a href="/foundation-tales">Tales</a></li>
+<li><a href="/canon-hub">カノンハブ</a></li>
+<li><a href="/goi-formats">GoIフォーマット</a></li>
+<li><a href="/contest-archive">コンテストアーカイブ国際版</a></li>
+<li><a href="/foundation-tales-jp">Tales-JP</a></li>
+<li><a href="/canon-hub-jp">カノンハブ-JP</a></li>
+<li><a href="/series-hub-jp">連作ハブ-JP</a></li>
+<li><a href="/goi-formats-jp">GoIフォーマット-JP</a></li>
+<li><a href="/collaboration-hub-jp">合作-JP</a></li>
+<li><a href="/event-archive-jp">イベントアーカイブ-JP</a></li>
+<li><a href="/about-the-scp-foundation">財団とは</a></li>
+<li><a href="/object-classes">オブジェクトクラス</a></li>
+<li><a href="/security-clearance-levels">セキュリティ&amp;クリアランス</a></li>
+<li><a href="/groups-of-interest">要注意団体</a></li>
+<li><a href="/secure-facilities-locations">セキュリティ施設</a></li>
+<li><a href="/departments">内部部門</a></li>
+<li><a href="/task-forces">機動部隊</a></li>
+<li><a href="/personnel-and-character-dossier">職員・人物</a></li>
+<li><a href="/groups-of-interest-jp">要注意団体-JP</a></li>
+<li><a href="/secure-facilities-locations-jp">セキュリティ施設-JP</a></li>
+<li><a href="/departments-jp">内部部門-JP</a></li>
+<li><a href="/task-forces-jp">機動部隊-JP</a></li>
+<li><a href="/front-jp">財団フロント-JP</a></li>
+<li><a href="/locations-of-interest-jp">要注意領域-JP</a></li>
+<li><a href="/personnel-and-character-dossier-jp">職員・人物-JP</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div style="width:1px;height:1px;position:absolute;pointer-events:none;opacity:0;">    
+
+
+<img src="https://manage.scp-jp.com/api/public/assets/analytics.png?s_id=578002&amp;fn=scp-1247-jp" alt="analytics.png?s_id=578002&amp;fn=scp-1247-jp" class="image" />
+    
+    
+    
+    </div>
+<div class="list-pages-box">    <div class="list-pages-item">
+
+
+<p><iframe src='https://drizzles.scp-jp.org/api/v2/raven.html?site_name=scp-jp&fullname=scp-1247-jp&revisions=21&rating=27&rating_votes=59&created_at=<span class="odate time_1733313647 format_%25e%20%25b%20%25Y%2C%20%25H%3A%25M%7Cagohover">04 Dec 2024 12:00</span>&updated_at=<span class="odate time_1763366560 format_%25e%20%25b%20%25Y%2C%20%25H%3A%25M%7Cagohover">17 Nov 2025 08:02</span>&commented_at=<span class="odate time_1733623652 format_%25e%20%25b%20%25Y%2C%20%25H%3A%25M%7Cagohover">08 Dec 2024 02:07</span>&' style="display: none"></iframe></p>
+</div>
+    
+    
+    
+    </div>
+                    </div>
+                
+                <div id="login-status"><a href="javascript:;" onclick="WIKIDOT.page.listeners.createAccount(event)" class="login-status-create-account btn">アカウントを作成</a> <span>または</span> <a href="javascript:;" onclick="WIKIDOT.page.listeners.loginClick(event)" class="login-status-sign-in btn btn-primary">サインイン</a> </div>
+                <div id="header-extra-div-1"><span></span></div><div id="header-extra-div-2"><span></span></div><div id="header-extra-div-3"><span></span></div>
+            </div>
+            
+            <div id="content-wrap">
+                
+                    <div id="side-bar">
+                        
+
+
+                        
+
+<div class="side-block" style="background-color: #a7dba2;">
+<div class="heading">
+<p>新しいメンバー向け情報</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/about-the-scp-foundation">SCP財団とは</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/faq-jp">よくある質問</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/contact-staff">問い合わせ</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/site-rules">サイトルール</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/licensing-guide">ライセンスガイド</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/main.png" alt="main.png" class="image" /><a href="/guide-for-newbies">サイトへの参加</a></div>
+</div>
+<hr />
+<div class="side-block">
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/home.png" alt="home.png" class="image" /><a href="/">メインページ</a></div>
+<div class="heading">
+<p>SCPデータベース</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-jp-5">シリーズJP-V</a> <span class="sub-text">(4000-JP~4999-JP)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-jp-4">シリーズJP-IV</a> <span class="sub-text">(3000-JP~3999-JP)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-jp-3">シリーズJP-III</a> <span class="sub-text">(2000-JP~2999-JP)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-jp-2">シリーズJP-II</a> <span class="sub-text">(1000-JP~1999-JP)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-jp">シリーズJP-I</a> <span class="sub-text">(001-JP~999-JP)</span></div>
+<hr />
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-10">シリーズX</a> <span class="sub-text">(9000~9999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-9">シリーズIX</a> <span class="sub-text">(8000~8999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-8">シリーズVIII</a> <span class="sub-text">(7000~7999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-7">シリーズVII</a> <span class="sub-text">(6000~6999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-6">シリーズVI</a> <span class="sub-text">(5000~5999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-5">シリーズV</a> <span class="sub-text">(4000~4999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-4">シリーズIV</a> <span class="sub-text">(3000~3999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-3">シリーズIII</a> <span class="sub-text">(2000~2999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series-2">シリーズII</a> <span class="sub-text">(1000~1999)</span></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-series">シリーズI</a> <span class="sub-text">(001~999)</span></div>
+<div class="heading">
+<p>SCPライブラリ</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/foundation-tales-jp">Tales-JP</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/canon-hub-jp">カノン-JP</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/series-hub-jp">連作-JP</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/foundation-tales">Tales</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/canon-hub">カノン</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/scp-international">SCP国際版</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/goi-formats">GoIフォーマット一覧</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/goi-formats-jp">GoIフォーマット-JP一覧</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/series.png" alt="series.png" class="image" /><a href="/international-goi-formats">GoIフォーマット国際版</a></div>
+<div class="heading">
+<p>サイト</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/main.png" alt="main.png" class="image" /><a href="/system:recent-changes">最近の更新</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/most-recently-created">最近作成された記事</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/most-recently-edited">最近編集された記事</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/main.png" alt="main.png" class="image" /><a href="/random:random-page">ランダムページ</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/top-rated-pages">評価の高い記事</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/lowest-rated-pages">評価の低い記事</a></div>
+<hr />
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/top-rated-pages-en">評価の高い記事-EN</a></div>
+<div class="heading">
+<p>コミュニティ</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/guide-hub">ガイド</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/other-link-hub">お役立ちリンク集</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/members-pages-jp">著者ページ-JP</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/international-members-pages">著者ページ国際版</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/artwork-jp">アートワーク-JP</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/international-artwork">アートワーク国際版</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/forum.png" alt="forum.png" class="image" /><a href="/forum:start">フォーラム</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/forum:recent-posts">最近の投稿</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://scp-jp-sandbox3.wikidot.com/forum:recent-posts">最近の下書き批評</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/forum.png" alt="forum.png" class="image" /><a href="/discord-guideline">チャット(Discord)</a></div>
+<div class="menu-item sub-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://scp-jp.wikidot.com/meet-the-staff-jp">スタッフ一覧</a></div>
+<div class="heading">
+<p>執筆</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/help.png" alt="help.png" class="image" /><a href="/how-to-write:how-to-write">記事を作成するには？</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/tag-guide">タグガイド</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/tag-list">タグリスト</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/wiki-syntax:startpage">Wikidotシンタックス</a></div>
+<div class="heading">
+<p>リンク</p>
+</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/home.png" alt="home.png" class="image" /><a href="http://www.scp-wiki.net/" target="_blank">SCP Foundation</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://05command-ja.wikidot.com/" target="_blank">財団日本支部理事会</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="/links">リンク集</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://scp-int.wikidot.com/" target="_blank">SCP-INT</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://scp-jp-storage.wikidot.com/" target="_blank">ファイルストレージ</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://scp-jp-sandbox3.wikidot.com/start" target="_blank">サンドボックスⅢ</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" />（<a href="http://scp-jp-sandbox2.wikidot.com/start" target="_blank">サンドボックス</a>）</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" />（<span style="text-decoration: line-through;"><a href="http://scpsandbox-jp.wikidot.com/start" target="_blank">旧サンドボックス</a></span>）</div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="http://scpper.com/" target="_blank">ScpperDB</a></div>
+<div class="menu-item"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/default.png" alt="default.png" class="image" /><a href="https://discord.gg/zeEwVG7" target="_blank">SCP-JP運営チャット</a></div>
+</div>
+<hr />
+<div class="side-block sns" style="background-color: #e5e5ff;">
+<div class="menu-item">
+<div style="display: flex; align-items: flex-start; justify-content: center;"><a href="https://twitter.com/scpjp_announce" target="_blank"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/Twitter-icon-50.png" title="SCP-JP Twitter" style="width:40px; height:40px;" alt="Twitter-icon-50.png" class="image" /></a><a href="http://ja.scp-wiki.net/discord-guideline"><img src="https://scp-jp.github.io/files/util/common/media/nav/side/discord_icon.png" title="SCP-JP Discord Chat" style="width:37px; height:37px;" alt="discord_icon.png" class="image" /></a></div>
+</div>
+</div>
+<div class="side-block" style="background-color: #f0f0f0;">
+<div style="text-align: center;">
+<p><span style="font-size:80%;">© SCP財団<br />
+<a href="/credits">クレジット</a> | <a href="/licensing-guide">ライセンス</a> | <a href="/contact-staff">問い合わせ</a></span></p>
+</div>
+</div>
+<div class="scpnet-interwiki-wrapper interwiki-stylable"><div class="list-pages-box">    <div class="list-pages-item">
+
+
+<p><iframe src="//interwiki.scp-jp.org/interwikiFrame.html?lang=jp&community=scp&pagename=scp-1247-jp" allowtransparency="true" class="html-block-iframe scpnet-interwiki-frame"></iframe></p>
+</div>
+    
+    
+    
+    </div></div>
+<p><iframe src="//interwiki.scp-jp.org/styleFrame.html?priority=0&theme=https://scp-jp.github.io/files/theme/sigma-9/sigma-9.min.css&css={$css}" style="display: none"></iframe></p>
+<div style="position: absolute; top: -9999px; left: -9999px"><div class="list-pages-box">    <div class="list-pages-item">
+
+
+<img src="https://api.crom.avn.sh/pixel?site_name=scp-jp&amp;fullname=scp-1247-jp&amp;revisions=21&amp;rating=27&amp;rating_votes=59" alt="" class="image" /></div>
+    
+    
+    
+    </div></div>
+<div style="clear:both; height: 0px; font-size: 1px"></div>
+<a class="close-menu" href="##"><br />
+<img src="https://scp-jp.github.io/files/util/common/media/nav/side/black.png" style="z-index:-1; opacity: 0.3;" alt="black.png" class="image" /><br /></a> 
+
+
+                        
+
+
+                    </div>
+                
+                
+                <!-- google_ad_section_end -->
+                
+                <div id="main-content">
+                    <div id="action-area-top"></div>
+                    
+                    
+                        <div id="page-title">
+                            SCP-1247-JP
+                        </div>
+                    
+
+                    
+                        <div id="breadcrumbs">
+                            <a href="/anthology-hub-jp">アンソロジーハブ-JP</a> &raquo; <a href="/scp-kanji-drill-hub">SCP漢字ドリル ハブ</a> &raquo; SCP-1247-JP
+                        </div>
+                    
+
+                    
+
+
+
+                    <div id="page-content">
+                        
+
+<div style="display: none">
+
+<div class="code">
+<div class="hl-main">
+<pre><span class="hl-code">/</span><span class="hl-identifier">*</span><span class="hl-code"> source: </span><span class="hl-identifier">http</span><span class="hl-code">://</span><span class="hl-identifier">ah-sandbox.wikidot.com</span><span class="hl-code">/</span><span class="hl-identifier">component</span><span class="hl-special">:collapsible-sidebar-x1</span><span class="hl-code"> </span><span class="hl-identifier">*</span><span class="hl-code">/
+ 
+</span><span class="hl-identifier">#top-bar</span><span class="hl-code"> </span><span class="hl-identifier">.open-menu</span><span class="hl-code"> </span><span class="hl-identifier">a</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">fixed</span><span class="hl-code">;
+        </span><span class="hl-reserved">bottom:</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">left:</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">z-index:</span><span class="hl-code"> </span><span class="hl-number">15</span><span class="hl-code">;
+        </span><span class="hl-reserved">font-family:</span><span class="hl-code"> san-serif</span><span class="hl-code">;
+        </span><span class="hl-reserved">font-size:</span><span class="hl-code"> </span><span class="hl-number">30</span><span class="hl-string">px</span><span class="hl-code">;
+        </span><span class="hl-reserved">font-weight:</span><span class="hl-code"> </span><span class="hl-number">700</span><span class="hl-code">;
+        </span><span class="hl-reserved">width:</span><span class="hl-code"> </span><span class="hl-number">30</span><span class="hl-string">px</span><span class="hl-code">;
+        </span><span class="hl-reserved">height:</span><span class="hl-code"> </span><span class="hl-number">30</span><span class="hl-string">px</span><span class="hl-code">;
+        </span><span class="hl-reserved">line-height:</span><span class="hl-code"> </span><span class="hl-number">0.9</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">text-align:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code">;
+        </span><span class="hl-reserved">border:</span><span class="hl-code"> </span><span class="hl-number">0.2</span><span class="hl-string">em</span><span class="hl-code"> </span><span class="hl-string">solid</span><span class="hl-code"> </span><span class="hl-var">#888</span><span class="hl-code"> !important</span><span class="hl-code">;
+        </span><span class="hl-reserved">background-color:</span><span class="hl-code"> </span><span class="hl-var">#fff</span><span class="hl-code"> !important</span><span class="hl-code">;
+        </span><span class="hl-reserved">border-radius:</span><span class="hl-code"> </span><span class="hl-number">3</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">color:</span><span class="hl-code"> </span><span class="hl-var">#888</span><span class="hl-code"> !important</span><span class="hl-code">;
+        </span><span class="hl-reserved">text-decoration:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">!important</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+</span><span class="hl-var">@media</span><span class="hl-code"> (min-width: 768</span><span class="hl-identifier">px</span><span class="hl-code">) </span><span class="hl-brackets">{</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">.mobile-top-bar</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">block</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">.mobile-top-bar</span><span class="hl-code"> </span><span class="hl-identifier">li</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">#main-content</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">max-width:</span><span class="hl-code"> </span><span class="hl-number">708</span><span class="hl-string">px</span><span class="hl-code">;
+        </span><span class="hl-reserved">margin:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code"> </span><span class="hl-string">auto</span><span class="hl-code">;
+        </span><span class="hl-reserved">padding:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">transition:</span><span class="hl-code"> max-width </span><span class="hl-number">0.2</span><span class="hl-code">s ease-in-out</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">#side-bar</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">block</span><span class="hl-code">;
+        </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">fixed</span><span class="hl-code">;
+        </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">left:</span><span class="hl-code"> -</span><span class="hl-number">25</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">width:</span><span class="hl-code"> </span><span class="hl-number">17</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">height:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+        </span><span class="hl-reserved">background-color:</span><span class="hl-code"> rgb(</span><span class="hl-number">184</span><span class="hl-code">, </span><span class="hl-number">134</span><span class="hl-code">, </span><span class="hl-number">134</span><span class="hl-code">)</span><span class="hl-code">;
+        </span><span class="hl-reserved">overflow-y:</span><span class="hl-code"> </span><span class="hl-string">auto</span><span class="hl-code">;
+        </span><span class="hl-reserved">z-index:</span><span class="hl-code"> </span><span class="hl-number">10</span><span class="hl-code">;
+        </span><span class="hl-reserved">padding:</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">em</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">em</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">em</span><span class="hl-code">;
+        -</span><span class="hl-reserved">webkit-transition:</span><span class="hl-code"> </span><span class="hl-string">left</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-code">s ease-in-out </span><span class="hl-number">0.1</span><span class="hl-code">s</span><span class="hl-code">;
+        -</span><span class="hl-reserved">moz-transition:</span><span class="hl-code"> </span><span class="hl-string">left</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-code">s ease-in-out </span><span class="hl-number">0.1</span><span class="hl-code">s</span><span class="hl-code">;
+        -</span><span class="hl-reserved">ms-transition:</span><span class="hl-code"> </span><span class="hl-string">left</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-code">s ease-in-out </span><span class="hl-number">0.1</span><span class="hl-code">s</span><span class="hl-code">;
+        -</span><span class="hl-reserved">o-transition:</span><span class="hl-code"> </span><span class="hl-string">left</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-code">s ease-in-out </span><span class="hl-number">0.1</span><span class="hl-code">s</span><span class="hl-code">;
+        </span><span class="hl-reserved">transition:</span><span class="hl-code"> </span><span class="hl-string">left</span><span class="hl-code"> </span><span class="hl-number">0.5</span><span class="hl-code">s ease-in-out </span><span class="hl-number">0.1</span><span class="hl-code">s</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">#side-bar</span><span class="hl-code">:</span><span class="hl-identifier">after</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">content:</span><span class="hl-code"> &quot;&quot;</span><span class="hl-code">;
+        </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">absolute</span><span class="hl-code">;
+        </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">width:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">height:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+        </span><span class="hl-reserved">background-color:</span><span class="hl-code"> rgba(</span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0.2</span><span class="hl-code">)</span><span class="hl-code">;
+ 
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">#side-bar</span><span class="hl-code">:</span><span class="hl-identifier">target</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">block</span><span class="hl-code">;
+        </span><span class="hl-reserved">left:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">width:</span><span class="hl-code"> </span><span class="hl-number">17</span><span class="hl-string">em</span><span class="hl-code">;
+        </span><span class="hl-reserved">margin:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">border:</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">px</span><span class="hl-code"> </span><span class="hl-string">solid</span><span class="hl-code"> </span><span class="hl-var">#dedede</span><span class="hl-code">;
+        </span><span class="hl-reserved">z-index:</span><span class="hl-code"> </span><span class="hl-number">10</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">#side-bar</span><span class="hl-code">:</span><span class="hl-identifier">target</span><span class="hl-code"> + </span><span class="hl-identifier">#main-content</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">left:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+    </span><span class="hl-identifier">#side-bar</span><span class="hl-code">:</span><span class="hl-identifier">target</span><span class="hl-code"> </span><span class="hl-identifier">.close-menu</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+        </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">block</span><span class="hl-code">;
+        </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">fixed</span><span class="hl-code">;
+        </span><span class="hl-reserved">width:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+        </span><span class="hl-reserved">height:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+        </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">left:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+        </span><span class="hl-reserved">background:</span><span class="hl-code"> rgba(</span><span class="hl-number">0</span><span class="hl-code">,</span><span class="hl-number">0</span><span class="hl-code">,</span><span class="hl-number">0</span><span class="hl-code">,</span><span class="hl-number">0.3</span><span class="hl-code">) </span><span class="hl-number">1</span><span class="hl-string">px</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">px</span><span class="hl-code"> </span><span class="hl-string">repeat</span><span class="hl-code">;
+        </span><span class="hl-reserved">z-index:</span><span class="hl-code"> -</span><span class="hl-number">1</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span></pre></div>
+</div>
+</div>
+<div style="display: none">
+<div style="text-align: center;">
+<div class="collapsible-block">
+<div class="collapsible-block-folded"><a class="collapsible-block-link" href="javascript:;">▷&nbsp;コードを表示&nbsp;◁</a></div>
+<div class="collapsible-block-unfolded" style="display:none">
+<div class="collapsible-block-unfolded-link"><a class="collapsible-block-link" href="javascript:;">△&nbsp;コードを隠す&nbsp;△</a></div>
+<div class="collapsible-block-content"></div>
+<br />
+<div style="text-align: left;">
+
+<div class="code">
+<div class="hl-main">
+<pre><span class="hl-var">@import</span><span class="hl-code"> </span><span class="hl-identifier">url</span><span class="hl-code">(</span><span class="hl-identifier">https</span><span class="hl-code">://</span><span class="hl-identifier">fonts.googleapis.com</span><span class="hl-code">/</span><span class="hl-identifier">css2</span><span class="hl-code">?</span><span class="hl-identifier">family</span><span class="hl-code">=</span><span class="hl-identifier">Montserrat</span><span class="hl-special">:wght</span><span class="hl-var">@600</span><span class="hl-code">;700&amp;</span><span class="hl-identifier">display</span><span class="hl-code">=</span><span class="hl-identifier">swap</span><span class="hl-code">);
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Centered</span><span class="hl-code"> </span><span class="hl-identifier">Header</span><span class="hl-code"> </span><span class="hl-identifier">Sigma-9</span><span class="hl-code">
+ </span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-brackets">[</span><span class="hl-var">2021</span><span class="hl-code"> </span><span class="hl-var">Wikidot</span><span class="hl-code"> </span><span class="hl-var">Component</span><span class="hl-brackets">]</span><span class="hl-code">
+ </span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">By</span><span class="hl-code"> </span><span class="hl-identifier">Lt</span><span class="hl-code"> </span><span class="hl-identifier">Flops</span><span class="hl-code"> (</span><span class="hl-identifier">CC</span><span class="hl-code"> </span><span class="hl-identifier">BY-SA</span><span class="hl-code"> 3.0)
+ </span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Forked</span><span class="hl-code"> from:
+   </span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Penumbra</span><span class="hl-code"> </span><span class="hl-identifier">Theme</span><span class="hl-code"> </span><span class="hl-identifier">by</span><span class="hl-code"> </span><span class="hl-identifier">EstrellaYoshte</span><span class="hl-code">
+ </span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Also</span><span class="hl-code"> </span><span class="hl-identifier">based</span><span class="hl-code"> on:
+   </span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Centered</span><span class="hl-code"> </span><span class="hl-identifier">Header</span><span class="hl-code"> </span><span class="hl-identifier">BHL</span><span class="hl-code"> </span><span class="hl-identifier">by</span><span class="hl-code"> </span><span class="hl-identifier">Woedenaz</span><span class="hl-code">
+</span><span class="hl-identifier">**</span><span class="hl-code">/
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">VARS</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-special">:root</span><span class="hl-brackets">{</span><span class="hl-code">
+     --</span><span class="hl-reserved">titleColor:</span><span class="hl-code"> hsl(</span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0</span><span class="hl-string">%</span><span class="hl-code">, </span><span class="hl-number">95</span><span class="hl-string">%</span><span class="hl-code">)</span><span class="hl-code">;
+     --</span><span class="hl-reserved">subtitleColor:</span><span class="hl-code"> hsl(</span><span class="hl-number">60</span><span class="hl-code">, </span><span class="hl-number">62</span><span class="hl-string">%</span><span class="hl-code">, </span><span class="hl-number">85</span><span class="hl-string">%</span><span class="hl-code">)</span><span class="hl-code">;
+     --</span><span class="hl-reserved">lgurl:</span><span class="hl-code"> url(&quot;https://scp-jp-storage.wdfiles.com/local--files/file%</span><span class="hl-number">3</span><span class="hl-code">A7522555-167-g69b/logo.svg&quot;)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">SITE</span><span class="hl-code"> </span><span class="hl-identifier">BANNER</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-identifier">#header</span><span class="hl-code">,
+ </span><span class="hl-identifier">div#header</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">background-image:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">absolute</span><span class="hl-code">;
+     </span><span class="hl-reserved">width:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+     </span><span class="hl-reserved">height:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+     </span><span class="hl-reserved">content:</span><span class="hl-code"> &quot;&quot;</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">background-image:</span><span class="hl-code"> var(--lgurl)</span><span class="hl-code">;
+     </span><span class="hl-reserved">background-position:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code"> </span><span class="hl-string">top</span><span class="hl-code">;
+     </span><span class="hl-reserved">background-repeat:</span><span class="hl-code"> </span><span class="hl-string">no-repeat</span><span class="hl-code">;
+     </span><span class="hl-reserved">background-size:</span><span class="hl-code"> </span><span class="hl-string">auto</span><span class="hl-code"> </span><span class="hl-number">10.55</span><span class="hl-string">em</span><span class="hl-code">;
+     </span><span class="hl-reserved">opacity:</span><span class="hl-code"> </span><span class="hl-number">.33</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h1</span><span class="hl-code">,
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h2</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">float:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+     </span><span class="hl-reserved">margin-left:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">text-align:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h1</span><span class="hl-code"> </span><span class="hl-identifier">span</span><span class="hl-code">,
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h2</span><span class="hl-code"> </span><span class="hl-identifier">span</span><span class="hl-brackets">{</span><span class="hl-code">
+   /</span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Hide</span><span class="hl-code"> </span><span class="hl-identifier">the</span><span class="hl-code"> </span><span class="hl-identifier">Existing</span><span class="hl-code"> </span><span class="hl-identifier">Text</span><span class="hl-code"> </span><span class="hl-identifier">*</span><span class="hl-code">/
+     </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h1</span><span class="hl-code"> </span><span class="hl-identifier">a</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-code">,
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h2</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-brackets">{</span><span class="hl-code">
+   /</span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Style</span><span class="hl-code"> </span><span class="hl-identifier">the</span><span class="hl-code"> </span><span class="hl-identifier">New</span><span class="hl-code"> </span><span class="hl-identifier">Text</span><span class="hl-code"> </span><span class="hl-identifier">*</span><span class="hl-code">/
+     </span><span class="hl-reserved">font-family:</span><span class="hl-code"> &quot;Montserrat&quot;, &quot;Arial&quot;, </span><span class="hl-string">sans-serif</span><span class="hl-code">;
+     </span><span class="hl-reserved">text-shadow:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h1</span><span class="hl-code"> </span><span class="hl-identifier">a</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">relative</span><span class="hl-code">;
+     </span><span class="hl-reserved">bottom:</span><span class="hl-code"> </span><span class="hl-number">.15</span><span class="hl-string">em</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">color:</span><span class="hl-code"> var(--titleColor)</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">font-size:</span><span class="hl-code"> </span><span class="hl-number">115</span><span class="hl-string">%</span><span class="hl-code">;
+     </span><span class="hl-reserved">font-weight:</span><span class="hl-code"> </span><span class="hl-number">700</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h2</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">relative</span><span class="hl-code">;
+     </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">.1</span><span class="hl-string">em</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">color:</span><span class="hl-code"> var(--subtitleColor)</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">font-size:</span><span class="hl-code"> </span><span class="hl-number">130</span><span class="hl-string">%</span><span class="hl-code">;
+     </span><span class="hl-reserved">font-weight:</span><span class="hl-code"> </span><span class="hl-number">600</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h1</span><span class="hl-code"> </span><span class="hl-identifier">a</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-brackets">{</span><span class="hl-code">
+   /</span><span class="hl-identifier">*</span><span class="hl-code"> </span><span class="hl-identifier">Set</span><span class="hl-code"> </span><span class="hl-identifier">the</span><span class="hl-code"> </span><span class="hl-identifier">New</span><span class="hl-code"> </span><span class="hl-identifier">Text</span><span class="hl-code">'</span><span class="hl-identifier">s</span><span class="hl-code"> </span><span class="hl-identifier">Content</span><span class="hl-code"> </span><span class="hl-identifier">From</span><span class="hl-code"> </span><span class="hl-identifier">Variable</span><span class="hl-code"> </span><span class="hl-identifier">*</span><span class="hl-code">/
+     </span><span class="hl-reserved">content:</span><span class="hl-code"> var(--header-title, &quot;SCP財団&quot;)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">h2</span><span class="hl-code">:</span><span class="hl-special">:before</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">content:</span><span class="hl-code"> var(--header-subtitle, &quot;確保 - 収容 - 保護&quot;)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">SEARCH</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-identifier">#search-top-box</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">em</span><span class="hl-code">;
+     </span><span class="hl-reserved">right:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#search-top-box-form</span><span class="hl-code"> </span><span class="hl-identifier">input.button</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">margin-right:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#search-top-box-input</span><span class="hl-code">,
+ </span><span class="hl-identifier">#search-top-box-input</span><span class="hl-special">:hover</span><span class="hl-code">,
+ </span><span class="hl-identifier">#search-top-box-input</span><span class="hl-special">:focus</span><span class="hl-code">,
+ </span><span class="hl-identifier">#search-top-box-form</span><span class="hl-code"> </span><span class="hl-identifier">input</span><span class="hl-brackets">[</span><span class="hl-var">type</span><span class="hl-code">=</span><span class="hl-var">submit</span><span class="hl-brackets">]</span><span class="hl-code">,
+ </span><span class="hl-identifier">#search-top-box-form</span><span class="hl-code"> </span><span class="hl-identifier">input</span><span class="hl-brackets">[</span><span class="hl-var">type</span><span class="hl-code">=</span><span class="hl-var">submit</span><span class="hl-brackets">]</span><span class="hl-special">:hover</span><span class="hl-code">,
+ </span><span class="hl-identifier">#search-top-box-form</span><span class="hl-code"> </span><span class="hl-identifier">input</span><span class="hl-brackets">[</span><span class="hl-var">type</span><span class="hl-code">=</span><span class="hl-var">submit</span><span class="hl-brackets">]</span><span class="hl-special">:focus</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">border-radius:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+     </span><span class="hl-reserved">box-shadow:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">font-size:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">TOP</span><span class="hl-code"> </span><span class="hl-identifier">BAR</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-identifier">#top-bar</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">right:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+     </span><span class="hl-reserved">display:</span><span class="hl-code"> flex</span><span class="hl-code">;
+     </span><span class="hl-reserved">justify-content:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#top-bar</span><span class="hl-code"> </span><span class="hl-identifier">ul</span><span class="hl-code"> </span><span class="hl-identifier">li</span><span class="hl-code"> </span><span class="hl-identifier">ul</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">border-bottom:</span><span class="hl-code"> </span><span class="hl-number">1</span><span class="hl-string">px</span><span class="hl-code"> </span><span class="hl-string">solid</span><span class="hl-code"> hsl(</span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0</span><span class="hl-string">%</span><span class="hl-code">, </span><span class="hl-number">40</span><span class="hl-string">%</span><span class="hl-code">)</span><span class="hl-code">;
+     </span><span class="hl-reserved">box-shadow:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">LOGIN</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-identifier">#login-status</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">1.1</span><span class="hl-string">em</span><span class="hl-code">;
+     </span><span class="hl-reserved">right:</span><span class="hl-code"> initial</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">color:</span><span class="hl-code"> hsl(</span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0</span><span class="hl-string">%</span><span class="hl-code">, </span><span class="hl-number">87</span><span class="hl-string">%</span><span class="hl-code">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+ </span><span class="hl-identifier">#account-topbutton</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">border-color:</span><span class="hl-code"> hsl(</span><span class="hl-number">0</span><span class="hl-code">, </span><span class="hl-number">0</span><span class="hl-string">%</span><span class="hl-code">, </span><span class="hl-number">87</span><span class="hl-string">%</span><span class="hl-code">)</span><span class="hl-code">;
+ 
+     </span><span class="hl-reserved">font-size:</span><span class="hl-code"> </span><span class="hl-number">100</span><span class="hl-string">%</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">PAGE</span><span class="hl-code"> </span><span class="hl-identifier">TITLE</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-identifier">.meta-title</span><span class="hl-code">,
+ </span><span class="hl-identifier">#page-title</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">text-align:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">BREADCRUMBS</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-identifier">.pseudocrumbs</span><span class="hl-code">,
+ </span><span class="hl-identifier">#breadcrumbs</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-reserved">text-align:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+/</span><span class="hl-identifier">*</span><span class="hl-code"> ---- </span><span class="hl-identifier">MOBILE</span><span class="hl-code"> </span><span class="hl-identifier">DISPLAY</span><span class="hl-code"> ---- </span><span class="hl-identifier">*</span><span class="hl-code">/
+ </span><span class="hl-var">@media</span><span class="hl-code"> (max-width: 767</span><span class="hl-identifier">px</span><span class="hl-code">)</span><span class="hl-brackets">{</span><span class="hl-code">
+     </span><span class="hl-identifier">#search-top-box</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">1.85</span><span class="hl-string">em</span><span class="hl-code">;
+          </span><span class="hl-reserved">width:</span><span class="hl-code"> unset</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+     </span><span class="hl-identifier">.mobile-top-bar</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">position:</span><span class="hl-code"> </span><span class="hl-string">relative</span><span class="hl-code">;
+          </span><span class="hl-reserved">left:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+          </span><span class="hl-reserved">display:</span><span class="hl-code"> flex</span><span class="hl-code">;
+          </span><span class="hl-reserved">justify-content:</span><span class="hl-code"> </span><span class="hl-string">center</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+     </span><span class="hl-identifier">#login-status</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">top:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+          </span><span class="hl-reserved">right:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+     </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">.printuser</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">font-size:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+     </span><span class="hl-identifier">#header</span><span class="hl-code"> </span><span class="hl-identifier">.printuser</span><span class="hl-code"> </span><span class="hl-identifier">img.small</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">margin:</span><span class="hl-code"> </span><span class="hl-number">0</span><span class="hl-code">;
+ 
+          </span><span class="hl-reserved">transform:</span><span class="hl-code"> translate(</span><span class="hl-number">6</span><span class="hl-string">px</span><span class="hl-code">, </span><span class="hl-number">4</span><span class="hl-string">px</span><span class="hl-code">)</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+     </span><span class="hl-identifier">#my-account</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">display:</span><span class="hl-code"> </span><span class="hl-string">none</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+ 
+     </span><span class="hl-identifier">#account-topbutton</span><span class="hl-brackets">{</span><span class="hl-code">
+          </span><span class="hl-reserved">margin-left:</span><span class="hl-code"> </span><span class="hl-number">2</span><span class="hl-string">px</span><span class="hl-code">;
+    </span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+<div class="creditRate creditModule {$mode}">
+<div class="rateBox">
+<div class="rate-box-with-credit-button"><div class="page-rate-widget-box"><span class="rate-points">評価:&nbsp;<span class="number prw54353">+27</span></span><span class="rateup btn btn-default"><a title="好き" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, 1)">+</a></span><span class="ratedown btn btn-default"><a title="好きじゃない" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, -1)">&#8211;</a></span><span class="cancel btn btn-default"><a title="投票を取り消す" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.cancelVote(event)">x</a></span></div>
+<div class="creditButton"><a class="fa fa-info" style="position:relative;" href="#u-credit-view"><img src="http://scp-jp.wikidot.com/local--files/nav:side/blank.png" title="クレジットを表示する" style="position:absolute;height:100%;width:100%;top:0;left:0;" alt="blank.png" class="image" /></a></div>
+</div>
+</div>
+<div class="rateBox heritage-wrap" style="display:none;">
+<div class="heritage-rating-module">
+<div class="heritage-emblem"><a href="/"><img src="http://scp-jp.wdfiles.com/local--files/component:heritage-rating/scp-heritage-v3.png" style="max-width: none;" alt="scp-heritage-v3.png" class="image" /></a></div>
+<div class="page-rate-widget-box"><span class="rate-points">評価:&nbsp;<span class="number prw54353">+27</span></span><span class="rateup btn btn-default"><a title="好き" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, 1)">+</a></span><span class="ratedown btn btn-default"><a title="好きじゃない" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, -1)">&#8211;</a></span><span class="cancel btn btn-default"><a title="投票を取り消す" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.cancelVote(event)">x</a></span></div></div>
+<div class="creditButton"><a class="fa fa-info" style="position:relative;" href="#u-credit-view"><img src="http://scp-jp-sandbox2.wikidot.com/local--files/nav:side/blank.png" title="クレジットを表示する" style="position:absolute;height:100%;width:100%;top:0;left:0;" alt="blank.png" class="image" /></a></div>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div id="u-credit-view">
+<div class="fader"><iframe src="https://scp-jp.github.io/files/util/common/credit/backmodule/start.html" align="" frameborder="" height="" scrolling="" width="" class="" style=""></iframe></div>
+<div class="modalcontainer">
+<div class="modalbox">
+<div class="modalbox-title">
+<h2><span>クレジット</span></h2>
+</div>
+<div class="credit">
+<p><strong>タイトル:</strong> SCP-1247-JP - 愛亡き<strong>子</strong><br />
+<strong>著者:</strong> <span class="printuser avatarhover"><a href="http://www.wikidot.com/user:info/sealbaby-v" onclick="WIKIDOT.page.listeners.userInfo(6903570); return false;"><img class="small" src="http://www.wikidot.com/avatar.php?userid=6903570&amp;amp;size=small&amp;amp;timestamp=1763366560" alt="SealBaby-V" style="background-image:url(http://www.wikidot.com/userkarma.php?u=6903570)" /></a><a href="http://www.wikidot.com/user:info/sealbaby-v" onclick="WIKIDOT.page.listeners.userInfo(6903570); return false;">SealBaby-V</a></span>, <span class="printuser avatarhover"><a href="http://www.wikidot.com/user:info/terukami" onclick="WIKIDOT.page.listeners.userInfo(7178014); return false;"><img class="small" src="http://www.wikidot.com/avatar.php?userid=7178014&amp;amp;size=small&amp;amp;timestamp=1763366560" alt="terukami" style="background-image:url(http://www.wikidot.com/userkarma.php?u=7178014)" /></a><a href="http://www.wikidot.com/user:info/terukami" onclick="WIKIDOT.page.listeners.userInfo(7178014); return false;">terukami</a></span><br />
+<strong>作成年:</strong> 2024</p>
+<hr />
+<p>本記事は、<a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ja" target="_blank">CC BY-SA 4.0ライセンス</a>の下で提供されます。これに加えて、本記事の作成者、著者、翻訳者、または編集者が著作権を有するコンテンツは、別段の定めがない限り<a href="https://creativecommons.org/licenses/by-sa/3.0/deed.ja" target="_blank">CC BY-SA 3.0ライセンス</a>が付与されており、同ライセンスの下で利用することができます。</p>
+<p>「コンテンツ」とは、文章、画像、音声、音楽、動画、ソフトウェア、コードその他の情報のことをいいます。</p>
+<div class="credit-back" style="text-align: center;"><iframe src="https://scp-jp.github.io/files/util/common/credit/backmodule/end.html" align="" frameborder="" height="" scrolling="no" width="" class="" style="height:2em;width: 100%;margin: 0;padding: 0;border: 0;background: transparent;"></iframe></div>
+</div>
+<div class="creditBottomRate" style="height:30px;">
+<div class="credit-license"><a class="cc cc-by-sa" href="https://creativecommons.org/licenses/by-sa/3.0/deed.ja" target="_blank"></a></div>
+<div style="text-align: center; top: 0px;">
+<div class="Dendo">
+<div class="heritage-rating-module">
+<div class="heritage-emblem"><a href="/"><img src="http://scp-jp.wdfiles.com/local--files/component:heritage-rating/scp-heritage-v3.png" style="max-width: none;" alt="scp-heritage-v3.png" class="image" /></a></div>
+<div class="page-rate-widget-box"><span class="rate-points">評価:&nbsp;<span class="number prw54353">+27</span></span><span class="rateup btn btn-default"><a title="好き" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, 1)">+</a></span><span class="ratedown btn btn-default"><a title="好きじゃない" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, -1)">&#8211;</a></span><span class="cancel btn btn-default"><a title="投票を取り消す" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.cancelVote(event)">x</a></span></div></div>
+</div>
+<div><div class="page-rate-widget-box"><span class="rate-points">評価:&nbsp;<span class="number prw54353">+27</span></span><span class="rateup btn btn-default"><a title="好き" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, 1)">+</a></span><span class="ratedown btn btn-default"><a title="好きじゃない" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.rate(event, -1)">&#8211;</a></span><span class="cancel btn btn-default"><a title="投票を取り消す" href="javascript:;" onclick="WIKIDOT.modules.PageRateWidgetModule.listeners.cancelVote(event)">x</a></span></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="classified-bar-wrapper">
+<div class="level">
+<p><span class="classified-bar-text">LEVEL 3</span></p>
+</div>
+<div class="classified">
+<p><span class="classified-bar-text">CLASSIFIED</span></p>
+</div>
+<div class="item-number">
+<p><span class="classified-bar-text">ITEM#: 1247-JP</span></p>
+</div>
+<div class="class">
+<p><span class="classified-bar-text right">EUCLID</span></p>
+</div>
+<div class="icon"></div>
+</div>
+<div style="border-bottom:2px solid #000; margin-bottom:1px;"></div>
+<div style="border-bottom:1px solid #000; margin-bottom: 1em;"></div>
+<div class="scp-image-block block-center scp-clear-true" style="width:100%;"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-52-brj1/%E9%9B%81%E7%A6%8F%E6%9D%91.png" alt="%E9%9B%81%E7%A6%8F%E6%9D%91.png" class="image" />
+<div class="scp-image-caption">
+<p>雁福村</p>
+</div>
+</div>
+<h4 id="toc0"><span><span style="text-decoration: underline;">特別収容プロトコル</span></span></h4>
+<p>SCP-1247-JPは防腐処理を行い、スクラントン現実錨 (SRA) が内蔵されている冷凍保管室に収容され24時間体制で監視されます。SCP-1247-JP-Aが出現した場合は機動部隊お-9 (&quot;ガイドマンズ&quot;) に連絡し適切な処置を行ってください。</p>
+<h4 id="toc1"><span><span style="text-decoration: underline;">説明</span></span></h4>
+<p>SCP-1247-JPは岸本 紗代の死体です。SCP-1247-JPは2018/07/16に突如巨大な高ヒューム空間を発生させたことで発見されました。その事態の鎮圧のため射殺されているものの異常性を有しています。SCP-1247-JPは1日おきに周辺のヒューム値を10秒間低下させた後、2体の概ね人型をした異常実体 (SCP-1247-JP-A) を出現させます。SCP-1247-JP-AはSCP-1247-JPに対し撫でる・手を握る・抱きしめるなどの行動を繰り返します。SCP-1247-JP-Aは際限なく出現し消滅することは無いため定期的な処分が必要とされています。</p>
+<h4 id="toc2"><span><span style="text-decoration: underline;">補遺1247-JP.1 &gt; 経緯</span></span></h4>
+<p>2018/07/16 AM7:50頃、雁福村を中心に高ヒューム空間が突如発生しました。空間は一定の速度で影響範囲を拡大させていたため周囲を囲うようにスクラントン現実錨を等間隔に設置することで一時的に進行を抑えていました。その間に財団は雁福村異常事象対策本部の設置、機動部隊の要請および編成・収容のための物資の運搬などを行い内部調査および収容措置への準備を整えました。以下は事前調査のため派遣された機動部隊お-9のヘリ班と対策本部との通信記録です。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>通信記録 2018/07/16 - 090614</strong></span><br />
+雁福村異常事象対策本部通信回線による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 ヘリ班:</strong> 橋本 一誠</li>
+<li><strong>機動部隊お-9 ヘリ班:</strong> 丸内 和希</li>
+<li><strong>機動部隊お-9 副隊長兼対策本部指示係:</strong> 遠山 修</li>
+</ul>
+<hr />
+<p><strong>遠山副隊長:</strong> こちら本部。内部の状況を報告せよ。</p>
+<p><strong>橋本隊員:</strong> こちら橋本。影響範囲外の上空から空間を確認している。中は……モノクロだ。いや少し暗いようにも見えるが、とにかく色相が機能していないようだ。</p>
+<p><strong>遠山副隊長:</strong> 他にはなにかないか？</p>
+<p><strong>橋本隊員:</strong> 顔の付いた木が動いているように見える。あっちには豚のケンタウロス……みたいなのが集団ですごいスピードで走ってるぞ。変なやつが多すぎて説明しきれない。丸内は何か見えたか。</p>
+<p>[ヘリが移動する]</p>
+<p><strong>丸内隊員:</strong> こちら丸内。村の家は全部ぐちゃぐちゃになっている。浮いていたり屋根に扉が突き刺さっていたり、ひどいものだと腕と脚が生えて動き回っていたりしているが……あの村の中心の家だけ普通なんだ。</p>
+<p><strong>橋本隊員:</strong> 本当だ。少し近づいてくれ……色相は変わっているが、高ヒューム空間でほとんど影響を受けないことなんてあるのか？</p>
+<p><strong>丸内隊員:</strong> 一応、生存者がいるかもしれないからサーマルを使って確認しながら運転していたんだが、反応があるのはあの家だけだ。あまり正確にとらえられている自信はないが……子供のように見える。</p>
+<p><strong>橋本隊員:</strong> あの空間に子供が取り残されてるだと？ まさか生存者がいたって言うのか？</p>
+<p><strong>遠山副隊長:</strong> その可能性は低い。突然高ヒューム空間に飛ばされて生きていける人間は基本いない。大抵は改変に巻き込まれてしまうからだ。……実際他に反応はないのならばそこにいるのはこの事態を引き起こした異常存在だ。</p>
+<p><strong>橋本隊員:</strong> 子供がこんなことできるのか？</p>
+<p><strong>丸内隊員:</strong> 現実改変ができるオブジェクトの中で一番厄介なのは想像力が豊かなやつだ。俺たちの想定していない何かを起こす事だってあいつらにとっては容易い。それが子供なら尚更何を考えているのかわからないし、事実こんなことが起きてしまっている以上そう考えるのはおかしくないだろう。子供は想像力の塊とも言うしな。</p>
+<p><strong>遠山副隊長:</strong> 二人ともご苦労だった。空間に接触しないよう気をつけて帰還してくれ。</p>
+<p><strong>丸山隊員:</strong> 了解……待て、ヘリの操作が効かない！ 何故だ！</p>
+<p><strong>橋本隊員:</strong> ヘリの後ろにガムみたいなカラスがベタベタって大量に引っ付いてやがる！ あいつらがバランスを崩してるんだ！</p>
+<p>[橋本隊員が鳥型実体群に対して銃火器を用いて応戦するがヘリから離れる様子はない。また撃たれて血が出た箇所から新たに鳥型実体が生まれ他の実体と同様にヘリに接触する]</p>
+<p><strong>橋本隊員:</strong> こいつら撃てば撃つほど増えやがる！ なんなんだくそっ！</p>
+<p><strong>丸内隊員:</strong> まだ持ちこたえてる！ 何とかしてくれ！</p>
+<p><strong>橋本隊員:</strong> 畜生！ プロペラがやられた！</p>
+<p><strong>丸内隊員:</strong> 空間内に転落する！ 掴まれ！</p>
+<p>[爆発音が聞こえ通信が途絶える]</p>
+</div>
+<div class="scp-image-block block-center scp-clear-true" style="width:100%;"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-50-uk9n/helicopter-crow.png" alt="helicopter-crow.png" class="image" />
+<div class="scp-image-caption">
+<p>通信が途絶える直前に送信された画像。墜落しているヘリコプターの後方に鳥型実体群が集まっているように見えるが詳細不明</p>
+</div>
+</div>
+<p>この記録以降ヘリ班からの通信はありませんでした。対策本部は高ヒューム空間は拡大こそしていないものの、空中はスクラントン現実錨の影響範囲外であったためヘリ班は攻撃されたという考察をしました。またヘリ班からの証言より村の中心にある家屋に高ヒューム空間を作り出した異常存在がいると仮定し、内部調査時の一時的な目標地点としました。</p>
+<h3 id="toc3"><span><span style="text-decoration: underline;">補遺1247-JP.2 &gt; 調査</span></span></h3>
+<p>対策本部は空中経由ではなく地上経由で高ヒューム空間内部へ侵入することを決定しました。空間の具体的な異常性・空間内の異常実体群の調査を目的として地上班-甲を編成し、通常の対現実改変者武装に加え携帯型スクラントン現実錨の装備と装甲兵員輸送車を用いた移動を命じました。以下は地上班-甲による映像記録です。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 112436</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) 地上班-甲による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 地上班-甲:</strong> 石川 辰巳</li>
+<li><strong>機動部隊お-9 地上班-甲:</strong> 原岸 斗真</li>
+<li><strong>機動部隊お-9 地上班-甲:</strong> 柊木 亮二</li>
+<li><strong>機動部隊お-9 地上班-甲:</strong> 鈴宮 真希</li>
+<li><strong>機動部隊お-9 地上班-甲:</strong> 田神 晶</li>
+</ul>
+<hr />
+<p><strong>石川隊員:</strong> 地上班の甲のリーダー石川だ。これより空間の異常性と空間内の異常実体群の調査に向かう。運転は鈴宮、それ以外は中で銃をいつでも撃てるようにした状態で待機だ。出発しよう。</p>
+<p><strong>鈴宮隊員:</strong> 了解。空間内に突入します。ヒューム値の急な変化に備えてください。3、2、1、突入。</p>
+<p><strong>柊木隊員:</strong> おわっ！ なんだ？ 視界がモノクロになったぞ！</p>
+<p><strong>原岸隊員:</strong> 驚きました……。ただ、これは視界がモノクロになっているのか空間自体がモノクロになっているのかどっちなんでしょうか……。</p>
+<p><strong>田神隊員:</strong> 恐らく空間自体でしょう。ヘリ班が送信した画像も同じようにモノクロでした。視界がモノクロになるのならカメラ越しの画像は影響を受けないはずです。</p>
+<p><strong>柊木隊員:</strong> なるほど。俺らも空間の中にいるからモノクロになってるってわけか。</p>
+<p><strong>石川隊員:</strong> 他にも異常性があるかもしれん。気をつけろ。原岸、外の様子はどうだ？</p>
+<p><strong>原岸隊員:</strong> やはり、口で説明しきるのは難しいですね。混沌としているとしか表現ができません……そうだ、リーダーのカメラを少しお借りしたいです。口で説明するよりも映像で記録を残しておこうかと。</p>
+<p><strong>石川隊員:</strong> わかった。</p>
+<p>[石川が原岸にカメラを渡す。その瞬間大きな衝突音がする]</p>
+<p><strong>柊木隊員:</strong> 今度はなんだ！？ だいぶ揺れたぞ！</p>
+<p><strong>鈴宮隊員:</strong> すみません。木にぶつかりました。私が距離を見誤ったようです。</p>
+<p><strong>田神隊員:</strong> いえ違います。鈴宮さんのミスではありません。先程から床にある葉っぱが気になっていて取ろうとしているのですが、おそらく遠近感がやられていてとることができないんです。原岸さん、私が持っているこのペンを取ることができますか。</p>
+<p><strong>原岸隊員:</strong> わかりました……あれ、取れない？</p>
+<p><strong>柊木隊員:</strong> いや、なんでそんな手前で掴もうと……なるほど。そういうことか。これはまずいな。鈴宮、運転このままできそうか？</p>
+<p><strong>鈴宮隊員:</strong> 大丈夫です。車自体はまだ動きますしもう少し警戒しながら進みます。</p>
+<p>[しばらく空間内を移動する]</p>
+<p><strong>原岸隊員:</strong> まだ20分ほどしかたっていないのにすごい数の異常実体が記録できていますが、みんな私達のことなんてどうでもいいみたいに何もしてきませんね。ヘリ班はすぐに襲われたのに、どういうことでしょう？</p>
+<p><strong>田神隊員:</strong> 私達がSRAを持っているからとも考えられますが、空間の影響を受けている以上確信を持って言えませんね。</p>
+<p><strong>鈴宮隊員:</strong> リーダー、提案があるのですが中心に近づいてみませんか？ 私の考えではヘリ班が襲われたのはSRAの範囲外だっただけではなく中心に近づいたからだと思っています。</p>
+<p><strong>石川隊員:</strong> 何故そう思った？</p>
+<p><strong>鈴宮隊員:</strong> ヘリ班の通信記録の途中に中心に近づいていることを示す会話がありました。それまで襲われていなかったのに中心に近づいてから襲われているから、その可能性は高いのではないかと。</p>
+<p><strong>石川隊員:</strong> なるほど、試してみる価値はあるな。ゆっくり近づいてくれ。</p>
+<p><strong>鈴宮隊員:</strong> わかりました。</p>
+<p>[車が右折し目標地点に少しづつ近づく]</p>
+<p><strong>柊木隊員:</strong> ……今の所なんもないな。</p>
+<p><strong>石川隊員:</strong> いや、何も変わって無いわけじゃない。さっきより実体達の興味がこっちに向いているように見える。鈴宮の考えは正しかったかもしれん。</p>
+<p><strong>原岸隊員:</strong> ……あ、来ます！ 50m後方から記録にあったケンタウロス豚の群れです！ 追いかけてきます！</p>
+<div class="scp-image-block block-right scp-clear-true" style="width:300px;"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-53-uvg4/%E3%82%B1%E3%83%B3%E8%B1%9A.png" alt="%E3%82%B1%E3%83%B3%E8%B1%9A.png" class="image" />
+<div class="scp-image-caption">
+<p>地上班-甲を追いかける亜人型実体</p>
+</div>
+</div>
+<p>[カメラが亜人型実体群を映す。全員同じ顔をしており、右手にナタを持っている]</p>
+<p><strong>柊木隊員:</strong> ようやくお出ましか！ 全員構えろ！ 撃て！</p>
+<p>[石川、柊木、原岸が亜人型実体に対し掃射する]</p>
+<p><strong>柊木隊員:</strong> こいつら人間の部分を撃っても怯まねぇ！ 豚だ！ 豚の方を撃て！</p>
+<p><strong>原岸隊員:</strong> 足が速すぎます！ このままじゃ追いつかれる！</p>
+<p><strong>石川隊員:</strong> 鈴宮スピードを上げてくれ！ グレネードを使う！</p>
+<p><strong>鈴宮隊員:</strong> 了解！</p>
+<p><strong>田神隊員:</strong> ま、待ってください！ 柏木さんに何してるんですか！</p>
+<p>[田神が石川からグレネードを取り上げる]</p>
+<p><strong>柊木隊員:</strong> 何やってんだ田神！</p>
+<p><strong>田神隊員:</strong> 柊木さんも原岸さんも撃たないでください！ 豚達が死んでしまいます！ 早く治療しないといけない！ 降ろして！ 降ろしてください！</p>
+<p><strong>原岸隊員:</strong> 何をして……あ、あれ？ 豚達が立ち止まりました。</p>
+<p><strong>石川隊員:</strong> 何故だ？</p>
+<p><strong>鈴宮隊員:</strong> 今のうちにこのまま中心まで一気に行きます！</p>
+<p><strong>田神隊員:</strong> 違うそっちじゃない！ 戻れ！ あの子のところに戻れ！</p>
+<p>[田神隊員が暴れたため、柊木隊員によって取り押さえられる]</p>
+<p><strong>柊木隊員:</strong> 暴れるな！ どうしたんだ。あの子って誰の事だよ。</p>
+<p><strong>原岸隊員:</strong> 中心の家にいる子供の事でしょうか？ 話していることから察するに中心に行きたいんでしょうけど、今向かっているのに戻れって言っているんですかね。</p>
+<p><strong>鈴宮隊員:</strong> 豚達が襲ってこなくなった理由と田神さんが戻れと言っている理由がわかりました。前を見てください。</p>
+<p>[前方には突入地点がある]</p>
+<p><strong>柊木隊員:</strong> ……どういうことだよ。</p>
+</div>
+<p>地上班-甲は帰還後田神隊員が重度の精神影響を受けていると訴え、田神隊員を最寄りのサイトに搬送後適切な処置を受けさせ除去しました。他の隊員にも行ったところ軽度のミーム汚染が確認され同様に処置を受けました。地上班-甲が記録した映像と、その後各隊員に対し行ったカウンセリングを兼ねたインタビュー・地上班乙、丙による再調査により空間には以下の異常性があると仮定しました。</p>
+<ul>
+<li>空間内は色相が機能していない。</li>
+<li>遠近感が掴めなくなり物体との距離感が捉えられなくなる。</li>
+<li>方向感覚が掴めなくなり目標地点に辿り着けなくなる。</li>
+<li>空間内の動物・植物・物体などが異常実体へと変化する。</li>
+<li>中心に近いほど異常実体は敵対性を示す。</li>
+<li>異常実体・目標地点にいる子供に対し友好的な感情を示す。</li>
+<li>空間発生以前の雁福村についての知識を有し自身が雁福村の構成員であるという認識を持つ。</li>
+<li>目標地点に特定の子供がいると主張する。</li>
+<li>友好的になった者は目標地点への道のりを正確に把握する。</li>
+</ul>
+<p>以下は田神隊員に対して行ったインタビューの抜粋です。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 150643</strong></span><br />
+カウンセラー堀町による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>サイト-81H3 カウンセラー:</strong> 堀町 喜美子</li>
+<li><strong>機動部隊お-9 地上班-甲:</strong> 田神 晶</li>
+</ul>
+<hr />
+<p><strong>カウンセラー堀町:</strong> では次に、柏木さんとは誰ですか？</p>
+<p><strong>田神隊員:</strong> 柏木さんは……村で牧場をしている人です。豚や牛に、馬もいたと思います。</p>
+<p><strong>カウンセラー堀町:</strong> なぜそのようなことを知っているのですか？</p>
+<p><strong>田神隊員:</strong> 中心に向かっている途中、柏木さ……亜人型実体群に襲われる直前くらいに突然、頭の中に村の情報が入ってきたんです。なんていうか、まるで私も村の住民の1人だったみたいに。</p>
+<p><strong>カウンセラー堀町:</strong> なるほど。何が原因かわかりますか？例えば何かを見た・聞いたなど。</p>
+<p><strong>田神隊員:</strong> いえ、特にそう言うものはなかったです。ただ……</p>
+<p><strong>カウンセラー堀町:</strong> ただ？</p>
+<p><strong>田神隊員:</strong> 中心の家にいるのが、本当に子供だったらと考えていると、なんというか、同情の気持ちが湧いてきてしまっていました。だって子供ですよ？ こんなの酷じゃないですか。</p>
+<p><strong>カウンセラー堀町:</strong> なるほど……ではその同情の気持ちが他の隊員よりも早くミーム汚染を加速させたということでしょうか。</p>
+<p><strong>田神隊員:</strong> おそらく。</p>
+<p><strong>カウンセラー堀町:</strong> わかりました。それでは最後に村の情報について後ほど別でインタビューすると思いますが、優先して伝えておきたいことはありますか？</p>
+<p><strong>田神隊員:</strong> はい。中心の子供、紗代ちゃんって言うんですけど、空間の異常性から少しは予測していたのですが、彼女には視覚障害があります。</p>
+<p><strong>カウンセラー堀町:</strong> 視覚障害？</p>
+<p><strong>田神隊員:</strong> 色相が機能していないことや遠近感や方向感覚は視覚障害の特徴があると思います。そしてあの異常実体群、もちろん高ヒューム空間であることにも起因しているとは思いますがあの変貌は従来のものに比べても大きすぎます。</p>
+<p><strong>カウンセラー堀町:</strong> たしかに、あの空間自体過去に発生した似たような空間と同じくらいのヒューム値で、過去の方ではここまでの変貌はなかったはずですね。しかしそれと視覚障害がどうつながるのですか？</p>
+<p><strong>田神隊員:</strong> 視覚障害、特に全盲の人は物体の形を理解するために手で触れるなどの行動をします。輪郭を掌でなぞり頭の中で想像するんです。ある程度成長した大人であれば理解しやすいのですが、子供であれば経験や知識が少なく彼女は子供です。というより村の記憶では彼女の知能は一般的な子供と大きな差異はありませんでした。だからこそ、あそこまで変貌してしまったのではないかと。</p>
+<p><strong>カウンセラー堀町:</strong> なら、触ったものを実際の形ではなく想像上の形に変化させたという事でしょうか。その結果彼らが出来てしまったと？</p>
+<p><strong>田神隊員:</strong> はい。ヘリ班の通信でもありました。「子供は何を考えているかわからない」と。私たちが考えているよりも彼女には想像力があり、この事態を引き起こしてしまったのかもしれません。</p>
+</div>
+<h4 id="toc4"><span><span style="text-decoration: underline;">補遺1247-JP.3 &gt; 情報</span></span></h4>
+<p>田神隊員による雁福村に関する情報を基に対策本部は住民の1人である岸本 紗代が高ヒューム空間を発生させたと判断し、岸本紗代の調査を進めました。その過程でこの事象が発生する一か月前に村から引っ越している人物を発見し、岸本紗代及び雁福村に関するインタビューを行いました。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 150643</strong></span><br />
+対策本部臨時渉外担当 水山による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>対策本部臨時渉外担当:</strong> 水山 太一</li>
+<li><strong>元雁福村住民:</strong> 秋山 修平</li>
+</ul>
+<hr />
+<p><strong>渉外担当水山:</strong> では、紗代と呼ばれる子供と岸本家についてあなたが引っ越す以前のことを教えてください。</p>
+<p><strong>秋山:</strong> 俺は村にいた頃、なんていうかな、引きこもりっていうかニートっていうか、働かずにずっと家の中に籠ってたんだよ。いや、今はもう働いてるよ。見ての通り一人暮らしだし。まだ新人だけど……って悪い。話が逸れたな。</p>
+<p><strong>渉外担当水山:</strong> 多少は構いません。続けてください。</p>
+<p><strong>秋山:</strong> えーっと、それでその引きこもってる時にあの三人家族が村に引っ越してきたんだ。理由は知らねえけど。その時の村はなんて言うかな、所謂余所者を受け付けない風習みたいなのがあって、その家族も越してきた時は疎まれてたんだよ。</p>
+<p><strong>渉外担当水山:</strong> あなたも同様に岸本家を遠ざけるようなことをしていたのですか？</p>
+<p><strong>秋山:</strong> いやいや、俺はそんなことしてねえよ。むしろ晩飯食ってる時に親父とおふくろが「岸本の家は穢らわしい」とか「都会もんがしゃしゃり出やがって」みたいな、完全に覚えてるわけじゃないし今のも本当に言ったかわかんねぇけど、愚痴ばっか言ってたよ。本当に嫌だったね。</p>
+<p><strong>渉外担当水山:</strong> しかし、こちらが得ている情報によると村人は岸本家と仲が良くむしろ特別大事に扱われていたような記録がありますが、どうでしょうか。</p>
+<p><strong>秋山:</strong> そうなんだ。そこなんだよおかしいのは。どの日だったかは覚えてないけどいきなり夕飯時に2人が岸本の事を褒めだしたんだよ。「よく子育て出来ている」とか「紗代ちゃんが村一番のべっぴんさんだ」とか、昨日までグチグチ言っていたのに。気味悪いよな。</p>
+<p><strong>渉外担当水山:</strong> それは……妙ですね。前日に何があったかなど覚えてはいませんか？</p>
+<p><strong>秋山:</strong> 前の日……ああそうだ確か、村のみんなで押しかけるみたいな事を言っていた気がする。嫌がらせを本格的にして追い出す算段だったのかもしれない。</p>
+<p><strong>渉外担当水山:</strong> では。村のほとんどの人が紗代さんに会った可能性があるのですね。</p>
+<p><strong>秋山:</strong> ああそうだ、やっぱりあの子供だったんだ。みんなの言動、岸本の家を良いように言うよりもなんとなく子供の方を重点的に褒めていた気がするんだ。いや、褒めていただけじゃない。村の中心にある大きな家あるだろ？ あれ、今は岸本の家になっているけど前までは村長の家だったんだ。</p>
+<p><strong>渉外担当水山:</strong> そうだったのですか？</p>
+<p><strong>秋山:</strong> 村長が「紗代ちゃんがのびのび暮らせるように」って譲ったらしいんだ。おかしいだろ？ 仮に嫌がらせしていたのをいきなり反省して謝罪の意を示すためだったとしても過剰だ。で、村長の家に住むようになってからはもう愛でるとかを超えて村中が崇拝しているみたいだったよ。</p>
+<p><strong>渉外担当水山:</strong> 崇拝……ですか。</p>
+<p><strong>秋山:</strong> それでさすがに嫌気がさして俺は村から出て行ったんだ。両親にも一応出ていくって言ったけど無視されたよ。で、こんな村になっても生まれ故郷ではあるから最後に少しだけ散歩しに行ったんだよ。子供頃遊んでた森とか散歩ルートまわったりとかな。</p>
+<p>[佐々木が立ち上がり紙とペンを持ってくる]</p>
+<p><strong>秋山:</strong> その森の中にこういうU字型のでかい岩があったんだよ。昔、子供の時はここにみんなと集合して村長の家に遊びに行ったりとかしてたんだけど、その時見たらT字型になってたんだ。</p>
+<p><strong>渉外担当水山:</strong> U字がT字に？確かに形が変わっていますが、角度の問題のようにも考えられるのでは。</p>
+<p><strong>秋山:</strong> いや絶対に形が変わっていた。T字型って言っても倒れてたんじゃないくて立ってたんだぞ。しかも色も真っ白に染められていた。その周りの草とか木の色も変わってたし……明らかに何かおかしいって思って引っ越しを速めてその日のうちに出てったんだ。</p>
+<p><strong>渉外担当水山:</strong> ……なるほど。わかりました。ありがとうございます。以上であればインタビューを終了しますが。</p>
+<p><strong>秋山:</strong> 特にない。早く終わってくれ。あまりあの村のことは思い出したくないんだよ。すぐに忘れたい。</p>
+<p><strong>渉外担当水山:</strong> わかりました。インタビューを終了します。</p>
+</div>
+<h4 id="toc5"><span><span style="text-decoration: underline;">補遺1247-JP.4 &gt; 作戦</span></span></h4>
+<p>数回にわたって行われた内部調査によると空間内には異常実体群が密集している地点があり、それらは以前集会所・神社・川などの人が集まる場所であったことと関連性があると考えられています。また調査の過程でいくつかのセーフポイントを発見・設置しました。以下は雁福村の地図にこれらを含めた情報を追加したものです。</p>
+<div class="scp-image-block block-center scp-clear-true" style="width:100%;"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-51-clea/%E9%9B%81%E7%A6%8F%E6%9D%91%E5%9C%B0%E5%9B%B3.png" alt="%E9%9B%81%E7%A6%8F%E6%9D%91%E5%9C%B0%E5%9B%B3.png" class="image" />
+<div class="scp-image-caption">
+<p>雁福村 地図</p>
+</div>
+</div>
+<p>対策本部は部隊を再編成した上でメイン班1組・バックアップ班2組に分かれ、以下に示すルートで目標地点に向かうことが決定しました。</p>
+<div class="blockquote">
+<h5 id="toc6"><span>メイン班</span></h5>
+<p>メイン班は認知耐性の強い隊員で編成されており、内部調査時と同様に対現実改変者武装・携帯型スクラントン現実錨・装甲兵員輸送車を物資として与えられています。侵入時には空間の異常性に曝露させたDクラス職員一名を案内役とし、最短距離で目標地点まで向かうこととなっています。ルートは異常実体密集地を通過しているものの起伏の少ない道でありセーフポイントも点在しているため上記のものとなりました。</p>
+</div>
+<div class="blockquote">
+<h5 id="toc7"><span>バックアップ班</span></h5>
+<p>バックアップ班もメイン班と部隊員の編成や装備などは変わらず、メイン班が何かしらの要因で作戦の実行が不可能となった場合を想定し代わりに作戦を続行するために編成されています。倫理的観念からDクラス職員の多用は禁止されており、今回の作戦ではバックアップ班内に案内役となるDクラス職員は提供されていません。そのため方位磁石を使う・道しるべを設置するなどの物理的な方法で空間の異常性である方向感覚が掴めなくなる事象に対処する必要があります。</p>
+</div>
+<h4 id="toc8"><span><span style="text-decoration: underline;">補遺1247-JP.5 &gt; 突入</span></span></h4>
+<p>以下は突入作戦時のそれぞれの班による映像記録です。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 212500</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) メイン班による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 メイン班:</strong> 藤野 一輝</li>
+<li><strong>機動部隊お-9 メイン班:</strong> 柊木 亮二</li>
+<li><strong>機動部隊お-9 メイン班:</strong> 中沢 有沙</li>
+<li><strong>案内役:</strong> D-12471</li>
+</ul>
+<hr />
+<p><strong>藤野隊員:</strong> テステス、マイクテスト完了。21時25分、メイン班突入する。同じタイミングでバックアップ班2組も突入しているはずだ。じゃあD-12471、案内を頼むぞ。</p>
+<p><strong>D-12471:</strong> は、はい。このまままっすぐ行けば紗代ちゃんの家に着きます。あの、その、物騒なものを持ってますけど紗代ちゃんに何かするわけじゃないんですよね？</p>
+<p><strong>中沢隊員:</strong> ええ。あくまで異常な生き物を倒すための装備なので悪しからず。</p>
+<p><strong>柊木隊員:</strong> ……なあ、この空間の異常性に完全に曝露されると自分も村の一員だと思い込んじまうんだろ？ なんでこいつD-12471って名前に反応するんだ？</p>
+<p><strong>藤野隊員:</strong> 正確に言えば混濁するんだ。D-12471だった時の記憶・村の一員だった時の記憶が頭の中でぐちゃぐちゃになって、最終的にほとんどが後者になる。あとの残りにD-12471という名称が残っちまったんだろう。まあ今はそんなことはどうでもいい。無駄話をしている暇はない。行くぞ。</p>
+<p><strong>柊木隊員:</strong> 了解。</p>
+<p><strong>中沢隊員:</strong> 了解。出発します。</p>
+<p><strong>藤野隊員:</strong> 最初から最後までまっすぐ進むことは変わらない。まずはセーフポイントを目指す。</p>
+<p><strong>柊木隊員:</strong> くそっ、入るのは二回目だが相変わらずこの景色は慣れねぇな。</p>
+<p><strong>D-12471:</strong> 景色？ 特におかしいようには見えませんが……？</p>
+<p><strong>柊木隊員:</strong> あーお前には関係ない話だ。気にしないでくれ。</p>
+<p><strong>中沢隊員:</strong> しかし、携帯型とはいえSRAを所持していても完全に異常性を無効化できていないのには違和感がありますね。</p>
+<p><strong>藤野隊員:</strong> それくらい危ない場所って事だ。一瞬でも機能を停止して見ろ、すぐにあいつらの仲間入りだぞ。俺たちにハチの巣にされたくないんだったら絶対にSRAだけは守るんだ。わかったな。</p>
+<p><strong>中沢隊員:</strong> わかりました。</p>
+</div>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 212649</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) バックアップ班-αによる記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 バックアップ班-α:</strong> 鈴宮 真希</li>
+<li><strong>機動部隊お-9 バックアップ班-α:</strong> 小林 夏海</li>
+<li><strong>機動部隊お-9 バックアップ班-α:</strong> 池上 大志</li>
+</ul>
+<hr />
+<p><strong>池上隊員:</strong> にしても道が悪いっすねここ。さっきからすごい車が揺れてますよ</p>
+<p><strong>鈴宮隊員:</strong> 頭を打たないように気をつけてください。あと、本当にまっすぐ進めているか方位磁石の確認もお願いします。</p>
+<p><strong>池上隊員:</strong> 了解っす。</p>
+<p><strong>小林隊員:</strong> 私たちのルートはまっすぐなだけありがたいですね。他のバックアップ班は途中で角度を変えないといけませんし。ところであの……さっきから周りの木に顔がついてるように見えるんですけど、監視されてるんですかねこれ。</p>
+<p><strong>鈴宮隊員:</strong> 実際はどうかわかりません。現状危害を加えてくるような様子がないだけ良しとしま──おっと。</p>
+<p><strong>池上隊員:</strong> どうしたんっすか？</p>
+<p><strong>鈴宮隊員:</strong> 前にこの車と同じくらいの大きさの岩石型実体が現れました。先程の木と同様に顔が付いていますね。笑っているように見えますが。</p>
+<p><strong>小林隊員:</strong> 危険……ではないですけれど、これじゃ通れませんね。</p>
+<p><strong>池上隊員:</strong> 自分ちょっと近づいてみるっす。</p>
+<p><strong>鈴宮隊員:</strong> 一緒に行きます。一人では危険です。</p>
+<p>[車から三名が降り岩石型実体に近づく]</p>
+<p><strong>小林隊員:</strong> 襲ってくるような様子はありませんね。安全区域でよかったです。</p>
+<p><strong>池上隊員:</strong> とりあえず押してみるっす。ふんっ！ ふぅん！ ふうぅんん！ ……っはぁ！ はぁ、こりゃだめっすね。</p>
+<p><strong>小林隊員:</strong> 私たちも同時に押します。せーの！ ふんっ！ ……ちょっとだけ動いた気がしますが、これじゃあ時間がかかりすぎちゃいますね。</p>
+<p><strong>岩石型実体:</strong> ふっ……ふふっ……</p>
+<p><strong>小林隊員:</strong> あれ？ 池上さん何か言いました？</p>
+<p><strong>池上隊員:</strong> 自分何も言ってないっすよ？</p>
+<p><strong>鈴宮隊員:</strong> ……なるほど。もしかして。</p>
+<p>[鈴宮が岩石型実体を撫で始める]</p>
+<p><strong>岩石型実体:</strong> ふっふはははははっはっははは！</p>
+<p>[岩石型実体が笑いながら横転し、車道から離れのたうち回る]</p>
+<p><strong>小林隊員:</strong> なるほど。子供が考えそうなギミックですね。</p>
+<p><strong>鈴宮隊員:</strong> ギミックという言い方は好みませんが、確かに幼稚なものではありますね。単純でよかったです。</p>
+<p><strong>池上隊員:</strong> 子供ってこんなこといつも考えてるんすかね？</p>
+<p><strong>鈴宮隊員:</strong> 私達も似たようなことを考えていた時期があったのかも知れませんよ。では道も空きましたし進みましょうか。</p>
+</div>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 213211</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) バックアップ班-βによる記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 雪野 蓮人</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 鍵谷 隆秀</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 古畑 友信</li>
+</ul>
+<hr />
+<p><strong>鍵谷隊員:</strong> 前方に馬のようなものが2体確認できますね。頭部にはスピーカーのようなものも見えますが……</p>
+<p><strong>雪野隊員:</strong> ふむ、少し近づいて確認しよう。古端頼む。</p>
+<p><strong>古畑隊員:</strong> 了解。</p>
+<p>[馬型実体に近づく。2体は動く素振りを見せない]</p>
+<p><strong>鍵谷隊員:</strong> ……何かしてくるような動きはありませんね。</p>
+<p><strong>雪野隊員:</strong> ところで、俺たちが通る道にこんな十字路は無かったと思うんだが。</p>
+<p><strong>鍵谷隊員:</strong> そうですね、馬の事も気になります。十字路の対角線上にいて全く動いていない。</p>
+<p><strong>古畑隊員:</strong> 私たちの事をそもそも認識していないというか、まるで置物みたいな──</p>
+<p>[2体の馬型実体から踏切の警鐘が大音量で鳴る]</p>
+<p><strong>古畑隊員:</strong> あぁそういうことか！ ここは踏切です！ 電車か何か来るので離れます！</p>
+<p>[車がバックする。その数秒後巨大なムカデ型実体が十字路を高速で横切る]</p>
+<p><strong>雪野隊員:</strong> 危険じゃないんじゃなかったのか？</p>
+<p><strong>鍵谷隊員:</strong> 警鐘があるだけましだと思いましょう。遮断機がないのはどうかと思いますが。</p>
+</div>
+<p>バックアップ班には道中一部弊害によってメイン班と比べて遅れが生じましたが全班が安全区域を抜け要警戒区域に侵入しました。メイン班に異常実体が接近しなかったのは異常性に曝露したD-12471が近くにいたためと考えられています。要警戒区域では全班に異常実体が攻撃を始め、バックアップ班-αが大きな損傷を受けました。以下はバックアップ班-αより受信した最後の記録です。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 214037</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) バックアップ班-αによる記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 バックアップ班-α:</strong> 鈴宮 真希</li>
+<li><strong>機動部隊お-9 バックアップ班-α:</strong> 小林 夏海</li>
+<li><strong>機動部隊お-9 バックアップ班-α:</strong> 池上 大志</li>
+</ul>
+<hr />
+<p><strong>鈴宮隊員:</strong> 要警戒区域に入ります。攻撃を仕掛けられる可能性があるのでスピードを出すときは気をつけてください。私の時は入ってすぐに追いかけられたので武器の準備をしておいてください。</p>
+<p><strong>池上隊員:</strong> 了解っす。</p>
+<p><strong>小林隊員:</strong> わかりました。方位磁石のチェックもします。</p>
+<p><strong>鈴宮隊員:</strong> ありがとうございます。</p>
+<p><strong>小林隊員:</strong> このまままっすぐで大丈夫ですね。周辺の警戒にまわりま──</p>
+<p>[子供の大きな泣き声が響く。この声は他の班にも届いており雁福村全域に聞こえたものと考えられる]</p>
+<p><strong>池上隊員:</strong> うわぁあ！？ うるっさっ！</p>
+<p>[車が停止する]</p>
+<p><strong>鈴宮隊員:</strong> ああぁっ……！</p>
+<p><strong>小林隊員:</strong> 鈴宮さん！ 大丈夫ですか！</p>
+<p><strong>鈴宮隊員:</strong> ふぅ……ふぅ……いえ、大丈夫です。少し耳が痛いですが問題ありません。</p>
+<p><strong>小林隊員:</strong> 運転変わりましょうか。</p>
+<p><strong>鈴宮隊員:</strong> いえ、大丈夫です。進みましょう。周囲の警戒を続けてください。</p>
+<p><strong>小林隊員:</strong> わかりました。辛くなればすぐに交代してください。</p>
+<p><strong>池上隊員:</strong> あ、来ました！ 敵っす！</p>
+<p>[車両右後方・左後方からそれぞれ2体、側面に顔の付いた直径2mほどのタイヤが回転しながら追従してくる]</p>
+<div class="scp-image-block block-right scp-clear-true" style="width:300px;"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-54-uaey/%E3%82%BF%E3%82%A4%E3%83%A4%E5%9E%8B%E5%AE%9F%E4%BD%93.png" alt="%E3%82%BF%E3%82%A4%E3%83%A4%E5%9E%8B%E5%AE%9F%E4%BD%93.png" class="image" />
+<div class="scp-image-caption">
+<p>バックアップ班-αを追いかけるタイヤ型実体</p>
+</div>
+</div>
+<p><strong>タイヤ型実体-1:</strong> どこにいくんですか？どこにいくんですか？どこにいくんですか？</p>
+<p><strong>タイヤ型実体-2:</strong> あっぷっぷしよっか！</p>
+<p><strong>タイヤ型実体-3:</strong> 村に来てくださってありがとうございます。</p>
+<p><strong>タイヤ型実体-4:</strong> おかえりくださいませ。ぶぶ漬けどうですか？ さようなら。</p>
+<p><strong>池上隊員:</strong> 話しかけてくるんすかこいつら！？ どうします？</p>
+<p><strong>鈴宮隊員:</strong> 振り切ります！ 近づいてきたら撃ってください！</p>
+<p>[車がスピードを上げる。1体のタイヤ型実体がスピードを上げ前方に、もう1体がスピードを下げ後方に位置を取る]</p>
+<p><strong>小林隊員:</strong> か、囲まれました！</p>
+<p><strong>鈴宮隊員:</strong> くそっ！</p>
+<p><strong>小林隊員:</strong> せめて前のやつだけでも倒しましょう！ タイヤに穴でも空ければ……！</p>
+<p>[小林隊員が前方のタイヤ型実体に対し射撃する]</p>
+<p><strong>池上隊員:</strong> じゅ、銃が効いてないっす！ タイヤって普通そんなに固いんっすか！？</p>
+<p><strong>小林隊員:</strong> ……あれ、な、なにか実体たちが光ってるような……？</p>
+<p><strong>鈴宮隊員:</strong> まさか……！ 全員伏せ──</p>
+<p>[爆発音が聞こえ映像が途切れる]</p>
+</div>
+<p>映像内の子供の泣き声が発生して以降各班に対し異常実体からの攻撃が発生しました。本来要警戒区域では異常実体群が攻撃してくるものの適切な対処を取れば生存可能であるとされていました。しかし今回の異常実体は明らかに攻撃性・知能が増しており危険区域の異常実体群が要警戒区域にまで活動範囲を広げたものと考えられています。攻撃発生時に確認された子供の泣き声から、対策本部は実体群の挙動の変化および危険度の増加は目標地点の岸本 紗代が部隊の突入を自身の身の危険と捉えたためであると考察しました。以降、各部隊にはこの考察が通達されたものの作戦自体は続行されました。</p>
+<h4 id="toc9"><span><span style="text-decoration: underline;">補遺1247-JP.6 &gt; 合流</span></span></h4>
+<p>作戦を継続させる方針になったものの、バックアップ班-αの消息が不明となったことから、バックアップ班-βをメイン班のいるセーフポイントで合流することで作戦の成功率を上げるという方針に変更しました。バックアップ班-βが向かっている間、メイン班はセーフポイント内で待機させD-12471の護衛をするように命じました。以下はバックアップ班-βによる移動中の記録です</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 214711</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) バックアップ班-βによる記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 雪野 蓮人</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 鍵谷 隆秀</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 古畑 友信</li>
+</ul>
+<hr />
+<p><strong>雪野隊員:</strong> 私たちがいるので右下のこのセーフポイントだ。メイン班がいるセーフポイントが西北西の方向だ。</p>
+<p><strong>古畑隊員:</strong> 西北西ですか……わかりました。早めに出発しましょう。本当は今すぐ退却したいですが……</p>
+<p><strong>鍵谷隊員:</strong> 私のせいですみません雪野さん……</p>
+<p><strong>雪野隊員:</strong> あまりしゃべるな。出血を止めることに注力するんだ。</p>
+<p><strong>古畑隊員:</strong> あまり時間もありませんしね。医療バッグは樹木実体に奪われてしまいましたし、向こうの班の包帯や消毒液を借りれればいいのですが……</p>
+<p><strong>雪野隊員:</strong> しかし、周りの木に紛れてセーフポイントの近くで待ち構えているとは思わなかったな。鍵谷に傷を負わせよって。</p>
+<p><strong>古畑隊員:</strong> 通るのは要警戒区域ですが、出てくる実体は全て強い攻撃性を持っていると思っていいらしいです。できるだけ戦闘は避けつつ行きましょう。鍵谷さんの事頼みます。</p>
+<p><strong>雪野隊員:</strong> 任せてくれ。</p>
+<p>[負傷した鍵谷隊員を車に乗せる]</p>
+<p><strong>古畑隊員:</strong> メイン班も襲われている可能性がありますし、少しスピードを上げていきますね。</p>
+<p><strong>雪野隊員:</strong> 周りを見ておく。鍵谷は無理しないでほしいが、何かあったら伝えてくれ。</p>
+<p>[鍵谷隊員が頷き車が出発する]</p>
+<p><strong>古畑隊員:</strong> 10分ほど我慢してくださいね。</p>
+<p><strong>蜘蛛型実体:</strong> 村長さん！ お久しぶりです！ はははっ。</p>
+<p><strong>雪野隊員:</strong> 近くにいる！ 周りにはいない、もしかして車の上か！？</p>
+<p><strong>古畑隊員:</strong> 振り落とします！ 掴まってください！</p>
+<p>[車がその場で回転し異常実体を振り落とす。実体は笑いながら地面に着地する]</p>
+<p><strong>蜘蛛型実体:</strong> 元気でしたか？ はははっ。はははははっ。</p>
+<p>[男性の顔の付いた巨大な蜘蛛が確認できる。笑い声が聞こえているにもかかわらず顔は無表情である]</p>
+<p><strong>雪野隊員:</strong> 蜘蛛！？ くっそただでさえ虫が嫌いなのに！</p>
+<p><strong>古畑隊員:</strong> 早くいきましょう！ もし糸を吐いてきたりなんかしたらタイヤに絡まって運転できなくなります！</p>
+<p><strong>雪野隊員:</strong> 畜生っ！</p>
+<p>[雪野隊員が蜘蛛型実体に対し射撃しつつ、古畑隊員が車を発進させる]</p>
+<p><strong>蜘蛛型実体:</strong> こんっ、こっ、ちはっ、あっ。</p>
+<p><strong>雪野隊員:</strong> 弱点なのか知らないが顔面を撃てば動きが少し怯むぞ！ この調子で……あ？ 急に後ろに向いたぞ。弱点を隠すためか？</p>
+<p><strong>古畑隊員:</strong> いや、おそらく糸を発射するつもりです！避けるので糸が出たら合図してください！</p>
+<p><strong>雪野隊員:</strong> わかった！ まだだ……まだだ……今だ！ 来るぞ！</p>
+<p>[蜘蛛型実体が車に対し糸を発射する。車が急カーブし糸を避ける]</p>
+<p><strong>雪野隊員:</strong> グレネード！</p>
+<p>[手榴弾を実体に投げつけ爆破させる]</p>
+<p><strong>雪野隊員:</strong> 良し！ この調子で行くぞ古畑！</p>
+<p><strong>古畑隊員:</strong> 了解！</p>
+</div>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 215357</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) メイン班による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 メイン班:</strong> 藤野 一輝</li>
+<li><strong>機動部隊お-9 メイン班:</strong> 柊木 亮二</li>
+<li><strong>機動部隊お-9 メイン班:</strong> 中沢 有沙</li>
+<li><strong>案内役:</strong> D-12471</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 雪野 蓮人</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 鍵谷 隆秀</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 古畑 友信</li>
+</ul>
+<hr />
+<p><strong>柊木隊員:</strong> あー、ようこそバックアップ班-βの御三方。悪いがあんたらを迎える予定だったセーフポイントの小屋はさっき来る前に爆破されたよ。</p>
+<p><strong>古畑隊員:</strong> ば、爆破ぁ！？</p>
+<p><strong>雪野隊員:</strong> しかし、良く生き残っていたな？</p>
+<p><strong>藤野隊員:</strong> まあな。Dクラスの近くにいなかったらここに来るまでに3回は死んでたよ。そこの怪我したやつは大丈夫か？</p>
+<p><strong>古畑隊員:</strong> こちらの医療バッグが奪われてしまって完全に適切な処置ができたとは言えません。そちらの物をお借りしたいのですが。</p>
+<p><strong>藤野隊員:</strong> わかった。中沢持ってきてやってくれ。</p>
+<p><strong>中沢隊員:</strong> 了解です。処置もいたします。</p>
+<p><strong>雪野隊員:</strong> 助かる。さて、じゃあ作戦の話に移ろう。正直言ってあまり時間がない。鍵谷の出血・我々の体力や物資の限度、そして異常実体群の活動範囲の拡大だ。</p>
+<p><strong>柊木隊員:</strong> 今こうしている間にもいつ襲ってくるかわからないしな。</p>
+<p><strong>雪野隊員:</strong> なので急いであの子供を無力化する必要がある。この車でそのまま家の中に突っ込んで行くぐらいの勢いで。</p>
+<p><strong>古畑隊員:</strong> そうですね。2班を合わせてあと数回分ほど戦闘できる余裕があります。体力はあまりありませんがそうとも言っていられませんね。では早速行くとしましょう。D-12471、運転をお願いできますか？</p>
+<p><strong>D-12471:</strong> あの、何かおかしくないですか？</p>
+<p><strong>柊木隊員:</strong> まさか周りに何かいるのか？</p>
+<p><strong>D-12471:</strong> いえ、そういう話ではないんです。あなたたちの事ですよ。</p>
+<p><strong>雪野隊員:</strong> 私たち？</p>
+<p><strong>D-12471:</strong> さっきからまるで紗代ちゃんが悪いことをしたみたいな、そんな話をしていませんか？</p>
+<p><strong>柊木隊員:</strong> あー……そうだな。いや、まったくそんな話はしてないぞ。悪いやつが中心の家にいるってだけで紗代ちゃんの事を話してるわけじゃねえよ。そんでもってこの話は機密情報だから忘れて俺たちが声をかけるまで向こうにいてくれると助かる──</p>
+<p><strong>D-12471:</strong> で、でもさっき子供をどうかするって！ 無力化ってもしかして紗代ちゃんに何かするつもりなんじゃ！？</p>
+<p>[雪野隊員と古畑隊員が小声で会話する]</p>
+<p><strong>雪野隊員:</strong> おい古畑、あのDクラスにはどういう風な話をしていたんだ？ あの様子を見るに子供を倒すことを知っていながら運転していたわけでは無いんだろう？</p>
+<p><strong>古畑隊員:</strong> 「雁福村内で異常生物が大量に確認されたため紗代ちゃんを財団で保護するために運転してほしい」というものだったと思っています。Dクラスとしての記憶と村の一員としての記憶をそれぞれ考慮した結果のカバーストーリーだと思います。</p>
+<p><strong>雪野隊員:</strong> なるほど。あくまで保護しに来るつもりだったのに私たちが物騒な話をしているから驚いているのか。どれ、私が交渉して──</p>
+<p><strong>中沢隊員:</strong> 鍵谷さんの処置が終わりました……皆さんどうかされました？</p>
+<p><strong>D-12471:</strong> 紗代ちゃんに手は出させないぞ！</p>
+<p>[D-12471が木の枝を掴み中沢隊員の左目に突き刺す]</p>
+<p><strong>中沢隊員:</strong> はっ！？がああぁあっ！</p>
+<p><strong>柊木隊員:</strong> お前っ！</p>
+<p>[柊木隊員がD-12471に対し射撃し、D-12471は倒れる]</p>
+<p><strong>柊木隊員:</strong> あぁくそっ！ やられちまったしやっちまった！ 大丈夫か中沢！</p>
+<p><strong>藤野隊員:</strong> 鎮痛剤！ 医療バッグごと持ってこい！</p>
+<p><strong>古畑隊員:</strong> 了解！</p>
+<p>[しばらく中沢隊員への応急処置が行われる]</p>
+<p><strong>雪野隊員:</strong> これで重度の負傷をしている奴は2人になったか……</p>
+<p><strong>柊木隊員:</strong> あのクソ野郎、ああやっちまった。マジでやっちまった。</p>
+<p><strong>藤野隊員:</strong> 落ち着け柊木。万が一Dクラスが危害を加えてきた場合は射殺するように言われていた。お前は命令に従って行動したまでだ。</p>
+<p><strong>柊木隊員:</strong> ……あぁありがとうよ。だがここからどうする？ 怪我人2人抱えたまま戦うのはきつい。それに、このままじゃさっきよりやばいやつらが襲ってくるぞ。</p>
+<p><strong>雪野隊員:</strong> それなのだが、提案がある。</p>
+<p><strong>古畑隊員:</strong> 提案ですか？</p>
+<p><strong>雪野隊員:</strong> ああ。後者はどうにかできる問題じゃないが、前者はどうにかなる。古畑、2人を連れて本部に戻るんだ。</p>
+<p><strong>古畑隊員:</strong> 離脱ということですか？</p>
+<p><strong>柊木隊員:</strong> 悪くないな。子供に危害を加えようとしているから襲ってくるなら、危害を加えず逃げることを考えればすぐに戻れるだろう。本部に戻れば追加支援もあるかもしれん。まあ、そんな時間が無いのは明白だが。</p>
+<p><strong>藤野隊員:</strong> なら、私・柊木・雪野隊員で終わらせるしかないのか。</p>
+<p><strong>雪野隊員:</strong> 頼めるか？ 古畑。</p>
+<p><strong>古畑隊員:</strong> ……わかりました。2人は任せてください。健闘を祈ります。</p>
+</div>
+<p>古畑隊員・鍵谷隊員・中沢隊員はこの時点で作戦から離脱し、藤木隊員・柊木隊員・雪野隊員の3名で作戦を続行させることが決まりました。負傷した2名は帰還後最寄りのサイトに搬送後適切な処置を受け、鍵谷隊員は全治六か月・中沢隊員は左目の視覚を失う損傷を受けました。</p>
+<h4 id="toc10"><span><span style="text-decoration: underline;">補遺1247-JP.7 &gt; 収束</span></span></h4>
+<div class="scp-image-block block-center scp-clear-true" style="width:100%;"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A6903570-55-vyl8/%E7%9B%AE%E6%A8%99%E5%9C%B0%E7%82%B9-%E5%AE%B6.png" alt="%E7%9B%AE%E6%A8%99%E5%9C%B0%E7%82%B9-%E5%AE%B6.png" class="image" />
+<div class="scp-image-caption">
+<p>目標地点 家</p>
+</div>
+</div>
+<p>メンバーを変えたメイン班は要警戒区域・異常実体群密集地を抜け危険区域に入りました。目標地点付近にまで異常実体との戦闘を挟みつつも到達することができました。しかし目標地点には攻撃的で強力な異常実体群が複数密集しており、メイン班は甚大な被害を受けました。以下はメイン班による目標地点付近での記録です。</p>
+<div class="blockquote">
+<p style="text-align: center;"><span style="font-size:1.5em;"><strong>映像記録 2018/07/16 - 215357</strong></span><br />
+機動部隊お-9 (&quot;ガイドマンズ&quot;) メイン班による記録</p>
+<hr />
+<p><strong>メンバー</strong></p>
+<ul>
+<li><strong>機動部隊お-9 メイン班:</strong> 藤野 一輝</li>
+<li><strong>機動部隊お-9 メイン班:</strong> 柊木 亮二</li>
+<li><strong>機動部隊お-9 バックアップ班-β:</strong> 雪野 蓮人</li>
+</ul>
+<hr />
+<p><strong>柊木隊員:</strong> あーお前ら、何体倒した？</p>
+<p><strong>雪野隊員:</strong> 22。</p>
+<p><strong>藤野隊員:</strong> 20超えてから数えてない。</p>
+<p><strong>柊木隊員:</strong> 俺は19だ。あの家には何体いるんだ？まだわらわら出てきやがる。</p>
+<p>[目標地点の家から大量の人型実体が現れる]</p>
+<p><strong>雪野隊員:</strong> もうたくさんだ！ グレネードを投げる！ 伏せろ！</p>
+<p><strong>柊木隊員:</strong> ぐおぁっ！ 使うならもっと早く言ってくれ！</p>
+<p><strong>雪野隊員:</strong> そんな時間あるか！</p>
+<p><strong>藤野隊員:</strong> 待て、奴らの流れが止んだぞ。全員倒しきったのか？</p>
+<p><strong>柊木隊員:</strong> いや違う。次のフェーズに入っただけだ。</p>
+<p>[地中から巨大な手が現れる。近くの木を引き抜き柊木隊員に対し投げつける]</p>
+<p><strong>藤野隊員:</strong> 柊木！</p>
+<p>[藤野隊員が柊木隊員を突き飛ばす。藤野隊員が投げられた木の下敷きになる]</p>
+<p><strong>柊木隊員:</strong> 藤野！ あぁ畜生が！</p>
+<p><strong>雪野隊員:</strong> 怯むな！ 撃ち続けろ！ お前のグレネードはもうないのか！</p>
+<p><strong>柊木隊員:</strong> ある！ あと最後の1つだ！ 投げるぞ！</p>
+<p>[手掌型実体にグレネードを投げ命中する]</p>
+<p><strong>柊木隊員:</strong> よし！ もろに当てたぞ！</p>
+<p><strong>雪野隊員:</strong> よくやった！ 今のうちに家の中に──</p>
+<p>[手掌型実体が倒れそのまま雪野隊員を押しつぶす]</p>
+<p><strong>柊木隊員:</strong> ……クソが。</p>
+<p>[柊木隊員が家の中に入る。子供の笑い声と男女の話声が聞こえる]</p>
+<p><strong>柊木隊員:</strong> 子供以外に誰かいるのか？ いや、そんなわけねえか。</p>
+<p>[家の奥へと入っていく。先程の声が大きくなっていく]</p>
+<p><strong>柊木隊員:</strong> この部屋だ。開けるぞ。</p>
+<p>[部屋の中には岸本 紗代と思われる子供と2体の人型実体が顔を歪ませながら玩具で遊んでいる様子が見える]</p>
+<p><strong>柊木隊員:</strong> 両親か……？</p>
+<p>[部屋の奥には自殺したと思われる男女2名の首吊り死体がある。後の調査により岸本 紗代の両親であることが確認された]</p>
+<p><strong>柊木隊員:</strong> は？ なんだよあれ。</p>
+<p><strong>岸本:</strong> 誰？</p>
+<p>[岸本紗代が柊木隊員の方を向く]</p>
+<p><strong>柊木隊員:</strong> あー、そうだな。お前を助けに来たんだ。外は今……めちゃくちゃになってんだ。音、聞こえなかったか？</p>
+<p><strong>岸本:</strong> わからない。何も聞こえなかったよ？</p>
+<p><strong>柊木隊員:</strong> そうか……じゃあ、なんだ。あれはなんだ？あそこで首吊ってるやつだよ。</p>
+<p><strong>岸本:</strong> どこ？ 私目が見えないの。</p>
+<p>[岸本紗代が周りを手当たり次第に触り始める]</p>
+<p><strong>柊木隊員:</strong> もうちょっと奥だ。ほら、その方向。行ってみな。</p>
+<p><strong>岸本:</strong> こっち？</p>
+<p>[岸本 紗代が後ろ姿を見せる。それに対し柊木隊員が銃を向けると、男女の人型実体が邪魔するように腕を抑える]</p>
+<p><strong>柊木隊員:</strong> くそっ。邪魔だ。やめてくれよ。</p>
+<p><strong>岸本:</strong> どうしたの？</p>
+<p><strong>柊木隊員:</strong> あー大丈夫だそっち向いてろ。よしいい子だ。</p>
+<p>[2体の人型実体を薙ぎ払い再度銃を向ける。人型実体が泣き声を上げる]</p>
+<p><strong>岸本:</strong> ママ、パパ、泣いてるの？</p>
+<p><strong>柊木隊員:</strong> ……おいおい。何言ってんだよ。そこにいるだろお前の両親は。</p>
+<p><strong>岸本:</strong> え？ ママとパパはそこに……あれ？ え？ あれ？</p>
+<p><strong>柊木隊員:</strong> あぁもう畜生！ そっちを向いてくれ！ 子供を真正面から撃ちたくないんだ！ 早く！</p>
+<p><strong>岸本:</strong> 嫌、嫌ぁ！</p>
+<p>[岸本紗代が叫ぶと周辺の空間が歪み始める。2体の人型実体が岸本 紗代に擦り寄るが突き放すような行動をとる]</p>
+<p><strong>岸本:</strong> 嫌！ 来ないで！ ママ！ パパ！ どこにいるの！</p>
+<p><strong>柊木隊員:</strong> こっちを見るな！ やめろ！</p>
+<p><strong>岸本:</strong> なんで！ なんで誰も本当に優しくしてくれないの！ どうして！ どうしてなの！</p>
+<p><strong>柊木隊員:</strong> あぁくそ！ 子供一人も撃てねえのかよ俺は！</p>
+<p><strong>岸本:</strong> 助けて！ 誰か助けてぇ！</p>
+<p><strong>柊木隊員:</strong> 畜生ぉ！</p>
+<p>[柊木隊員が銃を乱射する。2体の人型実体が庇うが何発かが岸本 紗代に当たる]</p>
+<p><strong>岸本:</strong> どうして、誰も愛してくれないの。</p>
+<p>[岸本 紗代が倒れる。高ヒューム空間が消滅する]</p>
+<p><strong>柊木隊員:</strong> ……本部、柊木だ。終わったぞ。</p>
+</div>
+<h4 id="toc11"><span><span style="text-decoration: underline;">補遺1247-JP.8 &gt; 事後</span></span></h4>
+<p>高ヒューム空間の消滅後、雁福村全体の調査を行ったところ岸本 紗代の母親である岸本美里が書いたと思われる手記の切れ端をいくつか発見しました。記述は日誌形式で進行しており、その内容は&quot;岸本紗代が盲目であることへの憐憫&quot;や&quot;岸本紗代が盲目であることを原因とした嫌がらせ&quot;、&quot;岸本紗代に対して向けていた愛情への疑心&quot;などが大半を占めていました。また、雁福村への転居以前より異常性が発現していたことを示唆する内容や、岸本紗代の父親が自殺した際の状況、岸本美里による遺書と思しき文章が筆記されていたことは特筆に値します。</p>
+<p><br /></p>
+<div class="earthworm earthworm--old-syntax-first-false earthworm--old-syntax-last-false earthworm--old-syntax-hub-yes {$class}">
+<div class="first earthworm__previous" data-title="SCP-3983-JP「女」">
+<div class="inner earthworm__inner"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A8260379-111-9f98/Transparent.gif" class="image earthworm__arrowhead earthworm__arrowhead--left" alt="Transparent.gif" />
+<div class="arrow earthworm__arrow"></div>
+</div>
+<p><a href="http://scp-jp.wikidot.com/scp-3983-jp">SCP-3983-JP「女」</a></p>
+</div>
+<div class="hub earthworm__hub" data-title="SCP漢字ドリル">
+<p><a href="http://scp-jp.wikidot.com/scp-kanji-drill-hub">SCP漢字ドリル</a></p>
+</div>
+<div class="last earthworm__next" data-title="SCP-2966-JP「大」">
+<div class="inner earthworm__inner"><img src="https://scp-jp-storage.wdfiles.com/local--files/file%3A8260379-111-9f98/Transparent.gif" class="image earthworm__arrowhead earthworm__arrowhead--right" alt="Transparent.gif" />
+<div class="arrow earthworm__arrow"></div>
+</div>
+<p><a href="http://scp-jp.wikidot.com/scp-2966-jp">SCP-2966-JP「大」</a></p>
+</div>
+</div>
+
+
+
+
+
+                    </div>
+
+                            
+    
+                        <script>
+window['nitroAds'].createAd('wad-scp-jp-below-content-anchor', {
+  "refreshTime": 30,
+  "format": "anchor-v2",
+  "anchor": "bottom",
+  "anchorPersistClose": false,
+  "mediaQuery": "(min-width: 0px)",
+  "report": {
+    "enabled": true,
+    "icon": true,
+    "wording": "Report Ad",
+    "position": "bottom-right"
+  }
+  });
+</script>
+                    
+    
+
+                    
+
+
+                    
+
+
+
+                    
+                        <div class="page-tags">
+                            <span>
+                                <a href="/system:page-tags/tag/euclid#pages">euclid</a><a href="/system:page-tags/tag/jp#pages">jp</a><a href="/system:page-tags/tag/scp#pages">scp</a><a href="/system:page-tags/tag/scp%E6%BC%A2%E5%AD%97%E3%83%89%E3%83%AA%E3%83%AB#pages">scp漢字ドリル</a><a href="/system:page-tags/tag/%E4%BA%BA%E9%96%93%E5%9E%8B#pages">人間型</a><a href="/system:page-tags/tag/%E6%84%9F%E8%A6%9A#pages">感覚</a><a href="/system:page-tags/tag/%E6%95%B5%E5%AF%BE%E7%9A%84#pages">敵対的</a><a href="/system:page-tags/tag/%E6%AD%BB%E4%BD%93#pages">死体</a><a href="/system:page-tags/tag/%E7%8F%BE%E5%AE%9F%E6%94%B9%E5%A4%89#pages">現実改変</a><a href="/system:page-tags/tag/%E7%B2%BE%E7%A5%9E%E5%BD%B1%E9%9F%BF#pages">精神影響</a><a href="/system:page-tags/tag/%E8%A6%96%E8%A6%9A#pages">視覚</a><a href="/system:page-tags/tag/%E8%A8%98%E6%86%B6%E5%BD%B1%E9%9F%BF#pages">記憶影響</a><a href="/system:page-tags/tag/%E9%8C%B2%E9%9F%B3%E9%8C%B2%E7%94%BB#pages">録音録画</a>
+                            </span>
+                        </div>
+                    
+
+                    <div id="page-info-break"></div>
+                    
+                        <div id="page-options-container">
+                            <div id="page-info">ページリビジョン: 21, 最終更新: <span class="odate time_1763366560 format_%25e%20%25b%20%25Y%2C%20%25H%3A%25M%20%28%25O%20%E5%89%8D%29">17 Nov 2025 08:02</span></div>
+            <div id="page-options-bottom"  class="page-options-bottom">
+            <a href="javascript:;" class="btn btn-default" id="edit-button">編集</a>
+<a href="javascript:;" class="btn btn-default" id="pagerate-button">評価 (<span id="prw54355">+27</span>)</a>
+<a href="javascript:;" class="btn btn-default" id="tags-button">タグ</a>
+<a href="/forum/t-17000843/scp-1247-jp" class="btn btn-default" id="discuss-button">ディスカッション (7)</a>
+<a href="javascript:;" class="btn btn-default" id="history-button">履歴</a>
+<a href="javascript:;" class="btn btn-default" id="files-button">ファイル</a>
+<a href="javascript:;" class="btn btn-default" id="print-button">印刷</a>
+<a href="javascript:;" class="btn btn-default" id="site-tools-button">サイトツール</a>
+<a href="javascript:;" class="btn btn-default" id="more-options-button">+&nbsp;オプション</a> 
+</div>
+<div id="page-options-bottom-2" class="page-options-bottom form-actions" style="display:none">
+    <a href="javascript:;" class="btn btn-default" id="edit-sections-button">セクションを編集</a>
+    <a href="javascript:;" class="btn btn-default" id="edit-append-button">追加</a>
+    <a href="javascript:;" class="btn btn-default" id="edit-meta-button">メタを編集</a>
+    <a href="javascript:;" class="btn btn-default" id="watchers-button">ウォッチャー</a> 
+    <a href="javascript:;" class="btn btn-default" id="backlinks-button">バックリンク</a> 
+    <a href="javascript:;" class="btn btn-default" id="view-source-button">ページソース</a> 
+    <a href="javascript:;" class="btn btn-default" id="parent-page-button">親ページ</a> 
+    <a href="javascript:;" class="btn btn-default" id="page-block-button">ページロック</a>    
+    <a href="javascript:;" class="btn btn-default" id="rename-move-button">リネーム</a> 
+    <a href="javascript:;" class="btn btn-default" id="delete-button">削除</a> 
+</div>
+<div id="page-options-area-bottom">
+</div>
+
+                        </div>
+                    
+                    <div id="action-area" style="display: none;"></div>
+                </div>
+            </div>
+            
+            
+            
+            <div id="footer" style="display: block; visibility: visible;">
+                <div class="options" style="display: block; visibility: visible;">
+    <a href="http://www.wikidot.com/doc" id="wikidot-help-button">ヘルプ</a>
+    &nbsp;|
+    <a href="http://www.wikidot.com/legal:terms-of-service" id="wikidot-tos-button">利用規約</a>
+    &nbsp;|
+    <a href="http://www.wikidot.com/legal:privacy-policy" id="wikidot-privacy-button">プライバシー</a>
+    &nbsp;|
+    <a href="javascript:;" id="bug-report-button" onclick="WIKIDOT.page.listeners.pageBugReport(event)">バグを報告</a>
+    &nbsp;|
+    <a href="javascript:;" id="abuse-report-button" onclick="WIKIDOT.page.listeners.flagPageObjectionable(event)">不快フラグを立てる</a>
+    <span id="consent-box" style="display:none">
+        &nbsp;|
+        <a href="javascript:;"  onclick="window.__cmp('showModal');">Update cookie settings</a>
+    </span>
+
+    <script>
+    if (window["nitroAds"] && window["nitroAds"].loaded) {
+        document.getElementById("consent-box").style.display = window["__tcfapi"] ? "" : "none";
+        } else {
+        document.addEventListener(
+                "nitroAds.loaded",
+                () =>
+                (document.getElementById("consent-box").style.display = window["__tcfapi"] ? "" : "none")
+                );
+    }
+    </script>
+</div>
+Powered by <a href="http://www.wikidot.com">Wikidot.com</a>
+            </div>
+            
+                <div id="license-area" class="license-area">
+                    
+
+特に指定がない限り、このサイトのすべてのコンテンツは<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.ja">クリエイティブ・コモンズ 表示 - 継承3.0ライセンス</a> の元で利用可能です。
+                </div>
+            
+            
+            
+
+
+
+            <div id="extrac-div-1"><span></span></div><div id="extrac-div-2"><span></span></div><div id="extrac-div-3"><span></span></div>
+            
+            
+            
+            
+                
+            
+        </div>
+        
+    </div>
+<!-- These extra divs/spans may be used as catch-alls to add extra imagery. -->
+<div id="extra-div-1"><span></span></div><div id="extra-div-2"><span></span></div><div id="extra-div-3"><span></span></div>
+<div id="extra-div-4"><span></span></div><div id="extra-div-5"><span></span></div><div id="extra-div-6"><span></span></div>
+</div>
+
+
+
+
+</div>
+<div id="dummy-ondomready-block" style="display: none;" ></div>
+    <!-- Google Analytics load -->
+    <script type="text/javascript">
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+
+
+<div id="page-options-bottom-tips" style="display: none;">
+    <div id="edit-button-hovertip">
+        ページを編集するにはこのボタンをクリックしてください。    </div>
+</div>
+<div id="page-options-bottom-2-tips"  style="display: none;">
+    <div id="edit-sections-button-hovertip">
+        セクションごとの編集を切り替えるにはこのボタンをクリックしてください(ページにセクションが設定されている必要があります）。有効になった場合はセクションに&quot;編集&quot;ボタンが設置されます。    </div>
+    <div id="edit-append-button-hovertip">
+        ページのソース全体を編集せずに、コンテンツを追加します。    </div>
+    <div id="history-button-hovertip">
+        このページが過去にどのように変化したかを調べることができます。    </div>
+    <div id="discuss-button-hovertip">
+        このページについて話をしたいときは、これを使うのが一番簡単な方法です。    </div>
+    <div id="files-button-hovertip">
+        このページに添付されたファイルの閲覧や管理を行うことができます。    </div>
+    <div id="site-tools-button-hovertip">
+        サイトの管理についての便利なツール。    </div>
+    <div id="backlinks-button-hovertip">
+        このページへリンクしている、またはこのページをincludeしているページを表示します。    </div>
+    <div id="rename-move-button-hovertip">
+        このページの名前(それに伴いURLやページのカテゴリも)を変更します。    </div>
+    <div id="view-source-button-hovertip">
+        編集せずにこのページのソースコードを閲覧します。    </div>
+    <div id="parent-page-button-hovertip">  
+        親ページを設定/閲覧できます(パンくずリストの作成やサイトの構造化に用いられます)    </div>
+            <div id="abuse-report-button-hovertip">
+            管理者にページの違反を通知する。        </div>
+        <div id="bug-report-button-hovertip">
+            何か思い通りにいかないことがありますか? 何ができるか調べましょう。        </div>
+        <div id="wikidot-help-button-hovertip">
+            Wikidot.comのシステム概要とヘルプセクションです。        </div>
+        <div id="wikidot-tos-button-hovertip">
+            Wikidot 利用規約 ― 何ができるか、何をすべきでないか etc.        </div>
+        <div id="wikidot-privacy-button-hovertip">
+            Wikidot.com プライバシーポリシー          
+        </div>
+    </div>
+</body>
+</html>

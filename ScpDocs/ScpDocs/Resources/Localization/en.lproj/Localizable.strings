@@ -41,6 +41,15 @@
 "tab.library" = "Library";
 "tab.settings" = "Settings";
 
+/* Monetization */
+"settings.section.monetization" = "Ads & purchases";
+"settings.purchase.remove_ads" = "Remove ads (¥150)";
+"settings.purchase.restore" = "Restore purchases";
+"settings.purchase.busy" = "Processing…";
+"settings.purchase.adfree_active" = "Ads removed — thank you";
+"settings.purchase.product_unavailable" = "The product is not available in App Store right now.";
+"settings.purchase.verification_failed" = "Purchase could not be verified.";
+
 /* Library */
 "library.title" = "Library";
 "library.segment.bookmarks" = "Bookmarks";
@@ -53,17 +62,234 @@
 /* Search */
 "home.search.jump_scp" = "Jump to SCP (number)";
 
+/* Home dashboard (six pillars) */
+"home.section.archive.title" = "Report archive";
+"home.section.archive.subtitle" = "100-block index for the branch selected in Settings";
+"home.section.scp_library.title" = "SCP Library";
+"home.section.scp_library.subtitle" = "Tales, canons, and series — native lists";
+"home.section.international.title" = "Worldwide branches";
+"home.section.international.subtitle" = "International hub — scp-int.wikidot.com";
+"home.section.goi_personnel.title" = "GoI & personnel";
+"home.section.goi_personnel.subtitle" = "Groups of interest and character dossiers";
+"home.section.guide.title" = "Staff guide & policy";
+"home.section.guide.subtitle" = "Rules, license, and object classes";
+"home.section.events.title" = "Events & contests";
+"home.section.events.subtitle" = "Contests, seasonal hubs, and rankings";
+
+"goi.portal.title" = "GoI & personnel";
+"goi.portal.native_list.title" = "Groups of Interest";
+"goi.portal.native_list.subtitle" = "Native list of major GoI hubs for this branch.";
+"goi.portal.personnel.title" = "Personnel dossiers";
+"goi.portal.personnel.subtitle" = "Tagged personnel and character hub on the wiki.";
+
+/* Archive index */
+"archive.title" = "SCP reports";
+"archive.title.jp" = "SCP-JP reports";
+"archive.title.en" = "SCP Wiki (EN) reports";
+"archive.segment.label_template" = "SCP-%1$@–%2$@";
+
+/* Library index (native) */
+"library.index.title" = "SCP Library";
+"library.category.goi.title" = "Groups of Interest";
+"library.category.goi.subtitle" = "Major GoI hubs — native list.";
+"library.item.goi_hub_master_en" = "Groups of Interest (hub)";
+"library.category.tales.title" = "Tales";
+"library.category.tales.subtitle" = "Main tales hub — browse by author, date, and tags.";
+"library.category.canons.title" = "Canons";
+"library.category.canons.subtitle" = "Shared-setting universe hubs and storylines.";
+"library.category.series.title" = "Series";
+"library.category.series.subtitle" = "Serialized short-fiction series and their hubs.";
+"library.list.search_prompt" = "Search titles or URLs";
+
+"library.sort.wiki_order" = "Site order";
+"library.sort.title_asc" = "Title A–Z";
+"library.sort.title_desc" = "Title Z–A";
+"library.sort.newest" = "Newest listed first";
+"library.sort.oldest" = "Oldest listed first";
+"library.sort.author_asc" = "Primary author A–Z";
+"library.sort.author_hub_count" = "Most hubs per primary author";
+"library.sort.toolbar_accessibility" = "Sort";
+
+/* GoI formats index (goi-formats-jp) */
+"goi.index.title" = "GoI Format Index";
+"goi.index.section.portals" = "Guides & related hubs";
+"goi.index.section.en" = "Groups of Interest — EN (hubs)";
+"goi.index.section.jp" = "Groups of Interest — JP (hubs / in-page)";
+"goi.index.portal.goi_master_jp" = "GoI — Japan (master list)";
+"goi.index.portal.goi_formats_en" = "GoI formats (English hub index)";
+"goi.index.portal.international_formats" = "International GoI formats";
+"goi.index.hub.alexylva" = "Alexylva University";
+"goi.index.hub.ambrose" = "Ambrose Restaurant";
+"goi.index.hub.anderson" = "Anderson Robotics";
+"goi.index.hub.arcadia" = "Arcadia";
+"goi.index.hub.awcy" = "Are We Cool Yet?";
+"goi.index.hub.black_queen" = "Black Queen";
+"goi.index.hub.ci" = "Chaos Insurgency";
+"goi.index.hub.chicago" = "Chicago Spirit";
+"goi.index.hub.cotbg" = "Church of the Broken God";
+"goi.index.hub.cotsh" = "Second Hytoth Hub";
+"goi.index.hub.deer" = "Deer College";
+"goi.index.hub.factory" = "The Factory";
+"goi.index.hub.fifthist" = "Fifth Church";
+"goi.index.hub.goc" = "Global Occult Coalition";
+"goi.index.hub.gru_p" = "GRU Division \"P\"";
+"goi.index.hub.herman_fuller" = "Herman Fuller’s Circus";
+"goi.index.hub.hi" = "Horizon Initiative";
+"goi.index.hub.ijamea" = "IJAMEA";
+"goi.index.hub.mcf" = "Manna Charitable Foundation";
+"goi.index.hub.mcd" = "Marshall, Carter & Dark";
+"goi.index.hub.nobody" = "Nobody";
+"goi.index.hub.oria" = "ORIA";
+"goi.index.hub.oneiroi" = "Oneiroi Collective";
+"goi.index.hub.parawatch" = "Parawatch";
+"goi.index.hub.prometheus" = "Prometheus Labs";
+"goi.index.hub.sh" = "Serpent’s Hand";
+"goi.index.hub.spc" = "Shark Punching Center";
+"goi.index.hub.tmi" = "Three Moons Initiative";
+"goi.index.hub.uiu" = "Unusual Incidents Unit";
+"goi.index.hub.w" = "Wandsmen";
+"goi.index.hub.wws" = "Wilson’s Wildlife Solutions";
+"goi.index.hub.aodaisho" = "Aodaisho";
+"goi.index.hub.pamwac" = "PAMWAC";
+"goi.index.hub.imaginanimal" = "Imaginanimal";
+"goi.index.hub.elma" = "Elma Church";
+"goi.index.hub.tokuzika" = "Metropolitan Police — Special Affairs Section";
+"goi.index.hub.koigarezaki" = "Koigarezaki News";
+"goi.index.hub.saigaha" = "Saigaha";
+"goi.index.hub.shushuin" = "Shūshū-in";
+"goi.index.hub.sekiryu_club" = "Sekiryu Club";
+"goi.index.hub.tono" = "Tōno Yōkai Reserve";
+"goi.index.hub.joicle" = "JOICLE (catalog hub)";
+"goi.index.hub.jagpato" = "JAGPATO";
+"goi.index.hub.meiteigai" = "Meiteigai";
+"goi.index.hub.mujin_getsudo" = "Mujin Gesshū";
+"goi.index.hub.yamizushi" = "Yamizushi";
+"goi.index.hub.yumemi" = "Yumemi Technology";
+
+/* Library static list (EN site) */
+"library.item.curated_tale_series" = "Curated Tale Series";
+"library.item.featured_tale_archive_ii" = "Featured Tale Archive II";
+"library.item.joke_scps_tales_edition" = "Joke SCPs — Tales Edition";
+"library.item.explained_scps_tales_edition" = "Explained SCPs — Tales Edition";
+"library.item.foundation_tales_audio_edition" = "Foundation Tales — Audio Edition";
+"library.item.creepy_pasta" = "Creepy Pasta";
+"library.item.incident_reports_eye_witness" = "Incident Reports & Interviews";
+"library.item.curated_lists" = "Curated Lists";
+"library.item.broken_masquerade_hub" = "Broken Masquerade";
+"library.item.third_law_hub" = "Third Law";
+"library.item.end_of_death_hub" = "End of Death";
+"library.item.rat_s_nest_hub" = "Rat's Nest";
+"library.item.cool_war_2_hub" = "Cool War 2";
+"library.item.pitch_haven_hub" = "Pitch Haven";
+"library.item.only_game_in_town_hub" = "Only Game in Town";
+"library.item.the_coldest_war_hub" = "The Coldest War";
+"library.item.competitive_eschatology_hub" = "Competitive Eschatology";
+"library.item.dread_circuses_hub" = "Dread & Circuses";
+"library.item.antimemetics_division_hub" = "Antimemetics Division Hub";
+"library.item.anabasis_hub" = "Anabasis Hub";
+"library.item.deadlined_hub" = "Deadlined Hub";
+"library.item.on_mount_golgotha_hub" = "On Mount Golgotha Hub";
+"library.item.bury_the_survivors_hub" = "Bury the Survivors Hub";
+"library.item.creative_destruction_hub" = "Creative Destruction Hub";
+"library.item.hecatoncheires_cycle_hub" = "Hecatoncheires Cycle Hub";
+"library.item.integration_program_hub" = "Integration Program Hub";
+
+/* Library static list (JP site) */
+"library.item.anthology_hub_jp" = "Anthology Hub (JP)";
+"library.item.collaboration_hub_jp" = "Collaboration Hub (JP)";
+"library.item.event_archive_jp" = "Event Archive (JP)";
+"library.item.1200_taletaletale_hub" = "1200 Tales Hub";
+"library.item.archives_f" = "Archives F";
+"library.item.gamers_against_weed_hub" = "Gamers Against Weed Hub";
+"library.item.guide_for_newbies" = "Guide for Newbies (JP)";
+"library.item.hyogaki_hub" = "Hyogaki Hub";
+"library.item.1998_hub" = "1998 Hub";
+"library.item.canon_jp_2" = "Canon Hub JP (Vol. 2)";
+"library.item.sushiblade_hub" = "Sushiblade Hub";
+"library.item.foundation_collective_hub" = "Foundation Collective Hub";
+"library.item.yotsujikigeki_hub" = "Yotsujikigeki Hub";
+"library.item.making_2000_hub" = "Making 2000 Hub";
+"library.item.holding_grails_hub" = "Holding Grails Hub";
+"library.item.kyouikaireki_hub" = "Kyouikaireki Hub";
+"library.item.prosopagnosia_hub" = "Prosopagnosia Hub";
+"library.item.chiisanazaidan_hub" = "Chiisanazaidan Hub";
+"library.item.1998_911_hub" = "1998-911 Hub";
+"library.item.after_party_hub" = "After Party Hub";
+"library.item.aonibiiro_hub" = "Aonibiiro Hub";
+"library.item.autopsy_hub" = "Autopsy Hub";
+"library.item.end_of_death_hub_jp_series" = "End of Death Hub (JP)";
+"library.item.goede_film_hub" = "Goede Film Hub";
+"library.item.grayscale_hub" = "Grayscale Hub";
+"library.item.h_e_r_operation_hub" = "H/E/R Operation Hub";
+
+"library.item.series_archive_jp" = "Series Archive (JP)";
+"library.item.supplement_hub_jp" = "Supplement Hub (JP)";
+"library.item.officer_doctor_soldier_spy_hub" = "Officer, Doctor, Soldier, Spy";
+"library.item.fusouki" = "Fusouki";
+"library.item.absinthiana_dream" = "Absinthiana Dream";
+"library.item.polar_light" = "Polar Light";
+"library.item.double_hometown_hub" = "Double Hometown";
+"library.item.thanatomania_hub" = "Thanatomania";
+"library.item.taisho150_hub" = "Taisho 150";
+"library.item.poor_foundation_hub" = "Poor Foundation";
+"library.item.kaiki_meimeiden_hub" = "Kaiki Meimeiden";
+"library.item.practical_examination_hub" = "Practical Examination";
+"library.item.bounenkai" = "Year-End Party 2013";
+"library.item.foundation_summer_festival" = "Foundation Summer Festival";
+"library.item.tataro_yoke" = "Tatar’s Yoke";
+"library.item.monster_decisive_battle_hub" = "Monster Decisive Battle";
+"library.item.shironose_hub" = "Shironose";
+"library.item.rror_hub" = "rror";
+"library.item.purple_hub" = "PURPLE";
+"library.item.les_tueurs_d_eris_hub" = "Les Tueurs d’Eris";
+"library.item.quartet_hub" = "Quartet of Serpent and Burning Books";
+"library.item.humankind_hub" = "Humankind";
+"library.item.foundation_detective_hub" = "Foundation Detective";
+"library.item.yidan_hub" = "Yidan";
+"library.item.critics_hub" = "CRITICS";
+"library.item.why_quiet_world_hub" = "Why Did They Say It’s a Beautiful Day…";
+"library.item.miyazawakenji_hub" = "PoI-1933";
+"library.item.myo_rei_ji" = "Myoreiji";
+"library.item.doden" = "Døden";
+"library.item.oblivion_adium" = "Oblivion Adium";
+"library.item.q9alt_hub" = "Q9ALT";
+"library.item.jin_you_hub" = "Jin-You War";
+"library.item.out_of_scp_universe_hub" = "Out of SCP Universe";
+"library.item.kamiyotsugi_hub" = "Kamiyotsugi";
+"library.item.foundation_arbeiter_hub" = "Foundation Arbeiter";
+"library.item.d_is_not_for_hub" = "D is NOT for…";
+"library.item.seiten_hub" = "Seiten";
+"library.item.matchmaking2020" = "Matchmaking 2020";
+"library.item.seikuken_hub" = "Air Superiority";
+"library.item.widely_containment_cases_hub" = "Wide-Area Anomaly Records";
+"library.item.foundation_radio_bureau_hub" = "Foundation Radio Bureau";
+"library.item.darum_tracer_hub" = "dārum tracer";
+"library.item.undertokyo_hub" = "Under Tokyo";
+
 /* Article */
 "article.toolbar.bookmark" = "Bookmark";
 "article.offline_badge" = "Viewing saved copy offline";
 "article.load.timeout" = "The page took too long to load. Check your network and try again.";
 "article.load.failed" = "Could not load this page.";
 "article.load.retry" = "Retry";
+"article.diagnostic.minimal_banner" = "Diagnostics: minimal WebView (no injected scripts)";
 
 /* Settings */
+"settings.section.webview_debug" = "WebView troubleshooting";
+"settings.webview.minimal_toggle" = "Minimal WebView (no injected scripts)";
+"settings.webview.minimal_footer" = "Turn on, then open an article again from Home. If it loads, the problem is likely our injected scripts or WebView customization.";
+"settings.webview.probe" = "Run network probe (URLSession → scp-jp)";
+"settings.webview.probe_footer" = "This uses URLSession, not WKWebView. If this returns HTTP 200 quickly but the in-app page still times out, we isolate a WebKit-specific issue.";
 "settings.title" = "Settings";
 "settings.section.branch" = "Branch";
 "settings.branch_picker" = "Content branch";
+"settings.section.locale_reader" = "Display & reading";
+"settings.ui_language.picker" = "App language";
+"settings.ui_language.system" = "System default";
+"settings.ui_language.japanese" = "日本語";
+"settings.ui_language.english" = "English";
+"settings.reader.font_size" = "Article text size";
+"settings.reader.font_size.footer" = "Applies to article pages in the WebView. You can also use pinch-to-zoom while reading.";
 "settings.section.data" = "Data";
 "settings.clear_history" = "Clear all browsing history";
 "settings.clear_bookmarks" = "Clear all bookmarks";

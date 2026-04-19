@@ -16,6 +16,9 @@ struct SCPWebView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let configuration = WebViewService.makeConfiguration()
         let webView = WKWebView(frame: .zero, configuration: configuration)
+        if !WebViewDiagnostics.usesMinimalWebViewConfiguration {
+            webView.customUserAgent = Self.mobileSafariLikeUserAgent()
+        }
         webView.navigationDelegate = context.coordinator
         webView.isOpaque = false
         webView.backgroundColor = AppTheme.backgroundPrimaryUIKit
@@ -38,6 +41,14 @@ struct SCPWebView: UIViewRepresentable {
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
         coordinator.viewModel?.webView = nil
         coordinator.teardown()
+    }
+
+    /// モバイル Safari に近い UA（OS バージョンは実行環境に合わせる）。
+    private static func mobileSafariLikeUserAgent() -> String {
+        let version = UIDevice.current.systemVersion
+        let vUnder = version.replacingOccurrences(of: ".", with: "_")
+        let major = version.split(separator: ".").first.map(String.init) ?? "17"
+        return "Mozilla/5.0 (iPhone; CPU iPhone OS \(vUnder) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/\(major).0 Mobile/15E148 Safari/604.1"
     }
 
     @MainActor
@@ -198,6 +209,7 @@ struct SCPWebView: UIViewRepresentable {
             viewModel?.clearLoadFailure()
             viewModel?.setLoading(false)
             viewModel?.updateStateFromWebView(webView)
+            viewModel?.applyReaderFontPresentation()
             syncNavigationChrome(for: webView)
         }
 

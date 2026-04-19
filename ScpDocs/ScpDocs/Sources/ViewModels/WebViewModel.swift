@@ -12,6 +12,8 @@ final class WebViewModel {
     /// 読み込み失敗時に表示するユーザー向けメッセージ（成功・再読込開始で消える）。
     private(set) var loadFailureMessage: String?
     weak var webView: WKWebView?
+    /// 記事本文の相対スケール（`SettingsRepository` と同期。既定 1.0）。
+    var readerFontSizeMultiplier: Double = 1.0
 
     private let offlineStore: OfflineStore
 
@@ -60,9 +62,12 @@ final class WebViewModel {
     }
 
     /// Wikidot は応答が遅いことがある。既定 60 秒だと -1001 になりやすいので延ばす。
-    private static let articleRequestTimeout: TimeInterval = 120
+    private static let articleRequestTimeout: TimeInterval = 300
 
     private static func urlRequest(forArticle url: URL) -> URLRequest {
+        if WebViewDiagnostics.usesMinimalWebViewConfiguration {
+            return URLRequest(url: url)
+        }
         var request = URLRequest(url: url)
         request.timeoutInterval = articleRequestTimeout
         return request
@@ -70,6 +75,26 @@ final class WebViewModel {
 
     func clearLoadFailure() {
         loadFailureMessage = nil
+    }
+
+    /// WebView 内の本文に `-webkit-text-size-adjust` 等を適用する（読み込み完了後や倍率変更時に呼ぶ）。
+    func applyReaderFontPresentation() {
+        guard let webView else { return }
+        let pct = Int(round(readerFontSizeMultiplier * 100))
+        let js = """
+        (function(){
+          var p = \(pct);
+          var root = document.documentElement;
+          if (root && root.style) {
+            root.style.webkitTextSizeAdjust = p + '%';
+          }
+          var b = document.body;
+          if (b && b.style) {
+            b.style.webkitTextSizeAdjust = p + '%';
+          }
+        })();
+        """
+        webView.evaluateJavaScript(js, completionHandler: nil)
     }
 
     func recordNavigationFailure(_ error: Error) {

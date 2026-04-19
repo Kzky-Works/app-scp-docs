@@ -1,3 +1,4 @@
+import GoogleMobileAds
 import SwiftUI
 
 @main
@@ -7,10 +8,13 @@ struct ScpDocsApp: App {
     init() {
         let settingsRepository = SettingsRepository()
         _homeViewModel = State(wrappedValue: HomeViewModel(settingsRepository: settingsRepository))
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
     }
     @State private var homeNavigationRouter = NavigationRouter()
     @State private var libraryNavigationRouter = NavigationRouter()
     @State private var articleRepository = ArticleRepository()
+    @State private var purchaseRepository = PurchaseRepository()
+    @State private var rootTab: AppRootTab = .home
 
     var body: some Scene {
         WindowGroup {
@@ -18,7 +22,9 @@ struct ScpDocsApp: App {
                 homeViewModel: homeViewModel,
                 homeNavigationRouter: homeNavigationRouter,
                 libraryNavigationRouter: libraryNavigationRouter,
-                articleRepository: articleRepository
+                articleRepository: articleRepository,
+                purchaseRepository: purchaseRepository,
+                selectedTab: $rootTab
             )
         }
     }

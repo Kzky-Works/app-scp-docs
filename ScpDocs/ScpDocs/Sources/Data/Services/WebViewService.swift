@@ -12,6 +12,12 @@ enum WebViewService {
 
     /// `CleanUI.js` を読み込み終端で注入する構成を返す。
     static func makeConfiguration() -> WKWebViewConfiguration {
+        if WebViewDiagnostics.usesMinimalWebViewConfiguration {
+            let configuration = WKWebViewConfiguration()
+            configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+            return configuration
+        }
+
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
 

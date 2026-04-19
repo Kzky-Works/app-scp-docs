@@ -7,6 +7,8 @@ final class HomeViewModel {
     private let settingsRepository: SettingsRepository
 
     private(set) var selectedBranch: Branch
+    private(set) var fontSizeMultiplier: Double
+    private(set) var uiLanguage: AppUILanguage
 
     init(
         branchCatalog: any BranchCataloging = StaticBranchCatalog(),
@@ -20,6 +22,32 @@ final class HomeViewModel {
         if branchCatalog.branch(id: storedId) == nil {
             settingsRepository.saveSelectedBranchId(resolved.id)
         }
+        self.fontSizeMultiplier = settingsRepository.loadFontSizeMultiplier()
+        self.uiLanguage = settingsRepository.loadUILanguage()
+    }
+
+    var resolvedLocale: Locale {
+        switch uiLanguage {
+        case .system:
+            .autoupdatingCurrent
+        case .japanese:
+            Locale(identifier: "ja")
+        case .english:
+            Locale(identifier: "en")
+        }
+    }
+
+    func updateFontSizeMultiplier(_ value: Double) {
+        let clamped = min(max(value, 0.75), 2.0)
+        guard clamped != fontSizeMultiplier else { return }
+        fontSizeMultiplier = clamped
+        settingsRepository.saveFontSizeMultiplier(clamped)
+    }
+
+    func updateUILanguage(_ value: AppUILanguage) {
+        guard value != uiLanguage else { return }
+        uiLanguage = value
+        settingsRepository.saveUILanguage(value)
     }
 
     var availableBranches: [Branch] {
@@ -46,5 +74,13 @@ final class HomeViewModel {
 
     var branchURLLabel: String {
         String(localized: String.LocalizationValue(LocalizationKey.branchBaseURLLabel))
+    }
+
+    func loadLibraryListSortMode(for category: LibraryCategory) -> LibraryListSortMode {
+        settingsRepository.loadLibraryListSortMode(for: category)
+    }
+
+    func saveLibraryListSortMode(_ mode: LibraryListSortMode, for category: LibraryCategory) {
+        settingsRepository.saveLibraryListSortMode(mode, for: category)
     }
 }

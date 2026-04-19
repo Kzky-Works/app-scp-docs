@@ -25,6 +25,9 @@ struct Branch: Sendable, Equatable, Identifiable {
         .international
     ]
 
+    // Wikidot は多くの URL で https → http へ 301 する。ATS は `Info-ATS.plist` で対応。
+    // 未検討: 最初から `http://` で開きリダイレクトを減らす（挙動・App Review 説明とセットで後日判断）。
+
     /// 日本支部（JP）
     static let japan = Branch(
         id: BranchIdentifier.scpJapan,
@@ -77,4 +80,137 @@ struct Branch: Sendable, Equatable, Identifiable {
 
     /// 既存コード向けエイリアス。
     static let scpJapanDefault = japan
+
+    /// 報告書アーカイヴ用に `branchId` から支部を解決する。
+    static func branchForArchiveIndex(id: String) -> Branch {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            japan
+        case BranchIdentifier.scpWikiEN:
+            englishMain
+        case BranchIdentifier.scpInternational:
+            international
+        default:
+            japan
+        }
+    }
+
+    /// 各支部の「サイトトップ」相当のハブ（`homeCategories` の `*_site_top`）。
+    func siteTopHubURL() -> URL {
+        if let url = homeCategories.first(where: { $0.id.hasSuffix("site_top") })?.url {
+            return url
+        }
+        return baseURL
+    }
+
+    /// 物語ハブ（支部に無い場合は英語支部の物語へフォールバック）。
+    func talesHubURL() -> URL {
+        if let url = homeCategories.first(where: { $0.id.hasSuffix("_tales") })?.url {
+            return url
+        }
+        return Branch.englishMain.homeCategories.first { $0.id == "en_tales" }!.url
+    }
+
+    /// 要注意団体（GoI）ハブ。
+    func groupsOfInterestHubURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/groups-of-interest-jp")!
+        case BranchIdentifier.scpInternational:
+            return homeCategories.first { $0.id == "int_branches" }!.url
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/groups-of-interest")!
+        }
+    }
+
+    /// ガイド・規約系ハブ（ライセンス／サイトルールなど）。
+    func guideHubURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/guide-hub")!
+        case BranchIdentifier.scpInternational:
+            return homeCategories.first { $0.id == "int_rules" }!.url
+        default:
+            return homeCategories.first { $0.id == "en_licensing" }!.url
+        }
+    }
+
+    /// コンテスト・アーカイヴ（イベント）。
+    func eventsHubURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/contest-archive")!
+        case BranchIdentifier.scpInternational:
+            return homeCategories.first { $0.id == "int_site_top" }!.url
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/contest-archive")!
+        }
+    }
+
+    /// カノン・世界観ハブ（物語ポータル用）。
+    func talesCanonHubURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/canon-hub-jp")!
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/canon-hub")!
+        }
+    }
+
+    /// 連作（Tale シリーズ）ハブ。国際支部など未整備の場合は英語本部のアーカイヴへフォールバック。
+    func taleSeriesHubURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/series-hub-jp")!
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/series-archive")!
+        }
+    }
+
+    /// 高評価の物語一覧（支部にページが無い場合は `nil`）。
+    func topRatedTalesURL() -> URL? {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return nil
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/top-rated-tales")!
+        }
+    }
+
+    /// 人事ファイル・登場人物（図鑑ポータル用）。
+    func personnelDossierHubURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/system:page-tags/tag/personnel")!
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/personnel-and-character-dossier")!
+        }
+    }
+
+    /// オブジェクトクラス解説（英語メインサイトを参照）。
+    func objectClassGuideURL() -> URL {
+        URL(string: "https://scp-wiki.wikidot.com/object-classes")!
+    }
+
+    /// サイト規約・投稿ルール。
+    func siteRulesURL() -> URL {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return URL(string: "https://scp-jp.wikidot.com/guide-hub")!
+        case BranchIdentifier.scpInternational:
+            return homeCategories.first { $0.id == "int_rules" }!.url
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/site-rules")!
+        }
+    }
+
+    /// 人気・評価の報告書（ランキング系イベントポータル用）。
+    func topRatedReportsURL() -> URL? {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            return nil
+        default:
+            return URL(string: "https://scp-wiki.wikidot.com/highest-rated-scps")!
+        }
+    }
 }

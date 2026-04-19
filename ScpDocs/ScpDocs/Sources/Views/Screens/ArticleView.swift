@@ -2,11 +2,14 @@ import SwiftUI
 
 struct ArticleView: View {
     let entryURL: URL
+    let fontSizeMultiplier: Double
     @Bindable var navigationRouter: NavigationRouter
     @Bindable var articleRepository: ArticleRepository
 
     @State private var webViewModel = WebViewModel()
     @Bindable var connectivity = ConnectivityMonitor.shared
+
+    @AppStorage(WebViewDiagnostics.minimalConfigurationDefaultsKey) private var webViewDiagnosticMinimal = false
 
     private var shareURL: URL {
         webViewModel.currentURL ?? entryURL
@@ -53,6 +56,17 @@ struct ArticleView: View {
                 .background(AppTheme.backgroundPrimary.opacity(0.94))
             }
         }
+        .overlay(alignment: .top) {
+            if webViewDiagnosticMinimal {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.articleDiagnosticMinimalBanner)))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.accentPrimary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity)
+                    .background(AppTheme.backgroundPrimary.opacity(0.92))
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -66,6 +80,9 @@ struct ArticleView: View {
                     let added = articleRepository.toggleBookmark(url: shareURL)
                     if added {
                         webViewModel.captureSnapshot(for: shareURL)
+                        Haptics.medium()
+                    } else {
+                        Haptics.light()
                     }
                 } label: {
                     Image(systemName: articleRepository.isBookmarked(url: shareURL) ? "bookmark.fill" : "bookmark")
@@ -89,9 +106,14 @@ struct ArticleView: View {
             }
         }
         .task(id: ArticleRepository.storageKey(for: entryURL)) {
+            webViewModel.readerFontSizeMultiplier = fontSizeMultiplier
             articleRepository.markAsRead(url: entryURL)
             articleRepository.recordHistory(url: entryURL)
             webViewModel.load(url: entryURL)
+        }
+        .onChange(of: fontSizeMultiplier) { _, newValue in
+            webViewModel.readerFontSizeMultiplier = newValue
+            webViewModel.applyReaderFontPresentation()
         }
         .preferredColorScheme(.dark)
         .tint(AppTheme.accentPrimary)
