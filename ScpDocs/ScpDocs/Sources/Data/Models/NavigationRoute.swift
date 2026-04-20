@@ -5,10 +5,10 @@ enum NavigationRoute: Hashable, Sendable {
     case home
     /// 報告書アーカイヴ（100 番ブロック）。`branchId` は `BranchIdentifier`（JP / EN など）。
     case archiveIndex(branchId: String)
-    /// SCP-JP：001–4999 を 1000 刻み・100 刻みピッカーで閲覧。
-    case scpJapanArchive
+    /// SCP-JP：001–4999 を 1000 刻み・100 刻みピッカーで閲覧。`initialTagFilters` はタグチップの初期選択。
+    case scpJapanArchive(initialTagFilters: Set<String>?)
     /// 本家メインリストの日本語訳（scp-jp）：001–4999 を SCP-JP と同じピッカーで閲覧。
-    case scpEnglishArchive
+    case scpEnglishArchive(initialTagFilters: Set<String>?)
     /// SCP ライブラリ（物語 / カノン / 連作）の中間階層。
     case libraryIndex
     /// 静的データに基づくライブラリ一覧（支部ごとに URL セットが切り替わる）。

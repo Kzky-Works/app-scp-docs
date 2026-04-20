@@ -177,6 +177,11 @@ struct Branch: Sendable, Equatable, Identifiable {
         }
     }
 
+    /// ジョーク報告書一覧ハブ（`http://scp-jp.wikidot.com/joke-scps-jp` と同一。HTTPS で開く）。
+    func jokeScpHubURL() -> URL {
+        URL(string: "https://scp-jp.wikidot.com/joke-scps-jp")!
+    }
+
     /// 高評価の物語一覧（支部にページが無い場合は `nil`）。
     func topRatedTalesURL() -> URL? {
         switch id {

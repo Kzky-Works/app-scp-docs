@@ -4,6 +4,7 @@ struct MainView: View {
     let homeViewModel: HomeViewModel
     @Bindable var homeNavigationRouter: NavigationRouter
     @Bindable var libraryNavigationRouter: NavigationRouter
+    @Bindable var settingsNavigationRouter: NavigationRouter
     @Bindable var articleRepository: ArticleRepository
     @Bindable var purchaseRepository: PurchaseRepository
     let japanSCPListMetadataStore: JapanSCPListMetadataStore
@@ -18,12 +19,7 @@ struct MainView: View {
                 HomeView(
                     navigationRouter: homeNavigationRouter,
                     homeViewModel: homeViewModel,
-                    japanSCPListMetadataStore: japanSCPListMetadataStore,
-                    onOpenScpLibrary: {
-                        libraryNavigationRouter.popToRoot()
-                        libraryNavigationRouter.push(.libraryIndex)
-                        selectedTab = .library
-                    }
+                    japanSCPListMetadataStore: japanSCPListMetadataStore
                 )
                 .navigationDestination(for: NavigationRoute.self) { route in
                     articleDestination(for: route, navigationRouter: homeNavigationRouter)
@@ -57,12 +53,16 @@ struct MainView: View {
             }
             .tag(AppRootTab.library)
 
-            NavigationStack {
+            NavigationStack(path: $settingsNavigationRouter.path) {
                 SettingsView(
                     homeViewModel: homeViewModel,
                     articleRepository: articleRepository,
-                    purchaseRepository: purchaseRepository
+                    purchaseRepository: purchaseRepository,
+                    navigationRouter: settingsNavigationRouter
                 )
+                .navigationDestination(for: NavigationRoute.self) { route in
+                    articleDestination(for: route, navigationRouter: settingsNavigationRouter)
+                }
             }
             .tabRootAdBannerLayout(isAdRemovalActive: purchaseRepository.isAdRemovalActive)
             .tabItem {
@@ -94,19 +94,21 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 branch: Branch.branchForArchiveIndex(id: branchId)
             )
-        case .scpJapanArchive:
+        case .scpJapanArchive(let initialTagFilters):
             ArchiveArticleListView(
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
                 kind: .japan,
-                japanSCPListMetadataStore: japanSCPListMetadataStore
+                japanSCPListMetadataStore: japanSCPListMetadataStore,
+                initialTagFilters: initialTagFilters
             )
-        case .scpEnglishArchive:
+        case .scpEnglishArchive(let initialTagFilters):
             ArchiveArticleListView(
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
                 kind: .english,
-                japanSCPListMetadataStore: japanSCPListMetadataStore
+                japanSCPListMetadataStore: japanSCPListMetadataStore,
+                initialTagFilters: initialTagFilters
             )
         case .libraryIndex:
             LibraryIndexView(

@@ -75,7 +75,7 @@
 "home.search.screen.no_index" = "一覧データがまだ同期されていないか、別のキーワードを試してください。";
 
 /* Home random access */
-"home.random.current_branch.title" = "ランダムな報告書（Random Entry）";
+"home.random.current_branch.title" = "ランダムな報告書";
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
@@ -104,6 +104,67 @@
 "guide.index.item.join_site" = "サイトへの参加";
 "home.section.events.title" = "イベントとコンテスト";
 "home.section.events.subtitle" = "コンテスト・季節行事・ランキング";
+
+/* Home reader pillars (Phase 15.1) — scp-jp.wikidot.com */
+"home.reader.jp_articles.title.jp" = "SCP-JP";
+"home.reader.jp_articles.subtitle.jp" = "";
+"home.reader.original_articles.title.jp" = "SCP（本家）";
+"home.reader.original_articles.subtitle.jp" = "";
+"home.reader.tales.title.jp" = "Tales";
+"home.reader.tales.subtitle.jp" = "";
+"home.reader.canons.title.jp" = "Canon";
+"home.reader.canons.subtitle.jp" = "";
+"home.reader.gois.title.jp" = "GoI";
+"home.reader.gois.subtitle.jp" = "";
+"home.reader.jokes.title.jp" = "Joke";
+"home.reader.jokes.subtitle.jp" = "";
+/* EN main site */
+"home.reader.jp_articles.title.en" = "SCP-JP";
+"home.reader.jp_articles.subtitle.en" = "";
+"home.reader.original_articles.title.en" = "SCP（本家）";
+"home.reader.original_articles.subtitle.en" = "";
+"home.reader.tales.title.en" = "Tales";
+"home.reader.tales.subtitle.en" = "";
+"home.reader.canons.title.en" = "Canon";
+"home.reader.canons.subtitle.en" = "";
+"home.reader.gois.title.en" = "GoI";
+"home.reader.gois.subtitle.en" = "";
+"home.reader.jokes.title.en" = "Joke";
+"home.reader.jokes.subtitle.en" = "";
+/* SCP International */
+"home.reader.jp_articles.title.int" = "SCP-JP";
+"home.reader.jp_articles.subtitle.int" = "";
+"home.reader.original_articles.title.int" = "SCP（本家）";
+"home.reader.original_articles.subtitle.int" = "";
+"home.reader.tales.title.int" = "Tales";
+"home.reader.tales.subtitle.int" = "";
+"home.reader.canons.title.int" = "Canon";
+"home.reader.canons.subtitle.int" = "";
+"home.reader.gois.title.int" = "GoI";
+"home.reader.gois.subtitle.int" = "";
+"home.reader.jokes.title.int" = "Joke";
+"home.reader.jokes.subtitle.int" = "";
+/* Pillar badges — JP site */
+"home.reader.pillar.01.badge.jp" = "01 • SCP-JP";
+"home.reader.pillar.02.badge.jp" = "02 • 和訳";
+"home.reader.pillar.03.badge.jp" = "03 • TALES";
+"home.reader.pillar.04.badge.jp" = "04 • CANON";
+"home.reader.pillar.05.badge.jp" = "05 • GoI";
+"home.reader.pillar.06.badge.jp" = "06 • ジョーク";
+/* EN site */
+"home.reader.pillar.01.badge.en" = "01 • SCP-JP";
+"home.reader.pillar.02.badge.en" = "02 • TR";
+"home.reader.pillar.03.badge.en" = "03 • TALES";
+"home.reader.pillar.04.badge.en" = "04 • CANON";
+"home.reader.pillar.05.badge.en" = "05 • GoI";
+"home.reader.pillar.06.badge.en" = "06 • JOKE";
+/* INT site */
+"home.reader.pillar.01.badge.int" = "01 • SCP-JP";
+"home.reader.pillar.02.badge.int" = "02 • TR";
+"home.reader.pillar.03.badge.int" = "03 • TALES";
+"home.reader.pillar.04.badge.int" = "04 • CANON";
+"home.reader.pillar.05.badge.int" = "05 • GoI";
+"home.reader.pillar.06.badge.int" = "06 • JOKE";
 
 "goi.portal.title" = "要注意団体と登場人物";
 "goi.portal.native_list.title" = "要注意団体（ネイティブ一覧）";
@@ -341,6 +402,9 @@
 "settings.webview.probe" = "疎通テスト（URLSession → scp-jp）";
 "settings.webview.probe_footer" = "URLSession です（WKWebView ではありません）。ここがすぐ成功するのにアプリ内だけ失敗するなら、WebKit 側の問題として切り分けます。";
 "settings.title" = "設定";
+"settings.section.staff_guide" = "ガイド";
+"settings.staff_guide.index.title" = "新人職員ガイド";
+"settings.staff_guide.index.subtitle" = "SCP-JP の規約・参加・ライセンスなど（ネイティブ索引）";
 "settings.section.branch" = "支部";
 "settings.branch_picker" = "コンテンツ支部";
 "settings.section.locale_reader" = "表示と読書";

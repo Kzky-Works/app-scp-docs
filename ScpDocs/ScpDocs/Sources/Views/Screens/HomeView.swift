@@ -1,56 +1,22 @@
 import SwiftUI
 
-// MARK: - ダッシュボード・グリッド（高さ・幅は重みで比例配分し、親の `GeometryReader` に追従して伸縮）
-
-private enum HomeDashboardGridMetrics {
-    static let rowGap: CGFloat = 8
-    static let columnGap: CGFloat = 12
-    /// 上段（アーカイブ 2 枚）: 中段（書庫・INT）: 下段（ガイド・イベント）の高さ比。
-    static let rowHeightWeights: (CGFloat, CGFloat, CGFloat) = (2, 1, 1)
-    /// 上段の左（SCP-JP）: 右（SCP）の幅比。
-    static let archiveColumnWidthWeights: (CGFloat, CGFloat) = (3, 2)
-
-    static func rowHeights(totalHeight: CGFloat, rowGap: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
-        let (w0, w1, w2) = rowHeightWeights
-        let sum = w0 + w1 + w2
-        guard totalHeight.isFinite, totalHeight > 0, sum > 0 else { return (0, 0, 0) }
-        let gapsTotal = 2 * rowGap
-        let available = max(0, totalHeight - gapsTotal)
-        let h0 = available * (w0 / sum)
-        let h1 = available * (w1 / sum)
-        let h2 = available * (w2 / sum)
-        return (h0, h1, h2)
-    }
-
-    static func archiveColumnWidths(totalWidth: CGFloat, columnGap: CGFloat) -> (CGFloat, CGFloat) {
-        let (wl, wr) = archiveColumnWidthWeights
-        let sum = wl + wr
-        guard totalWidth.isFinite, totalWidth > 0, sum > 0 else { return (0, 0) }
-        let inner = max(0, totalWidth - columnGap)
-        let left = inner * (wl / sum)
-        let right = inner * (wr / sum)
-        return (left, right)
-    }
-}
-
 struct HomeView: View {
     @Bindable var navigationRouter: NavigationRouter
     private let homeViewModel: HomeViewModel
     private let japanSCPListMetadataStore: JapanSCPListMetadataStore
-    private let onOpenScpLibrary: () -> Void
 
     @Environment(\.scpHomeAdBottomReserve) private var homeAdBottomReserve
+
+    private let homeCategoryRowSpacing: CGFloat = 12
 
     init(
         navigationRouter: NavigationRouter,
         homeViewModel: HomeViewModel,
-        japanSCPListMetadataStore: JapanSCPListMetadataStore,
-        onOpenScpLibrary: @escaping () -> Void
+        japanSCPListMetadataStore: JapanSCPListMetadataStore
     ) {
         self.navigationRouter = navigationRouter
         self.homeViewModel = homeViewModel
         self.japanSCPListMetadataStore = japanSCPListMetadataStore
-        self.onOpenScpLibrary = onOpenScpLibrary
     }
 
     var body: some View {
@@ -60,46 +26,43 @@ struct HomeView: View {
 
                 randomAccessRow
 
-                GeometryReader { geo in
-                    let innerW = geo.size.width
-                    let totalH = geo.size.height
-                    let rowGap = HomeDashboardGridMetrics.rowGap
-                    let colGap = HomeDashboardGridMetrics.columnGap
+                GeometryReader { geometry in
+                    let totalH = max(0, geometry.size.height)
+                    let innerH = max(0, totalH - homeCategoryRowSpacing * 2)
+                    let topRowH = innerH * 3 / 7
+                    let midRowH = innerH * 2 / 7
+                    let bottomRowH = innerH * 2 / 7
+                    let rowWidth = geometry.size.width
+                    let topInnerWidth = max(0, rowWidth - homeCategoryRowSpacing)
+                    let jpWidth = topInnerWidth * 3 / 5
+                    let mainWidth = topInnerWidth * 2 / 5
 
-                    if innerW.isFinite, totalH.isFinite, innerW > 0, totalH > 0 {
-                        let (rowTop, rowMid, rowBot) = HomeDashboardGridMetrics.rowHeights(totalHeight: totalH, rowGap: rowGap)
-                        let (jpW, enW) = HomeDashboardGridMetrics.archiveColumnWidths(totalWidth: innerW, columnGap: colGap)
-
-                        VStack(spacing: rowGap) {
-                            HStack(spacing: colGap) {
-                                dashboardTile(for: .jpArchive, stretchVertically: true)
-                                    .frame(width: jpW, height: rowTop)
-                                dashboardTile(for: .enArchive, stretchVertically: true)
-                                    .frame(width: enW, height: rowTop)
-                            }
-                            .frame(height: rowTop)
-
-                            HStack(spacing: colGap) {
-                                dashboardTile(for: .scpLibrary, stretchVertically: true)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                dashboardTile(for: .international, stretchVertically: true)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            }
-                            .frame(height: rowMid)
-
-                            HStack(spacing: colGap) {
-                                dashboardTile(for: .guide, stretchVertically: true)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                dashboardTile(for: .events, stretchVertically: true)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            }
-                            .frame(height: rowBot)
+                    VStack(spacing: homeCategoryRowSpacing) {
+                        HStack(spacing: homeCategoryRowSpacing) {
+                            homeCategoryTile(for: .jpArticles)
+                                .frame(width: jpWidth, height: topRowH)
+                            homeCategoryTile(for: .originalArticles)
+                                .frame(width: mainWidth, height: topRowH)
                         }
-                        .frame(width: innerW, height: totalH, alignment: .top)
-                    } else {
-                        Color.clear
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(height: topRowH)
+
+                        HStack(spacing: homeCategoryRowSpacing) {
+                            homeCategoryTile(for: .tales)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            homeCategoryTile(for: .canons)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                        .frame(height: midRowH)
+
+                        HStack(spacing: homeCategoryRowSpacing) {
+                            homeCategoryTile(for: .gois)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            homeCategoryTile(for: .jokes)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                        .frame(height: bottomRowH)
                     }
+                    .frame(width: rowWidth, height: totalH, alignment: .top)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
@@ -108,7 +71,7 @@ struct HomeView: View {
             .padding(.bottom, 8 + homeAdBottomReserve)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .background(AppTheme.backgroundPrimary)
+        .background(AppTheme.mainBackground)
         .toolbar(.hidden, for: .navigationBar)
         .tint(AppTheme.brandAccent)
     }
@@ -201,10 +164,6 @@ struct HomeView: View {
                         .minimumScaleFactor(0.85)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-
-                Image(systemName: "arrow.right")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(AppTheme.brandAccent)
             }
             .padding(14)
             .foundationCard(style: .standard)
@@ -214,108 +173,43 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func dashboardTile(for section: HomeSection, stretchVertically: Bool = false) -> some View {
-        let branch = homeViewModel.selectedBranch
-        let badge = String(localized: String.LocalizationValue(section.badgeLocalizationKey))
-        let style: FoundationCardStyle = switch section {
-        case .jpArchive: .inverted
-        case .events: .danger
-        default: .standard
-        }
-        let isWide = section == .jpArchive
-
-        switch section {
-        case .jpArchive:
+    private func homeCategoryTile(for category: HomeCategory) -> some View {
+        if let item = homeViewModel.homeGridItems.first(where: { $0.category == category }) {
             SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
+                title: localized(item.titleLocalizationKey),
+                subtitle: localized(item.subtitleLocalizationKey),
                 leading: .none,
                 emphasizeTitle: true,
-                archiveTitleDoubleSize: true,
-                isWide: isWide,
-                style: style,
-                badge: badge,
-                stretchVertically: stretchVertically,
-                onTap: {
-                    Haptics.medium()
-                    homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-                    navigationRouter.push(.scpJapanArchive)
-                }
-            )
-        case .enArchive:
-            SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
-                leading: .none,
-                emphasizeTitle: true,
-                archiveTitleDoubleSize: true,
                 isWide: false,
-                style: style,
-                badge: badge,
-                stretchVertically: stretchVertically,
+                style: item.category == .jpArticles ? .inverted : .standard,
+                scpJapanSpecialChrome: item.category == .jpArticles,
+                badge: String(localized: String.LocalizationValue(item.badgeLocalizationKey)),
+                stretchVertically: true,
+                showsTrailingChevron: false,
                 onTap: {
                     Haptics.medium()
-                    homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-                    navigationRouter.push(.scpEnglishArchive)
+                    handleCategoryTap(item.category)
                 }
             )
-        case .scpLibrary:
-            SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
-                leading: .none,
-                isWide: isWide,
-                style: style,
-                badge: badge,
-                stretchVertically: stretchVertically,
-                onTap: {
-                    Haptics.medium()
-                    onOpenScpLibrary()
-                }
-            )
-        case .international:
-            SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
-                leading: .none,
-                isWide: isWide,
-                style: style,
-                badge: badge,
-                stretchVertically: stretchVertically,
-                onTap: {
-                    Haptics.medium()
-                    homeViewModel.selectBranch(id: BranchIdentifier.scpInternational)
-                    navigationRouter.push(.category(Branch.international.internationalBranchesPortalURL()))
-                }
-            )
-        case .guide:
-            SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
-                leading: .none,
-                isWide: isWide,
-                style: style,
-                badge: badge,
-                stretchVertically: stretchVertically,
-                onTap: {
-                    Haptics.medium()
-                    navigationRouter.push(.staffGuideIndex)
-                }
-            )
-        case .events:
-            SectionTile(
-                title: localized(section.titleLocalizationKey),
-                subtitle: localized(section.subtitleLocalizationKey),
-                leading: .none,
-                isWide: isWide,
-                style: style,
-                badge: badge,
-                stretchVertically: stretchVertically,
-                onTap: {
-                    Haptics.medium()
-                    navigationRouter.push(.category(branch.eventsHubURL()))
-                }
-            )
+        }
+    }
+
+    private func handleCategoryTap(_ category: HomeCategory) {
+        switch category {
+        case .jpArticles:
+            homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
+            navigationRouter.push(.scpJapanArchive(initialTagFilters: nil))
+        case .originalArticles:
+            homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
+            navigationRouter.push(.scpEnglishArchive(initialTagFilters: nil))
+        case .tales:
+            navigationRouter.push(.libraryList(.tales))
+        case .canons:
+            navigationRouter.push(.libraryList(.canons))
+        case .gois:
+            navigationRouter.push(.libraryList(.goi))
+        case .jokes:
+            navigationRouter.push(.category(Branch.japan.jokeScpHubURL()))
         }
     }
 
@@ -331,8 +225,7 @@ struct HomeView: View {
         HomeView(
             navigationRouter: router,
             homeViewModel: vm,
-            japanSCPListMetadataStore: JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository()),
-            onOpenScpLibrary: {}
+            japanSCPListMetadataStore: JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository())
         )
     }
 }

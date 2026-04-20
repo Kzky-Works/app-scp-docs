@@ -13,13 +13,15 @@ struct WebContentPalette: Equatable, Sendable {
     let containerHex: String
 }
 
-/// 画像ベースの「モダン・ブルータリズム」パレット（ライト／ダーク）。
+/// Phase 12.2: モダン・ブルータリズム配色（ライト確定案／ダーク新案）。
 /// 画面側は `Color`、UIKit／WebView は対応する動的 `UIColor` と hex を共有する。
 enum AppTheme {
-    static let cornerRadiusCard: CGFloat = 10
+    /// ホーム・カード類の角丸（12〜16pt のレンジ内で統一）。
+    static let cornerRadiusCard: CGFloat = 14
+    /// 極細ボーダー（0.5pt / 1.0pt のレンジ。フラット面の区切りに 0.5pt）。
     static let borderWidthHairline: CGFloat = 0.5
 
-    /// 要注意・ナビ選択・イベント等の差し色（財団レッド系）。
+    /// 要注意・ナビ選択等の差し色（イベントパネル本体には使わない）。
     static let brandAccent = Color(
         red: 220 / 255,
         green: 38 / 255,
@@ -28,55 +30,68 @@ enum AppTheme {
 
     // MARK: SwiftUI — システム外観に追従
 
-    static let backgroundPrimary = dynamicColor(
-        light: (242, 242, 247),
-        dark: (10, 10, 10)
-    )
-
-    /// 索引・一覧画面の下地（`backgroundPrimary` と同一）。
-    static var mainBackground: Color { backgroundPrimary }
-
-    /// 通常カード面（ライト白／ダーク #161616）。
-    static let surfaceCard = dynamicColor(
-        light: (255, 255, 255),
-        dark: (22, 22, 22)
-    )
-
-    /// 索引行のカード面（`surfaceCard` と同一）。
-    static var cardBackground: Color { surfaceCard }
-
-    /// JP アーカイヴ等の反転タイル（ライトではチャコール、ダークではやや深い面）。
-    static let surfaceInverted = dynamicColor(
-        light: (22, 22, 22),
+    /// メイン下地: ライト #F7F6F0／ダーク #121212。
+    static let mainBackground = dynamicColor(
+        light: (247, 246, 240),
         dark: (18, 18, 18)
     )
 
-    static let borderSubtle = dynamicColor(
-        light: (229, 229, 234),
-        dark: (44, 44, 46)
+    /// 画面全体の背景（`mainBackground` と同一。旧名互換）。
+    static var backgroundPrimary: Color { mainBackground }
+
+    /// 標準カード面: ライト #FFFFFF／ダーク #1E1E1E。
+    static let cardStandard = dynamicColor(
+        light: (255, 255, 255),
+        dark: (30, 30, 30)
     )
 
-    /// 本文・見出しの主色（ライト #3A3A3C／ダーク #C0C0C0）。
+    /// 索引行のカード面・旧名互換。
+    static var surfaceCard: Color { cardStandard }
+
+    /// 索引行のカード面（`cardStandard` と同一）。
+    static var cardBackground: Color { cardStandard }
+
+    /// カード境界線: ライト #E2E0D6／ダーク #2C2C2C。
+    static let cardBorder = dynamicColor(
+        light: (226, 224, 214),
+        dark: (44, 44, 44)
+    )
+
+    /// 旧名互換（`cardBorder` と同一）。
+    static var borderSubtle: Color { cardBorder }
+
+    /// SCP-JP（01）ライト: 背景 #1A1A1A。ダーク: 他パネルと同じ #1E1E1E（斜線は `specialCardChrome`）。
+    static let scpJapanPanelFill = dynamicColor(
+        light: (26, 26, 26),
+        dark: (30, 30, 30)
+    )
+
+    /// 旧コード互換（SCP-JP パネル面）。
+    static var surfaceInverted: Color { scpJapanPanelFill }
+
+    /// 本文・見出し: ライト #1A1A1A／ダーク #E2E0D6。
     static let textPrimary = dynamicColor(
-        light: (58, 58, 60),
-        dark: (192, 192, 192)
+        light: (26, 26, 26),
+        dark: (226, 224, 214)
     )
 
+    /// 補助テキスト: ライト #8C8A82／ダーク #75736C。
     static let textSecondary = dynamicColor(
-        light: (110, 110, 115),
-        dark: (142, 142, 147)
+        light: (140, 138, 130),
+        dark: (117, 115, 108)
     )
 
     /// 旧コード互換: 主にアイコン・ラベルに使っていた「アクセント」＝ `textPrimary` と同系。
     static let accentPrimary = textPrimary
 
-    /// 反転タイル上の文字色。
-    static let textOnInverted = dynamicColor(
-        light: (242, 242, 247),
-        dark: (192, 192, 192)
-    )
+    /// SCP-JP ライト反転面の主文字（#FFFFFF）。
+    static let textOnSCPJapanLight = Color.white
 
-    static let shadowCard = Color.black.opacity(0.06)
+    /// 反転タイル上の文字色（ライト: 白／ダーク: 通常主色＝パネルが標準面のため）。
+    static let textOnInverted = dynamicColor(
+        light: (255, 255, 255),
+        dark: (226, 224, 214)
+    )
 
     /// `GADAdSizeBanner` の論理高さ（50pt）。
     static let adBannerContentHeight: CGFloat = 50
@@ -87,13 +102,13 @@ enum AppTheme {
 
 #if canImport(UIKit)
     static let backgroundPrimaryUIKit = dynamicUIColor(
-        light: (242, 242, 247),
-        dark: (10, 10, 10)
+        light: (247, 246, 240),
+        dark: (18, 18, 18)
     )
 
     static let accentPrimaryUIKit = dynamicUIColor(
-        light: (58, 58, 60),
-        dark: (192, 192, 192)
+        light: (26, 26, 26),
+        dark: (226, 224, 214)
     )
 
     static let brandAccentUIKit = UIColor(brandAccent)
@@ -104,19 +119,19 @@ enum AppTheme {
     static func webContentPalette(isDark: Bool) -> WebContentPalette {
         if isDark {
             WebContentPalette(
-                backgroundHex: "#0A0A0A",
-                textHex: "#C0C0C0",
-                linkHex: "#C0C0C0",
-                linkHoverHex: "#E0E0E0",
-                containerHex: "#0A0A0A"
+                backgroundHex: "#121212",
+                textHex: "#E2E0D6",
+                linkHex: "#E2E0D6",
+                linkHoverHex: "#FFFFFF",
+                containerHex: "#121212"
             )
         } else {
             WebContentPalette(
-                backgroundHex: "#F2F2F7",
-                textHex: "#3A3A3C",
-                linkHex: "#3A3A3C",
-                linkHoverHex: "#1C1C1E",
-                containerHex: "#F2F2F7"
+                backgroundHex: "#F7F6F0",
+                textHex: "#1A1A1A",
+                linkHex: "#1A1A1A",
+                linkHoverHex: "#000000",
+                containerHex: "#F7F6F0"
             )
         }
     }

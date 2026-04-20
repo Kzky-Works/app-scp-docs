@@ -33,7 +33,7 @@
 		BF0000000000000000000019 /* WebViewDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001A /* WebViewDiagnostics.swift */; };
 		BF000000000000000000001C /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001B /* Haptics.swift */; };
 		BF000000000000000000001D /* AppUILanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001C /* AppUILanguage.swift */; };
-		BF000000000000000000001E /* HomeSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001D /* HomeSection.swift */; };
+		BF000000000000000000001E /* HomeCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001D /* HomeCategory.swift */; };
 		BF000000000000000000001F /* SectionTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001E /* SectionTile.swift */; };
 		BF0000000000000000000020 /* ArchiveIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000001F /* ArchiveIndexView.swift */; };
 		BF0000000000000000000021 /* LibraryIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000020 /* LibraryIndexView.swift */; };
@@ -95,7 +95,7 @@
 		FR000000000000000000001A /* WebViewDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewDiagnostics.swift; sourceTree = "<group>"; };
 		FR000000000000000000001B /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		FR000000000000000000001C /* AppUILanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUILanguage.swift; sourceTree = "<group>"; };
-		FR000000000000000000001D /* HomeSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSection.swift; sourceTree = "<group>"; };
+		FR000000000000000000001D /* HomeCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCategory.swift; sourceTree = "<group>"; };
 		FR000000000000000000001E /* SectionTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTile.swift; sourceTree = "<group>"; };
 		FR000000000000000000001F /* ArchiveIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveIndexView.swift; sourceTree = "<group>"; };
 		FR0000000000000000000020 /* LibraryIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryIndexView.swift; sourceTree = "<group>"; };
@@ -214,7 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				FR0000000000000000000004 /* Branch.swift */,
-				FR000000000000000000001D /* HomeSection.swift */,
+				FR000000000000000000001D /* HomeCategory.swift */,
 				FR0000000000000000000021 /* LibraryCategory.swift */,
 				FR0000000000000000000024 /* LibraryListSortMode.swift */,
 				FR0000000000000000000010 /* NavigationRoute.swift */,
@@ -433,7 +433,7 @@
 				BF0000000000000000000018 /* OfflineStore.swift in Sources */,
 				BF000000000000000000001C /* Haptics.swift in Sources */,
 				BF000000000000000000001D /* AppUILanguage.swift in Sources */,
-				BF000000000000000000001E /* HomeSection.swift in Sources */,
+				BF000000000000000000001E /* HomeCategory.swift in Sources */,
 				BF000000000000000000001F /* SectionTile.swift in Sources */,
 				BF0000000000000000000020 /* ArchiveIndexView.swift in Sources */,
 				BF0000000000000000000021 /* LibraryIndexView.swift in Sources */,

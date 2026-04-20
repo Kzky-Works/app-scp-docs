@@ -18,6 +18,7 @@ struct ScpDocsApp: App {
     }
     @State private var homeNavigationRouter = NavigationRouter()
     @State private var libraryNavigationRouter = NavigationRouter()
+    @State private var settingsNavigationRouter = NavigationRouter()
     @State private var articleRepository = ArticleRepository()
     @State private var purchaseRepository = PurchaseRepository()
     @State private var rootTab: AppRootTab = .home
@@ -28,6 +29,7 @@ struct ScpDocsApp: App {
                 homeViewModel: homeViewModel,
                 homeNavigationRouter: homeNavigationRouter,
                 libraryNavigationRouter: libraryNavigationRouter,
+                settingsNavigationRouter: settingsNavigationRouter,
                 articleRepository: articleRepository,
                 purchaseRepository: purchaseRepository,
                 japanSCPListMetadataStore: japanSCPListMetadataStore,

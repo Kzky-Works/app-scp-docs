@@ -76,6 +76,11 @@ final class HomeViewModel {
         String(localized: String.LocalizationValue(LocalizationKey.branchBaseURLLabel))
     }
 
+    /// ホーム `LazyVGrid` 用：現在支部に応じた 6 ピラーのラベルと SF Symbol 名（名前は `systemImageName`）。
+    var homeGridItems: [HomeGridItemDescriptor] {
+        HomeCategory.allCases.map { $0.gridDescriptor(for: selectedBranch) }
+    }
+
     func loadLibraryListSortMode(for category: LibraryCategory) -> LibraryListSortMode {
         settingsRepository.loadLibraryListSortMode(for: category)
     }

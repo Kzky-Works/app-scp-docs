@@ -4,6 +4,7 @@ struct SettingsView: View {
     @Bindable var homeViewModel: HomeViewModel
     @Bindable var articleRepository: ArticleRepository
     @Bindable var purchaseRepository: PurchaseRepository
+    @Bindable var navigationRouter: NavigationRouter
 
     @State private var dataAction: DataManagementAction?
     @State private var cacheClearDone = false
@@ -32,9 +33,35 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
+        List {
+            Section {
+                Button {
+                    Haptics.medium()
+                    navigationRouter.push(.staffGuideIndex)
+                } label: {
+                    HStack(alignment: .top, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.settingsStaffGuideIndexTitle)))
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(AppTheme.textPrimary)
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.settingsStaffGuideIndexSubtitle)))
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer(minLength: 8)
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                    .padding(.vertical, 2)
+                }
+                .buttonStyle(.plain)
+            } header: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionStaffGuide)))
+            }
+
+            Section {
                     Picker(
                         String(localized: String.LocalizationValue(LocalizationKey.settingsBranchPicker)),
                         selection: Binding(
@@ -275,7 +302,6 @@ struct SettingsView: View {
                     EmptyView()
                 }
             }
-        }
         .preferredColorScheme(.dark)
         .tint(AppTheme.accentPrimary)
     }
@@ -290,5 +316,11 @@ struct SettingsView: View {
     @Previewable @State var homeViewModel = HomeViewModel(settingsRepository: SettingsRepository())
     @Previewable @State var articleRepository = ArticleRepository()
     @Previewable @State var purchaseRepository = PurchaseRepository()
-    SettingsView(homeViewModel: homeViewModel, articleRepository: articleRepository, purchaseRepository: purchaseRepository)
+    @Previewable @State var navigationRouter = NavigationRouter()
+    SettingsView(
+        homeViewModel: homeViewModel,
+        articleRepository: articleRepository,
+        purchaseRepository: purchaseRepository,
+        navigationRouter: navigationRouter
+    )
 }

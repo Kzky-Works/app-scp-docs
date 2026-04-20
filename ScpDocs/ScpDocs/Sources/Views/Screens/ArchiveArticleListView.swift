@@ -11,10 +11,11 @@ struct ArchiveArticleListView: View {
     let kind: Kind
     let articleRepository: ArticleRepository
     private let japanSCPListMetadataStore: JapanSCPListMetadataStore
+    private let initialTagFilters: Set<String>?
 
     @State private var selectedSeries: SCPJPSeries
     @State private var selectedSegmentStart: Int
-    @State private var filterModel = ArchiveArticleViewModel()
+    @State private var filterModel: ArchiveArticleViewModel
     /// 一覧行にタグチップを常時表示（フィルタ／タグ検索入力時は自動で表示）。
     @State private var showDetailRowTags = false
 
@@ -22,15 +23,22 @@ struct ArchiveArticleListView: View {
         navigationRouter: NavigationRouter,
         articleRepository: ArticleRepository,
         kind: Kind,
-        japanSCPListMetadataStore: JapanSCPListMetadataStore
+        japanSCPListMetadataStore: JapanSCPListMetadataStore,
+        initialTagFilters: Set<String>? = nil
     ) {
         self.navigationRouter = navigationRouter
         self.kind = kind
         self.articleRepository = articleRepository
         self.japanSCPListMetadataStore = japanSCPListMetadataStore
+        self.initialTagFilters = initialTagFilters
         let initialSeries = SCPJPSeries.series1
         self._selectedSeries = State(initialValue: initialSeries)
         self._selectedSegmentStart = State(initialValue: initialSeries.segmentStarts.first ?? 1)
+        let model = ArchiveArticleViewModel()
+        if let initialTagFilters {
+            model.selectedTags = initialTagFilters
+        }
+        self._filterModel = State(initialValue: model)
     }
 
     private var entries: [JapanSCPArchiveEntry] {
@@ -142,6 +150,9 @@ struct ArchiveArticleListView: View {
         }
         .onChange(of: selectedSeries) { _, newSeries in
             filterModel.clearFilters()
+            if let initialTagFilters {
+                filterModel.selectedTags = initialTagFilters
+            }
             let starts = newSeries.segmentStarts
             guard !starts.isEmpty else { return }
             if !starts.contains(selectedSegmentStart) {
@@ -150,6 +161,9 @@ struct ArchiveArticleListView: View {
         }
         .onChange(of: selectedSegmentStart) { _, _ in
             filterModel.clearFilters()
+            if let initialTagFilters {
+                filterModel.selectedTags = initialTagFilters
+            }
         }
         .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
