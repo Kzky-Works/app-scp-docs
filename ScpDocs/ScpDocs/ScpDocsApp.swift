@@ -8,6 +8,10 @@ struct ScpDocsApp: App {
     @State private var japanSCPListMetadataStore: JapanSCPListMetadataStore
 
     init() {
+#if canImport(UIKit)
+        AppTypography.registerBundledBauhausLTDemiIfPresent()
+        AppTypography.registerBundledHomePillarOpenFonts()
+#endif
         let settingsRepository = SettingsRepository()
         _homeViewModel = State(wrappedValue: HomeViewModel(settingsRepository: settingsRepository))
         let scpCache = SCPListCacheRepository()

@@ -1,6 +1,6 @@
 import Foundation
 
-/// ホーム「読者特化型」6 ピラー（`HomeView` で 2 列×3 行の比率レイアウト）。
+/// ホーム「読者特化型」6 ピラー（`HomeView` で 2 列×3 行。行の高さ比は上段 5/11、中段・下段各 3/11）。
 enum HomeCategory: String, CaseIterable, Sendable, Identifiable {
     /// 01: 日本支部オリジナル報告書（`scp-NNN-jp`）— アーカイヴ `-jp` タグ適用。
     case jpArticles

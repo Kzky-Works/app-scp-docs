@@ -10,6 +10,8 @@ struct SCPWebView: UIViewRepresentable {
     var navigationRouter: NavigationRouter? = nil
     /// 記事画面で右端のカスタムスクロールバーを使うときは `false` にし、二重表示を避ける。
     var showsNativeVerticalScrollIndicator: Bool = true
+    /// 記事の下部リーダーナビを展開した状態で、本文（Web）をタップしたときに閉じる処理。`nil` のときは無効。
+    var onReaderChromeDismissTap: (() -> Void)? = nil
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -50,6 +52,7 @@ struct SCPWebView: UIViewRepresentable {
         }
         viewModel.flushPendingCommands(into: webView)
         context.coordinator.syncNavigationChrome(for: webView)
+        context.coordinator.syncReaderChromeDismissTap(on: webView, handler: onReaderChromeDismissTap)
     }
 
     private static func applyChromeColors(to webView: WKWebView) {
@@ -81,6 +84,9 @@ struct SCPWebView: UIViewRepresentable {
         var colorScheme: ColorScheme = .light
 
         private var edgeBackGesture: UIScreenEdgePanGestureRecognizer?
+        private var readerChromeDismissTapGesture: UITapGestureRecognizer?
+        /// `syncReaderChromeDismissTap` で更新。ジェスチャーは参照だけで、実行時に最新のクロージャを呼ぶ。
+        private var readerChromeDismissTapHandler: (() -> Void)?
         private weak var trackedNavigationController: UINavigationController?
         private var originalPopGestureDelegate: UIGestureRecognizerDelegate?
 
@@ -121,8 +127,40 @@ struct SCPWebView: UIViewRepresentable {
             syncNavigationChrome(for: webView)
         }
 
+        func syncReaderChromeDismissTap(on webView: WKWebView, handler: (() -> Void)?) {
+            readerChromeDismissTapHandler = handler
+
+            let scrollView = webView.scrollView
+
+            if handler == nil {
+                if let tap = readerChromeDismissTapGesture {
+                    scrollView.removeGestureRecognizer(tap)
+                    readerChromeDismissTapGesture = nil
+                }
+                return
+            }
+
+            if readerChromeDismissTapGesture == nil {
+                let tap = UITapGestureRecognizer(target: self, action: #selector(handleReaderChromeDismissTap(_:)))
+                tap.cancelsTouchesInView = false
+                tap.delegate = self
+                scrollView.addGestureRecognizer(tap)
+                readerChromeDismissTapGesture = tap
+            }
+        }
+
+        @objc private func handleReaderChromeDismissTap(_ gesture: UITapGestureRecognizer) {
+            guard gesture.state == .ended else { return }
+            guard let webView else { return }
+            let point = gesture.location(in: webView)
+            guard webView.point(inside: point, with: nil) else { return }
+            readerChromeDismissTapHandler?()
+        }
+
         func teardown() {
             guard let attachedWebView = webView else {
+                readerChromeDismissTapGesture = nil
+                readerChromeDismissTapHandler = nil
                 edgeBackGesture = nil
                 restorePopGestureDelegate()
                 viewModel = nil
@@ -134,6 +172,12 @@ struct SCPWebView: UIViewRepresentable {
                 attachedWebView.removeObserver(self, forKeyPath: #keyPath(WKWebView.url))
                 isObservingWebView = false
             }
+
+            if let readerChromeDismissTapGesture {
+                attachedWebView.scrollView.removeGestureRecognizer(readerChromeDismissTapGesture)
+            }
+            readerChromeDismissTapGesture = nil
+            readerChromeDismissTapHandler = nil
 
             if let edgeBackGesture {
                 attachedWebView.removeGestureRecognizer(edgeBackGesture)
@@ -271,6 +315,14 @@ struct SCPWebView: UIViewRepresentable {
             }
 
             return true
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+        ) -> Bool {
+            guard let dismissTap = readerChromeDismissTapGesture else { return false }
+            return gestureRecognizer === dismissTap || otherGestureRecognizer === dismissTap
         }
 
         // MARK: - KVO

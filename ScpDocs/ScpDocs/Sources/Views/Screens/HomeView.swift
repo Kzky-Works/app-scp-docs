@@ -29,9 +29,9 @@ struct HomeView: View {
                 GeometryReader { geometry in
                     let totalH = max(0, geometry.size.height)
                     let innerH = max(0, totalH - homeCategoryRowSpacing * 2)
-                    let topRowH = innerH * 3 / 7
-                    let midRowH = innerH * 2 / 7
-                    let bottomRowH = innerH * 2 / 7
+                    let topRowH = innerH * 5 / 11
+                    let midRowH = innerH * 3 / 11
+                    let bottomRowH = innerH * 3 / 11
                     let rowWidth = geometry.size.width
                     let topInnerWidth = max(0, rowWidth - homeCategoryRowSpacing)
                     let jpWidth = topInnerWidth * 3 / 5
@@ -90,13 +90,14 @@ struct HomeView: View {
                         }
                     }
                 } label: {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(homeViewModel.branchDisplayTitle)
-                            .font(.largeTitle.weight(.bold))
+                    HStack(alignment: .center, spacing: 8) {
+                        Text(homeViewModel.homeDashboardBranchTitle)
+                            .font(AppTypography.homeBranchTitleFont())
                             .foregroundStyle(AppTheme.textPrimary)
                             .multilineTextAlignment(.leading)
                             .lineLimit(3)
                             .minimumScaleFactor(0.75)
+                            .frame(minHeight: AppTypography.homeBranchTitleRowReservedHeight, alignment: .center)
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(AppTheme.textSecondary)
@@ -186,6 +187,7 @@ struct HomeView: View {
                 badge: String(localized: String.LocalizationValue(item.badgeLocalizationKey)),
                 stretchVertically: true,
                 showsTrailingChevron: false,
+                titleFontOverride: AppTypography.homePillarTitleFont(),
                 onTap: {
                     Haptics.medium()
                     handleCategoryTap(item.category)

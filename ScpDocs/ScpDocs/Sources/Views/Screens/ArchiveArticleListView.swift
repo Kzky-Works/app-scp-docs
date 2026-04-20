@@ -165,7 +165,6 @@ struct ArchiveArticleListView: View {
                 filterModel.selectedTags = initialTagFilters
             }
         }
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 

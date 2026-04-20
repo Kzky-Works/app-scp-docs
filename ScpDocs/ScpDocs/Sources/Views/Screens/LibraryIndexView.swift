@@ -31,7 +31,6 @@ struct LibraryIndexView: View {
         .background(AppTheme.mainBackground)
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.libraryIndexTitle)))
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 }

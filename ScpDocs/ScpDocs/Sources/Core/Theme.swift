@@ -1,5 +1,6 @@
 import SwiftUI
 #if canImport(UIKit)
+import CoreText
 import UIKit
 #endif
 
@@ -186,6 +187,102 @@ enum AppTheme {
             let c = trait.userInterfaceStyle == .dark ? dark : light
             return UIColor(red: c.0 / 255, green: c.1 / 255, blue: c.2 / 255, alpha: 1)
         }
+    }
+#endif
+}
+
+// MARK: - Typography（バンドルするカスタムフォント）
+
+/// ホーム上部「支部名」などで使う表示用タイポグラフィ。
+enum AppTypography {
+#if canImport(UIKit)
+    /// `Font.custom` 用 PostScript 名（`ITC Bauhaus LT Demi.ttf` 内製は通常 `BauhausLT-Demi`）。
+    private static let homeBranchTitleFontPostScriptCandidates: [String] = [
+        "BauhausLT-Demi",
+        "BauhausLTDemi",
+        "BauhausLTDemi-Regular"
+    ]
+
+    /// バンドル内の Bauhaus LT Demi（`Resources/Fonts/ITC Bauhaus LT Demi.ttf` など）を登録する。
+    static func registerBundledBauhausLTDemiIfPresent() {
+        let resourceStemCandidates = [
+            "ITC Bauhaus LT Demi",
+            "BauhausLTDemi"
+        ]
+        let extensions = ["ttf", "otf"]
+        let subdirectoryCandidates: [String?] = ["Fonts", nil]
+        for stem in resourceStemCandidates {
+            for ext in extensions {
+                for subdir in subdirectoryCandidates {
+                    let url: URL? = if let subdir {
+                        Bundle.main.url(forResource: stem, withExtension: ext, subdirectory: subdir)
+                    } else {
+                        Bundle.main.url(forResource: stem, withExtension: ext)
+                    }
+                    guard let url else { continue }
+                    if CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil) {
+                        return
+                    }
+                }
+            }
+        }
+    }
+
+    /// Wikidot 系に近い人間味のサンセリフ（**SIL OFL または同等の無償商用可**）をバンドル登録する。
+    static func registerBundledHomePillarOpenFonts() {
+        let stems = ["Asap-VF", "OpenSans-VF", "SourceSans3-VF"]
+        for stem in stems {
+            guard let url = Bundle.main.url(forResource: stem, withExtension: "ttf", subdirectory: "Fonts")
+                ?? Bundle.main.url(forResource: stem, withExtension: "ttf") else { continue }
+            _ = CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+        }
+    }
+
+    /// ホーム支部名行の最小高さ（`largeTitle` の行ボックス。フォントを 2pt 縮めても縦の取りを維持）。
+    static var homeBranchTitleRowReservedHeight: CGFloat {
+        UIFont.preferredFont(forTextStyle: .largeTitle).lineHeight
+    }
+
+    /// ホーム `dashboardHeaderCard` の支部名。`largeTitle` 比で 2pt 小さく、未バンドル時はシステム太字。
+    static func homeBranchTitleFont() -> Font {
+        let base = UIFont.preferredFont(forTextStyle: .largeTitle).pointSize
+        let size = max(10, base - 2)
+        for name in homeBranchTitleFontPostScriptCandidates {
+            if UIFont(name: name, size: size) != nil {
+                return Font.custom(name, size: size, relativeTo: .largeTitle)
+            }
+        }
+        return Font.system(size: size, weight: .bold)
+    }
+
+    /// ホーム各パネル主タイトル。公式サイトの `Trebuchet MS → …` に**雰囲気を寄せた**バンドル無償フォントを、**先頭から最初に登録済みの1ファミリ**だけ使う（CSS の font-family と同じ考え方）。
+    /// 優先順: Asap（Trebuchet 系に近い）→ Open Sans → Source Sans 3。いずれも Google Fonts 由来・商用利用可（`Resources/Fonts` の OFL 文書参照）。
+    static func homePillarTitleFont() -> Font {
+        let baseSize = UIFont.preferredFont(forTextStyle: .title2).pointSize + 5
+        let metrics = UIFontMetrics(forTextStyle: .title2)
+        let bundledFamiliesInOrder = ["Asap", "Open Sans", "Source Sans 3"]
+        for family in bundledFamiliesInOrder {
+            let faces = UIFont.fontNames(forFamilyName: family).sorted()
+            guard !faces.isEmpty else { continue }
+            let postScript = faces.first(where: { name in
+                let n = name.lowercased()
+                return n.contains("semibold") || n.contains("600") || n.contains("bold") || n.contains("700")
+            }) ?? faces[0]
+            guard let ui = UIFont(name: postScript, size: baseSize) else { continue }
+            return Font(metrics.scaledFont(for: ui))
+        }
+        let fallbackSize = UIFont.preferredFont(forTextStyle: .title2).pointSize + 5
+        return Font.system(size: fallbackSize, weight: .semibold)
+    }
+#else
+    static var homeBranchTitleRowReservedHeight: CGFloat { 34 }
+
+    static func homeBranchTitleFont() -> Font {
+        .largeTitle.weight(.bold)
+    }
+
+    static func homePillarTitleFont() -> Font {
+        .title.weight(.semibold)
     }
 #endif
 }

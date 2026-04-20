@@ -8,3 +8,11 @@ enum AppUILanguage: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 }
+
+/// アプリ全体の配色（設定のトグルでライト／ダークを切替）。
+enum AppAppearancePreference: String, CaseIterable, Identifiable {
+    case light
+    case dark
+
+    var id: String { rawValue }
+}

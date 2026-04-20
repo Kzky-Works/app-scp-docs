@@ -240,7 +240,6 @@ struct LibraryListView: View {
                 .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.librarySortToolbarAccessibility)))
             }
         }
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 }

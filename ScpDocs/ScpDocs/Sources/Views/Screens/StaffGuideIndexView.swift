@@ -31,7 +31,6 @@ struct StaffGuideIndexView: View {
         .background(AppTheme.mainBackground)
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.homeSectionGuideTitle)))
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 }

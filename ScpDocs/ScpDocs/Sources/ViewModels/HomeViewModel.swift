@@ -9,6 +9,7 @@ final class HomeViewModel {
     private(set) var selectedBranch: Branch
     private(set) var fontSizeMultiplier: Double
     private(set) var uiLanguage: AppUILanguage
+    private(set) var appearancePreference: AppAppearancePreference
 
     init(
         branchCatalog: any BranchCataloging = StaticBranchCatalog(),
@@ -24,6 +25,7 @@ final class HomeViewModel {
         }
         self.fontSizeMultiplier = settingsRepository.loadFontSizeMultiplier()
         self.uiLanguage = settingsRepository.loadUILanguage()
+        self.appearancePreference = settingsRepository.loadAppearancePreference()
     }
 
     var resolvedLocale: Locale {
@@ -50,6 +52,12 @@ final class HomeViewModel {
         settingsRepository.saveUILanguage(value)
     }
 
+    func updateAppearancePreference(_ value: AppAppearancePreference) {
+        guard value != appearancePreference else { return }
+        appearancePreference = value
+        settingsRepository.saveAppearancePreference(value)
+    }
+
     var availableBranches: [Branch] {
         branchCatalog.allBranches
     }
@@ -66,6 +74,15 @@ final class HomeViewModel {
 
     var branchDisplayTitle: String {
         String(localized: String.LocalizationValue(selectedBranch.displayNameKey))
+    }
+
+    /// ホーム `dashboardHeaderCard` の支部名（日本支部のみ短表記「SCP財団」）。
+    var homeDashboardBranchTitle: String {
+        if selectedBranch.id == BranchIdentifier.scpJapan {
+            String(localized: String.LocalizationValue(LocalizationKey.homeDashboardBranchShortJapan))
+        } else {
+            branchDisplayTitle
+        }
     }
 
     var branchBaseURLDisplay: String {

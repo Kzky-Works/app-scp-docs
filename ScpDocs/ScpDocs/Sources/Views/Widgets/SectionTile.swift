@@ -143,6 +143,8 @@ struct SectionTile: View {
     var stretchVertically: Bool = false
     /// `onTap` があるときに右端へ付ける `chevron.right` を表示するか。
     var showsTrailingChevron: Bool = true
+    /// 指定時は `emphasizeTitle` / `archiveTitleDoubleSize` より優先して主タイトルに使う（例: ホームの Wikidot 寄せスタック）。
+    private let titleFontOverride: Font?
 
     private let accessoryView: AnyView
 
@@ -158,6 +160,7 @@ struct SectionTile: View {
         badge: String? = nil,
         stretchVertically: Bool = false,
         showsTrailingChevron: Bool = true,
+        titleFontOverride: Font? = nil,
         onTap: (() -> Void)?,
         @ViewBuilder accessory: @escaping () -> some View = { EmptyView() }
     ) {
@@ -172,11 +175,15 @@ struct SectionTile: View {
         self.badge = badge
         self.stretchVertically = stretchVertically
         self.showsTrailingChevron = showsTrailingChevron
+        self.titleFontOverride = titleFontOverride
         self.onTap = onTap
         self.accessoryView = AnyView(accessory())
     }
 
-    private var titleFont: Font {
+    private var resolvedTitleFont: Font {
+        if let titleFontOverride {
+            return titleFontOverride
+        }
         if archiveTitleDoubleSize {
 #if canImport(UIKit)
             let base = UIFont.preferredFont(forTextStyle: .title2)
@@ -187,7 +194,7 @@ struct SectionTile: View {
             return .largeTitle.weight(.semibold)
 #endif
         }
-        return emphasizeTitle ? .title2.weight(.semibold) : .title3.weight(.semibold)
+        return emphasizeTitle ? .title.weight(.semibold) : .title3.weight(.semibold)
     }
 
     var body: some View {
@@ -201,7 +208,7 @@ struct SectionTile: View {
             style: style,
             showsTrailingChevron: showsTrailingChevron,
             onTap: onTap,
-            titleFont: titleFont,
+            titleFont: resolvedTitleFont,
             stretchVertically: stretchVertically,
             accessoryView: accessoryView
         )

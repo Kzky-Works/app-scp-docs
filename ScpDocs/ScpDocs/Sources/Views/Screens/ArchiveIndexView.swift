@@ -48,7 +48,6 @@ struct ArchiveIndexView: View {
         .background(AppTheme.mainBackground)
         .navigationTitle(archiveNavigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 }

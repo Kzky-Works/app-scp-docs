@@ -32,7 +32,10 @@ struct ArticleView: View {
             SCPWebView(
                 viewModel: webViewModel,
                 navigationRouter: navigationRouter,
-                showsNativeVerticalScrollIndicator: false
+                showsNativeVerticalScrollIndicator: false,
+                onReaderChromeDismissTap: readerBottomNavExpanded
+                    ? { readerBottomNavExpanded = false }
+                    : nil
             )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 // 下部ナビ・広告帯の下まで本文を伸ばし、透過 UI の背後に記事が見えるようにする。
@@ -91,6 +94,11 @@ struct ArticleView: View {
                     .font(.headline)
                     .foregroundStyle(AppTheme.accentPrimary)
                     .lineLimit(1)
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        collapseReaderChromeIfExpanded()
+                    }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 if !connectivity.isPathSatisfied, articleRepository.isOfflineReady(url: entryURL) {
@@ -98,6 +106,10 @@ struct ArticleView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(AppTheme.accentPrimary.opacity(0.9))
                         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleOfflineBadge)))
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            collapseReaderChromeIfExpanded()
+                        }
                 }
             }
         }
@@ -112,7 +124,6 @@ struct ArticleView: View {
             webViewModel.readerFontSizeMultiplier = newValue
             webViewModel.applyReaderFontPresentation()
         }
-        .preferredColorScheme(.dark)
         .tint(AppTheme.brandAccent)
     }
 
@@ -273,5 +284,10 @@ struct ArticleView: View {
         homeViewModel.updateFontSizeMultiplier(before + delta)
         guard homeViewModel.fontSizeMultiplier != before else { return }
         Haptics.medium()
+    }
+
+    private func collapseReaderChromeIfExpanded() {
+        guard readerBottomNavExpanded else { return }
+        readerBottomNavExpanded = false
     }
 }

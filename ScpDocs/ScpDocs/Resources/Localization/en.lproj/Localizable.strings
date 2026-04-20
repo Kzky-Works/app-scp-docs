@@ -78,6 +78,7 @@
 "home.random.current_branch.title" = "Random report";
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
+"home.dashboard.branch_short_jp" = "SCP Foundation";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
 "home.pillar.en_badge" = "02 • ARCHIVE [EN]";
 "home.pillar.library_badge" = "03 • LIBRARY";
@@ -108,7 +109,7 @@
 /* Home reader pillars (Phase 15.1) — scp-jp.wikidot.com */
 "home.reader.jp_articles.title.jp" = "SCP-JP";
 "home.reader.jp_articles.subtitle.jp" = "";
-"home.reader.original_articles.title.jp" = "SCP（本家）";
+"home.reader.original_articles.title.jp" = "SCP";
 "home.reader.original_articles.subtitle.jp" = "";
 "home.reader.tales.title.jp" = "Tales";
 "home.reader.tales.subtitle.jp" = "";
@@ -121,7 +122,7 @@
 /* EN main site */
 "home.reader.jp_articles.title.en" = "SCP-JP";
 "home.reader.jp_articles.subtitle.en" = "";
-"home.reader.original_articles.title.en" = "SCP（本家）";
+"home.reader.original_articles.title.en" = "SCP";
 "home.reader.original_articles.subtitle.en" = "";
 "home.reader.tales.title.en" = "Tales";
 "home.reader.tales.subtitle.en" = "";
@@ -134,7 +135,7 @@
 /* SCP International */
 "home.reader.jp_articles.title.int" = "SCP-JP";
 "home.reader.jp_articles.subtitle.int" = "";
-"home.reader.original_articles.title.int" = "SCP（本家）";
+"home.reader.original_articles.title.int" = "SCP";
 "home.reader.original_articles.subtitle.int" = "";
 "home.reader.tales.title.int" = "Tales";
 "home.reader.tales.subtitle.int" = "";
@@ -408,6 +409,9 @@
 "settings.staff_guide.index.subtitle" = "SCP-JP rules, licensing, and how to join (native index)";
 "settings.section.branch" = "Branch";
 "settings.branch_picker" = "Content branch";
+"settings.section.appearance" = "Appearance";
+"settings.appearance.dark_mode_toggle" = "Dark mode";
+"settings.appearance.dark_mode_footer" = "When off, the app uses light mode. When on, it uses dark mode.";
 "settings.section.locale_reader" = "Display & reading";
 "settings.ui_language.picker" = "App language";
 "settings.ui_language.system" = "System default";

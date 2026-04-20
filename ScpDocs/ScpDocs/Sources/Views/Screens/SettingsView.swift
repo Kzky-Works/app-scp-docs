@@ -79,6 +79,21 @@ struct SettingsView: View {
                     Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionBranch)))
                 }
 
+            Section {
+                Toggle(
+                    String(localized: String.LocalizationValue(LocalizationKey.settingsAppearanceDarkModeToggle)),
+                    isOn: Binding(
+                        get: { homeViewModel.appearancePreference == .dark },
+                        set: { homeViewModel.updateAppearancePreference($0 ? .dark : .light) }
+                    )
+                )
+                .tint(AppTheme.brandAccent)
+            } header: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsSectionAppearance)))
+            } footer: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsAppearanceDarkModeFooter)))
+            }
+
                 Section {
                     Picker(
                         String(localized: String.LocalizationValue(LocalizationKey.settingsUILanguagePicker)),
@@ -302,8 +317,7 @@ struct SettingsView: View {
                     EmptyView()
                 }
             }
-        .preferredColorScheme(.dark)
-        .tint(AppTheme.accentPrimary)
+            .tint(AppTheme.accentPrimary)
     }
 
     private enum DataManagementAction {

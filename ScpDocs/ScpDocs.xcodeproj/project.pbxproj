@@ -64,6 +64,11 @@
 		BF0000000000000000000043 /* HomeSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000047 /* HomeSearchView.swift */; };
 		BF0000000000000000000044 /* AdBannerStripeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000048 /* AdBannerStripeContainer.swift */; };
 		BF0000000000000000000045 /* WebViewTrailingScrollIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000049 /* WebViewTrailingScrollIndicator.swift */; };
+		BF0000000000000000000046 /* ITC Bauhaus LT Demi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000050 /* ITC Bauhaus LT Demi.ttf */; };
+		BF000000000000000000004B /* Asap-VF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000051 /* Asap-VF.ttf */; };
+		BF000000000000000000004C /* OpenSans-VF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000052 /* OpenSans-VF.ttf */; };
+		BF000000000000000000004D /* SourceSans3-VF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000053 /* SourceSans3-VF.ttf */; };
+		BF000000000000000000004E /* FONT_THIRD_PARTY_NOTICES.txt in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000054 /* FONT_THIRD_PARTY_NOTICES.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -125,6 +130,11 @@
 		FR0000000000000000000047 /* HomeSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSearchView.swift; sourceTree = "<group>"; };
 		FR0000000000000000000048 /* AdBannerStripeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerStripeContainer.swift; sourceTree = "<group>"; };
 		FR0000000000000000000049 /* WebViewTrailingScrollIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewTrailingScrollIndicator.swift; sourceTree = "<group>"; };
+		FR0000000000000000000050 /* ITC Bauhaus LT Demi.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ITC Bauhaus LT Demi.ttf"; sourceTree = "<group>"; };
+		FR0000000000000000000051 /* Asap-VF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-VF.ttf"; sourceTree = "<group>"; };
+		FR0000000000000000000052 /* OpenSans-VF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-VF.ttf"; sourceTree = "<group>"; };
+		FR0000000000000000000053 /* SourceSans3-VF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSans3-VF.ttf"; sourceTree = "<group>"; };
+		FR0000000000000000000054 /* FONT_THIRD_PARTY_NOTICES.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = FONT_THIRD_PARTY_NOTICES.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,8 +265,21 @@
 				FR0000000000000000000009 /* Assets.xcassets */,
 				GR0000000000000000000010 /* Injections */,
 				GR000000000000000000000F /* Localization */,
+				GR0000000000000000000012 /* Fonts */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		GR0000000000000000000012 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				FR0000000000000000000054 /* FONT_THIRD_PARTY_NOTICES.txt */,
+				FR0000000000000000000050 /* ITC Bauhaus LT Demi.ttf */,
+				FR0000000000000000000051 /* Asap-VF.ttf */,
+				FR0000000000000000000052 /* OpenSans-VF.ttf */,
+				FR0000000000000000000053 /* SourceSans3-VF.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		GR000000000000000000000B /* Views */ = {
@@ -398,6 +421,11 @@
 				BF0000000000000000000009 /* Assets.xcassets in Resources */,
 				BF000000000000000000000E /* CleanUI.js in Resources */,
 				BF000000000000000000000A /* Localizable.strings in Resources */,
+				BF0000000000000000000046 /* ITC Bauhaus LT Demi.ttf in Resources */,
+				BF000000000000000000004B /* Asap-VF.ttf in Resources */,
+				BF000000000000000000004C /* OpenSans-VF.ttf in Resources */,
+				BF000000000000000000004D /* SourceSans3-VF.ttf in Resources */,
+				BF000000000000000000004E /* FONT_THIRD_PARTY_NOTICES.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

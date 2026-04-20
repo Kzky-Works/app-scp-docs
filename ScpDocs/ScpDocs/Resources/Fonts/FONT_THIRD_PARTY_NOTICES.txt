@@ -1,0 +1,18 @@
+Bundled fonts for the SCP docs app (commercial redistribution permitted under each license):
+
+1) Asap (variable TTF)
+   - Copyright: The Asap Project Authors (https://github.com/Omnibus-Type/Asap)
+   - License: SIL Open Font License 1.1 — see OFL-Asap.txt in this folder.
+
+2) Open Sans (variable TTF)
+   - Copyright: The Open Sans Project Authors (https://github.com/googlefonts/opensans)
+   - License: SIL Open Font License 1.1 — see OFL-OpenSans.txt in this folder.
+
+3) Source Sans 3 (variable TTF)
+   - Copyright: Adobe (https://github.com/adobe-fonts/source-sans)
+   - License: SIL Open Font License 1.1 — see OFL-SourceSans3.txt in this folder.
+
+4) ITC Bauhaus LT Demi (optional; used for the home branch title when bundled)
+   - Third-party commercial font; bundle only if your license permits.
+
+Source: files retrieved from https://github.com/google/fonts (Asap, Open Sans, Source Sans 3).

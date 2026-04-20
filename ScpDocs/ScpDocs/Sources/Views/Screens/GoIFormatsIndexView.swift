@@ -40,7 +40,6 @@ struct GoIFormatsIndexView: View {
         .background(AppTheme.mainBackground)
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.goiIndexTitle)))
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 

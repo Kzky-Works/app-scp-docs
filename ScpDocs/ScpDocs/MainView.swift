@@ -74,6 +74,7 @@ struct MainView: View {
             .tag(AppRootTab.settings)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .preferredColorScheme(homeViewModel.appearancePreference == .dark ? .dark : .light)
         .environment(\.locale, homeViewModel.resolvedLocale)
         .tint(AppTheme.brandAccent)
         .task {

@@ -59,6 +59,9 @@ enum LocalizationKey {
     static let settingsUILanguageSystem = "settings.ui_language.system"
     static let settingsUILanguageJapanese = "settings.ui_language.japanese"
     static let settingsUILanguageEnglish = "settings.ui_language.english"
+    static let settingsSectionAppearance = "settings.section.appearance"
+    static let settingsAppearanceDarkModeToggle = "settings.appearance.dark_mode_toggle"
+    static let settingsAppearanceDarkModeFooter = "settings.appearance.dark_mode_footer"
     static let settingsReaderFontSize = "settings.reader.font_size"
     static let settingsReaderFontSizeFooter = "settings.reader.font_size.footer"
     static let settingsSectionData = "settings.section.data"
@@ -94,6 +97,8 @@ enum LocalizationKey {
     static let homeRandomCurrentBranchTitle = "home.random.current_branch.title"
     static let homeRandomAccessCaption = "home.random.access.caption"
     static let homeDashboardMotto = "home.dashboard.motto"
+    /// ホーム上部の支部名（日本支部選択時のみ「日本支部」を省いた短表記）。
+    static let homeDashboardBranchShortJapan = "home.dashboard.branch_short_jp"
 
     static let homePillarJpBadge = "home.pillar.jp_badge"
     static let homePillarEnBadge = "home.pillar.en_badge"

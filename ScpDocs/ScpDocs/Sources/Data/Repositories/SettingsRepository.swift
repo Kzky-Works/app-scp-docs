@@ -6,6 +6,7 @@ final class SettingsRepository: @unchecked Sendable {
         static let selectedBranchId = "settings.selected_branch_id"
         static let fontSizeMultiplier = "settings.font_size_multiplier"
         static let uiLanguage = "settings.ui_language"
+        static let appearancePreference = "settings.appearance_preference"
         static func libraryListSort(_ category: LibraryCategory) -> String {
             "library.list.sort.\(category.rawValue)"
         }
@@ -58,6 +59,18 @@ final class SettingsRepository: @unchecked Sendable {
 
     func saveUILanguage(_ value: AppUILanguage) {
         defaults.set(value.rawValue, forKey: StorageKey.uiLanguage)
+    }
+
+    func loadAppearancePreference() -> AppAppearancePreference {
+        guard let raw = defaults.string(forKey: StorageKey.appearancePreference),
+              let parsed = AppAppearancePreference(rawValue: raw) else {
+            return .dark
+        }
+        return parsed
+    }
+
+    func saveAppearancePreference(_ value: AppAppearancePreference) {
+        defaults.set(value.rawValue, forKey: StorageKey.appearancePreference)
     }
 
     func loadLibraryListSortMode(for category: LibraryCategory) -> LibraryListSortMode {

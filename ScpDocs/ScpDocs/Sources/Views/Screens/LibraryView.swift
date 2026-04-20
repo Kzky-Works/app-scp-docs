@@ -96,7 +96,6 @@ struct LibraryView: View {
         }
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.libraryTitle)))
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 }

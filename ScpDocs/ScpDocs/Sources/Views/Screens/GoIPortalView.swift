@@ -48,7 +48,6 @@ struct GoIPortalView: View {
         .background(AppTheme.mainBackground)
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.goiPortalTitle)))
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .tint(AppTheme.textPrimary)
     }
 }
