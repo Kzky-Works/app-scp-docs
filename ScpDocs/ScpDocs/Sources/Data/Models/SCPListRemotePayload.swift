@@ -68,6 +68,8 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
     var objectClass: String?
     /// Phase 14: 付随タグ（和文タグ名など）。同期 JSON で任意。
     var tags: [String]
+    /// リモート一覧 JSON で任意。`articleMetadataSyncedAt`（メタ同期時刻・ISO8601）。iOS は未使用でもデコード可。
+    var articleMetadataSyncedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case series
@@ -77,6 +79,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         case lastModified
         case objectClass
         case tags
+        case articleMetadataSyncedAt
     }
 
     /// マージキー（`series_scpNumber`）。
@@ -89,7 +92,8 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         mainlistTranslationTitle: String? = nil,
         lastModified: Date? = nil,
         objectClass: String? = nil,
-        tags: [String] = []
+        tags: [String] = [],
+        articleMetadataSyncedAt: Date? = nil
     ) {
         self.series = series
         self.scpNumber = scpNumber
@@ -100,6 +104,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         let oc = objectClass?.trimmingCharacters(in: .whitespacesAndNewlines)
         self.objectClass = (oc?.isEmpty == false) ? oc : nil
         self.tags = Self.normalizedTags(tags)
+        self.articleMetadataSyncedAt = articleMetadataSyncedAt
     }
 
     init(from decoder: Decoder) throws {
@@ -121,6 +126,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
             objectClass = nil
         }
         tags = Self.normalizedTags(try c.decodeIfPresent([String].self, forKey: .tags) ?? [])
+        articleMetadataSyncedAt = try c.decodeIfPresent(Date.self, forKey: .articleMetadataSyncedAt)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -134,6 +140,7 @@ struct SCPListRemoteEntry: Codable, Sendable, Hashable, Equatable {
         if !tags.isEmpty {
             try c.encode(tags, forKey: .tags)
         }
+        try c.encodeIfPresent(articleMetadataSyncedAt, forKey: .articleMetadataSyncedAt)
     }
 
     private static func normalizedTags(_ raw: [String]) -> [String] {
