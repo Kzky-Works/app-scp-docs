@@ -152,7 +152,7 @@
 
 - App Store 掲載文言、プライバシーポリシー本文。
 - 本番 AdMob / IAP プロダクト ID の確定値（テスト用定数がコードに残っている可能性）。
-- リモート `scp_list.json` の**本番ホスト URL**（`AppRemoteConfig` を書き換えて有効化する運用）。
+- リモート `scp_list.json` の**本番ホスト URL**（`AppRemoteConfig` を書き換えて有効化する運用）。**一覧 JSON の生成スクリプト**（`update_list.py`）は **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** リポジトリの `scripts/` が正（本アプリリポには同梱しない）。
 
 ---
 

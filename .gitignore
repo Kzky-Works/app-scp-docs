@@ -28,5 +28,5 @@ Carthage/Build/
 .idea/
 *.iml
 
-# ルートの update_list.py が生成（コミット不要）
+# ローカル試行時など、ルートに生成した scp_list.json（コミット不要）
 /scp_list.json
