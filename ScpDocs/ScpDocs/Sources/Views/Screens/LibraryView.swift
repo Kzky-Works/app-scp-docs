@@ -78,11 +78,7 @@ struct LibraryView: View {
                                     title: url.lastPathComponent.isEmpty ? (url.host ?? url.absoluteString) : url.lastPathComponent,
                                     subtitle: url.absoluteString,
                                     trailing: {
-                                        if articleRepository.isRead(url: url) {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                                .imageScale(.medium)
-                                        }
+                                        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: url))
                                     }
                                 )
                             }

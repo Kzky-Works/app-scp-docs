@@ -91,10 +91,35 @@ struct SCPWebView: UIViewRepresentable {
         private var originalPopGestureDelegate: UIGestureRecognizerDelegate?
 
         private var isObservingWebView = false
+        private var scrollObservations: [NSKeyValueObservation] = []
 
         func prepare(webView: WKWebView, viewModel: WebViewModel) {
             self.webView = webView
             self.viewModel = viewModel
+
+            scrollObservations.removeAll()
+            let sv = webView.scrollView
+            scrollObservations = [
+                sv.observe(\.contentOffset, options: [.new]) { [weak self] scrollView, _ in
+                    guard let self else { return }
+                    Task { @MainActor in
+                        self.publishScrollDepth(from: scrollView)
+                    }
+                },
+                sv.observe(\.contentSize, options: [.new]) { [weak self] scrollView, _ in
+                    guard let self else { return }
+                    Task { @MainActor in
+                        self.publishScrollDepth(from: scrollView)
+                    }
+                },
+                sv.observe(\.bounds, options: [.new]) { [weak self] scrollView, _ in
+                    guard let self else { return }
+                    Task { @MainActor in
+                        self.publishScrollDepth(from: scrollView)
+                    }
+                }
+            ]
+            publishScrollDepth(from: sv)
 
             if !isObservingWebView {
                 webView.addObserver(
@@ -159,6 +184,7 @@ struct SCPWebView: UIViewRepresentable {
 
         func teardown() {
             guard let attachedWebView = webView else {
+                scrollObservations.removeAll()
                 readerChromeDismissTapGesture = nil
                 readerChromeDismissTapHandler = nil
                 edgeBackGesture = nil
@@ -184,9 +210,24 @@ struct SCPWebView: UIViewRepresentable {
             }
             edgeBackGesture = nil
 
+            scrollObservations.removeAll()
             restorePopGestureDelegate()
             webView = nil
             viewModel = nil
+        }
+
+        private func publishScrollDepth(from scrollView: UIScrollView) {
+            guard let viewModel else { return }
+            let contentH = scrollView.contentSize.height
+            let visibleH = scrollView.bounds.height
+            let scrollable = max(contentH - visibleH, 0)
+            let fraction: Double
+            if scrollable <= 1 {
+                fraction = 1
+            } else {
+                fraction = min(max(Double(scrollView.contentOffset.y / scrollable), 0), 1)
+            }
+            viewModel.updateScrollDepthFraction(fraction)
         }
 
         func syncNavigationChrome(for webView: WKWebView) {

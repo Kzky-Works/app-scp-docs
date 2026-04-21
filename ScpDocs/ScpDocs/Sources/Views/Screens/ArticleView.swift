@@ -8,10 +8,39 @@ struct ArticleView: View {
 
     @State private var webViewModel = WebViewModel()
     @State private var readerBottomNavExpanded = false
+    @State private var articleDetailViewModel: ArticleDetailViewModel
+    @State private var showAutoArchiveToast = false
 
     @Bindable var connectivity = ConnectivityMonitor.shared
 
     @AppStorage(WebViewDiagnostics.minimalConfigurationDefaultsKey) private var webViewDiagnosticMinimal = false
+
+    init(
+        entryURL: URL,
+        homeViewModel: HomeViewModel,
+        navigationRouter: NavigationRouter,
+        articleRepository: ArticleRepository
+    ) {
+        self.entryURL = entryURL
+        self.homeViewModel = homeViewModel
+        self.navigationRouter = navigationRouter
+        self.articleRepository = articleRepository
+        _webViewModel = State(initialValue: WebViewModel())
+        _readerBottomNavExpanded = State(initialValue: false)
+        _articleDetailViewModel = State(
+            initialValue: ArticleDetailViewModel(
+                articleRepository: articleRepository,
+                articleURL: entryURL
+            )
+        )
+    }
+
+    private var articleRatingBinding: Binding<Double> {
+        Binding(
+            get: { articleRepository.ratingScore(for: entryURL) },
+            set: { articleRepository.setRatingScore($0, for: entryURL) }
+        )
+    }
 
     private var shareURL: URL {
         webViewModel.currentURL ?? entryURL
@@ -51,6 +80,24 @@ struct ArticleView: View {
                     .scaleEffect(1.15)
             }
 
+            if showAutoArchiveToast {
+                Text(
+                    String(
+                        format: String(localized: String.LocalizationValue(LocalizationKey.articleAutoArchiveToastFormat)),
+                        locale: .current,
+                        3.0
+                    )
+                )
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(AppTheme.textSecondary.opacity(0.92))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(.ultraThinMaterial.opacity(0.65))
+                .clipShape(Capsule())
+                .transition(.opacity)
+                .allowsHitTesting(false)
+            }
+
             if let failure = webViewModel.loadFailureMessage {
                 VStack(spacing: 16) {
                     Text(failure)
@@ -83,7 +130,10 @@ struct ArticleView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            readerBottomChrome
+            VStack(spacing: 0) {
+                RatingControlView(rating: articleRatingBinding)
+                readerBottomChrome
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         /// ホームが `.toolbar(.hidden, for: .navigationBar)` のため、同一 `NavigationStack` 内で非表示が子に伝わる。記事では明示的に表示へ戻す。
@@ -116,9 +166,20 @@ struct ArticleView: View {
         .toolbar(.hidden, for: .tabBar)
         .task(id: ArticleRepository.storageKey(for: entryURL)) {
             webViewModel.readerFontSizeMultiplier = homeViewModel.fontSizeMultiplier
-            articleRepository.markAsRead(url: entryURL)
             articleRepository.recordHistory(url: entryURL)
             webViewModel.load(url: entryURL)
+        }
+        .onChange(of: webViewModel.scrollDepthFraction) { _, fraction in
+            articleDetailViewModel.handleScrollDepthFraction(fraction)
+        }
+        .onChange(of: articleDetailViewModel.transientToastToken) { _, _ in
+            showAutoArchiveToast = true
+            Task {
+                try? await Task.sleep(for: .milliseconds(1500))
+                await MainActor.run {
+                    showAutoArchiveToast = false
+                }
+            }
         }
         .onChange(of: homeViewModel.fontSizeMultiplier) { _, newValue in
             webViewModel.readerFontSizeMultiplier = newValue

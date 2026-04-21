@@ -147,6 +147,7 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository
             )
+            .id(ArticleRepository.storageKey(for: url))
         }
     }
 }

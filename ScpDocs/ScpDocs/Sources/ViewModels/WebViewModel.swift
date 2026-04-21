@@ -11,6 +11,8 @@ final class WebViewModel {
     private(set) var pageTitle: String?
     /// 読み込み失敗時に表示するユーザー向けメッセージ（成功・再読込開始で消える）。
     private(set) var loadFailureMessage: String?
+    /// メイン `UIScrollView` の縦スクロール進捗 0...1（本文下端に近いほど 1）。
+    private(set) var scrollDepthFraction: Double = 0
     weak var webView: WKWebView?
     /// 記事本文の相対スケール（`SettingsRepository` と同期。既定 1.0）。
     var readerFontSizeMultiplier: Double = 1.0
@@ -186,7 +188,15 @@ final class WebViewModel {
     func setLoading(_ value: Bool) {
         if value {
             pageTitle = nil
+            scrollDepthFraction = 0
         }
         isLoading = value
+    }
+
+    /// `SCPWebView` のスクロール観測からのみ更新する。
+    func updateScrollDepthFraction(_ value: Double) {
+        let clamped = min(1, max(0, value))
+        guard scrollDepthFraction != clamped else { return }
+        scrollDepthFraction = clamped
     }
 }

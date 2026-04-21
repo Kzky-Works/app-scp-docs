@@ -51,7 +51,7 @@ struct ArchiveArticleListView: View {
     }
 
     private var displayedEntries: [JapanSCPArchiveEntry] {
-        filterModel.filteredEntries(from: entries)
+        filterModel.filteredAndSortedEntries(from: entries) { articleRepository.ratingScore(for: $0) }
     }
 
     private var archiveRowTagVisibilityActive: Bool {
@@ -67,6 +67,60 @@ struct ArchiveArticleListView: View {
         case .english:
             String(localized: String.LocalizationValue(LocalizationKey.archiveTitleEN))
         }
+    }
+
+    @ViewBuilder
+    private func archiveRowRatingMeter(for entry: JapanSCPArchiveEntry) -> some View {
+        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: entry.url))
+    }
+
+    @ViewBuilder
+    private func archiveSortModeMenuRowLabel(for mode: ArchiveListSortMode) -> some View {
+        HStack {
+            Text(String(localized: String.LocalizationValue(mode.localizationKey)))
+            if filterModel.sortMode == mode {
+                Spacer(minLength: 8)
+                Image(systemName: "checkmark")
+            }
+        }
+    }
+
+    private var archiveSortMenu: some View {
+        Menu {
+            ForEach(ArchiveListSortMode.allCases) { mode in
+                Button {
+                    Haptics.light()
+                    filterModel.sortMode = mode
+                    filterModel.persistSortMode()
+                } label: {
+                    archiveSortModeMenuRowLabel(for: mode)
+                }
+            }
+        } label: {
+            Image(systemName: "arrow.up.arrow.down.circle")
+        }
+        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.archiveSortToolbarAccessibility)))
+    }
+
+    private var archiveRowTagsToggleButton: some View {
+        Button {
+            Haptics.light()
+            showDetailRowTags.toggle()
+        } label: {
+            Image(systemName: showDetailRowTags ? "tag.fill" : "tag")
+                .foregroundStyle(showDetailRowTags ? AppTheme.brandAccent : AppTheme.textPrimary)
+        }
+        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.archiveListRowTagsToggleAccessibility)))
+    }
+
+    private var archiveOpenWikiIndexButton: some View {
+        Button {
+            Haptics.medium()
+            navigationRouter.push(.category(wikidotIndexURLForToolbar))
+        } label: {
+            Image(systemName: "safari")
+        }
+        .accessibilityLabel(String(localized: String.LocalizationValue(openWikiIndexLocalizationKey)))
     }
 
     var body: some View {
@@ -98,13 +152,7 @@ struct ArchiveArticleListView: View {
                                     showsTags: archiveRowTagVisibilityActive,
                                     monospacedTitleDigits: true,
                                     trailing: {
-                                        HStack(spacing: 10) {
-                                            if articleRepository.isRead(url: entry.url) {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundStyle(AppTheme.textPrimary)
-                                                    .imageScale(.medium)
-                                            }
-                                        }
+                                        archiveRowRatingMeter(for: entry)
                                     }
                                 )
                             }
@@ -130,22 +178,9 @@ struct ArchiveArticleListView: View {
         .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
-                Button {
-                    Haptics.light()
-                    showDetailRowTags.toggle()
-                } label: {
-                    Image(systemName: showDetailRowTags ? "tag.fill" : "tag")
-                        .foregroundStyle(showDetailRowTags ? AppTheme.brandAccent : AppTheme.textPrimary)
-                }
-                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.archiveListRowTagsToggleAccessibility)))
-
-                Button {
-                    Haptics.medium()
-                    navigationRouter.push(.category(wikidotIndexURLForToolbar))
-                } label: {
-                    Image(systemName: "safari")
-                }
-                .accessibilityLabel(String(localized: String.LocalizationValue(openWikiIndexLocalizationKey)))
+                archiveSortMenu
+                archiveRowTagsToggleButton
+                archiveOpenWikiIndexButton
             }
         }
         .onChange(of: selectedSeries) { _, newSeries in

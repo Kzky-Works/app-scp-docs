@@ -249,6 +249,20 @@ enum LocalizationKey {
     /// アーカイヴ一覧: 各行にタグチップを常時表示するトグル（フィルタ適用時は自動表示）。
     static let archiveListRowTagsToggleAccessibility = "archive.list.row_tags.accessibility"
 
+    // Phase 16: レーティング・アーカイヴ並べ替え
+    static let archiveSortRatingHighToLow = "archive.sort.rating_high_low"
+    static let archiveSortScpNumberAsc = "archive.sort.scp_number_asc"
+    static let archiveSortToolbarAccessibility = "archive.sort.toolbar_accessibility"
+    static let archiveFilterHighRatingChip = "archive.filter.high_rating_chip"
+    static let archiveFilterHighRatingAccessibility = "archive.filter.high_rating.accessibility"
+    static let archiveRatingMeterUnreadAccessibility = "archive.rating_meter.unread_a11y"
+    static let archiveRatingMeterScoreAccessibilityFormat = "archive.rating_meter.score_voice"
+
+    static let articleRatingUnsetShort = "article.rating.unset_short"
+    static let articleRatingScaleMax = "article.rating.scale_max"
+    static let articleRatingAccessibility = "article.rating.a11y"
+    static let articleAutoArchiveToastFormat = "article.auto_archive.toast_format"
+
     static let libraryIndexTitle = "library.index.title"
     static let libraryCategoryTalesTitle = "library.category.tales.title"
     static let libraryCategoryTalesSubtitle = "library.category.tales.subtitle"

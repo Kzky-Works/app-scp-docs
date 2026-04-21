@@ -196,12 +196,20 @@
 "archive.article.title_unknown" = "[DATA UNKNOWN]";
 "archive.filter.tags.section" = "フィルタ";
 "archive.filter.clear" = "クリア";
-"archive.filter.tag_search.placeholder" = "タグを検索";
+"archive.filter.tag_search.placeholder" = "タグを検索（score:>4.0 も可）";
 "archive.filter.no_results" = "該当する報告書がありません";
 "archive.filter.no_results.hint" = "オブジェクトクラスやタグを変えるか、「クリア」を押してください。";
 "archive.filter.object_class.accessibility" = "オブジェクトクラスで絞り込み";
 "archive.filter.no_tags_in_segment" = "このブロックにタグデータがありません。scp_list.json にタグを含めて同期してください。";
 "archive.list.row_tags.accessibility" = "一覧の各行にタグを表示する切り替え。フィルタやタグ検索中は自動で表示されます。";
+
+"archive.sort.rating_high_low" = "評価（高い順）";
+"archive.sort.scp_number_asc" = "報告書番号（昇順）";
+"archive.sort.toolbar_accessibility" = "リストの並べ替え";
+"archive.filter.high_rating_chip" = "L≥4.0";
+"archive.filter.high_rating.accessibility" = "評価4.0以上のみ表示";
+"archive.rating_meter.unread_a11y" = "未評価";
+"archive.rating_meter.score_voice" = "評価 %@";
 
 /* Library index (native) */
 "library.index.title" = "SCPライブラリ";
@@ -397,6 +405,10 @@
 "article.load.retry" = "再試行";
 "article.diagnostic.minimal_banner" = "診断: 最小 WebView（注入スクリプトなし）";
 
+"article.rating.unset_short" = "—";
+"article.rating.scale_max" = "/ 5.0";
+"article.rating.a11y" = "報告書レーティング";
+"article.auto_archive.toast_format" = "アーカイブ完了：L%.1f";
 "settings.section.webview_debug" = "WebView 切り分け";
 "settings.webview.minimal_toggle" = "最小の WebView（注入スクリプトなし）";
 "settings.webview.minimal_footer" = "オンにしたらホームから記事を開き直してください。表示できれば、注入スクリプトや WebView の追加設定が原因の可能性が高いです。";

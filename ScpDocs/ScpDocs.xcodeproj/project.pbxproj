@@ -69,6 +69,11 @@
 		BF000000000000000000004C /* OpenSans-VF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000052 /* OpenSans-VF.ttf */; };
 		BF000000000000000000004D /* SourceSans3-VF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000053 /* SourceSans3-VF.ttf */; };
 		BF000000000000000000004E /* FONT_THIRD_PARTY_NOTICES.txt in Resources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000054 /* FONT_THIRD_PARTY_NOTICES.txt */; };
+		BF000000000000000000004F /* UserArticleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000055 /* UserArticleData.swift */; };
+		BF0000000000000000000050 /* ArchiveListSortMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000056 /* ArchiveListSortMode.swift */; };
+		BF0000000000000000000051 /* ArticleDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000057 /* ArticleDetailViewModel.swift */; };
+		BF0000000000000000000052 /* RatingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000058 /* RatingControlView.swift */; };
+		BF0000000000000000000053 /* ArticleRatingMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000059 /* ArticleRatingMeterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -135,6 +140,11 @@
 		FR0000000000000000000052 /* OpenSans-VF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-VF.ttf"; sourceTree = "<group>"; };
 		FR0000000000000000000053 /* SourceSans3-VF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSans3-VF.ttf"; sourceTree = "<group>"; };
 		FR0000000000000000000054 /* FONT_THIRD_PARTY_NOTICES.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = FONT_THIRD_PARTY_NOTICES.txt; sourceTree = "<group>"; };
+		FR0000000000000000000055 /* UserArticleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserArticleData.swift; sourceTree = "<group>"; };
+		FR0000000000000000000056 /* ArchiveListSortMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveListSortMode.swift; sourceTree = "<group>"; };
+		FR0000000000000000000057 /* ArticleDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailViewModel.swift; sourceTree = "<group>"; };
+		FR0000000000000000000058 /* RatingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingControlView.swift; sourceTree = "<group>"; };
+		FR0000000000000000000059 /* ArticleRatingMeterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRatingMeterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +237,8 @@
 				FR000000000000000000001D /* HomeCategory.swift */,
 				FR0000000000000000000021 /* LibraryCategory.swift */,
 				FR0000000000000000000024 /* LibraryListSortMode.swift */,
+				FR0000000000000000000056 /* ArchiveListSortMode.swift */,
+				FR0000000000000000000055 /* UserArticleData.swift */,
 				FR0000000000000000000010 /* NavigationRoute.swift */,
 				FR000000000000000000001C /* AppUILanguage.swift */,
 				FR0000000000000000000030 /* SCPJPSeries.swift */,
@@ -255,6 +267,7 @@
 				FR000000000000000000000D /* WebViewModel.swift */,
 				FR0000000000000000000012 /* NavigationRouter.swift */,
 				FR0000000000000000000044 /* ArchiveArticleViewModel.swift */,
+				FR0000000000000000000057 /* ArticleDetailViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -333,6 +346,8 @@
 				FR0000000000000000000042 /* FoundationIndexRow.swift */,
 				FR0000000000000000000045 /* TagChipView.swift */,
 				FR0000000000000000000046 /* TagFilterView.swift */,
+				FR0000000000000000000058 /* RatingControlView.swift */,
+				FR0000000000000000000059 /* ArticleRatingMeterView.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -489,6 +504,11 @@
 				BF0000000000000000000041 /* TagChipView.swift in Sources */,
 				BF0000000000000000000042 /* TagFilterView.swift in Sources */,
 				BF0000000000000000000043 /* HomeSearchView.swift in Sources */,
+				BF000000000000000000004F /* UserArticleData.swift in Sources */,
+				BF0000000000000000000050 /* ArchiveListSortMode.swift in Sources */,
+				BF0000000000000000000051 /* ArticleDetailViewModel.swift in Sources */,
+				BF0000000000000000000052 /* RatingControlView.swift in Sources */,
+				BF0000000000000000000053 /* ArticleRatingMeterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

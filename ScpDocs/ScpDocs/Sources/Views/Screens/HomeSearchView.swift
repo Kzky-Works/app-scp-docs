@@ -59,11 +59,7 @@ struct HomeSearchView: View {
                                                 .foregroundStyle(AppTheme.textPrimary)
                                                 .imageScale(.medium)
                                         }
-                                        if articleRepository.isRead(url: entry.url) {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                                .imageScale(.medium)
-                                        }
+                                        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: entry.url))
                                     }
                                 }
                             )

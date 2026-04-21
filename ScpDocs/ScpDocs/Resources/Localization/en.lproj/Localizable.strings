@@ -196,12 +196,20 @@
 "archive.article.title_unknown" = "[DATA UNKNOWN]";
 "archive.filter.tags.section" = "Filters";
 "archive.filter.clear" = "Clear";
-"archive.filter.tag_search.placeholder" = "Search tags";
+"archive.filter.tag_search.placeholder" = "Search tags (also score:>4.0)";
 "archive.filter.no_results" = "No matching reports";
 "archive.filter.no_results.hint" = "Change object class or tags, or tap Clear.";
 "archive.filter.object_class.accessibility" = "Object class filters";
 "archive.filter.no_tags_in_segment" = "No tag metadata in this block. Sync scp_list.json with tags from the generator script.";
 "archive.list.row_tags.accessibility" = "Toggle showing tags on each list row. Tags also appear while filters or tag search are active.";
+
+"archive.sort.rating_high_low" = "Rating (high to low)";
+"archive.sort.scp_number_asc" = "SCP number (ascending)";
+"archive.sort.toolbar_accessibility" = "Sort list";
+"archive.filter.high_rating_chip" = "L≥4.0";
+"archive.filter.high_rating.accessibility" = "Show only ratings of 4.0 or higher";
+"archive.rating_meter.unread_a11y" = "Unrated";
+"archive.rating_meter.score_voice" = "Rating %@";
 
 /* Library index (native) */
 "library.index.title" = "SCP Library";
@@ -397,6 +405,10 @@
 "article.load.retry" = "Retry";
 "article.diagnostic.minimal_banner" = "Diagnostics: minimal WebView (no injected scripts)";
 
+"article.rating.unset_short" = "—";
+"article.rating.scale_max" = "/ 5.0";
+"article.rating.a11y" = "Article rating";
+"article.auto_archive.toast_format" = "Archived: L%.1f";
 /* Settings */
 "settings.section.webview_debug" = "WebView troubleshooting";
 "settings.webview.minimal_toggle" = "Minimal WebView (no injected scripts)";

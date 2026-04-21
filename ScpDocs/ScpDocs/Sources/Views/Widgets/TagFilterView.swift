@@ -44,6 +44,32 @@ struct TagFilterView: View {
             .accessibilityElement(children: .contain)
             .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.archiveFilterObjectClassAccessibility)))
 
+            Button {
+                Haptics.medium()
+                model.toggleHighRatingFilter()
+            } label: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.archiveFilterHighRatingChip)))
+                    .font(.caption2.weight(.bold))
+                    .monospacedDigit()
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(model.filterHighRatingOnly ? AppTheme.brandAccent.opacity(0.22) : AppTheme.cardBackground)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(
+                                model.filterHighRatingOnly ? AppTheme.brandAccent : AppTheme.borderSubtle,
+                                lineWidth: model.filterHighRatingOnly ? 1.25 : AppTheme.borderWidthHairline
+                            )
+                    )
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.archiveFilterHighRatingAccessibility)))
+            .accessibilityAddTraits(model.filterHighRatingOnly ? [.isSelected] : [])
+
             TextField(
                 String(localized: String.LocalizationValue(LocalizationKey.archiveFilterTagSearchPlaceholder)),
                 text: $model.tagSearchQuery

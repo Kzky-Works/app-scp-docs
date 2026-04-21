@@ -92,7 +92,7 @@ struct LibraryListView: View {
                     leadingSystemImage: "person.3.fill",
                     trailing: {
                         HStack(spacing: 10) {
-                            goiArticleStatusIcons(for: hubURL)
+                                goiArticleTrailing(for: hubURL)
                             Image(systemName: "chevron.right")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(AppTheme.textSecondary)
@@ -121,7 +121,7 @@ struct LibraryListView: View {
                     title: article.title,
                     subtitle: article.url.absoluteString,
                     trailing: {
-                        goiArticleStatusIcons(for: article.url)
+                        goiArticleTrailing(for: article.url)
                     }
                 )
             }
@@ -131,18 +131,14 @@ struct LibraryListView: View {
     }
 
     @ViewBuilder
-    private func goiArticleStatusIcons(for url: URL) -> some View {
+    private func goiArticleTrailing(for url: URL) -> some View {
         HStack(spacing: 10) {
             if articleRepository.isBookmarked(url: url) {
                 Image(systemName: "bookmark.fill")
                     .foregroundStyle(AppTheme.textPrimary)
                     .imageScale(.medium)
             }
-            if articleRepository.isRead(url: url) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .imageScale(.medium)
-            }
+            ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: url))
         }
     }
 
@@ -194,11 +190,7 @@ struct LibraryListView: View {
                                                 .foregroundStyle(AppTheme.textPrimary)
                                                 .imageScale(.medium)
                                         }
-                                        if articleRepository.isRead(url: item.url) {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                                .imageScale(.medium)
-                                        }
+                                        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: item.url))
                                     }
                                 }
                             )
