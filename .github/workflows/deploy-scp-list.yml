@@ -32,15 +32,27 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          set -euxo pipefail
+          pip install -r requirements.txt
+          pip freeze | grep -Ei '^(beautifulsoup4|requests)=' || true
 
+      # メタデータは Wikidot への逐次アクセスのため --with-article-metadata が必要。
+      # TODO: 検証後、--metadata-max-articles 5 を外して全件取得に戻す。
       - name: Run scraper
-        run: python update_list.py
+        run: |
+          set -euxo pipefail
+          python update_list.py \
+            --with-article-metadata \
+            --metadata-max-articles 5 \
+            --verbose
+          ls -la scp_list.json
 
       - name: Prepare publish dir
         run: |
           mkdir -p _site
           cp scp_list.json _site/scp_list.json
+          ls -la _site/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
