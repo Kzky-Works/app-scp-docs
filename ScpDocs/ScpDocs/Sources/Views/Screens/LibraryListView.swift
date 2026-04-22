@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// ライブラリの静的リスト（支部に応じた URL、検索、既読・お気に入り表示）。
+/// ライブラリの静的リスト（支部に応じた URL、検索、レーティング表示）。
 struct LibraryListView: View {
     @Bindable var navigationRouter: NavigationRouter
     let category: LibraryCategory
@@ -92,7 +92,7 @@ struct LibraryListView: View {
                     leadingSystemImage: "person.3.fill",
                     trailing: {
                         HStack(spacing: 10) {
-                                goiArticleTrailing(for: hubURL)
+                            ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: hubURL))
                             Image(systemName: "chevron.right")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(AppTheme.textSecondary)
@@ -121,24 +121,12 @@ struct LibraryListView: View {
                     title: article.title,
                     subtitle: article.url.absoluteString,
                     trailing: {
-                        goiArticleTrailing(for: article.url)
+                        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: article.url))
                     }
                 )
             }
             .buttonStyle(.plain)
             .indexListRowChromeIndented()
-        }
-    }
-
-    @ViewBuilder
-    private func goiArticleTrailing(for url: URL) -> some View {
-        HStack(spacing: 10) {
-            if articleRepository.isBookmarked(url: url) {
-                Image(systemName: "bookmark.fill")
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .imageScale(.medium)
-            }
-            ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: url))
         }
     }
 
@@ -184,14 +172,7 @@ struct LibraryListView: View {
                                 title: localizedTitle(item),
                                 subtitle: item.url.absoluteString,
                                 trailing: {
-                                    HStack(spacing: 10) {
-                                        if articleRepository.isBookmarked(url: item.url) {
-                                            Image(systemName: "bookmark.fill")
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                                .imageScale(.medium)
-                                        }
-                                        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: item.url))
-                                    }
+                                    ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: item.url))
                                 }
                             )
                         }

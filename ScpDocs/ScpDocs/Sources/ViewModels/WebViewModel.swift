@@ -199,4 +199,47 @@ final class WebViewModel {
         guard scrollDepthFraction != clamped else { return }
         scrollDepthFraction = clamped
     }
+
+    /// 本文付近の最初の `img` の `src` を解決する（ホームの続きから読むサムネ用。失敗時は `nil`）。
+    func probeFirstContentImageURL(completion: @escaping (URL?) -> Void) {
+        guard let webView else {
+            Task { @MainActor in completion(nil) }
+            return
+        }
+        let base = webView.url ?? currentURL
+        let js = """
+        (function(){
+          var root = document.getElementById('page-content')
+            || document.getElementById('main-content')
+            || document.body;
+          if (!root) { return null; }
+          var imgs = root.getElementsByTagName('img');
+          for (var i = 0; i < imgs.length; i++) {
+            var src = imgs[i].getAttribute('src');
+            if (!src) { continue; }
+            if (src.indexOf('data:') === 0) { continue; }
+            return src;
+          }
+          return null;
+        })();
+        """
+        webView.evaluateJavaScript(js) { result, _ in
+            Task { @MainActor in
+                guard let raw = result as? String else {
+                    completion(nil)
+                    return
+                }
+                let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmed.isEmpty else {
+                    completion(nil)
+                    return
+                }
+                if let absolute = URL(string: trimmed, relativeTo: base)?.absoluteURL {
+                    completion(absolute)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+    }
 }

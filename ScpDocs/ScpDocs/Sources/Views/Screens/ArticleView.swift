@@ -8,8 +8,10 @@ struct ArticleView: View {
 
     @State private var webViewModel = WebViewModel()
     @State private var readerBottomNavExpanded = false
+    @State private var showRatingBar = false
     @State private var articleDetailViewModel: ArticleDetailViewModel
     @State private var showAutoArchiveToast = false
+    @State private var lastFirstImageProbeStorageKey: String?
 
     @Bindable var connectivity = ConnectivityMonitor.shared
 
@@ -35,15 +37,15 @@ struct ArticleView: View {
         )
     }
 
-    private var articleRatingBinding: Binding<Double> {
-        Binding(
-            get: { articleRepository.ratingScore(for: entryURL) },
-            set: { articleRepository.setRatingScore($0, for: entryURL) }
-        )
-    }
-
     private var shareURL: URL {
         webViewModel.currentURL ?? entryURL
+    }
+
+    private var articleRatingBinding: Binding<Double> {
+        Binding(
+            get: { articleRepository.ratingScore(for: shareURL) },
+            set: { applyRatedValue($0) }
+        )
     }
 
     private var navigationHeadline: String {
@@ -63,11 +65,13 @@ struct ArticleView: View {
                 navigationRouter: navigationRouter,
                 showsNativeVerticalScrollIndicator: false,
                 onReaderChromeDismissTap: readerBottomNavExpanded
-                    ? { readerBottomNavExpanded = false }
+                    ? {
+                        readerBottomNavExpanded = false
+                        showRatingBar = false
+                    }
                     : nil
             )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                // 下部ナビ・広告帯の下まで本文を伸ばし、透過 UI の背後に記事が見えるようにする。
                 .ignoresSafeArea(edges: [.horizontal, .bottom])
 
             WebViewTrailingScrollIndicator(viewModel: webViewModel)
@@ -131,12 +135,15 @@ struct ArticleView: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 0) {
-                RatingControlView(rating: articleRatingBinding)
+                if showRatingBar {
+                    RatingControlView(rating: articleRatingBinding)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                }
                 readerBottomChrome
             }
+            .animation(.easeInOut(duration: 0.22), value: showRatingBar)
         }
         .navigationBarTitleDisplayMode(.inline)
-        /// ホームが `.toolbar(.hidden, for: .navigationBar)` のため、同一 `NavigationStack` 内で非表示が子に伝わる。記事では明示的に表示へ戻す。
         .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -171,6 +178,20 @@ struct ArticleView: View {
         }
         .onChange(of: webViewModel.scrollDepthFraction) { _, fraction in
             articleDetailViewModel.handleScrollDepthFraction(fraction)
+            articleRepository.updateReadingScrollDepth(fraction, for: shareURL)
+        }
+        .onChange(of: webViewModel.pageTitle) { _, newTitle in
+            articleRepository.updateCachedPageTitle(newTitle, for: shareURL)
+        }
+        .onChange(of: webViewModel.isLoading) { _, loading in
+            guard !loading else { return }
+            let key = ArticleRepository.storageKey(for: shareURL)
+            guard lastFirstImageProbeStorageKey != key else { return }
+            lastFirstImageProbeStorageKey = key
+            if articleRepository.cachedFirstImageURL(for: shareURL) != nil { return }
+            webViewModel.probeFirstContentImageURL { url in
+                articleRepository.updateCachedFirstImageURL(url, for: shareURL)
+            }
         }
         .onChange(of: articleDetailViewModel.transientToastToken) { _, _ in
             showAutoArchiveToast = true
@@ -181,11 +202,28 @@ struct ArticleView: View {
                 }
             }
         }
+        .onChange(of: articleDetailViewModel.ratingBarRevealToken) { _, _ in
+            showRatingBar = true
+        }
         .onChange(of: homeViewModel.fontSizeMultiplier) { _, newValue in
             webViewModel.readerFontSizeMultiplier = newValue
             webViewModel.applyReaderFontPresentation()
         }
         .tint(AppTheme.brandAccent)
+    }
+
+    private func applyRatedValue(_ raw: Double) {
+        let clamped = UserArticleData.clampedRating(raw)
+        let url = shareURL
+        let prev = articleRepository.ratingScore(for: url)
+        articleRepository.setRatingScore(clamped, for: url)
+        let hi = ArticleRepository.libraryHighRatedThreshold
+        if clamped >= hi, prev < hi {
+            webViewModel.captureSnapshot(for: url)
+        }
+        if clamped < hi, prev >= hi {
+            OfflineStore.shared.deleteHTML(for: url)
+        }
     }
 
     // MARK: - Bottom reader navigation（タブバー非表示時・広告枠の上）
@@ -224,6 +262,7 @@ struct ArticleView: View {
             Button {
                 Haptics.light()
                 readerBottomNavExpanded = false
+                showRatingBar = false
             } label: {
                 Capsule()
                     .fill(AppTheme.textSecondary.opacity(0.4))
@@ -247,7 +286,8 @@ struct ArticleView: View {
                 .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavBackA11y)))
 
                 readerFontMenuCompact
-                bookmarkNavButton
+                ratingNavButton
+                readLaterNavButton
                 shareNavButton
             }
         }
@@ -259,6 +299,39 @@ struct ArticleView: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .stroke(AppTheme.borderSubtle.opacity(0.35), lineWidth: AppTheme.borderWidthHairline)
         )
+    }
+
+    private var ratingNavButton: some View {
+        Button {
+            Haptics.medium()
+            showRatingBar.toggle()
+        } label: {
+            Image(systemName: showRatingBar ? "gauge.with.dots.needle.bottom.67percent" : "gauge.with.dots.needle.bottom.50percent")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(showRatingBar ? AppTheme.brandAccent : AppTheme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleRatingNavAccessibility)))
+    }
+
+    /// 右端から共有・ここ・評価…の順のため、共有の左隣に配置。
+    private var readLaterNavButton: some View {
+        Button {
+            Haptics.medium()
+            articleRepository.toggleReadLater(url: shareURL)
+        } label: {
+            Image(systemName: articleRepository.isReadLater(url: shareURL) ? "tray.full" : "tray")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(articleRepository.isReadLater(url: shareURL) ? AppTheme.brandAccent : AppTheme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReadLaterNavAccessibility)))
     }
 
     private var readerFontMenuCompact: some View {
@@ -307,27 +380,6 @@ struct ArticleView: View {
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderAccessibility)))
     }
 
-    private var bookmarkNavButton: some View {
-        Button {
-            let added = articleRepository.toggleBookmark(url: shareURL)
-            if added {
-                webViewModel.captureSnapshot(for: shareURL)
-                Haptics.medium()
-            } else {
-                Haptics.light()
-            }
-        } label: {
-            Image(systemName: articleRepository.isBookmarked(url: shareURL) ? "bookmark.fill" : "bookmark")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(AppTheme.textPrimary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarBookmark)))
-    }
-
     private var shareNavButton: some View {
         ShareLink(item: shareURL) {
             Image(systemName: "square.and.arrow.up")
@@ -350,5 +402,6 @@ struct ArticleView: View {
     private func collapseReaderChromeIfExpanded() {
         guard readerBottomNavExpanded else { return }
         readerBottomNavExpanded = false
+        showRatingBar = false
     }
 }

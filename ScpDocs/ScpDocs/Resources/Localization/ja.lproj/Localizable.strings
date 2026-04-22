@@ -58,10 +58,13 @@
 
 /* Library */
 "library.title" = "書庫";
-"library.segment.bookmarks" = "お気に入り";
+"library.segment.bookmarks" = "高評価（L≥4）";
 "library.segment.history" = "履歴";
-"library.empty.bookmarks.title" = "お気に入りはまだありません";
-"library.empty.bookmarks.description" = "記事表示中の「操作」から追加できます。";
+"library.segment.read_later" = "後で読む";
+"library.empty.read_later.title" = "後で読むはありません";
+"library.empty.read_later.description" = "記事の操作バーから追加できます。";
+"library.empty.bookmarks.title" = "まだありません";
+"library.empty.bookmarks.description" = "評価を L4.0 以上にするとここに表示されます。";
 "library.empty.history.title" = "履歴はまだありません";
 "library.empty.history.description" = "開いた記事がここに表示されます。";
 
@@ -75,8 +78,22 @@
 "home.search.screen.no_index" = "一覧データがまだ同期されていないか、別のキーワードを試してください。";
 
 /* Home random access */
-"home.random.current_branch.title" = "ランダムな報告書";
+"home.random.current_branch.title" = "ランダムな報告書を開く";
 "home.random.access.caption" = "RANDOM ACCESS";
+"home.random.panel.subtitle" = "ランダムにSCP記事を読む";
+
+/* Home continue reading */
+"home.continue_reading.caption" = "続きから読む";
+"home.continue_reading.accessibility" = "読了の目安";
+"home.continue_reading.object_class_format" = "オブジェクトクラス: %@";
+"home.continue_reading.category.scp_jp" = "SCP-JP";
+"home.continue_reading.category.scp_main_jp" = "SCP（和訳）";
+"home.continue_reading.category.scp_en" = "SCP";
+"home.continue_reading.category.tale" = "Tale";
+"home.continue_reading.category.canon" = "Canon";
+"home.continue_reading.category.goi" = "GoI";
+"home.continue_reading.category.joke" = "Joke";
+"home.continue_reading.category.other" = "その他";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.dashboard.branch_short_jp" = "SCP財団";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
@@ -408,6 +425,8 @@
 "article.rating.unset_short" = "—";
 "article.rating.scale_max" = "/ 5.0";
 "article.rating.a11y" = "報告書レーティング";
+"article.rating.nav_accessibility" = "評価バーの表示／非表示";
+"article.read_later.nav_accessibility" = "後で読むに追加または解除";
 "article.auto_archive.toast_format" = "アーカイブ完了：L%.1f";
 "settings.section.webview_debug" = "WebView 切り分け";
 "settings.webview.minimal_toggle" = "最小の WebView（注入スクリプトなし）";
@@ -432,7 +451,7 @@
 "settings.reader.font_size.footer" = "WebView 内の記事表示に反映されます。閲覧中のピンチ操作でも拡大・縮小できます。";
 "settings.section.data" = "データ管理";
 "settings.clear_history" = "閲覧履歴をすべて削除";
-"settings.clear_bookmarks" = "ブックマークをすべて削除";
+"settings.clear_bookmarks" = "高評価リストとオフライン保存を削除";
 "settings.clear_web_cache" = "WebView のキャッシュを消去";
 "settings.web_cache_cleared" = "Web のサイトデータを消去しました。";
 "settings.section.about" = "アプリ情報";
@@ -444,4 +463,20 @@
 "settings.confirm.delete" = "削除する";
 "settings.confirm.cancel" = "キャンセル";
 "settings.confirm.history_message" = "アプリに保存されている閲覧履歴がすべて削除されます。";
-"settings.confirm.bookmarks_message" = "アプリに保存されているブックマークがすべて削除されます。";
+"settings.confirm.bookmarks_message" = "評価が L4.0 以上の項目と、その記事のオフライン HTML が削除されます。";
+
+/* 財団 Tales-JP 著者索引 */
+"tales.jp.author_index.title" = "Tales（日本支部）";
+"tales.jp.segment.digits" = "0-9";
+"tales.jp.segment.misc" = "その他";
+"tales.jp.alphabet_picker.a11y" = "著者名の先頭で絞り込み";
+"tales.jp.load_failed" = "一覧を取得できませんでした";
+"tales.jp.load_failed.hint" = "ネットワークを確認してから再度お試しください。";
+"tales.jp.retry" = "再試行";
+"tales.jp.open_wiki.a11y" = "ウィキの Tales-JP ハブを開く";
+"tales.jp.refresh.a11y" = "著者一覧を再読み込み";
+"tales.jp.empty" = "著者が見つかりません";
+"tales.jp.empty.hint" = "ウィキ側のページ形式が変わった可能性があります。";
+"tales.jp.empty_segment" = "この区間に該当する著者がありません";
+"tales.jp.no_tales_under_author" = "この著者についてリンクされた Tale を読み取れませんでした。";
+"tales.jp.tale_count_format" = "%lld 件";

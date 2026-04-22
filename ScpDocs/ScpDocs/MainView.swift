@@ -12,6 +12,7 @@ struct MainView: View {
     @Binding var selectedTab: AppRootTab
 
     private let scpListSyncService = SCPListSyncService()
+    private let wikiCatalogSyncService = WikiCatalogSyncService()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -19,7 +20,9 @@ struct MainView: View {
                 HomeView(
                     navigationRouter: homeNavigationRouter,
                     homeViewModel: homeViewModel,
-                    japanSCPListMetadataStore: japanSCPListMetadataStore
+                    japanSCPListMetadataStore: japanSCPListMetadataStore,
+                    articleRepository: articleRepository,
+                    onOpenSettings: { selectedTab = .settings }
                 )
                 .navigationDestination(for: NavigationRoute.self) { route in
                     articleDestination(for: route, navigationRouter: homeNavigationRouter)
@@ -82,6 +85,10 @@ struct MainView: View {
                 metadataStore: japanSCPListMetadataStore,
                 cacheRepository: scpListCacheRepository
             )
+            await wikiCatalogSyncService.syncIfNeeded(
+                metadataStore: japanSCPListMetadataStore,
+                cacheRepository: scpListCacheRepository
+            )
         }
     }
 
@@ -139,6 +146,12 @@ struct MainView: View {
                 articleRepository: articleRepository,
                 homeViewModel: homeViewModel,
                 japanSCPListMetadataStore: japanSCPListMetadataStore
+            )
+        case .foundationTalesJPAuthorIndex:
+            FoundationTalesJPIndexView(
+                navigationRouter: navigationRouter,
+                articleRepository: articleRepository,
+                homeViewModel: homeViewModel
             )
         case .category(let url), .article(let url):
             ArticleView(

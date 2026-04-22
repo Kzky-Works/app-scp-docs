@@ -58,10 +58,13 @@
 
 /* Library */
 "library.title" = "Library";
-"library.segment.bookmarks" = "Bookmarks";
+"library.segment.bookmarks" = "Highly rated (L≥4)";
 "library.segment.history" = "History";
-"library.empty.bookmarks.title" = "No bookmarks yet";
-"library.empty.bookmarks.description" = "Add bookmarks from Actions while reading an article.";
+"library.segment.read_later" = "Read later";
+"library.empty.read_later.title" = "Nothing saved for later";
+"library.empty.read_later.description" = "Add pages from the article action bar.";
+"library.empty.bookmarks.title" = "Nothing here yet";
+"library.empty.bookmarks.description" = "Raise a rating to L4.0 or higher while reading for it to appear here.";
 "library.empty.history.title" = "No history yet";
 "library.empty.history.description" = "Articles you open will appear here.";
 
@@ -75,8 +78,22 @@
 "home.search.screen.no_index" = "Try another keyword, or wait for the list data to sync.";
 
 /* Home random access */
-"home.random.current_branch.title" = "Random report";
+"home.random.current_branch.title" = "Open a random report";
 "home.random.access.caption" = "RANDOM ACCESS";
+"home.random.panel.subtitle" = "Read SCP articles at random";
+
+/* Home continue reading */
+"home.continue_reading.caption" = "Continue reading";
+"home.continue_reading.accessibility" = "Reading progress";
+"home.continue_reading.object_class_format" = "Object class: %@";
+"home.continue_reading.category.scp_jp" = "SCP-JP";
+"home.continue_reading.category.scp_main_jp" = "SCP (Japanese)";
+"home.continue_reading.category.scp_en" = "SCP";
+"home.continue_reading.category.tale" = "Tale";
+"home.continue_reading.category.canon" = "Canon";
+"home.continue_reading.category.goi" = "GoI";
+"home.continue_reading.category.joke" = "Joke";
+"home.continue_reading.category.other" = "Other";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.dashboard.branch_short_jp" = "SCP Foundation";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
@@ -408,6 +425,8 @@
 "article.rating.unset_short" = "—";
 "article.rating.scale_max" = "/ 5.0";
 "article.rating.a11y" = "Article rating";
+"article.rating.nav_accessibility" = "Show or hide rating bar";
+"article.read_later.nav_accessibility" = "Add or remove read later";
 "article.auto_archive.toast_format" = "Archived: L%.1f";
 /* Settings */
 "settings.section.webview_debug" = "WebView troubleshooting";
@@ -433,7 +452,7 @@
 "settings.reader.font_size.footer" = "Applies to article pages in the WebView. You can also use pinch-to-zoom while reading.";
 "settings.section.data" = "Data";
 "settings.clear_history" = "Clear all browsing history";
-"settings.clear_bookmarks" = "Clear all bookmarks";
+"settings.clear_bookmarks" = "Clear highly rated items & offline copies";
 "settings.clear_web_cache" = "Clear WebView cache";
 "settings.web_cache_cleared" = "Website data was cleared.";
 "settings.section.about" = "About";
@@ -445,4 +464,20 @@
 "settings.confirm.delete" = "Delete";
 "settings.confirm.cancel" = "Cancel";
 "settings.confirm.history_message" = "All browsing history stored in this app will be removed.";
-"settings.confirm.bookmarks_message" = "All bookmarks stored in this app will be removed.";
+"settings.confirm.bookmarks_message" = "Ratings of L4.0 or higher will be cleared and offline HTML for those articles will be deleted.";
+
+/* Foundation Tales-JP author index */
+"tales.jp.author_index.title" = "Tales (JP)";
+"tales.jp.segment.digits" = "0-9";
+"tales.jp.segment.misc" = "Other";
+"tales.jp.alphabet_picker.a11y" = "Filter authors by first character";
+"tales.jp.load_failed" = "Couldn’t load the list";
+"tales.jp.load_failed.hint" = "Check your network connection, then try again.";
+"tales.jp.retry" = "Try again";
+"tales.jp.open_wiki.a11y" = "Open Tales-JP hub on the wiki";
+"tales.jp.refresh.a11y" = "Reload author list";
+"tales.jp.empty" = "No authors found";
+"tales.jp.empty.hint" = "The wiki page may have changed format.";
+"tales.jp.empty_segment" = "No authors in this section";
+"tales.jp.no_tales_under_author" = "No linked tales were parsed for this author.";
+"tales.jp.tale_count_format" = "%lld tales";

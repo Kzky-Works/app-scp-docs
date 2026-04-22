@@ -10,7 +10,11 @@ struct LibraryIndexView: View {
             ForEach(LibraryCategory.scpLibraryPortalCategories) { category in
                 Button {
                     Haptics.medium()
-                    navigationRouter.push(.libraryList(category))
+                    if branch.id == BranchIdentifier.scpJapan, category == .tales {
+                        navigationRouter.push(.foundationTalesJPAuthorIndex)
+                    } else {
+                        navigationRouter.push(.libraryList(category))
+                    }
                 } label: {
                     FoundationIndexRow(
                         title: String(localized: String.LocalizationValue(category.titleLocalizationKey)),

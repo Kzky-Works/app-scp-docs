@@ -1,7 +1,9 @@
 import SwiftUI
 
 private enum LibrarySegment: Int, CaseIterable, Identifiable {
-    case bookmarks
+    /// レーティング L≥4.0（旧お気に入り／オフライン優先リスト相当）。
+    case highRated
+    case readLater
     case history
 
     var id: Int { rawValue }
@@ -12,12 +14,14 @@ struct LibraryView: View {
     @Bindable var articleRepository: ArticleRepository
     let homeViewModel: HomeViewModel
 
-    @State private var segment: LibrarySegment = .bookmarks
+    @State private var segment: LibrarySegment = .highRated
 
     private var urls: [URL] {
         switch segment {
-        case .bookmarks:
-            articleRepository.allBookmarks()
+        case .highRated:
+            articleRepository.urlsWithRating(atLeast: ArticleRepository.libraryHighRatedThreshold)
+        case .readLater:
+            articleRepository.allReadLater()
         case .history:
             articleRepository.allHistory()
         }
@@ -25,8 +29,10 @@ struct LibraryView: View {
 
     private var emptyTitle: String {
         switch segment {
-        case .bookmarks:
+        case .highRated:
             String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyBookmarksTitle))
+        case .readLater:
+            String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyReadLaterTitle))
         case .history:
             String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyHistoryTitle))
         }
@@ -34,10 +40,23 @@ struct LibraryView: View {
 
     private var emptyDescription: String {
         switch segment {
-        case .bookmarks:
+        case .highRated:
             String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyBookmarksDescription))
+        case .readLater:
+            String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyReadLaterDescription))
         case .history:
             String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyHistoryDescription))
+        }
+    }
+
+    private var emptyStateIcon: String {
+        switch segment {
+        case .highRated:
+            "gauge.with.dots.needle.bottom.67percent"
+        case .readLater:
+            "tray"
+        case .history:
+            "clock.arrow.circlepath"
         }
     }
 
@@ -50,7 +69,9 @@ struct LibraryView: View {
                 Section {
                     Picker("", selection: $segment) {
                         Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentBookmarks)))
-                            .tag(LibrarySegment.bookmarks)
+                            .tag(LibrarySegment.highRated)
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentReadLater)))
+                            .tag(LibrarySegment.readLater)
                         Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentHistory)))
                             .tag(LibrarySegment.history)
                     }
@@ -61,7 +82,7 @@ struct LibraryView: View {
                 if urls.isEmpty {
                     Section {
                         ContentUnavailableView {
-                            Label(emptyTitle, systemImage: segment == .bookmarks ? "bookmark" : "clock.arrow.circlepath")
+                            Label(emptyTitle, systemImage: emptyStateIcon)
                         } description: {
                             Text(emptyDescription)
                         }

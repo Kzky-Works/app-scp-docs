@@ -231,11 +231,11 @@ struct SettingsView: View {
                     }
 
                     Button(role: .destructive) {
-                        dataAction = .clearBookmarks
+                        dataAction = .clearHighlyRatedSaved
                     } label: {
                         Label(
                             String(localized: String.LocalizationValue(LocalizationKey.settingsClearBookmarks)),
-                            systemImage: "bookmark.slash"
+                            systemImage: "star.slash"
                         )
                     }
 
@@ -297,8 +297,8 @@ struct SettingsView: View {
                     switch dataAction {
                     case .clearHistory:
                         articleRepository.clearAllHistory()
-                    case .clearBookmarks:
-                        articleRepository.clearAllBookmarks()
+                    case .clearHighlyRatedSaved:
+                        articleRepository.clearRatingsFromThresholdAndSnapshots(ArticleRepository.libraryHighRatedThreshold)
                     case .none:
                         break
                     }
@@ -311,7 +311,7 @@ struct SettingsView: View {
                 switch dataAction {
                 case .clearHistory:
                     Text(String(localized: String.LocalizationValue(LocalizationKey.settingsConfirmHistoryMessage)))
-                case .clearBookmarks:
+                case .clearHighlyRatedSaved:
                     Text(String(localized: String.LocalizationValue(LocalizationKey.settingsConfirmBookmarksMessage)))
                 case .none:
                     EmptyView()
@@ -322,7 +322,7 @@ struct SettingsView: View {
 
     private enum DataManagementAction {
         case clearHistory
-        case clearBookmarks
+        case clearHighlyRatedSaved
     }
 }
 

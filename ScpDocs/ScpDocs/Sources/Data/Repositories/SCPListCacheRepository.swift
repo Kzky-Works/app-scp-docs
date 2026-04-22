@@ -5,6 +5,14 @@ final class SCPListCacheRepository: @unchecked Sendable {
     private enum StorageKey {
         static let payloadJSON = "scp_list.cache.payload_json"
         static let appliedListVersion = "scp_list.cache.applied_list_version"
+
+        static func wikiCatalogJSON(_ kind: WikiCatalogKind) -> String {
+            "wiki_catalog.cache.\(kind.rawValue).payload_json"
+        }
+
+        static func wikiCatalogListVersion(_ kind: WikiCatalogKind) -> String {
+            "wiki_catalog.cache.\(kind.rawValue).list_version"
+        }
     }
 
     private let defaults: UserDefaults
@@ -38,5 +46,23 @@ final class SCPListCacheRepository: @unchecked Sendable {
         let data = try encoder.encode(payload)
         defaults.set(data, forKey: StorageKey.payloadJSON)
         defaults.set(payload.listVersion, forKey: StorageKey.appliedListVersion)
+    }
+
+    /// 未取得は `0`。
+    func persistedWikiCatalogListVersion(kind: WikiCatalogKind) -> Int {
+        max(0, defaults.integer(forKey: StorageKey.wikiCatalogListVersion(kind)))
+    }
+
+    func loadWikiCatalog(kind: WikiCatalogKind) -> WikiCategoryCatalogPayload? {
+        guard let data = defaults.data(forKey: StorageKey.wikiCatalogJSON(kind)), !data.isEmpty else {
+            return nil
+        }
+        return try? decoder.decode(WikiCategoryCatalogPayload.self, from: data)
+    }
+
+    func saveWikiCatalog(_ payload: WikiCategoryCatalogPayload, kind: WikiCatalogKind) throws {
+        let data = try encoder.encode(payload)
+        defaults.set(data, forKey: StorageKey.wikiCatalogJSON(kind))
+        defaults.set(payload.listVersion, forKey: StorageKey.wikiCatalogListVersion(kind))
     }
 }

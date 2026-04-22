@@ -82,6 +82,9 @@ enum LocalizationKey {
     static let libraryTitle = "library.title"
     static let librarySegmentBookmarks = "library.segment.bookmarks"
     static let librarySegmentHistory = "library.segment.history"
+    static let librarySegmentReadLater = "library.segment.read_later"
+    static let libraryEmptyReadLaterTitle = "library.empty.read_later.title"
+    static let libraryEmptyReadLaterDescription = "library.empty.read_later.description"
     static let libraryEmptyBookmarksTitle = "library.empty.bookmarks.title"
     static let libraryEmptyBookmarksDescription = "library.empty.bookmarks.description"
     static let libraryEmptyHistoryTitle = "library.empty.history.title"
@@ -96,6 +99,18 @@ enum LocalizationKey {
 
     static let homeRandomCurrentBranchTitle = "home.random.current_branch.title"
     static let homeRandomAccessCaption = "home.random.access.caption"
+    static let homeRandomPanelSubtitle = "home.random.panel.subtitle"
+    static let homeContinueReadingCaption = "home.continue_reading.caption"
+    static let homeContinueReadingAccessibility = "home.continue_reading.accessibility"
+    static let homeContinueObjectClassFormat = "home.continue_reading.object_class_format"
+    static let homeContinueCategoryScpJp = "home.continue_reading.category.scp_jp"
+    static let homeContinueCategoryScpMainJp = "home.continue_reading.category.scp_main_jp"
+    static let homeContinueCategoryScpEn = "home.continue_reading.category.scp_en"
+    static let homeContinueCategoryTale = "home.continue_reading.category.tale"
+    static let homeContinueCategoryCanon = "home.continue_reading.category.canon"
+    static let homeContinueCategoryGoi = "home.continue_reading.category.goi"
+    static let homeContinueCategoryJoke = "home.continue_reading.category.joke"
+    static let homeContinueCategoryOther = "home.continue_reading.category.other"
     static let homeDashboardMotto = "home.dashboard.motto"
     /// ホーム上部の支部名（日本支部選択時のみ「日本支部」を省いた短表記）。
     static let homeDashboardBranchShortJapan = "home.dashboard.branch_short_jp"
@@ -340,7 +355,8 @@ enum LocalizationKey {
     static let articleReaderNavCollapseA11y = "article.reader_nav.collapse.a11y"
     static let articleReaderNavBackA11y = "article.reader_nav.back.a11y"
 
-    static let articleToolbarBookmark = "article.toolbar.bookmark"
+    static let articleRatingNavAccessibility = "article.rating.nav_accessibility"
+    static let articleReadLaterNavAccessibility = "article.read_later.nav_accessibility"
     static let articleQuickReaderAccessibility = "article.quick_reader.accessibility"
     static let articleQuickReaderLarger = "article.quick_reader.larger"
     static let articleQuickReaderSmaller = "article.quick_reader.smaller"
@@ -357,6 +373,22 @@ enum LocalizationKey {
     static let settingsWebViewMinimalFooter = "settings.webview.minimal_footer"
     static let settingsWebViewProbe = "settings.webview.probe"
     static let settingsWebViewProbeFooter = "settings.webview.probe_footer"
+
+    // Tales-JP（foundation-tales-jp）著者別索引
+    static let talesJpAuthorIndexTitle = "tales.jp.author_index.title"
+    static let talesJpSegmentDigits = "tales.jp.segment.digits"
+    static let talesJpSegmentMisc = "tales.jp.segment.misc"
+    static let talesJpAlphabetPickerAccessibility = "tales.jp.alphabet_picker.a11y"
+    static let talesJpLoadFailed = "tales.jp.load_failed"
+    static let talesJpLoadFailedHint = "tales.jp.load_failed.hint"
+    static let talesJpRetry = "tales.jp.retry"
+    static let talesJpOpenWikiHubAccessibility = "tales.jp.open_wiki.a11y"
+    static let talesJpRefreshAccessibility = "tales.jp.refresh.a11y"
+    static let talesJpEmpty = "tales.jp.empty"
+    static let talesJpEmptyHint = "tales.jp.empty.hint"
+    static let talesJpEmptySegment = "tales.jp.empty_segment"
+    static let talesJpNoTalesUnderAuthor = "tales.jp.no_tales_under_author"
+    static let talesJpTaleCountFormat = "tales.jp.tale_count_format"
 }
 
 // MARK: - Phase 13 リモート一覧（Plan B）
@@ -366,9 +398,15 @@ enum AppRemoteConfig {
     /// `SCPListRemotePayload` の `schemaVersion` と一致させる。
     static let scpListSchemaVersion = 1
 
+    /// `WikiCategoryCatalogPayload` の `schemaVersion` と一致させる（data-scp-docs `docs/catalog`）。
+    static let wikiCatalogSchemaVersion = 1
+
     /// 空文字のときはリモート同期を行わない（埋め込み `JapanSCPArchiveTitleData` のみ）。
     /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
     static let scpListJSONURLString = "https://kzky-works.github.io/data-scp-docs/scp_list.json"
+
+    /// `docs/catalog/` を配信するベース URL（末尾スラッシュなし）。空なら Wikidot カタログ JSON は同期しない。
+    static let wikiCatalogBaseURLString = "https://kzky-works.github.io/data-scp-docs/catalog"
 
     static func resolvedSCPListJSONURL() -> URL? {
         let trimmed = scpListJSONURLString.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -377,5 +415,20 @@ enum AppRemoteConfig {
             return nil
         }
         return url
+    }
+
+    /// カタログ同期が有効か（ベース URL が設定されているか）。
+    static func resolvedWikiCatalogBaseURL() -> URL? {
+        let trimmed = wikiCatalogBaseURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, let base = URL(string: trimmed) else { return nil }
+        guard let scheme = base.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
+            return nil
+        }
+        return base
+    }
+
+    static func resolvedWikiCatalogURL(kind: WikiCatalogKind) -> URL? {
+        guard let base = resolvedWikiCatalogBaseURL() else { return nil }
+        return base.appendingPathComponent(kind.fileName)
     }
 }

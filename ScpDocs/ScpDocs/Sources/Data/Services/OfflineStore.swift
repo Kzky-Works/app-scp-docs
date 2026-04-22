@@ -23,7 +23,7 @@ final class ConnectivityMonitor {
     }
 }
 
-/// お気に入り記事の HTML スナップショットを Application Support に保存する。
+/// 高評価記事の HTML スナップショットを Application Support に保存する（評価 L≥4 で保存）。
 final class OfflineStore: @unchecked Sendable {
     static let shared = OfflineStore()
 

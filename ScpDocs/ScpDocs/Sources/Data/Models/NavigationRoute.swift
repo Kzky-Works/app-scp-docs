@@ -21,6 +21,8 @@ enum NavigationRoute: Hashable, Sendable {
     case staffGuideIndex
     /// ホーム: 番号・タイトル・タグ・オブジェクトクラスで scp-jp 報告書を検索。
     case homeScpSearch
+    /// 財団 Tales-JP（`foundation-tales-jp`）の著者別ネイティブ索引。
+    case foundationTalesJPAuthorIndex
     case category(URL)
     case article(URL)
 }

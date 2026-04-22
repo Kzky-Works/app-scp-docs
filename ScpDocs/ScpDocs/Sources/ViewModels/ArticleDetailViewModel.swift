@@ -13,13 +13,15 @@ final class ArticleDetailViewModel {
 
     /// トースト用（ローカライズキーではなく本文を保持しない — View がキーから組み立てる）。
     var transientToastToken: UInt64 = 0
+    /// 自動 L3.0 適用時に評価バーを開くための通知。
+    var ratingBarRevealToken: UInt64 = 0
 
     init(articleRepository: ArticleRepository, articleURL: URL) {
         self.articleRepository = articleRepository
         self.articleURL = articleURL
     }
 
-    /// WebView のスクロール進捗（0...1）。85% 到達かつ未評価なら L3.0 を書き込む。
+    /// WebView のスクロール進捗（0...1）。90% 到達かつ未評価なら L3.0 を書き込み、評価バー表示を促す。
     func handleScrollDepthFraction(_ fraction: Double) {
         guard !didApplyAutoArchive else { return }
         guard fraction >= ArticleDetailViewModel.autoArchiveDepthThreshold else { return }
@@ -28,7 +30,8 @@ final class ArticleDetailViewModel {
         didApplyAutoArchive = true
         articleRepository.setRatingScore(3.0, for: articleURL)
         transientToastToken += 1
+        ratingBarRevealToken += 1
     }
 
-    static let autoArchiveDepthThreshold: Double = 0.85
+    static let autoArchiveDepthThreshold: Double = 0.90
 }

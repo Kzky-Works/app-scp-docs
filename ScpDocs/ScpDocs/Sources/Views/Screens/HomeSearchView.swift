@@ -53,14 +53,7 @@ struct HomeSearchView: View {
                                 showsTags: !entry.tags.isEmpty,
                                 monospacedTitleDigits: true,
                                 trailing: {
-                                    HStack(spacing: 10) {
-                                        if articleRepository.isBookmarked(url: entry.url) {
-                                            Image(systemName: "bookmark.fill")
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                                .imageScale(.medium)
-                                        }
-                                        ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: entry.url))
-                                    }
+                                    ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: entry.url))
                                 }
                             )
                         }

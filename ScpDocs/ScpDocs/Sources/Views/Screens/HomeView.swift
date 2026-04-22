@@ -4,79 +4,62 @@ struct HomeView: View {
     @Bindable var navigationRouter: NavigationRouter
     private let homeViewModel: HomeViewModel
     private let japanSCPListMetadataStore: JapanSCPListMetadataStore
+    @Bindable var articleRepository: ArticleRepository
+    var onOpenSettings: () -> Void
 
     @Environment(\.scpHomeAdBottomReserve) private var homeAdBottomReserve
 
-    private let homeCategoryRowSpacing: CGFloat = 12
+    private let homeGridSpacing: CGFloat = 12
 
     init(
         navigationRouter: NavigationRouter,
         homeViewModel: HomeViewModel,
-        japanSCPListMetadataStore: JapanSCPListMetadataStore
+        japanSCPListMetadataStore: JapanSCPListMetadataStore,
+        articleRepository: ArticleRepository,
+        onOpenSettings: @escaping () -> Void = {}
     ) {
         self.navigationRouter = navigationRouter
         self.homeViewModel = homeViewModel
         self.japanSCPListMetadataStore = japanSCPListMetadataStore
+        self.articleRepository = articleRepository
+        self.onOpenSettings = onOpenSettings
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 8) {
+        ScrollView {
+            VStack(spacing: homeGridSpacing) {
                 dashboardHeaderCard
+
+                if let url = articleRepository.recentHistoryURLs(maxCount: 1).first {
+                    continueReadingPanel(url: url)
+                }
 
                 randomAccessRow
 
-                GeometryReader { geometry in
-                    let totalH = max(0, geometry.size.height)
-                    let innerH = max(0, totalH - homeCategoryRowSpacing * 2)
-                    let topRowH = innerH * 5 / 11
-                    let midRowH = innerH * 3 / 11
-                    let bottomRowH = innerH * 3 / 11
-                    let rowWidth = geometry.size.width
-                    let topInnerWidth = max(0, rowWidth - homeCategoryRowSpacing)
-                    let jpWidth = topInnerWidth * 3 / 5
-                    let mainWidth = topInnerWidth * 2 / 5
-
-                    VStack(spacing: homeCategoryRowSpacing) {
-                        HStack(spacing: homeCategoryRowSpacing) {
-                            homeCategoryTile(for: .jpArticles)
-                                .frame(width: jpWidth, height: topRowH)
-                            homeCategoryTile(for: .originalArticles)
-                                .frame(width: mainWidth, height: topRowH)
-                        }
-                        .frame(height: topRowH)
-
-                        HStack(spacing: homeCategoryRowSpacing) {
-                            homeCategoryTile(for: .tales)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            homeCategoryTile(for: .canons)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        }
-                        .frame(height: midRowH)
-
-                        HStack(spacing: homeCategoryRowSpacing) {
-                            homeCategoryTile(for: .gois)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            homeCategoryTile(for: .jokes)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        }
-                        .frame(height: bottomRowH)
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: homeGridSpacing),
+                        GridItem(.flexible(), spacing: homeGridSpacing)
+                    ],
+                    spacing: homeGridSpacing
+                ) {
+                    ForEach(HomeCategory.allCases) { category in
+                        homeCategoryTile(for: category)
+                            .frame(minHeight: 112, alignment: .top)
                     }
-                    .frame(width: rowWidth, height: totalH, alignment: .top)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
             .padding(.horizontal, 16)
             .padding(.top, 2)
             .padding(.bottom, 8 + homeAdBottomReserve)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
+        .scrollIndicators(.hidden)
         .background(AppTheme.mainBackground)
         .toolbar(.hidden, for: .navigationBar)
         .tint(AppTheme.brandAccent)
     }
 
-    /// 支部名をナビの大タイトル風に背景へ直書き（カード面・線なし。レイアウト用に透明の箱のみ）。
+    /// 支部名・モットー・右上操作（検索・設定）。
     private var dashboardHeaderCard: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
@@ -112,22 +95,136 @@ struct HomeView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Button {
-                Haptics.light()
-                navigationRouter.push(.homeScpSearch)
-            } label: {
-                Image(systemName: "magnifyingglass")
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(AppTheme.brandAccent)
-                    .frame(width: 44, height: 44, alignment: .center)
-                    .contentShape(Rectangle())
+            HStack(spacing: 0) {
+                Button {
+                    Haptics.light()
+                    navigationRouter.push(.homeScpSearch)
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(AppTheme.brandAccent)
+                        .frame(width: 44, height: 44, alignment: .center)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.homeSearchButtonAccessibility)))
+
+                Button {
+                    Haptics.light()
+                    onOpenSettings()
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(AppTheme.brandAccent)
+                        .frame(width: 44, height: 44, alignment: .center)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.tabSettings)))
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.homeSearchButtonAccessibility)))
         }
         .padding(.vertical, 4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.clear)
+    }
+
+    private func continueReadingPanel(url: URL) -> some View {
+        let hint = japanSCPListMetadataStore.readingHint(for: url)
+        let row = ContinueReadingSummaryBuilder.build(
+            url: url,
+            scrollProgress: articleRepository.readingScrollDepth(for: url),
+            cachedPageTitle: articleRepository.cachedPageTitle(for: url),
+            thumbnailURL: articleRepository.cachedFirstImageURL(for: url),
+            japanListHint: hint,
+            categoryLabel: { String(localized: String.LocalizationValue($0)) },
+            objectClassFormat: { oc in
+                String(
+                    format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueObjectClassFormat)),
+                    locale: .current,
+                    oc
+                )
+            }
+        )
+
+        return Button {
+            Haptics.medium()
+            navigationRouter.pushArticle(url: url)
+        } label: {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(row.categoryLine)
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(AppTheme.brandAccent)
+
+                    Text(row.identifierLine)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
+
+                    Text(row.titleLine)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.85)
+
+                    if let ocLine = row.objectClassLine {
+                        Text(ocLine)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .lineLimit(2)
+                    }
+
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Capsule()
+                                .fill(AppTheme.textSecondary.opacity(0.22))
+                            Capsule()
+                                .fill(AppTheme.brandAccent)
+                                .frame(width: max(4, geo.size.width * row.scrollProgress))
+                        }
+                    }
+                    .frame(height: 6)
+                    .accessibilityHidden(true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                if let thumb = row.thumbnailURL {
+                    continueReadingThumbnail(url: thumb)
+                }
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.textSecondary.opacity(0.75))
+            }
+            .padding(14)
+            .foundationCard(style: .standard)
+        }
+        .buttonStyle(DashboardPressButtonStyle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.homeContinueReadingCaption)))
+        .accessibilityValue(
+            "\(row.titleLine), \(String(format: "%d%%", Int((row.scrollProgress * 100).rounded())))"
+        )
+    }
+
+    private func continueReadingThumbnail(url: URL) -> some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+            default:
+                Color.clear
+            }
+        }
+        .frame(width: 64, height: 88)
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(AppTheme.cardBorder.opacity(0.5), lineWidth: AppTheme.borderWidthHairline)
+        )
     }
 
     private var randomAccessRow: some View {
@@ -146,25 +243,29 @@ struct HomeView: View {
             }
         } label: {
             HStack(alignment: .center, spacing: 12) {
-                Image(systemName: "dice.fill")
+                Image(systemName: "square.grid.3x3.fill")
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(AppTheme.brandAccent)
                     .frame(width: 28, alignment: .center)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomAccessCaption)))
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .monospaced()
-                        .textCase(.uppercase)
-                    Text(localized(LocalizationKey.homeRandomCurrentBranchTitle))
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCurrentBranchTitle)))
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppTheme.textPrimary)
                         .multilineTextAlignment(.leading)
                         .lineLimit(3)
                         .minimumScaleFactor(0.85)
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomPanelSubtitle)))
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.textSecondary.opacity(0.75))
             }
             .padding(14)
             .foundationCard(style: .standard)
@@ -179,14 +280,14 @@ struct HomeView: View {
             SectionTile(
                 title: localized(item.titleLocalizationKey),
                 subtitle: localized(item.subtitleLocalizationKey),
-                leading: .none,
+                leading: .systemSymbol(item.systemImageName),
                 emphasizeTitle: true,
                 isWide: false,
                 style: item.category == .jpArticles ? .inverted : .standard,
                 scpJapanSpecialChrome: item.category == .jpArticles,
-                badge: String(localized: String.LocalizationValue(item.badgeLocalizationKey)),
+                badge: nil,
                 stretchVertically: true,
-                showsTrailingChevron: false,
+                showsTrailingChevron: true,
                 titleFontOverride: AppTypography.homePillarTitleFont(),
                 onTap: {
                     Haptics.medium()
@@ -205,7 +306,11 @@ struct HomeView: View {
             homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
             navigationRouter.push(.scpEnglishArchive(initialTagFilters: nil))
         case .tales:
-            navigationRouter.push(.libraryList(.tales))
+            if homeViewModel.selectedBranch.id == BranchIdentifier.scpJapan {
+                navigationRouter.push(.foundationTalesJPAuthorIndex)
+            } else {
+                navigationRouter.push(.libraryList(.tales))
+            }
         case .canons:
             navigationRouter.push(.libraryList(.canons))
         case .gois:
@@ -223,11 +328,14 @@ struct HomeView: View {
 #Preview {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var vm = HomeViewModel(settingsRepository: SettingsRepository())
+    @Previewable @State var repo = ArticleRepository()
     NavigationStack {
         HomeView(
             navigationRouter: router,
             homeViewModel: vm,
-            japanSCPListMetadataStore: JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository())
+            japanSCPListMetadataStore: JapanSCPListMetadataStore(cacheRepository: SCPListCacheRepository()),
+            articleRepository: repo,
+            onOpenSettings: {}
         )
     }
 }
