@@ -28,7 +28,7 @@ enum SCPArticleFeedKind: String, Codable, CaseIterable, Sendable {
     }
 }
 
-/// 3 系統 JSON（`scp-jp.json` / `scp.json` / `scp-int.json`）の 1 エントリ。キーは配信パイプラインの短縮形。
+/// 3 系統 JSON（支部別 `list/<code>/scp-*.json`）の 1 エントリ。キーは配信パイプラインの短縮形。
 struct SCPArticle: Codable, Sendable, Hashable, Equatable {
     /// 記事 URL（絶対 URL 文字列）。
     var u: String

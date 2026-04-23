@@ -21,7 +21,7 @@ enum NavigationRoute: Hashable, Sendable {
     case staffGuideIndex
     /// ホーム: 番号・タイトル・タグ・オブジェクトクラスで scp-jp 報告書を検索。
     case homeScpSearch
-    /// 3 系統キャッシュ（`scp-jp.json` / `scp.json` / `scp-int.json`）から組み立てた一覧。
+    /// 3 系統キャッシュ（`list/jp/` 配下の各フィード）から組み立てた一覧。
     case scpArticleCatalogFeed(SCPArticleFeedKind)
     /// 財団 Tales-JP（`foundation-tales-jp`）の著者別ネイティブ索引。
     case foundationTalesJPAuthorIndex
