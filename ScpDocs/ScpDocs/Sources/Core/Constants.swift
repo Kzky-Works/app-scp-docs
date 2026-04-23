@@ -456,26 +456,26 @@ enum AppRemoteConfig {
     /// 3 系統 JSON と `scp_list.json` を置くベース URL（末尾スラッシュなし）。
     static let scpDataHostBaseURLString = "https://kzky-works.github.io/data-scp-docs"
 
-    /// 支部サイトの言語コード（GitHub Pages 上の `docs/list/<code>/` に対応）。現状は日本支部のみ `jp`。
-    /// 将来 `ru` / `cn` 等に切り替えたときは、同階層の `list/<code>/` 以下の JSON を配信する想定。
+    /// 支部サイトの言語コード（データホスト上の `list/<code>/` に対応）。現状は日本支部のみ `jp`。
+    /// 将来 `ru` / `cn` 等に切り替えたときは `list/ru/` 等の JSON を配信する想定。
     static let scpArticleFeedSiteListCode = "jp"
 
-    /// 3 系統 SCP 報告書フィードの配信パス接頭辞（`list/jp` = `docs/list/jp/`）。
+    /// 3 系統 SCP 報告書フィードおよびマルチフォーム（Tale / GoI）の配信パス接頭辞。
     private static let scpArticleFeedListPathPrefix = "list/\(scpArticleFeedSiteListCode)"
 
     /// 空文字のときはリモート同期を行わない（埋め込み `JapanSCPArchiveTitleData` のみ）。
     /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
     static let scpListJSONURLString = "\(scpDataHostBaseURLString)/scp_list.json"
 
-    /// 日本支部系統の記事一覧（`docs/list/jp/scp-jp.json`）。
+    /// 日本支部系統の記事一覧（`list/jp/scp-jp.json`）。
     static let scpJPListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/scp-jp.json"
-    /// 本家メイン和訳系の記事一覧（`docs/list/jp/scp.json`）。
+    /// 本家メイン和訳系の記事一覧（`list/jp/scp.json`）。
     static let scpENListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/scp.json"
-    /// 国際支部系統の記事一覧（`docs/list/jp/scp-int.json`）。
+    /// 国際支部系統の記事一覧（`list/jp/scp-int.json`）。
     static let scpINTListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/scp-int.json"
 
-    static let talesListJSONPathComponent = "tales.json"
-    static let goisListJSONPathComponent = "gois.json"
+    static let talesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/tales.json"
+    static let goisListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/gois.json"
     static let canonsListJSONPathComponent = "canons.json"
     static let jokesListJSONPathComponent = "jokes.json"
 

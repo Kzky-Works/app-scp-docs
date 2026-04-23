@@ -61,13 +61,19 @@ struct HomeView: View {
 
         return VStack(spacing: homeGridSpacing) {
             if hasContinueReading, let url = homeViewModel.continueReadingTargetURL, let row = homeViewModel.continueReadingRow {
-                sectionContinueReading(url: url, row: row)
-                    .frame(height: hContinue, alignment: .top)
-                    .clipped()
-            }
-            randomArticleSection
-                .frame(height: hRandom, alignment: .top)
+                VStack(alignment: .leading, spacing: 0) {
+                    sectionContinueReading(url: url, row: row)
+                    Spacer(minLength: 0)
+                }
+                .frame(height: hContinue, alignment: .top)
                 .clipped()
+            }
+            VStack(spacing: 0) {
+                randomArticleSection
+                Spacer(minLength: 0)
+            }
+            .frame(height: hRandom, alignment: .top)
+            .clipped()
             sectionSplitHeroGrid(heroHeight: hHero)
                 .frame(height: hHero)
                 .clipped()
@@ -141,12 +147,12 @@ struct HomeView: View {
                             .lineLimit(3)
                             .minimumScaleFactor(0.82)
                         readingProgressGauge(progress: row.scrollProgress)
-                    }
-                    HStack {
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppTheme.terminalSilver.opacity(0.75))
+                        HStack {
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.terminalSilver.opacity(0.75))
+                        }
                     }
                 }
             }
