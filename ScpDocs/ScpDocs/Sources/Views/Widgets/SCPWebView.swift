@@ -319,6 +319,15 @@ struct SCPWebView: UIViewRepresentable {
             viewModel?.setLoading(false)
             viewModel?.updateStateFromWebView(webView)
             viewModel?.applyReaderFontPresentation()
+            viewModel?.attemptApplyScrollRestore(on: webView)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak webView, weak viewModel] in
+                guard let webView, let viewModel else { return }
+                viewModel.attemptApplyScrollRestore(on: webView)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) { [weak webView, weak viewModel] in
+                guard let webView, let viewModel else { return }
+                viewModel.attemptApplyScrollRestore(on: webView)
+            }
             syncNavigationChrome(for: webView)
         }
 

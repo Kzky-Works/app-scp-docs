@@ -24,6 +24,7 @@ enum ContinueReadingSummaryBuilder {
         cachedPageTitle: String?,
         thumbnailURL: URL?,
         japanListHint: JapanSCPListReadingHint?,
+        listMetaTitle: String?,
         categoryLabel: (String) -> String,
         objectClassFormat: (String) -> String
     ) -> ContinueReadingRowDisplay {
@@ -38,7 +39,8 @@ enum ContinueReadingSummaryBuilder {
             cachedPageTitle: cachedPageTitle,
             japanListHint: japanListHint
         )
-        let title = resolveTitle(
+        let title = resolveMetaTitle(
+            listMetaTitle: listMetaTitle,
             classification: classification,
             slug: slug,
             cachedPageTitle: cachedPageTitle,
@@ -104,6 +106,7 @@ enum ContinueReadingSummaryBuilder {
         case scpJapanJoke
         case scpEnglishMain
         case scpEnglishJoke
+        case scpInternationalMain
         case tale
         case canon
         case goi
@@ -115,6 +118,7 @@ enum ContinueReadingSummaryBuilder {
             case .scpJapanMainlistTranslation: LocalizationKey.homeContinueCategoryScpMainJp
             case .scpJapanJoke: LocalizationKey.homeContinueCategoryJoke
             case .scpEnglishMain, .scpEnglishJoke: LocalizationKey.homeContinueCategoryScpEn
+            case .scpInternationalMain: LocalizationKey.homeContinueCategoryScpInt
             case .tale: LocalizationKey.homeContinueCategoryTale
             case .canon: LocalizationKey.homeContinueCategoryCanon
             case .goi: LocalizationKey.homeContinueCategoryGoi
@@ -185,6 +189,13 @@ enum ContinueReadingSummaryBuilder {
             if url.path.localizedCaseInsensitiveContains("groups-of-interest") {
                 return .goi
             }
+            let s = slug.lowercased()
+            if s.hasPrefix("scp-") {
+                let rest = s.dropFirst(4)
+                if rest.contains(where: \.isNumber) {
+                    return .scpInternationalMain
+                }
+            }
         }
 
         let ls = slug.lowercased()
@@ -210,7 +221,7 @@ enum ContinueReadingSummaryBuilder {
         switch classification {
         case .tale:
             return taleIdentifierLine(cachedPageTitle: cachedPageTitle, slug: slug)
-        case .scpEnglishMain, .scpEnglishJoke:
+        case .scpEnglishMain, .scpEnglishJoke, .scpInternationalMain:
             return scpSlugDisplay(slug)
         case .canon, .goi, .other:
             return humanizedSlug(slug)
@@ -219,12 +230,16 @@ enum ContinueReadingSummaryBuilder {
         }
     }
 
-    private static func resolveTitle(
+    private static func resolveMetaTitle(
+        listMetaTitle: String?,
         classification: Classification,
         slug: String,
         cachedPageTitle: String?,
         japanListHint: JapanSCPListReadingHint?
     ) -> String {
+        if let m = listMetaTitle?.trimmingCharacters(in: .whitespacesAndNewlines), !m.isEmpty {
+            return m
+        }
         if let t = cachedPageTitle?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty {
             if classification == .tale {
                 return taleTitleLine(cachedPageTitle: t, slug: slug)
@@ -251,7 +266,7 @@ enum ContinueReadingSummaryBuilder {
                 return format(oc)
             }
             return nil
-        case .scpEnglishMain:
+        case .scpEnglishMain, .scpInternationalMain:
             return nil
         default:
             return nil

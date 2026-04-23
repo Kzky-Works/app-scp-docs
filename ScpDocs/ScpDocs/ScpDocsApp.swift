@@ -35,11 +35,14 @@ struct ScpDocsApp: App {
 
         try? personnelJournal.reconcile(from: articleRepo)
 
+        let japanMeta = JapanSCPListMetadataStore(cacheRepository: scpCache)
         let homeVM = HomeViewModel(
             settingsRepository: settingsRepository,
             articleRepository: articleRepo,
             trifoldIndexStore: trifoldIndex,
-            personnelJournal: personnelJournal
+            personnelJournal: personnelJournal,
+            japanSCPListMetadataStore: japanMeta,
+            scpArticleFeedCacheRepository: feedCache
         )
         trifoldIndex.reloadFromCache()
         homeVM.refreshTrifoldPersonnelDashboard()
@@ -47,7 +50,7 @@ struct ScpDocsApp: App {
         _articleRepository = State(wrappedValue: articleRepo)
         _homeViewModel = State(wrappedValue: homeVM)
         _scpListCacheRepository = State(wrappedValue: scpCache)
-        _japanSCPListMetadataStore = State(wrappedValue: JapanSCPListMetadataStore(cacheRepository: scpCache))
+        _japanSCPListMetadataStore = State(wrappedValue: japanMeta)
 
         AppTheme.configureTabBarAppearance()
         GADMobileAds.sharedInstance().start(completionHandler: nil)

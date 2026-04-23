@@ -28,6 +28,10 @@ final class WebViewModel {
 
     private var pendingCommand: PendingCommand = .none
 
+    /// 初回表示時に `ArticleRepository` の保存深度へスクロールを戻す（`WKNavigationDelegate.didFinish` で適用）。
+    private var pendingScrollRestoreFraction: Double?
+    private var scrollRestoreAttemptCount: Int = 0
+
     /// `updateUIView` が短時間に複数回走ると `load` が重複し、先のリクエストが NSURLErrorCancelled (-999) になる。
     /// 同一キーで「すでに読み込み中」のときだけ二重 `load` を抑止する（時間だけで弾くと、再試行の `load` を落とす）。
     private var lastFlushedLoadKey: String?
@@ -40,6 +44,7 @@ final class WebViewModel {
         currentURL = url
         pageTitle = nil
         loadFailureMessage = nil
+        scrollRestoreAttemptCount = 0
 
         let snapshotFile = offlineStore.loadHTML(for: url)
         let offline = snapshotFile != nil && !ConnectivityMonitor.shared.isPathSatisfied
@@ -77,6 +82,39 @@ final class WebViewModel {
 
     func clearLoadFailure() {
         loadFailureMessage = nil
+    }
+
+    /// 記事画面の `.task` で、ネットワーク読み込み前に呼ぶ。極端な値は無視する。
+    func prepareScrollRestoreFromPersistedDepth(_ fraction: Double) {
+        let c = min(1, max(0, fraction))
+        if c >= 0.02, c < 0.998 {
+            pendingScrollRestoreFraction = c
+        } else {
+            pendingScrollRestoreFraction = nil
+        }
+        scrollRestoreAttemptCount = 0
+    }
+
+    /// `SCPWebView` の `didFinish`（および遅延リトライ）から呼ぶ。本文高さが確定したら適用して `pending` を消す。
+    func attemptApplyScrollRestore(on webView: WKWebView) {
+        guard let fraction = pendingScrollRestoreFraction else { return }
+        let sv = webView.scrollView
+        let contentH = sv.contentSize.height
+        let visibleH = sv.bounds.height
+        let scrollable = max(contentH - visibleH, 0)
+        guard scrollable > 1 else {
+            scrollRestoreAttemptCount += 1
+            if scrollRestoreAttemptCount >= 5 {
+                pendingScrollRestoreFraction = nil
+                scrollRestoreAttemptCount = 0
+            }
+            return
+        }
+        let y = CGFloat(fraction) * scrollable
+        sv.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+        updateScrollDepthFraction(fraction)
+        pendingScrollRestoreFraction = nil
+        scrollRestoreAttemptCount = 0
     }
 
     /// WebView 内の本文に `-webkit-text-size-adjust` 等を適用する（読み込み完了後や倍率変更時に呼ぶ）。

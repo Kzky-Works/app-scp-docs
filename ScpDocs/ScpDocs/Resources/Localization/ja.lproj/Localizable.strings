@@ -102,14 +102,17 @@
 "home.random.current_branch.title" = "ランダムな報告書を開く";
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.random.panel.subtitle" = "ランダムにSCP記事を読む";
+"home.random_article_read.section_title" = "ランダム記事を読む";
 
 /* Home continue reading */
 "home.continue_reading.caption" = "続きから読む";
 "home.continue_reading.accessibility" = "読了の目安";
+"home.continue_reading.scroll_percent_format" = "スクロール %lld パーセント";
 "home.continue_reading.object_class_format" = "オブジェクトクラス: %@";
 "home.continue_reading.category.scp_jp" = "SCP-JP";
 "home.continue_reading.category.scp_main_jp" = "SCP（和訳）";
-"home.continue_reading.category.scp_en" = "SCP";
+"home.continue_reading.category.scp_en" = "SCP-en";
+"home.continue_reading.category.scp_int" = "SCP-int";
 "home.continue_reading.category.tale" = "Tale";
 "home.continue_reading.category.canon" = "Canon";
 "home.continue_reading.category.goi" = "GoI";

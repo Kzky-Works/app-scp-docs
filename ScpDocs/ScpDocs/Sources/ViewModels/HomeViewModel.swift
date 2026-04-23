@@ -9,11 +9,8 @@ final class HomeViewModel {
     private let articleRepository: ArticleRepository
     private let trifoldIndexStore: SCPArticleTrifoldIndexStore?
     private let personnelJournal: PersonnelReadingJournal?
-
-    private(set) var selectedBranch: Branch
-    private(set) var fontSizeMultiplier: Double
-    private(set) var uiLanguage: AppUILanguage
-    private(set) var appearancePreference: AppAppearancePreference
+    private let japanSCPListMetadataStore: JapanSCPListMetadataStore?
+    private let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository?
 
     /// 3 系統キャッシュの件数（未取得時は 0）。
     private(set) var jpCatalogArticleCount: Int = 0
@@ -25,15 +22,17 @@ final class HomeViewModel {
     private(set) var enCatalogUnreadCount: Int = 0
     private(set) var intCatalogUnreadCount: Int = 0
 
-    /// `PersonnelRecord` ベースの「続きから読む」候補（読了率 85% 未満・最新アクセス）。
-    private(set) var continueReadingFromPersonnelURL: URL?
+    private(set) var selectedBranch: Branch
+    private(set) var fontSizeMultiplier: Double
+    private(set) var uiLanguage: AppUILanguage
+    private(set) var appearancePreference: AppAppearancePreference
 
-    /// 「Daily Assignment」: キャッシュ済み JP フィードからのおすすめ（未読優先）。
-    private(set) var dailyAssignmentURL: URL?
-    private(set) var dailyAssignmentTitle: String = ""
-    private(set) var dailyAssignmentIdentifier: String = ""
+    /// スクロール進捗が 95% 未満のときの再開先 URL。
+    private(set) var continueReadingTargetURL: URL?
+    /// `continueReadingTargetURL` 向けのホーム用表示行。
+    private(set) var continueReadingRow: ContinueReadingRowDisplay?
 
-    /// `continueReadingFromPersonnelURL` が無いときの「Random Discovery」先（未読からランダム）。
+    /// 続きから読む候補が無いときのランダム遷移先（未読優先）。
     private(set) var randomDiscoveryURL: URL?
 
     init(
@@ -41,13 +40,17 @@ final class HomeViewModel {
         settingsRepository: SettingsRepository,
         articleRepository: ArticleRepository,
         trifoldIndexStore: SCPArticleTrifoldIndexStore? = nil,
-        personnelJournal: PersonnelReadingJournal? = nil
+        personnelJournal: PersonnelReadingJournal? = nil,
+        japanSCPListMetadataStore: JapanSCPListMetadataStore? = nil,
+        scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository? = nil
     ) {
         self.branchCatalog = branchCatalog
         self.settingsRepository = settingsRepository
         self.articleRepository = articleRepository
         self.trifoldIndexStore = trifoldIndexStore
         self.personnelJournal = personnelJournal
+        self.japanSCPListMetadataStore = japanSCPListMetadataStore
+        self.scpArticleFeedCacheRepository = scpArticleFeedCacheRepository
         let storedId = settingsRepository.loadSelectedBranchId()
         let resolved = branchCatalog.branch(id: storedId) ?? branchCatalog.defaultBranch
         self.selectedBranch = resolved
@@ -59,7 +62,7 @@ final class HomeViewModel {
         self.appearancePreference = settingsRepository.loadAppearancePreference()
     }
 
-    /// ホームの非対称グリッド用メトリクスを再計算する（同期完了後などに呼ぶ）。
+    /// ホームの「続きから読む」およびランダム先を再計算する（同期完了後などに呼ぶ）。
     func refreshTrifoldPersonnelDashboard() {
         guard let trifoldIndexStore else {
             jpCatalogArticleCount = 0
@@ -68,8 +71,13 @@ final class HomeViewModel {
             jpCatalogUnreadCount = 0
             enCatalogUnreadCount = 0
             intCatalogUnreadCount = 0
-            continueReadingFromPersonnelURL = nil
-            recomputeDashboardAssignments()
+            if let personnelJournal {
+                continueReadingTargetURL = try? personnelJournal.latestContinueReadingURL(incompleteBelowProgress: 0.95)
+            } else {
+                continueReadingTargetURL = nil
+            }
+            continueReadingRow = rebuildContinueReadingRow()
+            recomputeRandomDiscoveryURL()
             return
         }
         trifoldIndexStore.reloadFromCache()
@@ -80,22 +88,12 @@ final class HomeViewModel {
         enCatalogUnreadCount = trifoldIndexStore.unreadCount(kind: .en, articleRepository: articleRepository)
         intCatalogUnreadCount = trifoldIndexStore.unreadCount(kind: .int, articleRepository: articleRepository)
         if let personnelJournal {
-            continueReadingFromPersonnelURL = try? personnelJournal.latestContinueReadingURL()
+            continueReadingTargetURL = try? personnelJournal.latestContinueReadingURL(incompleteBelowProgress: 0.95)
         } else {
-            continueReadingFromPersonnelURL = nil
+            continueReadingTargetURL = nil
         }
-        recomputeDashboardAssignments()
-    }
-
-    var resumeMissionTitle: String {
-        guard let url = continueReadingFromPersonnelURL else { return "" }
-        let trimmed = articleRepository.cachedPageTitle(for: url)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if trimmed.isEmpty { return url.lastPathComponent }
-        return trimmed
-    }
-
-    var resumeMissionIdentifier: String {
-        continueReadingFromPersonnelURL?.lastPathComponent ?? ""
+        continueReadingRow = rebuildContinueReadingRow()
+        recomputeRandomDiscoveryURL()
     }
 
     func totalCount(for kind: SCPArticleFeedKind) -> Int {
@@ -116,11 +114,46 @@ final class HomeViewModel {
         }
     }
 
-    private func recomputeDashboardAssignments() {
+    private func rebuildContinueReadingRow() -> ContinueReadingRowDisplay? {
+        guard let url = continueReadingTargetURL else { return nil }
+        let scroll = articleRepository.readingScrollDepth(for: url)
+        let objectClassFormat: (String) -> String = { oc in
+            String(format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueObjectClassFormat)), oc)
+        }
+        return ContinueReadingSummaryBuilder.build(
+            url: url,
+            scrollProgress: scroll,
+            cachedPageTitle: articleRepository.cachedPageTitle(for: url),
+            thumbnailURL: articleRepository.cachedFirstImageURL(for: url),
+            japanListHint: japanSCPListMetadataStore?.readingHint(for: url),
+            listMetaTitle: catalogListMetaTitle(for: url),
+            categoryLabel: { String(localized: String.LocalizationValue($0)) },
+            objectClassFormat: objectClassFormat
+        )
+    }
+
+    private func catalogListMetaTitle(for url: URL) -> String? {
+        guard let trifoldIndexStore else { return nil }
+        let key = ArticleRepository.storageKey(for: url)
+        for kind in SCPArticleFeedKind.trifoldReportCases {
+            for article in trifoldIndexStore.catalogEntries(for: kind) {
+                guard let u = article.resolvedURL else { continue }
+                if ArticleRepository.storageKey(for: u) == key { return article.t }
+            }
+        }
+        guard let feed = scpArticleFeedCacheRepository else { return nil }
+        for kind in [SCPArticleFeedKind.tales, .gois, .canons, .jokes] {
+            let entries = feed.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
+            for row in entries {
+                guard let u = row.resolvedURL else { continue }
+                if ArticleRepository.storageKey(for: u) == key { return row.t }
+            }
+        }
+        return nil
+    }
+
+    private func recomputeRandomDiscoveryURL() {
         guard let trifoldIndexStore else {
-            dailyAssignmentURL = nil
-            dailyAssignmentTitle = ""
-            dailyAssignmentIdentifier = ""
             randomDiscoveryURL = nil
             return
         }
@@ -143,24 +176,6 @@ final class HomeViewModel {
         if randomDiscoveryURL == nil {
             let jpPool = trifoldIndexStore.catalogEntries(for: .jp)
             randomDiscoveryURL = jpPool.randomElement()?.resolvedURL
-        }
-
-        let jpArticles = trifoldIndexStore.catalogEntries(for: .jp)
-        if let pick = jpArticles.first(where: { article in
-            guard let u = article.resolvedURL else { return false }
-            return !articleRepository.isRead(url: u)
-        }), let url = pick.resolvedURL {
-            dailyAssignmentURL = url
-            dailyAssignmentTitle = pick.t
-            dailyAssignmentIdentifier = pick.i
-        } else if let first = jpArticles.first, let url = first.resolvedURL {
-            dailyAssignmentURL = url
-            dailyAssignmentTitle = first.t
-            dailyAssignmentIdentifier = first.i
-        } else {
-            dailyAssignmentURL = nil
-            dailyAssignmentTitle = ""
-            dailyAssignmentIdentifier = ""
         }
     }
 

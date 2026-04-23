@@ -212,6 +212,7 @@ struct ArticleView: View {
             articleRepository.recordHistory(url: entryURL)
             sessionStartedAt = Date()
             personnelReadingJournal?.ensureActiveCatalogFeedIfNeeded(for: entryURL)
+            webViewModel.prepareScrollRestoreFromPersistedDepth(articleRepository.readingScrollDepth(for: entryURL))
             webViewModel.load(url: entryURL)
         }
         .onDisappear {

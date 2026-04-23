@@ -91,8 +91,8 @@ final class PersonnelReadingJournal {
         try context.save()
     }
 
-    /// 読了率が `incompleteBelowProgress` 未満で、最後にアクセスした 1 件。
-    func latestContinueReadingURL(incompleteBelowProgress: Double = 0.85) throws -> URL? {
+    /// 読了率が `incompleteBelowProgress` 未満で、最後にアクセスした 1 件（既定は 95% 未満を「途中」）。
+    func latestContinueReadingURL(incompleteBelowProgress: Double = 0.95) throws -> URL? {
         let context = container.mainContext
         var descriptor = FetchDescriptor<PersonnelRecord>(
             sortBy: [SortDescriptor(\.lastAccessedAt, order: .reverse)]
