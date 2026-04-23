@@ -5,6 +5,8 @@ struct ArticleView: View {
     @Bindable var homeViewModel: HomeViewModel
     @Bindable var navigationRouter: NavigationRouter
     @Bindable var articleRepository: ArticleRepository
+    private let personnelReadingJournal: PersonnelReadingJournal?
+    private let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository?
 
     @State private var webViewModel = WebViewModel()
     @State private var readerBottomNavExpanded = false
@@ -12,6 +14,8 @@ struct ArticleView: View {
     @State private var articleDetailViewModel: ArticleDetailViewModel
     @State private var showAutoArchiveToast = false
     @State private var lastFirstImageProbeStorageKey: String?
+    @State private var sessionStartedAt: Date?
+    @State private var scrollDepthPersistTask: Task<Void, Never>?
 
     @Bindable var connectivity = ConnectivityMonitor.shared
 
@@ -21,12 +25,16 @@ struct ArticleView: View {
         entryURL: URL,
         homeViewModel: HomeViewModel,
         navigationRouter: NavigationRouter,
-        articleRepository: ArticleRepository
+        articleRepository: ArticleRepository,
+        personnelReadingJournal: PersonnelReadingJournal? = nil,
+        scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository? = nil
     ) {
         self.entryURL = entryURL
         self.homeViewModel = homeViewModel
         self.navigationRouter = navigationRouter
         self.articleRepository = articleRepository
+        self.personnelReadingJournal = personnelReadingJournal
+        self.scpArticleFeedCacheRepository = scpArticleFeedCacheRepository
         _webViewModel = State(initialValue: WebViewModel())
         _readerBottomNavExpanded = State(initialValue: false)
         _articleDetailViewModel = State(
@@ -53,6 +61,31 @@ struct ArticleView: View {
             return title
         }
         return entryURL.lastPathComponent.isEmpty ? entryURL.host ?? entryURL.absoluteString : entryURL.lastPathComponent
+    }
+
+    private var showPostReadTacticalBar: Bool {
+        articleRepository.isRead(url: shareURL)
+            || webViewModel.scrollDepthFraction >= ArticleDetailViewModel.autoReadCompletionThreshold
+    }
+
+    private var canOfferCatalogHops: Bool {
+        guard scpArticleFeedCacheRepository != nil else { return false }
+        let active = personnelReadingJournal?.activeCatalogFeedKind()
+        if let active {
+            return active.isTrifoldSCPReportFeed || active.isMultiformArchiveFeed
+        }
+        return CatalogFeedNavigator.inferCatalogFeed(for: shareURL) != nil
+    }
+
+    /// `CatalogFeedNavigator.nextArticleURL` と同一条件。終端では `nil` のため NEXT を出さない（案C）。マルチフォームは常に `nil`（Step 4）。
+    private var postReadCatalogNextURL: URL? {
+        guard let feedCache = scpArticleFeedCacheRepository else { return nil }
+        let kind = CatalogFeedNavigator.effectiveKind(
+            active: personnelReadingJournal?.activeCatalogFeedKind(),
+            for: shareURL
+        )
+        guard let k = kind, k.isTrifoldSCPReportFeed else { return nil }
+        return CatalogFeedNavigator.nextArticleURL(after: shareURL, kind: k, feedCache: feedCache)
     }
 
     var body: some View {
@@ -134,7 +167,10 @@ struct ArticleView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            VStack(spacing: 0) {
+            VStack(spacing: 8) {
+                if showPostReadTacticalBar, canOfferCatalogHops {
+                    postReadTacticalRow
+                }
                 if showRatingBar {
                     RatingControlView(rating: articleRatingBinding)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -174,11 +210,25 @@ struct ArticleView: View {
         .task(id: ArticleRepository.storageKey(for: entryURL)) {
             webViewModel.readerFontSizeMultiplier = homeViewModel.fontSizeMultiplier
             articleRepository.recordHistory(url: entryURL)
+            sessionStartedAt = Date()
+            personnelReadingJournal?.ensureActiveCatalogFeedIfNeeded(for: entryURL)
             webViewModel.load(url: entryURL)
+        }
+        .onDisappear {
+            scrollDepthPersistTask?.cancel()
+            articleRepository.updateReadingScrollDepth(webViewModel.scrollDepthFraction, for: shareURL)
+            let key = ArticleRepository.storageKey(for: shareURL)
+            let scroll = articleRepository.readingScrollDepth(for: shareURL)
+            let secs = sessionStartedAt.map { Date().timeIntervalSince($0) } ?? 0
+            try? personnelReadingJournal?.persistVisitEnd(
+                normalizedURLKey: key,
+                scrollProgress: scroll,
+                addedReadingSeconds: secs
+            )
         }
         .onChange(of: webViewModel.scrollDepthFraction) { _, fraction in
             articleDetailViewModel.handleScrollDepthFraction(fraction)
-            articleRepository.updateReadingScrollDepth(fraction, for: shareURL)
+            scheduleScrollDepthPersist(fraction)
         }
         .onChange(of: webViewModel.pageTitle) { _, newTitle in
             articleRepository.updateCachedPageTitle(newTitle, for: shareURL)
@@ -403,5 +453,108 @@ struct ArticleView: View {
         guard readerBottomNavExpanded else { return }
         readerBottomNavExpanded = false
         showRatingBar = false
+    }
+
+    // MARK: - Step 3: スクロール永続化（スロットリング）とポスト・リーディング
+
+    private func scheduleScrollDepthPersist(_ fraction: Double) {
+        scrollDepthPersistTask?.cancel()
+        scrollDepthPersistTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(120))
+            guard !Task.isCancelled else { return }
+            articleRepository.updateReadingScrollDepth(fraction, for: shareURL)
+        }
+    }
+
+    private var postReadTacticalRow: some View {
+        HStack(spacing: 10) {
+            if postReadCatalogNextURL != nil {
+                Button {
+                    Haptics.medium()
+                    postReadNavigateNext()
+                } label: {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.articlePostReadNextCase)))
+                        .font(.caption2.weight(.heavy))
+                        .tracking(0.8)
+                        .foregroundStyle(AppTheme.brandAccent)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 11)
+                        .background(AppTheme.cardStandard)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(AppTheme.brandAccent.opacity(0.95), lineWidth: 1.5)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+
+            if postReadIsMultiformRandomOnlyLayout {
+                Spacer(minLength: 0)
+            }
+            Button {
+                Haptics.medium()
+                postReadNavigateRandom()
+            } label: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.articlePostReadRandomCase)))
+                    .font(.caption2.weight(.heavy))
+                    .tracking(0.8)
+                    .foregroundStyle(AppTheme.terminalSilver)
+                    .frame(maxWidth: postReadIsMultiformRandomOnlyLayout ? 260 : .infinity)
+                    .padding(.vertical, 11)
+                    .background(AppTheme.cardStandard)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(AppTheme.terminalSilver.opacity(0.9), lineWidth: 1)
+                    )
+            }
+            .buttonStyle(.plain)
+            if postReadIsMultiformRandomOnlyLayout {
+                Spacer(minLength: 0)
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+
+    /// Step 4: マルチフォーム閲覧中は NEXT を出さず RANDOM を視覚的に中央寄せする。
+    private var postReadIsMultiformRandomOnlyLayout: Bool {
+        guard let k = CatalogFeedNavigator.effectiveKind(
+            active: personnelReadingJournal?.activeCatalogFeedKind(),
+            for: shareURL
+        ) else { return false }
+        return k.isMultiformArchiveFeed
+    }
+
+    private func postReadNavigateNext() {
+        guard let next = postReadCatalogNextURL else { return }
+        navigationRouter.replaceTopArticle(with: next)
+    }
+
+    private func postReadNavigateRandom() {
+        guard let feedCache = scpArticleFeedCacheRepository else { return }
+        let kind = CatalogFeedNavigator.effectiveKind(
+            active: personnelReadingJournal?.activeCatalogFeedKind(),
+            for: shareURL
+        )
+        guard let k = kind else { return }
+        let url: URL?
+        if k.isMultiformArchiveFeed {
+            url = CatalogFeedNavigator.randomGeneralContentURL(
+                excluding: shareURL,
+                kind: k,
+                feedCache: feedCache,
+                articleRepository: articleRepository
+            )
+        } else {
+            url = CatalogFeedNavigator.randomArticleURL(
+                excluding: shareURL,
+                kind: k,
+                feedCache: feedCache,
+                articleRepository: articleRepository
+            )
+        }
+        guard let url else { return }
+        navigationRouter.replaceTopArticle(with: url)
     }
 }

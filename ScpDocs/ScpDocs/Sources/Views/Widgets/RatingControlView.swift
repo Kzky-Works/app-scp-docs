@@ -72,8 +72,13 @@ struct RatingControlView: View {
                         step: UserArticleData.ratingStep
                     )
                     .tint(largeNumberColor)
-                    .onChange(of: rating) { _, newValue in
-                        emitHaptics(for: UserArticleData.clampedRating(newValue))
+                    .onChange(of: rating) { oldValue, newValue in
+                        let oldC = UserArticleData.clampedRating(oldValue)
+                        let newC = UserArticleData.clampedRating(newValue)
+                        emitHaptics(for: newC)
+                        if oldC <= UserArticleData.unrated && newC > UserArticleData.unrated {
+                            Haptics.medium()
+                        }
                     }
                 }
                 .frame(height: 28)

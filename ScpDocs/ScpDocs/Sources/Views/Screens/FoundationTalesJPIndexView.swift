@@ -227,7 +227,10 @@ struct FoundationTalesJPIndexView: View {
 #Preview {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var repo = ArticleRepository()
-    @Previewable @State var vm = HomeViewModel(settingsRepository: SettingsRepository())
+    @Previewable @State var vm = HomeViewModel(
+        settingsRepository: SettingsRepository(),
+        articleRepository: ArticleRepository()
+    )
     NavigationStack {
         FoundationTalesJPIndexView(
             navigationRouter: router,

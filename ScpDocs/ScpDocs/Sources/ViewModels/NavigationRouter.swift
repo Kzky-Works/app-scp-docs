@@ -65,4 +65,18 @@ final class NavigationRouter {
         guard !path.isEmpty else { return }
         path.removeLast()
     }
+
+    /// 記事 Reader の最上段を差し替え（`NEXT CASE` 等で同一スタック内遷移）。
+    func replaceTopArticle(with url: URL) {
+        guard let last = path.last else {
+            pushArticle(url: url)
+            return
+        }
+        switch last {
+        case .article:
+            path[path.count - 1] = .article(url)
+        default:
+            pushArticle(url: url)
+        }
+    }
 }

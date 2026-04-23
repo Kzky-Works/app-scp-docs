@@ -115,6 +115,45 @@ enum LocalizationKey {
     /// ホーム上部の支部名（日本支部選択時のみ「日本支部」を省いた短表記）。
     static let homeDashboardBranchShortJapan = "home.dashboard.branch_short_jp"
 
+    /// Split Hero / 職員ダッシュボード（Step 2）。
+    static let homePersonnelResumeMission = "home.personnel.resume_mission"
+    static let homePersonnelRandomDiscovery = "home.personnel.random_discovery"
+    static let homePersonnelDailyAssignment = "home.personnel.daily_assignment"
+    static let homePersonnelDailyAssignmentEmptyTitle = "home.personnel.daily_assignment_empty.title"
+    static let homePersonnelDailyAssignmentEmptySubtitle = "home.personnel.daily_assignment_empty.subtitle"
+    static let homeHeroMetricsFormat = "home.hero.metrics_format"
+    static let homeFeedListTitleJP = "home.feed_list.title.jp"
+    static let homeFeedListTitleEN = "home.feed_list.title.en"
+    static let homeFeedListTitleINT = "home.feed_list.title.int"
+    static let homeFeedListTitleTales = "home.feed_list.title.tales"
+    static let homeFeedListTitleGois = "home.feed_list.title.gois"
+    static let homeFeedListTitleCanons = "home.feed_list.title.canons"
+    static let homeFeedListTitleJokes = "home.feed_list.title.jokes"
+
+    static let multiformAuthorUnknown = "multiform.author.unknown"
+
+    static let searchBadgeScpJpCatalog = "search.badge.scp_jp_catalog"
+    static let searchBadgeScpEnCatalog = "search.badge.scp_en_catalog"
+    static let searchBadgeScpIntCatalog = "search.badge.scp_int_catalog"
+    static let searchBadgeTale = "search.badge.tale"
+    static let searchBadgeGoi = "search.badge.goi"
+    static let searchBadgeCanon = "search.badge.canon"
+    static let searchBadgeJoke = "search.badge.joke"
+    static let searchBadgeScpJpList = "search.badge.scp_jp_list"
+
+    static let homeSearchScanning = "home.search.scanning"
+
+    static let tacticalEmptyEyebrow = "tactical.empty.eyebrow"
+    static let tacticalEmptyArchiveTitle = "tactical.empty.archive.title"
+    static let tacticalEmptyArchiveSubtitle = "tactical.empty.archive.subtitle"
+    static let tacticalEmptyNetworkTitle = "tactical.empty.network.title"
+    static let tacticalEmptyNetworkSubtitle = "tactical.empty.network.subtitle"
+
+    static let settingsTerminalSectionTitle = "settings.terminal.section.title"
+    static let settingsTerminalFlavor = "settings.terminal.flavor"
+    static let settingsTerminalFlavorFooter = "settings.terminal.flavor.footer"
+    static let homeFeedListEmpty = "home.feed_list.empty"
+
     static let homePillarJpBadge = "home.pillar.jp_badge"
     static let homePillarEnBadge = "home.pillar.en_badge"
     static let homePillarLibraryBadge = "home.pillar.library_badge"
@@ -366,6 +405,10 @@ enum LocalizationKey {
     static let articleLoadTimeout = "article.load.timeout"
     static let articleLoadFailed = "article.load.failed"
     static let articleLoadRetry = "article.load.retry"
+
+    /// Step 3: 読了後のカタログ内ナビ。
+    static let articlePostReadNextCase = "article.post_read.next_case"
+    static let articlePostReadRandomCase = "article.post_read.random_case"
     static let articleDiagnosticMinimalBanner = "article.diagnostic.minimal_banner"
 
     static let settingsSectionWebViewDebug = "settings.section.webview_debug"
@@ -398,15 +441,36 @@ enum AppRemoteConfig {
     /// `SCPListRemotePayload` の `schemaVersion` と一致させる。
     static let scpListSchemaVersion = 1
 
+    /// `SCPArticleListPayload` の `schemaVersion` と一致させる（3 系統 `scp-*.json`）。
+    static let scpArticleFeedSchemaVersion = 1
+
+    /// `SCPGeneralContentListPayload`（`tales.json` 等）の `schemaVersion`。
+    static let scpGeneralContentFeedSchemaVersion = 1
+
     /// `WikiCategoryCatalogPayload` の `schemaVersion` と一致させる（data-scp-docs `docs/catalog`）。
     static let wikiCatalogSchemaVersion = 1
 
+    /// 3 系統 JSON と `scp_list.json` を置くベース URL（末尾スラッシュなし）。
+    static let scpDataHostBaseURLString = "https://kzky-works.github.io/data-scp-docs"
+
     /// 空文字のときはリモート同期を行わない（埋め込み `JapanSCPArchiveTitleData` のみ）。
     /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
-    static let scpListJSONURLString = "https://kzky-works.github.io/data-scp-docs/scp_list.json"
+    static let scpListJSONURLString = "\(scpDataHostBaseURLString)/scp_list.json"
+
+    /// 日本支部系統の記事一覧（仮: `scp-jp.json`）。
+    static let scpJPListJSONPathComponent = "scp-jp.json"
+    /// 本家 EN 系統の記事一覧（仮: `scp.json`）。
+    static let scpENListJSONPathComponent = "scp.json"
+    /// 国際支部系統の記事一覧（仮: `scp-int.json`）。
+    static let scpINTListJSONPathComponent = "scp-int.json"
+
+    static let talesListJSONPathComponent = "tales.json"
+    static let goisListJSONPathComponent = "gois.json"
+    static let canonsListJSONPathComponent = "canons.json"
+    static let jokesListJSONPathComponent = "jokes.json"
 
     /// `docs/catalog/` を配信するベース URL（末尾スラッシュなし）。空なら Wikidot カタログ JSON は同期しない。
-    static let wikiCatalogBaseURLString = "https://kzky-works.github.io/data-scp-docs/catalog"
+    static let wikiCatalogBaseURLString = "\(scpDataHostBaseURLString)/catalog"
 
     static func resolvedSCPListJSONURL() -> URL? {
         let trimmed = scpListJSONURLString.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -415,6 +479,53 @@ enum AppRemoteConfig {
             return nil
         }
         return url
+    }
+
+    /// Step 1: 3 系統 SCP 報告書フィード URL。マルチフォーム（`tales.json` 等）は `resolvedMultiformArchiveJSONURL` を使う。
+    static func resolvedSCPArticleFeedURL(kind: SCPArticleFeedKind) -> URL? {
+        let pathSuffix: String? = switch kind {
+        case .jp: scpJPListJSONPathComponent
+        case .en: scpENListJSONPathComponent
+        case .int: scpINTListJSONPathComponent
+        case .tales, .gois, .canons, .jokes: nil
+        }
+        guard let pathComponent = pathSuffix?.trimmingCharacters(in: .whitespacesAndNewlines), !pathComponent.isEmpty else {
+            return nil
+        }
+        return resolvedJSONURLAppendingPathComponent(pathComponent)
+    }
+
+    /// Step 4: `tales.json` / `gois.json` / `canons.json` / `jokes.json`。
+    static func resolvedMultiformArchiveJSONURL(kind: SCPArticleFeedKind) -> URL? {
+        let pathSuffix: String? = switch kind {
+        case .tales: talesListJSONPathComponent
+        case .gois: goisListJSONPathComponent
+        case .canons: canonsListJSONPathComponent
+        case .jokes: jokesListJSONPathComponent
+        case .jp, .en, .int: nil
+        }
+        guard let pathComponent = pathSuffix?.trimmingCharacters(in: .whitespacesAndNewlines), !pathComponent.isEmpty else {
+            return nil
+        }
+        return resolvedJSONURLAppendingPathComponent(pathComponent)
+    }
+
+    private static func resolvedJSONURLAppendingPathComponent(_ trimmedPath: String) -> URL? {
+        let baseTrimmed = scpDataHostBaseURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !baseTrimmed.isEmpty, var components = URLComponents(string: baseTrimmed) else {
+            return nil
+        }
+        guard let scheme = components.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
+            return nil
+        }
+        if components.path.hasSuffix("/") {
+            components.path += trimmedPath
+        } else if components.path.isEmpty || components.path == "/" {
+            components.path = "/" + trimmedPath
+        } else {
+            components.path += "/" + trimmedPath
+        }
+        return components.url
     }
 
     /// カタログ同期が有効か（ベース URL が設定されているか）。

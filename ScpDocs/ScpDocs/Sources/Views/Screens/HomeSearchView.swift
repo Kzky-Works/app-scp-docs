@@ -1,15 +1,20 @@
 import SwiftUI
 
-/// ホームから開く scp-jp 報告書検索（番号・タイトル・タグ・オブジェクトクラス）。
+/// ホームから開く横断検索（SCP 3 系統・Tale/GoI/Canon/Joke・日本支部 `scp_list` 索引）。
 struct HomeSearchView: View {
     @Bindable var navigationRouter: NavigationRouter
     let articleRepository: ArticleRepository
     let homeViewModel: HomeViewModel
     let japanSCPListMetadataStore: JapanSCPListMetadataStore
+    let feedCache: SCPArticleFeedCacheRepository
+
+    @Bindable private var connectivity = ConnectivityMonitor.shared
 
     @State private var query = ""
-    @State private var results: [JapanSCPArchiveEntry] = []
+    @State private var unifiedHits: [CatalogSearchHit] = []
     @State private var hasSubmitted = false
+    @State private var isSearching = false
+    @State private var debouncedSearchTask: Task<Void, Never>?
 
     private var trimmedQuery: String {
         query.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -17,54 +22,87 @@ struct HomeSearchView: View {
 
     var body: some View {
         IndexScreenLayout {
-            List {
-                Section {
-                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeSearchHint)))
-                        .font(.footnote)
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                }
+            ZStack {
+                List {
+                    Section {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.homeSearchHint)))
+                            .font(.footnote)
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                    }
 
-                if hasSubmitted && results.isEmpty && !trimmedQuery.isEmpty {
-                    ContentUnavailableView(
-                        String(localized: String.LocalizationValue(LocalizationKey.homeSearchEmpty)),
-                        systemImage: "magnifyingglass",
-                        description: Text(String(localized: String.LocalizationValue(LocalizationKey.homeSearchNoIndex)))
-                    )
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 24)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
-                Section {
-                    ForEach(results) { entry in
-                        Button {
-                            Haptics.medium()
-                            navigationRouter.pushArticle(url: entry.url)
-                        } label: {
-                            FoundationIndexRow(
-                                layout: .twoLine,
-                                title: formattedRowTitle(scpNumber: entry.scpNumber),
-                                subtitle: resolvedSubtitle(entry),
-                                tags: entry.tags,
-                                showsTags: !entry.tags.isEmpty,
-                                monospacedTitleDigits: true,
-                                trailing: {
-                                    ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: entry.url))
-                                }
+                    if hasSubmitted && !trimmedQuery.isEmpty && !isSearching {
+                        if unifiedHits.isEmpty {
+                            TacticalArchiveEmptyPanel(
+                                titleLocalizationKey: connectivity.isPathSatisfied
+                                    ? LocalizationKey.tacticalEmptyArchiveTitle
+                                    : LocalizationKey.tacticalEmptyNetworkTitle,
+                                subtitleLocalizationKey: connectivity.isPathSatisfied
+                                    ? LocalizationKey.tacticalEmptyArchiveSubtitle
+                                    : LocalizationKey.tacticalEmptyNetworkSubtitle,
+                                usesNetworkInterruptedCopy: !connectivity.isPathSatisfied
                             )
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                        } else {
+                            Section {
+                                ForEach(unifiedHits) { hit in
+                                    Button {
+                                        Haptics.medium()
+                                        navigationRouter.pushArticle(url: hit.url)
+                                    } label: {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text(String(localized: String.LocalizationValue(hit.badge.localizationKey)))
+                                                .font(.caption2.weight(.heavy))
+                                                .foregroundStyle(AppTheme.brandAccent)
+                                                .tracking(0.6)
+                                            Text(hit.title)
+                                                .font(.body.weight(.semibold))
+                                                .foregroundStyle(AppTheme.textPrimary)
+                                                .lineLimit(2)
+                                            if !hit.subtitle.isEmpty {
+                                                Text(hit.subtitle)
+                                                    .font(.caption.weight(.medium))
+                                                    .foregroundStyle(AppTheme.textSecondary)
+                                                    .lineLimit(3)
+                                            }
+                                            if !hit.tags.isEmpty {
+                                                HStack(spacing: 6) {
+                                                    ForEach(Array(hit.tags.prefix(5)), id: \.self) { tag in
+                                                        TagChipView(label: tag, isSelected: false)
+                                                    }
+                                                }
+                                            }
+                                            HStack {
+                                                Spacer(minLength: 0)
+                                                ArticleRatingMeterView(ratingScore: articleRepository.ratingScore(for: hit.url))
+                                            }
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .indexListRowChrome()
+                                }
+                            }
+                            .animation(.easeOut(duration: 0.18), value: unifiedHits.count)
                         }
-                        .buttonStyle(.plain)
-                        .indexListRowChrome()
                     }
                 }
+                .listStyle(.plain)
+                .listSectionSeparator(.hidden)
+                .scrollContentBackground(.hidden)
+
+                if isSearching {
+                    ProgressView(String(localized: String.LocalizationValue(LocalizationKey.homeSearchScanning)))
+                        .tint(AppTheme.brandAccent)
+                        .padding(24)
+                        .background(.ultraThinMaterial.opacity(0.88))
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
             }
-            .listStyle(.plain)
-            .listSectionSeparator(.hidden)
-            .scrollContentBackground(.hidden)
         }
         .navigationTitle(String(localized: String.LocalizationValue(LocalizationKey.homeSearchTitle)))
         .navigationBarTitleDisplayMode(.inline)
@@ -74,39 +112,77 @@ struct HomeSearchView: View {
             prompt: Text(String(localized: String.LocalizationValue(LocalizationKey.homeSearchPlaceholder)))
         )
         .onSubmit(of: .search) {
-            runSearch()
+            Task { await runGlobalSearch(submitted: true) }
+        }
+        .onChange(of: query) { _, _ in
+            debouncedSearchTask?.cancel()
+            let q = trimmedQuery
+            guard q.count >= 2 else {
+                if q.isEmpty {
+                    unifiedHits = []
+                    hasSubmitted = false
+                }
+                return
+            }
+            debouncedSearchTask = Task {
+                try? await Task.sleep(for: .milliseconds(420))
+                guard !Task.isCancelled else { return }
+                await runGlobalSearch(submitted: false)
+            }
         }
         .onAppear {
             homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
         }
+        .onDisappear {
+            debouncedSearchTask?.cancel()
+        }
     }
 
-    private func runSearch() {
-        hasSubmitted = true
+    @MainActor
+    private func runGlobalSearch(submitted: Bool) async {
+        if submitted {
+            hasSubmitted = true
+        }
         let q = trimmedQuery
+        if q.count >= 2 {
+            hasSubmitted = true
+        }
         guard !q.isEmpty else {
-            results = []
+            unifiedHits = []
+            isSearching = false
             return
         }
+
         if navigationRouter.pushSCPJPArticleIfPossible(query: q) {
             Haptics.medium()
-            results = []
+            unifiedHits = []
+            isSearching = false
             return
         }
-        results = japanSCPListMetadataStore.searchIndexedEntries(matching: q)
-        Haptics.light()
-    }
 
-    private func formattedRowTitle(scpNumber: Int) -> String {
-        let core = scpNumber < 1000 ? String(format: "%03d", scpNumber) : String(scpNumber)
-        let format = String(localized: String.LocalizationValue(LocalizationKey.archiveEnScpRowTitleFormat))
-        return String(format: format, locale: .current, core)
-    }
+        isSearching = true
+        let listMatches = japanSCPListMetadataStore.searchIndexedEntries(matching: q, limit: 120)
+        let snapshot = CatalogSearchSnapshotBuilder.build(
+            feedCache: feedCache,
+            indexedMatches: listMatches
+        )
 
-    private func resolvedSubtitle(_ entry: JapanSCPArchiveEntry) -> String {
-        if let t = entry.articleTitle, !t.isEmpty {
-            return t
+        let drafts = await Task.detached(priority: .userInitiated) {
+            GlobalCatalogSearchEngine.search(query: q, snapshot: snapshot, maxTotal: 220)
+        }.value
+
+        let unknownSubtitle = String(localized: String.LocalizationValue(LocalizationKey.archiveArticleTitleUnknown))
+        unifiedHits = drafts.map { d in
+            CatalogSearchHit(
+                id: ArticleRepository.storageKey(for: d.url) + "|" + d.badge.rawValue,
+                url: d.url,
+                badge: d.badge,
+                title: d.title,
+                subtitle: d.subtitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? unknownSubtitle : d.subtitle,
+                tags: d.tags
+            )
         }
-        return String(localized: String.LocalizationValue(LocalizationKey.archiveArticleTitleUnknown))
+        isSearching = false
+        Haptics.light()
     }
 }

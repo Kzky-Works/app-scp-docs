@@ -72,10 +72,31 @@
 "home.search.jump_scp" = "SCP 番号でジャンプ";
 "home.search.screen.title" = "報告書を検索";
 "home.search.screen.placeholder" = "番号・タイトル・タグ・オブジェクトクラス";
-"home.search.screen.hint" = "例: 173、scp-049、Keter、タグ名、タイトルの一部。番号のみのときはその記事を開きます。";
+"home.search.screen.hint" = "横断検索: SCP-JP / EN / INT カタログ、Tale / GoI / Canon / Joke、および日本支部リスト索引。2 文字以上。番号のみは従来どおり該当報告書へジャンプします。";
 "home.search.button.accessibility" = "報告書を検索";
 "home.search.screen.empty" = "該当する報告書がありません";
 "home.search.screen.no_index" = "一覧データがまだ同期されていないか、別のキーワードを試してください。";
+
+"search.badge.scp_jp_catalog" = "[SCP-JP]";
+"search.badge.scp_en_catalog" = "[SCP-EN]";
+"search.badge.scp_int_catalog" = "[SCP-INT]";
+"search.badge.tale" = "[TALE]";
+"search.badge.goi" = "[GOI]";
+"search.badge.canon" = "[CANON]";
+"search.badge.joke" = "[JOKE]";
+"search.badge.scp_jp_list" = "[SCP-JP LIST]";
+
+"home.search.scanning" = "アーカイヴを走査中…";
+
+"tactical.empty.eyebrow" = "アーカイヴ状態";
+"tactical.empty.archive.title" = "アーカイヴ未検出";
+"tactical.empty.archive.subtitle" = "このフィードのキャッシュがありません。ネットワーク接続後、自動同期までお待ちください。";
+"tactical.empty.network.title" = "データベース接続中断";
+"tactical.empty.network.subtitle" = "ネットワークに到達できません。キャッシュ表示のみ。回復後に同期が再開します。";
+
+"settings.terminal.section.title" = "端末区分";
+"settings.terminal.flavor" = "本インターフェースは財団職員向け読取専用端末です。当端末を通じて閲覧した情報の無断開示は、懲戒の対象となり得ます。";
+"settings.terminal.flavor.footer" = "業務利用に限定してください。疑義がある場合は所属の記録・情報保安担当へ照会してください。";
 
 /* Home random access */
 "home.random.current_branch.title" = "ランダムな報告書を開く";
@@ -96,6 +117,22 @@
 "home.continue_reading.category.other" = "その他";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.dashboard.branch_short_jp" = "SCP財団";
+"home.personnel.resume_mission" = "任務再開";
+"home.personnel.random_discovery" = "ランダム探索";
+"home.personnel.daily_assignment" = "本日の任務";
+"home.personnel.daily_assignment_empty.title" = "NO ASSIGNMENT CURRENTLY AVAILABLE";
+"home.personnel.daily_assignment_empty.subtitle" = "現在割り当てられた任務なし — オンラインで同期するか、グリッドから任務を選択してください。";
+"home.hero.metrics_format" = "全%1$d件 · 未読%2$d";
+"home.feed_list.title.jp" = "SCP-JP カタログ";
+"home.feed_list.title.en" = "SCP カタログ（EN）";
+"home.feed_list.title.int" = "SCP International カタログ";
+"home.feed_list.title.tales" = "財団の物語（Tales）";
+"home.feed_list.title.gois" = "要注意団体（GoI）";
+"home.feed_list.title.canons" = "カノン";
+"home.feed_list.title.jokes" = "ジョーク報告書";
+"home.feed_list.empty" = "キャッシュがありません。ネットワーク接続後に同期してください。";
+
+"multiform.author.unknown" = "著者: 不明";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
 "home.pillar.en_badge" = "02 • ARCHIVE [EN]";
 "home.pillar.library_badge" = "03 • LIBRARY";
@@ -420,6 +457,8 @@
 "article.load.timeout" = "読み込みがタイムアウトしました。通信状況を確認してから再試行してください。";
 "article.load.failed" = "ページを読み込めませんでした。";
 "article.load.retry" = "再試行";
+"article.post_read.next_case" = "次の任務";
+"article.post_read.random_case" = "ランダム任務";
 "article.diagnostic.minimal_banner" = "診断: 最小 WebView（注入スクリプトなし）";
 
 "article.rating.unset_short" = "—";

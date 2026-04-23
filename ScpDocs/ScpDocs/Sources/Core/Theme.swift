@@ -82,6 +82,13 @@ enum AppTheme {
         dark: (117, 115, 108)
     )
 
+    /// 職員ダッシュボード用のシルバー（境界・強調）。#C0C0C0。
+    static let terminalSilver = Color(
+        red: 192 / 255,
+        green: 192 / 255,
+        blue: 192 / 255
+    )
+
     /// 旧コード互換: 主にアイコン・ラベルに使っていた「アクセント」＝ `textPrimary` と同系。
     static let accentPrimary = textPrimary
 

@@ -4,10 +4,12 @@ SCP財団ドキュメント閲覧アプリ（**Swift / SwiftUI・iOS**）。Flut
 
 ## プロジェクト構成
 
-| パス | 内容 |
-|------|------|
-| `ScpDocs/` | Xcode プロジェクト（`ScpDocs.xcodeproj`）と iOS アプリソース |
-| `ScpDocsAndroid/` | 将来の Android（Kotlin）用の予約ディレクトリ（現時点ではコードなし） |
+
+| パス                | 内容                                            |
+| ----------------- | --------------------------------------------- |
+| `ScpDocs/`        | Xcode プロジェクト（`ScpDocs.xcodeproj`）と iOS アプリソース |
+| `ScpDocsAndroid/` | 将来の Android（Kotlin）用の予約ディレクトリ（現時点ではコードなし）     |
+
 
 ## ビルドと実行
 

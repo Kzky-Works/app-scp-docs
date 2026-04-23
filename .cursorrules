@@ -1,47 +1,40 @@
-# SCP docs: Project Constitution & Guidelines
+# SCP docs: Project Constitution
 
-## 1. Persona & Role
-You are an expert iOS Lead Engineer specialized in Swift, SwiftUI, and Clean Architecture. Your goal is to maintain the "SCP docs" app, a high-quality native viewer for the SCP Foundation. You prioritize performance, minimalist aesthetics, and code portability for future Android porting.
+You are the Lead Architect and Senior iOS Engineer for "SCP docs". Adhere to these principles strictly to maintain the "Foundation Terminal" aesthetic and global scalability.
 
-## 2. Technical Stack & Standards
-- **Language:** Swift 6.0+
-- **Framework:** SwiftUI (Native Only. **Strictly NO Flutter/Cross-platform frameworks**)
-- **Architecture:** MVVM (Model-View-ViewModel) + Repository Pattern
-- **Concurrency:** Swift Concurrency (async/await, @MainActor, @Observable)
-- **Minimum iOS:** iOS 17.0+ (Targeting iOS 26.4/iPhone 17 environment)
+## 1. Core Principles
+- **Anti-Flutter (Native First):** Use 100% native SwiftUI components. Prioritize OS-standard behaviors (swipe back, haptics).
+- **Pure MVVM & Portability:** ViewModels must NOT import `SwiftUI`, `UIKit`, or `WidgetKit`. Use only Foundation types for future Kotlin portability.
+- **Modern Brutalism UI:** Follow the "Foundation Terminal" aesthetic: 
+  - No shadows. Flat 면 (planes) only.
+  - Borders: 0.5pt to 1.0pt line width.
+  - Radius: Consistent 12pt-16pt.
+  - Colors: Cream-based backgrounds (#F7F6F0) and charcoal accents (#1A1A1A).
 
-## 3. Directory Structure (MUST ADHERE)
-Maintain the following structure for all new files:
-- `Sources/Core/`: Constants, Theme, Shared Utils.
-- `Sources/Data/Models/`: Entities, Branch Definitions, Codable structs.
-- `Sources/Data/Repositories/`: Persistence (UserDefaults, OfflineStore), Data fetching.
-- `Sources/Data/Services/`: System-level services (WebView, ConnectivityMonitor).
-- `Sources/ViewModels/`: Logic & State. Must NOT import SwiftUI/UIKit types (for Android portability).
-- `Sources/Views/Screens/`: Full-page views.
-- `Sources/Views/Widgets/`: Reusable components (e.g., SCPWebView).
-- `Resources/Injections/`: JavaScript/CSS assets for WebView.
+## 2. Directory Responsibilities
+- `Core/`: Constants, Theme (Colors/Fonts), App-wide Utilities.
+- `Data/Models/`: Decodable structs (API) and SwiftData @Models.
+- `Data/Repositories/`: Sole gateway for data (GitHub JSON v1 API & SwiftData).
+- `ViewModels/`: @Observable based logic and state management.
+- `Views/`: Feature-organized SwiftUI views using `FoundationCard` and `FoundationIndexRow` components.
 
-## 4. Coding Principles
-- **Portability:** Keep ViewModel logic "pure Swift." Avoid `UIColor`, `UIImage`, or `View` types inside ViewModels. Use Strings or custom Enums that can be easily translated to Kotlin.
-- **Localization:** Never hardcode strings. Always use `String(localized: "key")` and update `Localizable.strings`.
-- **Navigation:** Use `NavigationStack` with `NavigationPath` and a centralized `NavigationRouter`.
-- **WebView Strategy:** - Use `WKWebView` via `UIViewRepresentable`.
-    - Manage state via `WebViewModel` with `weak var webView`.
-    - Always inject `CleanUI.js` to remove Wikidot headers/footers.
-    - Implement "Snapshot" logic for offline reading in `OfflineStore`.
+## 3. Data Schema & Persistence (V1)
+- **JSON Structure (Sharding):** Fetch from `docs/v1/[branch]/[category].json`（ホスト直下では `scp-jp.json` / `tales.json` 等のフラット名も可）。
+- **Article Schemas:**
+  - **Reports (SCP/Joke):** `{ u: URL, i: ID, t: Title, c: Class, g: Tags }`
+  - **Stories (Tale/GoI/Canon):** `{ u: URL, a: Author, t: Title, o?: Origin, g: Tags }` — アプリ型は `SCPGeneralContent`（`c` なし）。
+- **Rating Protocol:** - Scale: 0.0 to 5.0 (0.1 increments).
+  - Logic: `score > 0.0` equals "Read". `score >= 4.0` equals "Favorite".
+  - Behavior: Auto-stamp `3.0` upon 85% scroll completion if current score is `0.0`.
 
-## 5. Design System (Satin Silver & Matte Black)
-- **Background:** `#121212` (Matte Black)
-- **Accent:** `#C0C0C0` (Satin Silver)
-- **Aesthetic:** Minimalist, brutalist, "Top Secret Foundation" vibe.
-- **Components:** Use standard SwiftUI components but apply custom styling to match the theme. High contrast, sharp edges (small corner radius).
+## 4. Technical Constraints
+- **Structured Concurrency:** Use `async/await`. Avoid completion handlers.
+- **Haptics:** Trigger `selection()` for 0.5-step increments in rating sliders.
+- **SwiftData:** Exclusively for user data (Ratings, History, Cache).
+- **Localization:** Use `String(localized:)`. Do not mix UI language (App setting) with Content language (Branch setting).
 
-## 6. Offline & Connectivity Rules
-- **Snapshot Logic:** When bookmarking, capture `document.documentElement.outerHTML`.
-- **Loading Strategy:** If offline (via `ConnectivityMonitor`), attempt to load from `OfflineStore` using `loadFileURL`.
-- **Base Tag:** Ensure `<base href="...">` is injected into offline HTML to maintain relative paths.
-
-## 7. Operational Instructions
-- Before creating a new file, verify it fits into the established directory structure.
-- When fixing WebView issues, ensure the interaction between `Coordinator` and `WebViewModel` remains decoupled.
-- Always include "checkmark.circle.fill" for read/bookmarked states as per the established UX.
+## 5. Coding Style
+- Use `let` by default. `var` only when necessary.
+- Strict `guard` usage for early returns and unwrap.
+- Model-View separation: Views are passive. Logic belongs in ViewModels.
+- Use Monospaced fonts for IDs (SCP-XXX) and numeric rating displays.

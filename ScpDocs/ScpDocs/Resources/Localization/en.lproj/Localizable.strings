@@ -72,10 +72,31 @@
 "home.search.jump_scp" = "Jump to SCP (number)";
 "home.search.screen.title" = "Search reports";
 "home.search.screen.placeholder" = "Number, title, tag, or object class";
-"home.search.screen.hint" = "Examples: 173, scp-049, Keter, a tag, or part of a title. A plain number opens that article.";
+"home.search.screen.hint" = "Cross-archive: SCP-JP / EN / INT catalogs, Tales, GoI, Canons, Jokes, plus the Japanese branch list index. Two or more characters; a plain number still jumps to that SCP-JP report.";
 "home.search.button.accessibility" = "Search reports";
 "home.search.screen.empty" = "No matching reports";
 "home.search.screen.no_index" = "Try another keyword, or wait for the list data to sync.";
+
+"search.badge.scp_jp_catalog" = "[SCP-JP]";
+"search.badge.scp_en_catalog" = "[SCP-EN]";
+"search.badge.scp_int_catalog" = "[SCP-INT]";
+"search.badge.tale" = "[TALE]";
+"search.badge.goi" = "[GOI]";
+"search.badge.canon" = "[CANON]";
+"search.badge.joke" = "[JOKE]";
+"search.badge.scp_jp_list" = "[SCP-JP LIST]";
+
+"home.search.scanning" = "SCANNING ARCHIVES…";
+
+"tactical.empty.eyebrow" = "ARCHIVE STATUS";
+"tactical.empty.archive.title" = "ARCHIVE NOT FOUND";
+"tactical.empty.archive.subtitle" = "No cached entries for this feed. Establish network uplink and wait for automatic catalog sync.";
+"tactical.empty.network.title" = "DATABASE CONNECTION INTERRUPTED";
+"tactical.empty.network.subtitle" = "Network path unsatisfied. Cached views only; sync will resume when the link is restored.";
+
+"settings.terminal.section.title" = "TERMINAL CLASS";
+"settings.terminal.flavor" = "This interface is a read-only terminal issued to Foundation personnel. Unauthorized disclosure of contents accessed through this device is grounds for disciplinary review.";
+"settings.terminal.flavor.footer" = "For operational use only. When in doubt, consult your RAISA liaison.";
 
 /* Home random access */
 "home.random.current_branch.title" = "Open a random report";
@@ -96,6 +117,22 @@
 "home.continue_reading.category.other" = "Other";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.dashboard.branch_short_jp" = "SCP Foundation";
+"home.personnel.resume_mission" = "RESUME MISSION";
+"home.personnel.random_discovery" = "RANDOM DISCOVERY";
+"home.personnel.daily_assignment" = "DAILY ASSIGNMENT";
+"home.personnel.daily_assignment_empty.title" = "NO ASSIGNMENT CURRENTLY AVAILABLE";
+"home.personnel.daily_assignment_empty.subtitle" = "No mission is currently assigned. Sync when online or pick an archive tile.";
+"home.hero.metrics_format" = "%1$d articles · %2$d unread";
+"home.feed_list.title.jp" = "SCP-JP catalog";
+"home.feed_list.title.en" = "SCP catalog (EN)";
+"home.feed_list.title.int" = "SCP International catalog";
+"home.feed_list.title.tales" = "Foundation Tales";
+"home.feed_list.title.gois" = "Groups of Interest";
+"home.feed_list.title.canons" = "Canons";
+"home.feed_list.title.jokes" = "Joke SCP";
+"home.feed_list.empty" = "No cached entries. Connect to the network and wait for sync.";
+
+"multiform.author.unknown" = "AUTHOR: UNKNOWN";
 "home.pillar.jp_badge" = "01 • ARCHIVE [JP]";
 "home.pillar.en_badge" = "02 • ARCHIVE [EN]";
 "home.pillar.library_badge" = "03 • LIBRARY";
@@ -420,6 +457,8 @@
 "article.load.timeout" = "The page took too long to load. Check your network and try again.";
 "article.load.failed" = "Could not load this page.";
 "article.load.retry" = "Retry";
+"article.post_read.next_case" = "NEXT CASE";
+"article.post_read.random_case" = "RANDOM CASE";
 "article.diagnostic.minimal_banner" = "Diagnostics: minimal WebView (no injected scripts)";
 
 "article.rating.unset_short" = "—";

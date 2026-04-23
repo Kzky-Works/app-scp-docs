@@ -35,6 +35,21 @@ struct SettingsView: View {
     var body: some View {
         List {
             Section {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsTerminalFlavor)))
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } header: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsTerminalSectionTitle)))
+                    .font(.caption2.weight(.heavy))
+                    .foregroundStyle(AppTheme.terminalSilver)
+            } footer: {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.settingsTerminalFlavorFooter)))
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
+            }
+
+            Section {
                 Button {
                     Haptics.medium()
                     navigationRouter.push(.staffGuideIndex)
@@ -327,7 +342,10 @@ struct SettingsView: View {
 }
 
 #Preview {
-    @Previewable @State var homeViewModel = HomeViewModel(settingsRepository: SettingsRepository())
+    @Previewable @State var homeViewModel = HomeViewModel(
+        settingsRepository: SettingsRepository(),
+        articleRepository: ArticleRepository()
+    )
     @Previewable @State var articleRepository = ArticleRepository()
     @Previewable @State var purchaseRepository = PurchaseRepository()
     @Previewable @State var navigationRouter = NavigationRouter()

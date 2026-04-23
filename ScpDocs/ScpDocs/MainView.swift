@@ -9,10 +9,20 @@ struct MainView: View {
     @Bindable var purchaseRepository: PurchaseRepository
     let japanSCPListMetadataStore: JapanSCPListMetadataStore
     let scpListCacheRepository: SCPListCacheRepository
+    let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository
+    let personnelReadingJournal: PersonnelReadingJournal
     @Binding var selectedTab: AppRootTab
 
     private let scpListSyncService = SCPListSyncService()
     private let wikiCatalogSyncService = WikiCatalogSyncService()
+
+    private var scpArticleTrifoldSyncService: SCPArticleTrifoldSyncService {
+        SCPArticleTrifoldSyncService(cacheRepository: scpArticleFeedCacheRepository)
+    }
+
+    private var multiformContentSyncService: MultiformContentSyncService {
+        MultiformContentSyncService(cacheRepository: scpArticleFeedCacheRepository)
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -20,7 +30,6 @@ struct MainView: View {
                 HomeView(
                     navigationRouter: homeNavigationRouter,
                     homeViewModel: homeViewModel,
-                    japanSCPListMetadataStore: japanSCPListMetadataStore,
                     articleRepository: articleRepository,
                     onOpenSettings: { selectedTab = .settings }
                 )
@@ -81,6 +90,7 @@ struct MainView: View {
         .environment(\.locale, homeViewModel.resolvedLocale)
         .tint(AppTheme.brandAccent)
         .task {
+            await Task.yield()
             await scpListSyncService.syncIfNeeded(
                 metadataStore: japanSCPListMetadataStore,
                 cacheRepository: scpListCacheRepository
@@ -89,6 +99,11 @@ struct MainView: View {
                 metadataStore: japanSCPListMetadataStore,
                 cacheRepository: scpListCacheRepository
             )
+            await scpArticleTrifoldSyncService.syncAllFeedsIfNeeded()
+            await multiformContentSyncService.syncAllMultiformFeedsIfNeeded()
+            try? personnelReadingJournal.reconcile(from: articleRepository)
+            homeViewModel.refreshTrifoldPersonnelDashboard()
+            Haptics.light()
         }
     }
 
@@ -145,7 +160,8 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
                 homeViewModel: homeViewModel,
-                japanSCPListMetadataStore: japanSCPListMetadataStore
+                japanSCPListMetadataStore: japanSCPListMetadataStore,
+                feedCache: scpArticleFeedCacheRepository
             )
         case .foundationTalesJPAuthorIndex:
             FoundationTalesJPIndexView(
@@ -153,12 +169,32 @@ struct MainView: View {
                 articleRepository: articleRepository,
                 homeViewModel: homeViewModel
             )
+        case .scpArticleCatalogFeed(let kind):
+            if kind.isMultiformArchiveFeed {
+                SCPGeneralContentListView(
+                    kind: kind,
+                    feedCache: scpArticleFeedCacheRepository,
+                    personnelReadingJournal: personnelReadingJournal,
+                    articleRepository: articleRepository,
+                    navigationRouter: navigationRouter
+                )
+            } else {
+                SCPArticleFeedListView(
+                    kind: kind,
+                    feedCache: scpArticleFeedCacheRepository,
+                    personnelReadingJournal: personnelReadingJournal,
+                    articleRepository: articleRepository,
+                    navigationRouter: navigationRouter
+                )
+            }
         case .category(let url), .article(let url):
             ArticleView(
                 entryURL: url,
                 homeViewModel: homeViewModel,
                 navigationRouter: navigationRouter,
-                articleRepository: articleRepository
+                articleRepository: articleRepository,
+                personnelReadingJournal: personnelReadingJournal,
+                scpArticleFeedCacheRepository: scpArticleFeedCacheRepository
             )
             .id(ArticleRepository.storageKey(for: url))
         }

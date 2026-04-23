@@ -1,6 +1,16 @@
 import Foundation
 import Observation
 
+// MARK: - データ供給（Step 1）
+// ユーザー状態（履歴・レーティング等）はこのファイルの `ArticleRepository` が担当。
+// 3 系統の記事 JSON 取得は `SCPArticleCatalogRepository`（`fetchJP` / `fetchEN` / `fetchINT`）と
+// `SCPArticleTrifoldSyncService` を参照。`SCPArticle` の URL キーは `Self.storageKey(for:)` と一致させる。
+//
+// MARK: - Step 4（マルチフォーム）
+// `tales.json` / `gois.json` / `canons.json` / `jokes.json` の取得・キャッシュは
+// `SCPGeneralContentCatalogRepository` と `MultiformContentSyncService`、および
+// `SCPArticleFeedCacheRepository` のマルチフォーム用ストレージが担当（本クラスは引き続きユーザー状態のみ）。
+
 // MARK: - Portability boundary (Android 等へ移植する際の契約)
 
 @MainActor

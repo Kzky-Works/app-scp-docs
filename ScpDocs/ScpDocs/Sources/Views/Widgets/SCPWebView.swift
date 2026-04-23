@@ -216,6 +216,7 @@ struct SCPWebView: UIViewRepresentable {
             viewModel = nil
         }
 
+        /// `UIScrollView` の KVO で進捗を算出（毎ピクセルの JS 橋渡しより軽量）。閾値判定は Swift 側（`ArticleDetailViewModel`）。
         private func publishScrollDepth(from scrollView: UIScrollView) {
             guard let viewModel else { return }
             let contentH = scrollView.contentSize.height
