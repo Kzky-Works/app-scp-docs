@@ -104,4 +104,15 @@ final class PersonnelReadingJournal {
         }
         return nil
     }
+
+    /// `ArticleRepository.storageKey` と一致する `PersonnelRecord` の保存スクロール（ホームゲージ用）。
+    func scrollProgress(forNormalizedURLKey key: String) throws -> Double? {
+        let context = container.mainContext
+        var descriptor = FetchDescriptor<PersonnelRecord>(
+            predicate: #Predicate<PersonnelRecord> { $0.normalizedURLKey == key }
+        )
+        descriptor.fetchLimit = 1
+        guard let record = try context.fetch(descriptor).first else { return nil }
+        return min(1, max(0, record.scrollProgress))
+    }
 }

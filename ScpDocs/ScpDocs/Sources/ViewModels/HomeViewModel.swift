@@ -116,7 +116,10 @@ final class HomeViewModel {
 
     private func rebuildContinueReadingRow() -> ContinueReadingRowDisplay? {
         guard let url = continueReadingTargetURL else { return nil }
-        let scroll = articleRepository.readingScrollDepth(for: url)
+        let key = ArticleRepository.storageKey(for: url)
+        let fromRepo = articleRepository.readingScrollDepth(for: url)
+        let fromPersonnel = (try? personnelJournal?.scrollProgress(forNormalizedURLKey: key)) ?? 0
+        let scroll = max(fromRepo, fromPersonnel)
         let objectClassFormat: (String) -> String = { oc in
             String(format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueObjectClassFormat)), oc)
         }

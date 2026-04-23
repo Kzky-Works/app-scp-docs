@@ -45,6 +45,9 @@ struct HomeView: View {
         .background(AppTheme.mainBackground)
         .toolbar(.hidden, for: .navigationBar)
         .tint(AppTheme.brandAccent)
+        .onAppear {
+            homeViewModel.refreshTrifoldPersonnelDashboard()
+        }
     }
 
     // MARK: - 可変縦スタック（続き → ランダム → SCP 3 系統 → 2×2）
@@ -60,13 +63,17 @@ struct HomeView: View {
             if hasContinueReading, let url = homeViewModel.continueReadingTargetURL, let row = homeViewModel.continueReadingRow {
                 sectionContinueReading(url: url, row: row)
                     .frame(height: hContinue, alignment: .top)
+                    .clipped()
             }
             randomArticleSection
                 .frame(height: hRandom, alignment: .top)
+                .clipped()
             sectionSplitHeroGrid(heroHeight: hHero)
                 .frame(height: hHero)
+                .clipped()
             sectionSupportHubs(fixedHeight: hSupport)
                 .frame(height: hSupport, alignment: .top)
+                .clipped()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
@@ -145,37 +152,31 @@ struct HomeView: View {
             }
             .buttonStyle(DashboardPressButtonStyle())
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(maxWidth: .infinity, alignment: .top)
     }
 
-    // MARK: - Random article（常時）
+    // MARK: - Random article（常時・枠は 1 枚のみ）
 
     private var randomArticleSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomArticleReadSectionTitle)))
-                    .font(.caption.weight(.heavy))
-                    .foregroundStyle(AppTheme.terminalSilver)
-                    .tracking(1.1)
-                Spacer(minLength: 0)
+        Button {
+            Haptics.medium()
+            if let u = homeViewModel.randomDiscoveryURL {
+                navigationRouter.pushArticle(url: u)
+            } else {
+                navigationRouter.pushArticle(url: homeViewModel.selectedBranch.randomSCPURL)
             }
-
-            Button {
-                Haptics.medium()
-                if let u = homeViewModel.randomDiscoveryURL {
-                    navigationRouter.pushArticle(url: u)
-                } else {
-                    navigationRouter.pushArticle(url: homeViewModel.selectedBranch.randomSCPURL)
-                }
-            } label: {
-                terminalPanel {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomPanelSubtitle)))
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .lineLimit(4)
-                            .minimumScaleFactor(0.82)
-                    }
+        } label: {
+            terminalPanel {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomArticleReadSectionTitle)))
+                        .font(.caption.weight(.heavy))
+                        .foregroundStyle(AppTheme.terminalSilver)
+                        .tracking(1.1)
+                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomPanelSubtitle)))
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .lineLimit(5)
+                        .minimumScaleFactor(0.82)
                     HStack {
                         Spacer()
                         Image(systemName: "shuffle")
@@ -184,22 +185,24 @@ struct HomeView: View {
                     }
                 }
             }
-            .buttonStyle(DashboardPressButtonStyle())
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .buttonStyle(DashboardPressButtonStyle())
+        .frame(maxWidth: .infinity, alignment: .top)
     }
 
     private func readingProgressGauge(progress: Double) -> some View {
         let p = min(1, max(0, progress))
         return GeometryReader { g in
+            let w = max(0, g.size.width)
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
                     .fill(AppTheme.terminalSilver.opacity(0.22))
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
                     .fill(AppTheme.terminalSilver.opacity(0.9))
-                    .frame(width: max(2, g.size.width * p))
+                    .frame(width: max(2, w * p))
             }
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 8)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.homeContinueReadingAccessibility)))
@@ -258,7 +261,8 @@ struct HomeView: View {
                     Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
                         .font(titleFont)
                         .foregroundStyle(AppTheme.textPrimary)
-                        .lineLimit(isDoubleHeight ? 3 : 2)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(isDoubleHeight ? 4 : 3)
                         .minimumScaleFactor(0.68)
                     Text(labels.subtitle)
                         .font(subtitleFont)
