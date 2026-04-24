@@ -1,0 +1,14 @@
+---
+description: 記事JSON・データパイプラインは data-scp-docs に集約する
+globs:
+  - "contrib/data-scp-docs/**"
+  - "ScpDocs/**/Services/*Sync*.swift"
+  - "ScpDocs/**/Repositories/*Cache*.swift"
+  - "docs/**/*.md"
+---
+
+# 記事データのリポジトリ境界
+
+- **正本**: 記事系配信 JSON（manifest / catalog / タグマップ等）、それを生成する **スクリプト**、収集用の **元データ**、およびそれらの **GitHub Actions** はすべて **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** に置く。`scp_docs` に新規のハーベスタや配信物の長期コピーを増やさない。
+- **`scp_docs` の `contrib/data-scp-docs/`**: data-scp-docs へ取り込む前の一時置き場。マージ後は data-scp-docs がソース・オブ・トゥルース。
+- **アプリ変更**: URL 取得・デコード・キャッシュ・UI のみ。詳細ルールは `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md` を参照。

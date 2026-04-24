@@ -1,6 +1,8 @@
 # SCP docs — アプリ仕様引継書（別チャット用）
 
-最終更新目安: 2026-04-24。リポジトリ: `scp_docs`（Xcode プロジェクトは `ScpDocs/ScpDocs.xcodeproj`）。
+最終更新目安: 2026-04-25。リポジトリ: `scp_docs`（Xcode プロジェクトは `ScpDocs/ScpDocs.xcodeproj`）。
+
+**データ開発ルール（必須）**: 記事系 JSON・生成スクリプト・収集元データ・当該 CI はすべて **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** に集約する。`scp_docs` は取得・キャッシュのみ。詳細は `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`。
 
 **関連引き継ぎ**: Tales / GoI / Canon / Joke のマルチフォーム収集ルールおよびタグ・オブジェクトクラス収集方針を別チャットで進める場合は `docs/HANDOVER_TALES_CANON_COLLECTION_RULES_ja.md` を参照。
 
@@ -124,6 +126,8 @@
 
 
 マニフェスト・カタログのスキーマ・生成は **data-scp-docs** リポジトリ（`docs/` 配下、`scripts/`）が正。本アプリリポには同梱しない。
+
+**集約の範囲**: タグマップ（`list/jp/jp_tag.json`）やその収集スクリプトを含め、**記事データに関わる成果物・スクリプト・元データ・生成用 Actions は data-scp-docs のみ**とする（`scp_docs` の `contrib/data-scp-docs` は取り込み前の一時置き場）。全体方針は `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`。
 
 ---
 
