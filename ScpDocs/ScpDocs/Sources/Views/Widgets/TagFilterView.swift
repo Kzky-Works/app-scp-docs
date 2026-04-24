@@ -36,8 +36,8 @@ struct TagFilterView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(ArchiveObjectClassFilter.allCases, id: \.self) { oc in
-                        objectClassCard(oc)
+                    ForEach(SCPJPTagObjectClassCatalog.orderedFilterWikiTitles, id: \.self) { wiki in
+                        objectClassChip(wikiTitle: wiki, tintIndex: SCPJPTagObjectClassCatalog.filterTintIndex(forWikiEqualityTitle: wiki))
                     }
                 }
             }
@@ -125,56 +125,50 @@ struct TagFilterView: View {
         }
     }
 
-    private func objectClassCard(_ oc: ArchiveObjectClassFilter) -> some View {
-        let isOn = model.selectedObjectClass?.caseInsensitiveCompare(oc.wikiName) == .orderedSame
+    private func objectClassChipLabel(wikiTitle: String) -> String {
+        if let key = SCPJPTagObjectClassCatalog.chipLocalizationKey(forWikiEqualityTitle: wikiTitle) {
+            return String(localized: String.LocalizationValue(key))
+        }
+        return wikiTitle
+    }
+
+    private func objectClassChip(wikiTitle: String, tintIndex: Int) -> some View {
+        let tint = Self.objectClassTintPalette[tintIndex % Self.objectClassTintPalette.count]
+        let isOn = model.selectedObjectClass?.caseInsensitiveCompare(wikiTitle) == .orderedSame
         return Button {
             Haptics.medium()
-            model.toggleObjectClass(oc.wikiName)
+            model.toggleObjectClass(wikiTitle)
         } label: {
-            Text(oc.wikiName)
+            Text(objectClassChipLabel(wikiTitle: wikiTitle))
                 .font(.caption2.weight(.bold))
                 .foregroundStyle(AppTheme.textPrimary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(isOn ? oc.tint.opacity(0.22) : AppTheme.cardBackground)
+                        .fill(isOn ? tint.opacity(0.22) : AppTheme.cardBackground)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(isOn ? oc.tint : AppTheme.borderSubtle, lineWidth: isOn ? 1.25 : AppTheme.borderWidthHairline)
+                        .stroke(isOn ? tint : AppTheme.borderSubtle, lineWidth: isOn ? 1.25 : AppTheme.borderWidthHairline)
                 )
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? [.isSelected] : [])
     }
-}
 
-private enum ArchiveObjectClassFilter: CaseIterable {
-    case safe
-    case euclid
-    case keter
-    case thaumiel
-
-    var wikiName: String {
-        switch self {
-        case .safe: "Safe"
-        case .euclid: "Euclid"
-        case .keter: "Keter"
-        case .thaumiel: "Thaumiel"
-        }
-    }
-
-    var tint: Color {
-        switch self {
-        case .safe:
-            Color(red: 34 / 255, green: 197 / 255, blue: 94 / 255)
-        case .euclid:
-            Color(red: 234 / 255, green: 179 / 255, blue: 8 / 255)
-        case .keter:
-            Color(red: 220 / 255, green: 38 / 255, blue: 38 / 255)
-        case .thaumiel:
-            Color(red: 59 / 255, green: 130 / 255, blue: 246 / 255)
-        }
-    }
+    private static let objectClassTintPalette: [Color] = [
+        Color(red: 34 / 255, green: 197 / 255, blue: 94 / 255),
+        Color(red: 234 / 255, green: 179 / 255, blue: 8 / 255),
+        Color(red: 220 / 255, green: 38 / 255, blue: 38 / 255),
+        Color(red: 59 / 255, green: 130 / 255, blue: 246 / 255),
+        Color(red: 168 / 255, green: 85 / 255, blue: 247 / 255),
+        Color(red: 244 / 255, green: 114 / 255, blue: 182 / 255),
+        Color(red: 20 / 255, green: 184 / 255, blue: 166 / 255),
+        Color(red: 251 / 255, green: 146 / 255, blue: 60 / 255),
+        Color(red: 148 / 255, green: 163 / 255, blue: 184 / 255),
+        Color(red: 100 / 255, green: 116 / 255, blue: 139 / 255),
+        Color(red: 129 / 255, green: 140 / 255, blue: 248 / 255),
+        Color(red: 45 / 255, green: 212 / 255, blue: 191 / 255)
+    ]
 }

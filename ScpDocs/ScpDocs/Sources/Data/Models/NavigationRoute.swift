@@ -1,14 +1,25 @@
 import Foundation
 
+/// 日本支部／本家メイン和訳アーカイヴへの遷移パラメータ（タグ AND ・オブジェクトクラス）。
+struct ScpArchiveListSeed: Hashable, Sendable {
+    var tagFilters: Set<String>?
+    var objectClassWikiTitle: String?
+
+    init(tagFilters: Set<String>? = nil, objectClassWikiTitle: String? = nil) {
+        self.tagFilters = tagFilters
+        self.objectClassWikiTitle = objectClassWikiTitle
+    }
+}
+
 /// アプリ内ナビゲーションの遷移先（`NavigationStack` のパス配列に積む値）。
 enum NavigationRoute: Hashable, Sendable {
     case home
     /// 報告書アーカイヴ（100 番ブロック）。`branchId` は `BranchIdentifier`（JP / EN など）。
     case archiveIndex(branchId: String)
-    /// SCP-JP：001–4999 を 1000 刻み・100 刻みピッカーで閲覧。`initialTagFilters` はタグチップの初期選択。
-    case scpJapanArchive(initialTagFilters: Set<String>?)
+    /// SCP-JP：001–4999 を 1000 刻み・100 刻みピッカーで閲覧。
+    case scpJapanArchive(ScpArchiveListSeed)
     /// 本家メインリストの日本語訳（scp-jp）：001–4999 を SCP-JP と同じピッカーで閲覧。
-    case scpEnglishArchive(initialTagFilters: Set<String>?)
+    case scpEnglishArchive(ScpArchiveListSeed)
     /// SCP ライブラリ（物語 / カノン / 連作）の中間階層。
     case libraryIndex
     /// 静的データに基づくライブラリ一覧（支部ごとに URL セットが切り替わる）。

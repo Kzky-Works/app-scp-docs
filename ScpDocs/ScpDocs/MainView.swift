@@ -115,21 +115,21 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 branch: Branch.branchForArchiveIndex(id: branchId)
             )
-        case .scpJapanArchive(let initialTagFilters):
+        case .scpJapanArchive(let seed):
             ArchiveArticleListView(
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
                 kind: .japan,
                 japanSCPListMetadataStore: japanSCPListMetadataStore,
-                initialTagFilters: initialTagFilters
+                archiveSeed: seed
             )
-        case .scpEnglishArchive(let initialTagFilters):
+        case .scpEnglishArchive(let seed):
             ArchiveArticleListView(
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
                 kind: .english,
                 japanSCPListMetadataStore: japanSCPListMetadataStore,
-                initialTagFilters: initialTagFilters
+                archiveSeed: seed
             )
         case .libraryIndex:
             LibraryIndexView(
@@ -192,7 +192,8 @@ struct MainView: View {
                 navigationRouter: navigationRouter,
                 articleRepository: articleRepository,
                 personnelReadingJournal: personnelReadingJournal,
-                scpArticleFeedCacheRepository: scpArticleFeedCacheRepository
+                scpArticleFeedCacheRepository: scpArticleFeedCacheRepository,
+                japanSCPListMetadataStore: japanSCPListMetadataStore
             )
             .id(ArticleRepository.storageKey(for: url))
         }

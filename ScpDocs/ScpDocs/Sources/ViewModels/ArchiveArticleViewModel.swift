@@ -63,8 +63,11 @@ final class ArchiveArticleViewModel {
 
     private func matchesFilters(_ entry: JapanSCPArchiveEntry, ratingScore: (URL) -> Double) -> Bool {
         if let oc = selectedObjectClass {
-            guard let eoc = entry.objectClass else { return false }
-            guard eoc.caseInsensitiveCompare(oc) == .orderedSame else { return false }
+            guard SCPJPTagObjectClassCatalog.objectClassFilterMatches(
+                entryObjectClass: entry.objectClass,
+                entryTags: entry.tags,
+                selectedWikiTitle: oc
+            ) else { return false }
         }
         for t in selectedTags {
             guard entry.tags.contains(t) else { return false }

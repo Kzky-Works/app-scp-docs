@@ -289,6 +289,18 @@
 "archive.filter.no_results" = "No matching reports";
 "archive.filter.no_results.hint" = "Change object class or tags, or tap Clear.";
 "archive.filter.object_class.accessibility" = "Object class filters";
+"archive.oc.safe" = "Safe";
+"archive.oc.euclid" = "Euclid";
+"archive.oc.keter" = "Keter";
+"archive.oc.thaumiel" = "Thaumiel";
+"archive.oc.apollyon" = "Apollyon";
+"archive.oc.archon" = "Archon";
+"archive.oc.cernunnos" = "Cernunnos";
+"archive.oc.ticonderoga" = "Ticonderoga";
+"archive.oc.neutralized" = "Neutralized";
+"archive.oc.decommissioned" = "Decommissioned";
+"archive.oc.pending" = "Pending (classification)";
+"archive.oc.esoteric" = "Esoteric (nonstandard; not disruption/risk class)";
 "archive.filter.no_tags_in_segment" = "No tag metadata in this block. Check Wikidot catalog sync.";
 "archive.list.row_tags.accessibility" = "Toggle showing tags on each list row. Tags also appear while filters or tag search are active.";
 
@@ -479,6 +491,7 @@
 "library.item.undertokyo_hub" = "Under Tokyo";
 
 /* Article */
+"article.metadata.tags.section" = "Tags & class";
 "article.reader_nav.tap_hint" = "Tap to show navigation";
 "article.reader_nav.collapse.a11y" = "Hide navigation bar";
 "article.reader_nav.back.a11y" = "Back to list";

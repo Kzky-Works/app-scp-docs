@@ -14,6 +14,21 @@ struct JapanSCPListReadingHint: Sendable, Equatable {
     let displaySlug: String
     let objectClass: String?
     let resolvedListTitle: String?
+    /// カタログ＋フィードをマージしたタグ（記事下部メタデータ用）。
+    let mergedTags: [String]
+}
+
+/// 記事からアーカイヴ一覧へ遷移するときの対象（日本支部オリジナル vs 本家メイン和訳）。
+enum JapanTrifoldArchiveListTarget: Sendable, Equatable {
+    case japanBranch
+    case englishMainlistTranslation
+}
+
+/// `ArticleView` 下部: タグチップとアーカイヴへの逆引き。
+struct WikidotScpArticleMetadataStrip: Sendable, Equatable {
+    let objectClassWikiTitle: String?
+    let displayTags: [String]
+    let archiveTarget: JapanTrifoldArchiveListTarget
 }
 
 /// マニフェスト同期済みフィード（`SCPArticleFeedCacheRepository`）と Wikidot カタログを統合する参照ストア。
@@ -116,15 +131,17 @@ final class JapanSCPListMetadataStore {
             }
             let injected = resolvedJPBranchArticleTitle(scpNumber: n, series: series)
             let key = Self.mergeKey(series: series, scpNumber: n)
-            let oc = objectClassJPByMergeKey[key]
-            let tags = tagsJPByMergeKey[key] ?? []
-            return JapanSCPArchiveEntry(
+            let catalogTags = tagsJPByMergeKey[key] ?? []
+            let catalogOC = objectClassJPByMergeKey[key]
+            return buildArchiveEntry(
                 id: slug,
                 scpNumber: n,
                 url: url,
                 articleTitle: injected,
-                objectClass: oc,
-                tags: tags
+                catalogOC: catalogOC,
+                feedOC: nil,
+                catalogTags: catalogTags,
+                feedTags: []
             )
         }
     }
@@ -141,21 +158,96 @@ final class JapanSCPListMetadataStore {
             }
             let injected = resolvedMainlistTranslationArticleTitle(scpNumber: n, series: series)
             let key = Self.mergeKey(series: series, scpNumber: n)
-            let oc = objectClassMainlistByMergeKey[key]
-            let tags = tagsMainlistByMergeKey[key] ?? []
-            return JapanSCPArchiveEntry(
+            let catalogTags = tagsMainlistByMergeKey[key] ?? []
+            let catalogOC = objectClassMainlistByMergeKey[key]
+            return buildArchiveEntry(
                 id: slug,
                 scpNumber: n,
                 url: url,
                 articleTitle: injected,
-                objectClass: oc,
-                tags: tags
+                catalogOC: catalogOC,
+                feedOC: nil,
+                catalogTags: catalogTags,
+                feedTags: []
             )
         }
     }
 
     private static func mergeKey(series: SCPJPSeries, scpNumber: Int) -> String {
         "\(series.rawValue)_\(scpNumber)"
+    }
+
+    private func coalescedTags(catalogTags: [String], feedTags: [String]) -> [String] {
+        if !catalogTags.isEmpty { return catalogTags }
+        return feedTags
+    }
+
+    private func buildArchiveEntry(
+        id: String,
+        scpNumber: Int,
+        url: URL,
+        articleTitle: String?,
+        catalogOC: String?,
+        feedOC: String?,
+        catalogTags: [String],
+        feedTags: [String]
+    ) -> JapanSCPArchiveEntry {
+        let merged = coalescedTags(catalogTags: catalogTags, feedTags: feedTags)
+        let oc = SCPJPTagObjectClassCatalog.resolvedWikiObjectClass(catalogOrFeedClass: catalogOC ?? feedOC, tags: merged)
+        let tags = SCPJPTagObjectClassCatalog.tagsStrippingObjectClassMarkers(merged)
+        return JapanSCPArchiveEntry(
+            id: id,
+            scpNumber: scpNumber,
+            url: url,
+            articleTitle: articleTitle,
+            objectClass: oc,
+            tags: tags
+        )
+    }
+
+    private func feedTagsAndClass(for parsed: ParsedJapanListSCP) -> (tags: [String], c: String?) {
+        guard let fc = articleFeedCache else { return ([], nil) }
+        switch parsed.flavor {
+        case .jpOriginal:
+            for a in fc.loadPersistedPayload(kind: .jp)?.entries ?? [] {
+                guard let n = Self.scpNumberFromJapanSlug(a.i), n == parsed.scpNumber else { continue }
+                return (a.g, a.c)
+            }
+        case .mainlistTranslation:
+            for a in fc.loadPersistedPayload(kind: .en)?.entries ?? [] {
+                guard let n = Self.scpNumberFromMainSlug(a.i), n == parsed.scpNumber else { continue }
+                return (a.g, a.c)
+            }
+        case .jokeJp:
+            let idLower: String
+            if parsed.scpNumber < 1000 {
+                idLower = String(format: "scp-%03d-j", parsed.scpNumber).lowercased()
+            } else {
+                idLower = "scp-\(parsed.scpNumber)-j".lowercased()
+            }
+            for a in fc.loadPersistedPayload(kind: .jp)?.entries ?? [] {
+                if a.i.lowercased() == idLower { return (a.g, a.c) }
+            }
+        }
+        return ([], nil)
+    }
+
+    /// `scp-jp.wikidot.com` の報告書系 URL のとき、記事下部に出すタグ・オブジェクトクラス（アーカイヴ逆引き用）。
+    func wikidotTrifoldArticleMetadataStrip(for url: URL) -> WikidotScpArticleMetadataStrip? {
+        guard let hint = readingHint(for: url) else { return nil }
+        let stripped = SCPJPTagObjectClassCatalog.tagsStrippingObjectClassMarkers(hint.mergedTags)
+        guard hint.objectClass != nil || !stripped.isEmpty else { return nil }
+        let archiveTarget: JapanTrifoldArchiveListTarget = switch hint.flavor {
+        case .jpOriginal, .jokeJp:
+            .japanBranch
+        case .mainlistTranslation:
+            .englishMainlistTranslation
+        }
+        return WikidotScpArticleMetadataStrip(
+            objectClassWikiTitle: hint.objectClass,
+            displayTags: stripped,
+            archiveTarget: archiveTarget
+        )
     }
 
     private static func buildJPBranchTitleIndexFromTrifoldFeed(_ feed: SCPArticleFeedCacheRepository) -> [String: String] {
@@ -275,16 +367,17 @@ final class JapanSCPListMetadataStore {
         } else {
             slug = "scp-\(n)-jp"
         }
-        let oc = objectClassJPByMergeKey[key] ?? a.c
-        let catalogTags = tagsJPByMergeKey[key]
-        let tags = (catalogTags?.isEmpty == false) ? catalogTags! : a.g
-        return JapanSCPArchiveEntry(
+        let catalogOC = objectClassJPByMergeKey[key]
+        let catalogTags = tagsJPByMergeKey[key] ?? []
+        return buildArchiveEntry(
             id: slug,
             scpNumber: n,
             url: series.articleURL(scpNumber: n),
             articleTitle: a.t,
-            objectClass: oc,
-            tags: tags
+            catalogOC: catalogOC,
+            feedOC: a.c,
+            catalogTags: catalogTags,
+            feedTags: a.g
         )
     }
 
@@ -297,16 +390,17 @@ final class JapanSCPListMetadataStore {
         } else {
             slug = "scp-\(n)"
         }
-        let oc = objectClassMainlistByMergeKey[key] ?? a.c
-        let catalogTags = tagsMainlistByMergeKey[key]
-        let tags = (catalogTags?.isEmpty == false) ? catalogTags! : a.g
-        return JapanSCPArchiveEntry(
+        let catalogOC = objectClassMainlistByMergeKey[key]
+        let catalogTags = tagsMainlistByMergeKey[key] ?? []
+        return buildArchiveEntry(
             id: slug,
             scpNumber: n,
             url: series.englishMainlistTranslationArticleURL(scpNumber: n),
             articleTitle: a.t,
-            objectClass: oc,
-            tags: tags
+            catalogOC: catalogOC,
+            feedOC: a.c,
+            catalogTags: catalogTags,
+            feedTags: a.g
         )
     }
 
@@ -348,7 +442,7 @@ final class JapanSCPListMetadataStore {
         guard url.host?.caseInsensitiveCompare("scp-jp.wikidot.com") == .orderedSame else { return nil }
         let slug = url.path.split(separator: "/").map(String.init).filter { !$0.isEmpty }.last ?? ""
         guard let parsed = Self.parseJapanListSCP(slug: slug) else { return nil }
-        let oc: String? = switch parsed.flavor {
+        let catalogOC: String? = switch parsed.flavor {
         case .jpOriginal:
             objectClassJPByMergeKey[parsed.mergeKey]
         case .mainlistTranslation:
@@ -356,6 +450,17 @@ final class JapanSCPListMetadataStore {
         case .jokeJp:
             objectClassJokeByMergeKey[parsed.mergeKey]
         }
+        let catalogTags: [String] = switch parsed.flavor {
+        case .jpOriginal:
+            tagsJPByMergeKey[parsed.mergeKey] ?? []
+        case .mainlistTranslation:
+            tagsMainlistByMergeKey[parsed.mergeKey] ?? []
+        case .jokeJp:
+            tagsJokeByMergeKey[parsed.mergeKey] ?? []
+        }
+        let feed = feedTagsAndClass(for: parsed)
+        let mergedTags = coalescedTags(catalogTags: catalogTags, feedTags: feed.tags)
+        let resolvedOC = SCPJPTagObjectClassCatalog.resolvedWikiObjectClass(catalogOrFeedClass: catalogOC ?? feed.c, tags: mergedTags)
         let listTitle: String? = switch parsed.flavor {
         case .jpOriginal:
             resolvedJPBranchArticleTitle(scpNumber: parsed.scpNumber, series: parsed.series)
@@ -368,8 +473,9 @@ final class JapanSCPListMetadataStore {
             flavor: parsed.flavor,
             mergeKey: parsed.mergeKey,
             displaySlug: parsed.displaySlug,
-            objectClass: oc,
-            resolvedListTitle: listTitle
+            objectClass: resolvedOC,
+            resolvedListTitle: listTitle,
+            mergedTags: mergedTags
         )
     }
 

@@ -7,6 +7,7 @@ struct ArticleView: View {
     @Bindable var articleRepository: ArticleRepository
     private let personnelReadingJournal: PersonnelReadingJournal?
     private let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository?
+    private let japanSCPListMetadataStore: JapanSCPListMetadataStore
 
     @State private var webViewModel = WebViewModel()
     @State private var readerBottomNavExpanded = false
@@ -27,7 +28,8 @@ struct ArticleView: View {
         navigationRouter: NavigationRouter,
         articleRepository: ArticleRepository,
         personnelReadingJournal: PersonnelReadingJournal? = nil,
-        scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository? = nil
+        scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository? = nil,
+        japanSCPListMetadataStore: JapanSCPListMetadataStore
     ) {
         self.entryURL = entryURL
         self.homeViewModel = homeViewModel
@@ -35,6 +37,7 @@ struct ArticleView: View {
         self.articleRepository = articleRepository
         self.personnelReadingJournal = personnelReadingJournal
         self.scpArticleFeedCacheRepository = scpArticleFeedCacheRepository
+        self.japanSCPListMetadataStore = japanSCPListMetadataStore
         _webViewModel = State(initialValue: WebViewModel())
         _readerBottomNavExpanded = State(initialValue: false)
         _articleDetailViewModel = State(
@@ -174,6 +177,7 @@ struct ArticleView: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 8) {
+                articleMetadataStripView
                 if showPostReadTacticalBar, canOfferCatalogHops {
                     postReadTacticalRow
                 }
@@ -280,6 +284,96 @@ struct ArticleView: View {
         }
         if clamped < hi, prev >= hi {
             OfflineStore.shared.deleteHTML(for: url)
+        }
+    }
+
+    // MARK: - Wikidot メタデータ（タグ逆引き）
+
+    private var wikidotMetadataForReaderSurface: WikidotScpArticleMetadataStrip? {
+        japanSCPListMetadataStore.wikidotTrifoldArticleMetadataStrip(for: shareURL)
+    }
+
+    @ViewBuilder
+    private var articleMetadataStripView: some View {
+        if let strip = wikidotMetadataForReaderSurface {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(String(localized: String.LocalizationValue(LocalizationKey.articleMetadataTagsSection)))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.textSecondary)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        if let oc = strip.objectClassWikiTitle {
+                            Button {
+                                Haptics.medium()
+                                pushArchiveFromArticleObjectClass()
+                            } label: {
+                                Text(localizedObjectClassChipLabel(oc))
+                                    .font(.caption2.weight(.heavy))
+                                    .foregroundStyle(AppTheme.brandAccent)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 7)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                            .fill(AppTheme.brandAccent.opacity(0.12))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                            .stroke(AppTheme.brandAccent.opacity(0.55), lineWidth: 1)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        ForEach(strip.displayTags, id: \.self) { tag in
+                            Button {
+                                Haptics.medium()
+                                pushArchiveFromArticleMetadata(tag: tag)
+                            } label: {
+                                TagChipView(label: tag, isSelected: false)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(AppTheme.cardStandard.opacity(0.94))
+            .overlay(
+                Rectangle()
+                    .frame(height: AppTheme.borderWidthHairline)
+                    .foregroundStyle(AppTheme.borderSubtle.opacity(0.5)),
+                alignment: .top
+            )
+        }
+    }
+
+    private func localizedObjectClassChipLabel(_ wikiTitle: String) -> String {
+        if let key = SCPJPTagObjectClassCatalog.chipLocalizationKey(forWikiEqualityTitle: wikiTitle) {
+            return String(localized: String.LocalizationValue(key))
+        }
+        return wikiTitle
+    }
+
+    private func pushArchiveFromArticleMetadata(tag: String) {
+        guard let strip = wikidotMetadataForReaderSurface else { return }
+        let seed = ScpArchiveListSeed(tagFilters: [tag], objectClassWikiTitle: nil)
+        switch strip.archiveTarget {
+        case .japanBranch:
+            navigationRouter.push(.scpJapanArchive(seed))
+        case .englishMainlistTranslation:
+            navigationRouter.push(.scpEnglishArchive(seed))
+        }
+    }
+
+    private func pushArchiveFromArticleObjectClass() {
+        guard let strip = wikidotMetadataForReaderSurface, let oc = strip.objectClassWikiTitle else { return }
+        let seed = ScpArchiveListSeed(tagFilters: nil, objectClassWikiTitle: oc)
+        switch strip.archiveTarget {
+        case .japanBranch:
+            navigationRouter.push(.scpJapanArchive(seed))
+        case .englishMainlistTranslation:
+            navigationRouter.push(.scpEnglishArchive(seed))
         }
     }
 

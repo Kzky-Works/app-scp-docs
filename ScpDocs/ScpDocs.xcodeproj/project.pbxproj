@@ -98,6 +98,7 @@
 		BF000000000000000000006B /* TacticalArchiveEmptyPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000077 /* TacticalArchiveEmptyPanel.swift */; };
 		BF000000000000000000006C /* InternationalBranchPortalOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000078 /* InternationalBranchPortalOption.swift */; };
 		BF000000000000000000006D /* SCPArticleReaderLoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000079 /* SCPArticleReaderLoadingOverlay.swift */; };
+		BF000000000000000000006E /* SCPJPTagObjectClassCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000007A /* SCPJPTagObjectClassCatalog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -193,6 +194,7 @@
 		FR0000000000000000000077 /* TacticalArchiveEmptyPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TacticalArchiveEmptyPanel.swift; sourceTree = "<group>"; };
 		FR0000000000000000000078 /* InternationalBranchPortalOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternationalBranchPortalOption.swift; sourceTree = "<group>"; };
 		FR0000000000000000000079 /* SCPArticleReaderLoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPArticleReaderLoadingOverlay.swift; sourceTree = "<group>"; };
+		FR000000000000000000007A /* SCPJPTagObjectClassCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPJPTagObjectClassCatalog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +293,7 @@
 				FR000000000000000000001C /* AppUILanguage.swift */,
 				FR0000000000000000000030 /* SCPJPSeries.swift */,
 				FR0000000000000000000066 /* WikiCategoryCatalogPayload.swift */,
+				FR000000000000000000007A /* SCPJPTagObjectClassCatalog.swift */,
 				FR0000000000000000000068 /* SCPArticle.swift */,
 				FR0000000000000000000078 /* InternationalBranchPortalOption.swift */,
 				FR0000000000000000000071 /* SCPGeneralContent.swift */,
@@ -605,6 +608,7 @@
 				BF000000000000000000006A /* GlobalCatalogSearchEngine.swift in Sources */,
 				BF000000000000000000006B /* TacticalArchiveEmptyPanel.swift in Sources */,
 				BF000000000000000000006C /* InternationalBranchPortalOption.swift in Sources */,
+				BF000000000000000000006E /* SCPJPTagObjectClassCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

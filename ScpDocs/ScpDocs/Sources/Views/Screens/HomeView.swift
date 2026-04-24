@@ -593,10 +593,10 @@ struct HomeView: View {
         switch category {
         case .jpArticles:
             homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-            navigationRouter.push(.scpJapanArchive(initialTagFilters: nil))
+            navigationRouter.push(.scpJapanArchive(ScpArchiveListSeed()))
         case .originalArticles:
             homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-            navigationRouter.push(.scpEnglishArchive(initialTagFilters: nil))
+            navigationRouter.push(.scpEnglishArchive(ScpArchiveListSeed()))
         case .tales:
             navigationRouter.push(.scpArticleCatalogFeed(.tales))
         case .canons:

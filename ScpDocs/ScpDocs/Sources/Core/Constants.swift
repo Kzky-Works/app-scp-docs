@@ -339,6 +339,19 @@ enum LocalizationKey {
     static let archiveFilterNoResults = "archive.filter.no_results"
     static let archiveFilterNoResultsHint = "archive.filter.no_results.hint"
     static let archiveFilterObjectClassAccessibility = "archive.filter.object_class.accessibility"
+    /// オブジェクトクラス・クイックチップ（`SCPJPTagObjectClassCatalog` の Wiki 表記と対）。
+    static let archiveOcSafe = "archive.oc.safe"
+    static let archiveOcEuclid = "archive.oc.euclid"
+    static let archiveOcKeter = "archive.oc.keter"
+    static let archiveOcThaumiel = "archive.oc.thaumiel"
+    static let archiveOcApollyon = "archive.oc.apollyon"
+    static let archiveOcArchon = "archive.oc.archon"
+    static let archiveOcCernunnos = "archive.oc.cernunnos"
+    static let archiveOcTiconderoga = "archive.oc.ticonderoga"
+    static let archiveOcNeutralized = "archive.oc.neutralized"
+    static let archiveOcDecommissioned = "archive.oc.decommissioned"
+    static let archiveOcPending = "archive.oc.pending"
+    static let archiveOcEsoteric = "archive.oc.esoteric"
     static let archiveFilterNoTagsInSegment = "archive.filter.no_tags_in_segment"
     /// アーカイヴ一覧: 各行にタグチップを常時表示するトグル（フィルタ適用時は自動表示）。
     static let archiveListRowTagsToggleAccessibility = "archive.list.row_tags.accessibility"
@@ -351,6 +364,9 @@ enum LocalizationKey {
     static let archiveFilterHighRatingAccessibility = "archive.filter.high_rating.accessibility"
     static let archiveRatingMeterUnreadAccessibility = "archive.rating_meter.unread_a11y"
     static let archiveRatingMeterScoreAccessibilityFormat = "archive.rating_meter.score_voice"
+
+    /// 記事ビュー下部: カタログ／タグ由来のメタデータ帯。
+    static let articleMetadataTagsSection = "article.metadata.tags.section"
 
     static let articleRatingUnsetShort = "article.rating.unset_short"
     static let articleRatingScaleMax = "article.rating.scale_max"

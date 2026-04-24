@@ -64,6 +64,8 @@ struct FoundationIndexRow<Trailing: View>: View {
     let layout: FoundationIndexRowLayout
     let title: String
     var subtitle: String?
+    /// タイトル行右寄せに表示するオブジェクトクラス（任意・短いラベル想定）。
+    var objectClassBadge: String?
     /// 行末に表示するタグ（`showsTags == true` かつ空でないときのみ）。
     var tags: [String]
     var showsTags: Bool
@@ -78,6 +80,7 @@ struct FoundationIndexRow<Trailing: View>: View {
         layout: FoundationIndexRowLayout = .twoLine,
         title: String,
         subtitle: String? = nil,
+        objectClassBadge: String? = nil,
         tags: [String] = [],
         showsTags: Bool = false,
         leadingSystemImage: String? = nil,
@@ -88,6 +91,7 @@ struct FoundationIndexRow<Trailing: View>: View {
         self.layout = layout
         self.title = title
         self.subtitle = subtitle
+        self.objectClassBadge = objectClassBadge
         self.tags = tags
         self.showsTags = showsTags
         self.leadingSystemImage = leadingSystemImage
@@ -135,7 +139,23 @@ struct FoundationIndexRow<Trailing: View>: View {
     @ViewBuilder
     private var twoLineTextColumn: some View {
         VStack(alignment: .leading, spacing: 4) {
-            titleText
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                titleText
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let badge = objectClassBadge?.trimmingCharacters(in: .whitespacesAndNewlines), !badge.isEmpty {
+                    Text(badge)
+                        .font(.caption2.weight(.heavy))
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.trailing)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .stroke(AppTheme.borderSubtle.opacity(0.85), lineWidth: AppTheme.borderWidthHairline)
+                        )
+                }
+            }
             if let subtitle, !subtitle.isEmpty {
                 Text(subtitle)
                     .font(.subheadline)

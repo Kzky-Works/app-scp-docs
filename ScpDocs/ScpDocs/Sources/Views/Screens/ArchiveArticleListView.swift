@@ -11,7 +11,7 @@ struct ArchiveArticleListView: View {
     let kind: Kind
     let articleRepository: ArticleRepository
     private let japanSCPListMetadataStore: JapanSCPListMetadataStore
-    private let initialTagFilters: Set<String>?
+    private let archiveSeed: ScpArchiveListSeed
 
     @State private var selectedSeries: SCPJPSeries
     @State private var selectedSegmentStart: Int
@@ -24,19 +24,22 @@ struct ArchiveArticleListView: View {
         articleRepository: ArticleRepository,
         kind: Kind,
         japanSCPListMetadataStore: JapanSCPListMetadataStore,
-        initialTagFilters: Set<String>? = nil
+        archiveSeed: ScpArchiveListSeed = ScpArchiveListSeed()
     ) {
         self.navigationRouter = navigationRouter
         self.kind = kind
         self.articleRepository = articleRepository
         self.japanSCPListMetadataStore = japanSCPListMetadataStore
-        self.initialTagFilters = initialTagFilters
+        self.archiveSeed = archiveSeed
         let initialSeries = SCPJPSeries.series1
         self._selectedSeries = State(initialValue: initialSeries)
         self._selectedSegmentStart = State(initialValue: initialSeries.segmentStarts.first ?? 1)
         let model = ArchiveArticleViewModel()
-        if let initialTagFilters {
-            model.selectedTags = initialTagFilters
+        if let tags = archiveSeed.tagFilters {
+            model.selectedTags = tags
+        }
+        if let oc = archiveSeed.objectClassWikiTitle {
+            model.selectedObjectClass = oc
         }
         self._filterModel = State(initialValue: model)
     }
@@ -148,6 +151,7 @@ struct ArchiveArticleListView: View {
                                     layout: .twoLine,
                                     title: formattedRowTitle(scpNumber: entry.scpNumber),
                                     subtitle: resolvedSubtitle(entry),
+                                    objectClassBadge: entry.objectClass,
                                     tags: entry.tags,
                                     showsTags: archiveRowTagVisibilityActive,
                                     monospacedTitleDigits: true,
@@ -185,8 +189,11 @@ struct ArchiveArticleListView: View {
         }
         .onChange(of: selectedSeries) { _, newSeries in
             filterModel.clearFilters()
-            if let initialTagFilters {
-                filterModel.selectedTags = initialTagFilters
+            if let tags = archiveSeed.tagFilters {
+                filterModel.selectedTags = tags
+            }
+            if let oc = archiveSeed.objectClassWikiTitle {
+                filterModel.selectedObjectClass = oc
             }
             let starts = newSeries.segmentStarts
             guard !starts.isEmpty else { return }
@@ -196,8 +203,11 @@ struct ArchiveArticleListView: View {
         }
         .onChange(of: selectedSegmentStart) { _, _ in
             filterModel.clearFilters()
-            if let initialTagFilters {
-                filterModel.selectedTags = initialTagFilters
+            if let tags = archiveSeed.tagFilters {
+                filterModel.selectedTags = tags
+            }
+            if let oc = archiveSeed.objectClassWikiTitle {
+                filterModel.selectedObjectClass = oc
             }
         }
         .tint(AppTheme.textPrimary)

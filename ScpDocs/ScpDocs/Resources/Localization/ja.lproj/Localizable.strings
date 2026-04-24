@@ -289,6 +289,18 @@
 "archive.filter.no_results" = "該当する報告書がありません";
 "archive.filter.no_results.hint" = "オブジェクトクラスやタグを変えるか、「クリア」を押してください。";
 "archive.filter.object_class.accessibility" = "オブジェクトクラスで絞り込み";
+"archive.oc.safe" = "Safe";
+"archive.oc.euclid" = "Euclid";
+"archive.oc.keter" = "Keter";
+"archive.oc.thaumiel" = "Thaumiel";
+"archive.oc.apollyon" = "Apollyon";
+"archive.oc.archon" = "Archon";
+"archive.oc.cernunnos" = "Cernunnos";
+"archive.oc.ticonderoga" = "Ticonderoga";
+"archive.oc.neutralized" = "Neutralized";
+"archive.oc.decommissioned" = "Decommissioned";
+"archive.oc.pending" = "オブジェクトクラスの分類保留中: Pending";
+"archive.oc.esoteric" = "Esoteric（上記以外／リスク・撹乱除く）";
 "archive.filter.no_tags_in_segment" = "このブロックにタグデータがありません。Wikidot カタログの同期を確認してください。";
 "archive.list.row_tags.accessibility" = "一覧の各行にタグを表示する切り替え。フィルタやタグ検索中は自動で表示されます。";
 
@@ -479,6 +491,7 @@
 "library.item.undertokyo_hub" = "地下東京奇譚";
 
 /* Article */
+"article.metadata.tags.section" = "タグ・分類";
 "article.reader_nav.tap_hint" = "タップでナビ表示";
 "article.reader_nav.collapse.a11y" = "ナビを閉じる";
 "article.reader_nav.back.a11y" = "一覧に戻る";
