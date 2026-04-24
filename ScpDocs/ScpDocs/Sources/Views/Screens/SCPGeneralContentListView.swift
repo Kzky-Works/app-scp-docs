@@ -96,10 +96,18 @@ struct SCPGeneralContentListView: View {
             }
         }
         .task(id: kind) {
-            cachedEntries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
+            reloadCachedEntriesFromDisk()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .scpMultiformManifestsDidSync)) { _ in
+            reloadCachedEntriesFromDisk()
         }
         .onAppear {
             personnelReadingJournal?.setActiveCatalogFeed(kind)
+            reloadCachedEntriesFromDisk()
         }
+    }
+
+    private func reloadCachedEntriesFromDisk() {
+        cachedEntries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
     }
 }

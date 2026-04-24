@@ -495,7 +495,9 @@ enum AppRemoteConfig {
     static let wikiCatalogSchemaVersion = 1
 
     /// マニフェスト JSON 等を置くベース URL（末尾スラッシュなし）。
-    static let scpDataHostBaseURLString = "https://kzky-works.github.io/data-scp-docs"
+    /// `list/jp/manifest_*.json` はリポジトリ `main` に存在するが、GitHub Pages の現行公開では 404 になるため、
+    /// `raw.githubusercontent.com` の `main` を参照する（Pages を `list/` まで配信できたら差し替え可能）。
+    static let scpDataHostBaseURLString = "https://raw.githubusercontent.com/kzky-works/data-scp-docs/main"
 
     /// 支部サイトの言語コード（データホスト上の `list/<code>/` に対応）。現状は日本支部のみ `jp`。
     /// 将来 `ru` / `cn` 等に切り替えたときは `list/ru/` 等の JSON を配信する想定。
@@ -517,7 +519,8 @@ enum AppRemoteConfig {
     static let jokesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_jokes.json"
 
     /// `docs/catalog/` を配信するベース URL（末尾スラッシュなし）。空なら Wikidot カタログ JSON は同期しない。
-    static let wikiCatalogBaseURLString = "\(scpDataHostBaseURLString)/catalog"
+    /// リポジトリ上の実体は `docs/catalog/*.json`（`scpDataHostBaseURLString` は `main` ルートを指す）。
+    static let wikiCatalogBaseURLString = "\(scpDataHostBaseURLString)/docs/catalog"
 
     /// Step 1: 3 系統 SCP 報告書フィード URL。マルチフォーム（`manifest_*.json`）は `resolvedMultiformArchiveJSONURL` を使う。
     static func resolvedSCPArticleFeedURL(kind: SCPArticleFeedKind) -> URL? {
@@ -580,4 +583,9 @@ enum AppRemoteConfig {
         guard let base = resolvedWikiCatalogBaseURL() else { return nil }
         return base.appendingPathComponent(kind.fileName)
     }
+}
+
+extension Notification.Name {
+    /// マルチフォーム manifest の取得・保存が一通り終わったあとに送出する（一覧の再読込用）。
+    static let scpMultiformManifestsDidSync = Notification.Name("jp.scpdocs.scpMultiformManifestsDidSync")
 }

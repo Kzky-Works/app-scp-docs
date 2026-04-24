@@ -22,16 +22,32 @@ struct MultiformContentSyncService: Sendable {
                 group.addTask { await self.syncOne(kind: kind) }
             }
         }
+        await MainActor.run {
+            NotificationCenter.default.post(name: .scpMultiformManifestsDidSync, object: nil)
+        }
     }
 
     private func syncOne(kind: SCPArticleFeedKind) async {
         guard AppRemoteConfig.resolvedMultiformArchiveJSONURL(kind: kind) != nil else { return }
-        let localVersion = cacheRepository.persistedGeneralMultiformListVersion(kind: kind)
         do {
             let remote = try await catalogRepository.fetchMultiform(kind: kind)
-            guard remote.listVersion > localVersion else { return }
+            guard !remote.entries.isEmpty else { return }
+
+            let localVersion = cacheRepository.persistedGeneralMultiformListVersion(kind: kind)
             let existing = cacheRepository.loadPersistedGeneralMultiformPayload(kind: kind)
-            let merged = Self.merge(remote: remote, existing: existing)
+            let localIsEmpty = existing?.entries.isEmpty ?? true
+
+            let merged: SCPGeneralContentListPayload
+            if remote.listVersion > localVersion {
+                merged = Self.merge(remote: remote, existing: existing)
+            } else if remote.listVersion < localVersion {
+                // 旧 JSON のタイムスタンプ等でローカル版だけが大きいとき、新 manifest が永遠に弾かれないようにする。
+                merged = Self.merge(remote: remote, existing: nil)
+            } else if localIsEmpty {
+                merged = Self.merge(remote: remote, existing: existing)
+            } else {
+                return
+            }
             try cacheRepository.saveGeneralMultiformPayload(merged, kind: kind)
         } catch {
             return
