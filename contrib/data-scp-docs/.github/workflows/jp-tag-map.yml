@@ -1,6 +1,6 @@
-# data-scp-docs リポジトリ用: ルート直下で list/jp/jp_tag.json を生成し Artifact として保存する。
-# scp_docs の .github/workflows/jp-wikidot-tag-map.yml と同等の入力; 作業ディレクトリはリポジトリルート。
-# 本スクリプトは scp_docs の contrib から同期した `scripts/build_jp_wikidot_tag_article_map.py` が存在することを前提とする。
+# data-scp-docs 専用: リポジトリルートで list/jp/jp_tag.json を生成し Artifact 名 jp-tag として保存する。
+# 実行・成果物の正本は本リポジトリのみ（scp_docs / app-scp-docs では動かさない）。
+# 前提: ルートに scripts/build_jp_wikidot_tag_article_map.py があること。
 name: JP tag map (list/jp/jp_tag.json)
 
 on:
