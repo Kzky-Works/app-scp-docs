@@ -1,6 +1,8 @@
 # SCP docs — アプリ仕様引継書（別チャット用）
 
-最終更新目安: 2026-04-19。リポジトリ: `scp_docs`（Xcode プロジェクトは `ScpDocs/ScpDocs.xcodeproj`）。
+最終更新目安: 2026-04-24。リポジトリ: `scp_docs`（Xcode プロジェクトは `ScpDocs/ScpDocs.xcodeproj`）。
+
+**関連引き継ぎ**: Tales / GoI / Canon / Joke のマルチフォーム収集ルールおよびタグ・オブジェクトクラス収集方針を別チャットで進める場合は `docs/HANDOVER_TALES_CANON_COLLECTION_RULES_ja.md` を参照。
 
 ---
 
@@ -14,15 +16,17 @@
 
 ## 2. 技術スタック
 
-| 項目 | 内容 |
-|------|------|
-| 言語 | Swift 6 系 |
-| UI | SwiftUI、`NavigationStack` + `NavigationPath` |
-| 状態 | `Observation`（`@Observable`）、`@Bindable` |
-| 非同期 | `async` / `await` |
+
+| 項目  | 内容                                                                       |
+| --- | ------------------------------------------------------------------------ |
+| 言語  | Swift 6 系                                                                |
+| UI  | SwiftUI、`NavigationStack` + `NavigationPath`                             |
+| 状態  | `Observation`（`@Observable`）、`@Bindable`                                 |
+| 非同期 | `async` / `await`                                                        |
 | Web | `WKWebView`（`UIViewRepresentable`）、記事用に `CleanUI.js` 注入で Wikidot ヘッダ等を除去 |
-| 広告 | Google Mobile Ads（バナー。テスト ID が Constants にある） |
-| IAP | StoreKit 系ラッパ（`PurchaseRepository`、広告削除 SKU） |
+| 広告  | Google Mobile Ads（バナー。テスト ID が Constants にある）                            |
+| IAP | StoreKit 系ラッパ（`PurchaseRepository`、広告削除 SKU）                             |
+
 
 **ViewModel 方針**: `Sources/ViewModels/` は **SwiftUI/UIKit を import しない**（将来の Android/Kotlin 移植を意識）。
 
@@ -33,9 +37,9 @@
 プロジェクト憲法（`.cursorrules`）に沿った配置:
 
 - `Sources/Core/` — `Constants.swift`（`LocalizationKey` 集約）、`Theme.swift`（`AppTheme`）、ハプティクス等
-- `Sources/Data/Models/` — 支部、ルート、カテゴリ、`SCPJPSeries`、`SCPListRemotePayload` 等
-- `Sources/Data/Repositories/` — `ArticleRepository`、`SettingsRepository`、`PurchaseRepository`、`SCPListCacheRepository`、`JapanSCPListMetadataStore` 等
-- `Sources/Data/Services/` — `WebViewService`、`OfflineStore`、`ConnectivityMonitor`、`ContentGateway`、`SCPListSyncService`
+- `Sources/Data/Models/` — 支部、ルート、カテゴリ、`SCPJPSeries`、`WikiCategoryCatalogPayload`、記事フィード用モデル等
+- `Sources/Data/Repositories/` — `ArticleRepository`、`SettingsRepository`、`PurchaseRepository`、`WikiCatalogCacheRepository`、`SCPArticleFeedCacheRepository`、`JapanSCPListMetadataStore` 等
+- `Sources/Data/Services/` — `WebViewService`、`OfflineStore`、`ConnectivityMonitor`、`ContentGateway`、`WikiCatalogSyncService`、`SCPArticleTrifoldSyncService`、`MultiformContentSyncService` 等
 - `Sources/Data/Resources/` — `LibraryStaticData`、`JapanSCPArchiveTitleData`（埋め込みタイトル辞書）、`GoIFormatsIndexData`
 - `Sources/ViewModels/` — `HomeViewModel`、`WebViewModel`、`NavigationRouter`
 - `Sources/Views/Screens/` / `Widgets/` — 各画面・`SCPWebView`、`AdBannerView`
@@ -46,7 +50,7 @@
 
 ## 4. アプリ構造（タブとエントリ）
 
-- **エントリ**: `ScpDocsApp.swift` が `HomeViewModel`、`NavigationRouter`（ホーム／書庫各一つ）、`ArticleRepository`、`PurchaseRepository`、`SCPListCacheRepository`、`JapanSCPListMetadataStore` を保持し、`MainView` に渡す。
+- **エントリ**: `ScpDocsApp.swift` が `HomeViewModel`、`NavigationRouter`（ホーム／書庫各一つ）、`ArticleRepository`、`PurchaseRepository`、`WikiCatalogCacheRepository`、`SCPArticleFeedCacheRepository`、`JapanSCPListMetadataStore`、`PersonnelReadingJournal` 等を保持し、`MainView` に渡す。
 - **タブ**（`AppRootTab`）: **ホーム** / **書庫** / **設定**。それぞれ `NavigationStack`（設定は単純スタック）。
 
 ---
@@ -77,15 +81,17 @@
 
 ### 6.2 日本支部アーカイヴ（深さ例）
 
-1. `ArchiveIndexView` — 支部に応じたアーカイヴ入口  
-2. `ArchiveSeriesListView` — `SCPJPSeries`（JP-I〜V、番号レンジ 001〜4999）  
+1. `ArchiveIndexView` — 支部に応じたアーカイヴ入口
+2. `ArchiveSeriesListView` — `SCPJPSeries`（JP-I〜V、番号レンジ 001〜4999）
 3. `ArchiveArticleListView` — **100 件セグメント**切替 + リスト。各行 **SCP-XXX-JP** と **タイトル**（下段キャプション）、既読・ブックマークアイコン。ツールバーから Wikidot 一覧ページを Safari 系で開く導線あり。
 
-**タイトル解決の優先順位**（実装の要点）:
+**タイトル解決の優先順位**（実装の要点・日本支部オリジナル `scp-NNN-jp`）:
 
-1. **リモート同期キャッシュ**（`JapanSCPListMetadataStore` / UserDefaults に保存した `scp_list` 由来）
+1. **マニフェスト同期キャッシュ**（`SCPArticleFeedCacheRepository` の `.jp` フィード由来。`JapanSCPListMetadataStore` が起動時・同期後に `reloadFromCache()` で反映）
 2. **埋め込み** `JapanSCPArchiveTitleData`（HTML から抽出した静的辞書）
-3. どちらも無い場合は UI 側で **`[DATA UNKNOWN]`**（`LocalizationKey.archiveJpArticleTitleUnknown`）
+3. どちらも無い場合は UI 側で `**[DATA UNKNOWN]`**（`LocalizationKey.archiveJpArticleTitleUnknown`）
+
+本家メインリスト和訳（`scp-NNN`）の一覧題名は `**.en` フィードの `title` のみ**（無ければ `nil` で表示側がフォールバック）。旧 `**scp_list.json` は廃止**し、アプリは取得しない。
 
 ### 6.3 書庫（`LibraryView`）
 
@@ -105,15 +111,19 @@
 
 ## 7. データと永続化
 
-| 領域 | 実装 |
-|------|------|
-| 設定 | `SettingsRepository` → `UserDefaults`（支部 ID、フォント倍率、UI 言語、ライブラリ並べ替え） |
-| 既読・履歴・ブックマーク | `ArticleRepository` → `UserDefaults` |
-| オフライン HTML | `OfflineStore` → Application Support 配下にスナップショット保存 |
-| JP 一覧タイトル（リモート） | Phase 13: `SCPListSyncService` が HTTPS の `scp_list.json` を取得し、`SCPListCacheRepository` に JSON 保存。`JapanSCPListMetadataStore` が参照。**URL 未設定時は同期しない**（`AppRemoteConfig.scpListJSONURLString` が空）。 |
-| 埋め込みタイトル | `JapanSCPArchiveTitleData.swift`（ビルド時同梱） |
 
-**リモート一覧 JSON** のサンプル・スキーマは `Research/scp_list.json` を参照。`listVersion` を上げるたびにクライアントがマージ取り込み（詳細は `SCPListSyncService`）。
+| 領域                          | 実装                                                                                                                                                                                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 設定                          | `SettingsRepository` → `UserDefaults`（支部 ID、フォント倍率、UI 言語、ライブラリ並べ替え）                                                                                                                                                  |
+| 既読・履歴・ブックマーク                | `ArticleRepository` → `UserDefaults`                                                                                                                                                                                 |
+| オフライン HTML                  | `OfflineStore` → Application Support 配下にスナップショット保存                                                                                                                                                                   |
+| 報告書マニフェスト（JP / メイン和訳 / INT） | **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** の `list/jp/manifest_scp-*.json` を `SCPArticleTrifoldSyncService` が取得し `SCPArticleFeedCacheRepository`（UserDefaults）へ保存。`listVersion` が上がった分のみマージ更新。 |
+| マルチフォーム（Tales / GoI / Canon / Joke） | 同ホストの `list/jp/manifest_tales.json` 等を `MultiformContentSyncService` が取得し同キャッシュへ保存。旧直下 `canons.json` / `jokes.json` は使わない（`docs/HANDOVER_TALES_CANON_COLLECTION_RULES_ja.md` §13）。 |
+| Wikidot カタログ（タグ・オブジェクトクラス等） | `docs/catalog/*.json` を `WikiCatalogSyncService` が取得し `WikiCatalogCacheRepository` に保存。`JapanSCPListMetadataStore` が参照。`AppRemoteConfig.wikiCatalogBaseURLString` が空のときは同期しない。                                       |
+| 埋め込みタイトル                    | `JapanSCPArchiveTitleData.swift`（ビルド時同梱。支部オリジナル題名のフォールバック）                                                                                                                                                           |
+
+
+マニフェスト・カタログのスキーマ・生成は **data-scp-docs** リポジトリ（`docs/` 配下、`scripts/`）が正。本アプリリポには同梱しない。
 
 ---
 
@@ -127,7 +137,7 @@
 
 ## 9. ローカライズ
 
-- UI 文字列は **`LocalizationKey`（`Constants.swift`）と `Localizable.strings`（en / ja）のペア**。画面に英語を直書きしない。
+- UI 文字列は `**LocalizationKey`（`Constants.swift`）と `Localizable.strings`（en / ja）のペア**。画面に英語を直書きしない。
 - `HomeViewModel.resolvedLocale` が UI 言語設定に応じて `Locale` を切替。
 
 ---
@@ -143,8 +153,8 @@
 ## 11. 開発時の注意（コードベースから）
 
 - Wikidot は **https → http の 301** があり、`Info` 側で ATS 例外がある（`Branch.swift` コメント参照）。
-- **Research/** 配下に HTML テキストや `scp_list.json` サンプルがあり、一覧タイトル抽出やリモートスキーマの参考になる。
-- 新規ファイルは **`.cursorrules` のディレクトリ規約**に合わせること。
+- **Research/** 配下に HTML テキスト等があり、一覧タイトル抽出の参考になる。配信 JSON のスキーマは **data-scp-docs** を参照。
+- 新規ファイルは `**.cursorrules` のディレクトリ規約**に合わせること。
 
 ---
 
@@ -152,7 +162,7 @@
 
 - App Store 掲載文言、プライバシーポリシー本文。
 - 本番 AdMob / IAP プロダクト ID の確定値（テスト用定数がコードに残っている可能性）。
-- リモート `scp_list.json` の**本番ホスト URL**（`AppRemoteConfig` を書き換えて有効化する運用）。**一覧 JSON の生成スクリプト**（`update_list.py`）は **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** リポジトリの `scripts/` が正（本アプリリポには同梱しない）。
+- **データホスト URL**（`AppRemoteConfig.scpDataHostBaseURLString` および `wikiCatalogBaseURLString` の運用値）。マニフェスト・カタログの生成パイプラインは **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** の `scripts/` / CI が正（本アプリリポには同梱しない）。
 
 ---
 

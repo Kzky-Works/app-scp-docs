@@ -309,6 +309,7 @@ struct SCPWebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
             viewModel?.clearLoadFailure()
+            viewModel?.markReaderSurfaceConcealedForPendingTypography()
             viewModel?.setLoading(true)
             viewModel?.updateStateFromWebView(webView)
             syncNavigationChrome(for: webView)
@@ -318,21 +319,24 @@ struct SCPWebView: UIViewRepresentable {
             viewModel?.clearLoadFailure()
             viewModel?.setLoading(false)
             viewModel?.updateStateFromWebView(webView)
-            viewModel?.applyReaderFontPresentation()
-            viewModel?.attemptApplyScrollRestore(on: webView)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak webView, weak viewModel] in
+            viewModel?.applyReaderFontPresentation(endsReaderTypographyConceal: true) { [weak webView, weak viewModel] in
                 guard let webView, let viewModel else { return }
                 viewModel.attemptApplyScrollRestore(on: webView)
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) { [weak webView, weak viewModel] in
-                guard let webView, let viewModel else { return }
-                viewModel.attemptApplyScrollRestore(on: webView)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak webView, weak viewModel] in
+                    guard let webView, let viewModel else { return }
+                    viewModel.attemptApplyScrollRestore(on: webView)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) { [weak webView, weak viewModel] in
+                    guard let webView, let viewModel else { return }
+                    viewModel.attemptApplyScrollRestore(on: webView)
+                }
             }
             syncNavigationChrome(for: webView)
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
             viewModel?.setLoading(false)
+            viewModel?.revealReaderSurface()
             viewModel?.recordNavigationFailure(error)
             viewModel?.updateStateFromWebView(webView)
             syncNavigationChrome(for: webView)
@@ -344,6 +348,7 @@ struct SCPWebView: UIViewRepresentable {
             withError error: Error
         ) {
             viewModel?.setLoading(false)
+            viewModel?.revealReaderSurface()
             viewModel?.recordNavigationFailure(error)
             viewModel?.updateStateFromWebView(webView)
             syncNavigationChrome(for: webView)
