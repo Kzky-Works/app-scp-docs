@@ -53,6 +53,7 @@ jobs:
           SLEEP: ${{ inputs.sleep_sec }}
         run: |
           set -euxo pipefail
+          mkdir -p list/jp
           MAX_TAGS_FLAG=()
           if [ -n "${MAX_TAGS}" ] && [ "${MAX_TAGS}" != "0" ]; then
             MAX_TAGS_FLAG=(--max-tags "${MAX_TAGS}")
@@ -62,13 +63,13 @@ jobs:
             --jp-tag-hub-page-max "${PAGE_MAX}" \
             "${MAX_TAGS_FLAG[@]}" \
             --sleep-sec "${SLEEP}" \
-            -o jp_wikidot_tag_article_map.json
-          ls -la jp_wikidot_tag_article_map.json
-          python3 -c "import json; d=json.load(open('jp_wikidot_tag_article_map.json')); print('tags', len(d.get('tags',[])), 'articles', len(d.get('articles',{})))"
+            -o list/jp/jp_tag.json
+          ls -la list/jp/jp_tag.json
+          python3 -c "import json; d=json.load(open('list/jp/jp_tag.json')); print('tags', len(d.get('tags',[])), 'articles', len(d.get('articles',{})))"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: jp-wikidot-tag-article-map
-          path: contrib/data-scp-docs/jp_wikidot_tag_article_map.json
+          name: jp-tag
+          path: contrib/data-scp-docs/list/jp/jp_tag.json
           if-no-files-found: error

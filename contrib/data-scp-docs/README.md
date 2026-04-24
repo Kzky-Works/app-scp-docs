@@ -7,8 +7,8 @@
 1. `data-scp-docs` を clone し、本ディレクトリの内容で上書き（少なくとも `scripts/harvester.py`）。
 2. `pip install -r requirements.txt`
 3. `python3 scripts/harvester.py`（Wikidot へのリクエストが多く **数十分かかる**場合があります）
-4. （任意）`python3 scripts/build_jp_wikidot_tag_article_map.py` — `system:page-tags/tag/jp/p/1..59` からタグ名を集め、各タグの `list-pages-item` 由来で記事スラッグ→タグ配列の JSON を生成。`docs/catalog` への取り込みは data-scp-docs 側のスキーマに合わせてマージする。
-   - **GitHub Actions**: 親リポジトリ `scp_docs` では `.github/workflows/jp-wikidot-tag-map.yml` を **手動実行**（`workflow_dispatch`）すると、`contrib/data-scp-docs` をカレントにスクリプトを走らせ、成果物 `jp_wikidot_tag_article_map.json` を Artifact としてダウンロードできる。フル実行は Wikidot へのリクエストが極めて多いため **既定のジョブ上限 6 時間**に収まらない場合がある。試験時は入力 `max_tags` に小さな数（例: `20`）を指定すること。
+4. （任意）`mkdir -p list/jp && python3 scripts/build_jp_wikidot_tag_article_map.py -o list/jp/jp_tag.json` — `system:page-tags/tag/jp/p/1..59` からタグ名を集め、各タグの `list-pages-item` 由来で記事スラッグ→タグ配列の JSON を生成。`docs/catalog` への取り込みは data-scp-docs 側のスキーマに合わせてマージする。
+   - **GitHub Actions**: 親リポジトリ `scp_docs` では `.github/workflows/jp-wikidot-tag-map.yml` を **手動実行**（`workflow_dispatch`）すると、`contrib/data-scp-docs/list/jp/jp_tag.json` を生成し、Artifact 名 **`jp-tag`** としてダウンロードできる。フル実行は Wikidot へのリクエストが極めて多いため **既定のジョブ上限 6 時間**に収まらない場合がある。試験時は入力 `max_tags` に小さな数（例: `20`）を指定すること。
 5. `python3 scripts/validate_manifests.py`
 6. `list/jp/` に `manifest_canons.json` / `manifest_jokes.json` が生成されていることを確認してコミット・プッシュ
 
