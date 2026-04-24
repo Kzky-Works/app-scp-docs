@@ -1,6 +1,6 @@
 import Foundation
 
-/// 7 系統キャッシュ＋ `scp_list` 由来索引をまとめて検索（CPU 集約は呼び出し側でバックグラウンド推奨）。
+/// 7 系統キャッシュ＋マニフェスト由来の索引行をまとめて検索（CPU 集約は呼び出し側でバックグラウンド推奨）。
 enum GlobalCatalogSearchEngine: Sendable {
     nonisolated static func search(query: String, snapshot: CatalogSearchSnapshot, maxTotal: Int = 220) -> [CatalogSearchHitDraft] {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -105,7 +105,12 @@ enum CatalogSearchSnapshotBuilder {
 
         for kind in SCPArticleFeedKind.trifoldReportCases {
             guard let badge = GlobalSearchBadge.badge(forTrifold: kind) else { continue }
-            let entries = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+            let raw = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+            let entries: [SCPArticle] = if kind == .int {
+                raw.filter { !InternationalBranchPortalOption.SCPIntSlugLanguageTail.isEnglishBranchCatalogEntry($0) }
+            } else {
+                raw
+            }
             for a in entries {
                 scpRows.append(
                     CatalogSearchSnapshot.SCPRow(

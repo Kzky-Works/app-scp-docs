@@ -136,7 +136,7 @@ struct JapanSCPArchiveEntry: Identifiable, Hashable, Sendable {
     let url: URL
     /// HTML 一覧から注入されたタイトル。`nil` の場合は UI でフォールバック表示。
     let articleTitle: String?
-    /// Phase 14: リモート `scp_list.json` 由来。未同期時は `nil` / 空。
+    /// Phase 14: Wikidot カタログ同期由来。未同期時は `nil` / 空。
     let objectClass: String?
     /// Phase 14: リモート JSON のタグ一覧。
     let tags: [String]

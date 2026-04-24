@@ -106,6 +106,8 @@ enum LocalizationKey {
     static let homeContinueReadingEmptySubtitle = "home.continue_reading.empty.subtitle"
     static let homeContinueReadingAccessibility = "home.continue_reading.accessibility"
     static let homeContinueScrollPercentFormat = "home.continue_reading.scroll_percent_format"
+    /// ゲージ右下の数値用（`%lld%%` など）。
+    static let homeContinueGaugePercentFormat = "home.continue_reading.gauge_percent"
     static let homeContinueObjectClassFormat = "home.continue_reading.object_class_format"
     /// 続きから読む 1 行目: Wikidot ホストに対応する短い支部名。
     static let homeContinueBranchScpJp = "home.continue_reading.branch.scp_jp"
@@ -121,6 +123,14 @@ enum LocalizationKey {
     static let homeContinueCategoryGoi = "home.continue_reading.category.goi"
     static let homeContinueCategoryJoke = "home.continue_reading.category.joke"
     static let homeContinueCategoryOther = "home.continue_reading.category.other"
+    /// 続きから読む 1 行目: 国際カタログ（`SCP-INTERNATIONAL` 表記）。
+    static let homeContinueCategoryScpInternational = "home.continue_reading.category.scp_international"
+    /// 続きから読む 1 行目: Tale 系（複数形表記の `Tales`）。
+    static let homeContinueCategoryTales = "home.continue_reading.category.tales"
+    static let homePillarCategorySectionCaption = "home.pillar.category_caption"
+    static let homeRandomCLIPrefix = "home.random.cli_prefix"
+    static let homeRandomCLIWildcard = "home.random.cli_wildcard"
+    static let homeRandomExploreSubtitle = "home.random.explore_subtitle"
     static let homeDashboardMotto = "home.dashboard.motto"
     /// ホーム上部の支部名（日本支部選択時のみ「日本支部」を省いた短表記）。
     static let homeDashboardBranchShortJapan = "home.dashboard.branch_short_jp"
@@ -135,6 +145,26 @@ enum LocalizationKey {
     static let homeFeedListTitleJP = "home.feed_list.title.jp"
     static let homeFeedListTitleEN = "home.feed_list.title.en"
     static let homeFeedListTitleINT = "home.feed_list.title.int"
+    /// SCP International カタログ下部の横スクロール支部チップ（末尾言語コードで絞り込み）。
+    static let intCatalogBranchPickerCaption = "int.catalog_branch_picker.caption"
+    static let intCatalogBranchPickerOpenSite = "int.catalog_branch_picker.open_site"
+    static let intCatalogBranchFilterEmptyTitle = "int.catalog_branch_filter.empty.title"
+    static let intCatalogBranchFilterEmptySubtitle = "int.catalog_branch_filter.empty.subtitle"
+    static let intCatalogBranchChipRU = "int.catalog_branch_chip.ru"
+    static let intCatalogBranchChipKO = "int.catalog_branch_chip.ko"
+    static let intCatalogBranchChipCN = "int.catalog_branch_chip.cn"
+    static let intCatalogBranchChipFR = "int.catalog_branch_chip.fr"
+    static let intCatalogBranchChipPL = "int.catalog_branch_chip.pl"
+    static let intCatalogBranchChipES = "int.catalog_branch_chip.es"
+    static let intCatalogBranchChipTH = "int.catalog_branch_chip.th"
+    static let intCatalogBranchChipDE = "int.catalog_branch_chip.de"
+    static let intCatalogBranchChipIT = "int.catalog_branch_chip.it"
+    static let intCatalogBranchChipUA = "int.catalog_branch_chip.ua"
+    static let intCatalogBranchChipPTBR = "int.catalog_branch_chip.pt_br"
+    static let intCatalogBranchChipCS = "int.catalog_branch_chip.cs"
+    static let intCatalogBranchChipZHTR = "int.catalog_branch_chip.zh_tr"
+    static let intCatalogBranchChipVN = "int.catalog_branch_chip.vn"
+    static let intCatalogBranchChipOther = "int.catalog_branch_chip.other"
     static let homeFeedListTitleTales = "home.feed_list.title.tales"
     static let homeFeedListTitleGois = "home.feed_list.title.gois"
     static let homeFeedListTitleCanons = "home.feed_list.title.canons"
@@ -415,6 +445,8 @@ enum LocalizationKey {
     static let articleLoadTimeout = "article.load.timeout"
     static let articleLoadFailed = "article.load.failed"
     static let articleLoadRetry = "article.load.retry"
+    static let articleReaderTypographyLoadingTitle = "article.reader_typography.loading_title"
+    static let articleReaderTypographyLoadingSubtitle = "article.reader_typography.loading_subtitle"
 
     /// Step 3: 読了後のカタログ内ナビ。
     static let articlePostReadNextCase = "article.post_read.next_case"
@@ -444,13 +476,9 @@ enum LocalizationKey {
     static let talesJpTaleCountFormat = "tales.jp.tale_count_format"
 }
 
-// MARK: - Phase 13 リモート一覧（Plan B）
+// MARK: - Phase 13 リモートデータ（マニフェスト・カタログ）
 
-/// GitHub Pages / 自前サーバーに配置する `scp_list.json` の取得先。
 enum AppRemoteConfig {
-    /// `SCPListRemotePayload` の `schemaVersion` と一致させる。
-    static let scpListSchemaVersion = 1
-
     /// キャッシュへ保存する正規形の `schemaVersion`（フラット entries のみ）。
     static let scpArticleFeedSchemaVersion = 1
 
@@ -466,7 +494,7 @@ enum AppRemoteConfig {
     /// `WikiCategoryCatalogPayload` の `schemaVersion` と一致させる（data-scp-docs `docs/catalog`）。
     static let wikiCatalogSchemaVersion = 1
 
-    /// 3 系統 JSON と `scp_list.json` を置くベース URL（末尾スラッシュなし）。
+    /// マニフェスト JSON 等を置くベース URL（末尾スラッシュなし）。
     static let scpDataHostBaseURLString = "https://kzky-works.github.io/data-scp-docs"
 
     /// 支部サイトの言語コード（データホスト上の `list/<code>/` に対応）。現状は日本支部のみ `jp`。
@@ -475,10 +503,6 @@ enum AppRemoteConfig {
 
     /// 3 系統 SCP 報告書フィードおよびマルチフォーム（Tale / GoI）の配信パス接頭辞。
     private static let scpArticleFeedListPathPrefix = "list/\(scpArticleFeedSiteListCode)"
-
-    /// 空文字のときはリモート同期を行わない（埋め込み `JapanSCPArchiveTitleData` のみ）。
-    /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
-    static let scpListJSONURLString = "\(scpDataHostBaseURLString)/scp_list.json"
 
     /// 日本支部系統のマニフェスト（`list/jp/manifest_scp-jp.json`）。
     static let scpJPListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_scp-jp.json"
@@ -489,22 +513,13 @@ enum AppRemoteConfig {
 
     static let talesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_tales.json"
     static let goisListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_gois.json"
-    static let canonsListJSONPathComponent = "canons.json"
-    static let jokesListJSONPathComponent = "jokes.json"
+    static let canonsListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_canons.json"
+    static let jokesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_jokes.json"
 
     /// `docs/catalog/` を配信するベース URL（末尾スラッシュなし）。空なら Wikidot カタログ JSON は同期しない。
     static let wikiCatalogBaseURLString = "\(scpDataHostBaseURLString)/catalog"
 
-    static func resolvedSCPListJSONURL() -> URL? {
-        let trimmed = scpListJSONURLString.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, let url = URL(string: trimmed) else { return nil }
-        guard let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
-            return nil
-        }
-        return url
-    }
-
-    /// Step 1: 3 系統 SCP 報告書フィード URL。マルチフォーム（`tales.json` 等）は `resolvedMultiformArchiveJSONURL` を使う。
+    /// Step 1: 3 系統 SCP 報告書フィード URL。マルチフォーム（`manifest_*.json`）は `resolvedMultiformArchiveJSONURL` を使う。
     static func resolvedSCPArticleFeedURL(kind: SCPArticleFeedKind) -> URL? {
         let pathSuffix: String? = switch kind {
         case .jp: scpJPListJSONPathComponent
@@ -518,7 +533,7 @@ enum AppRemoteConfig {
         return resolvedJSONURLAppendingPathComponent(pathComponent)
     }
 
-    /// Step 4: `tales.json` / `gois.json` / `canons.json` / `jokes.json`。
+    /// Step 4: `manifest_tales.json` / `manifest_gois.json` / `manifest_canons.json` / `manifest_jokes.json`（いずれも `list/<site>/`）。
     static func resolvedMultiformArchiveJSONURL(kind: SCPArticleFeedKind) -> URL? {
         let pathSuffix: String? = switch kind {
         case .tales: talesListJSONPathComponent

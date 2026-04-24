@@ -127,6 +127,7 @@ final class HomeViewModel {
             thumbnailURL: articleRepository.cachedFirstImageURL(for: url),
             japanListHint: japanSCPListMetadataStore?.readingHint(for: url),
             listMetaTitle: catalogListMetaTitle(for: url),
+            listMetaObjectClass: catalogListMetaObjectClass(for: url),
             localize: { String(localized: String.LocalizationValue($0)) }
         )
     }
@@ -146,6 +147,18 @@ final class HomeViewModel {
             for row in entries {
                 guard let u = row.resolvedURL else { continue }
                 if ArticleRepository.storageKey(for: u) == key { return row.t }
+            }
+        }
+        return nil
+    }
+
+    private func catalogListMetaObjectClass(for url: URL) -> String? {
+        guard let trifoldIndexStore else { return nil }
+        let key = ArticleRepository.storageKey(for: url)
+        for kind in SCPArticleFeedKind.trifoldReportCases {
+            for article in trifoldIndexStore.catalogEntries(for: kind) {
+                guard let u = article.resolvedURL else { continue }
+                if ArticleRepository.storageKey(for: u) == key { return article.c }
             }
         }
         return nil

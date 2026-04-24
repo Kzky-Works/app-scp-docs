@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// ホームから開く横断検索（SCP 3 系統・Tale/GoI/Canon/Joke・日本支部 `scp_list` 索引）。
+/// ホームから開く横断検索（SCP 3 系統・Tale/GoI/Canon/Joke・フィード索引）。
 struct HomeSearchView: View {
     @Bindable var navigationRouter: NavigationRouter
     let articleRepository: ArticleRepository

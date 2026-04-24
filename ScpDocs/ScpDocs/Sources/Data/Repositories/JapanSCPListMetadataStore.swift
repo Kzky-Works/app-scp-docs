@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// `ContinueReadingSummary` 用: `scp_list` が追える日本支部の SCP 記事の種別と表示ヒント。
+/// `ContinueReadingSummary` 用: 日本支部 Wikidot の SCP 記事の種別と表示ヒント（フィードキャッシュ＋ Wikidot カタログ由来）。
 struct JapanSCPListReadingHint: Sendable, Equatable {
     enum Flavor: Sendable, Equatable {
         case jpOriginal
@@ -16,13 +16,14 @@ struct JapanSCPListReadingHint: Sendable, Equatable {
     let resolvedListTitle: String?
 }
 
-/// Phase 13: リモート同期タイトルと埋め込み `JapanSCPArchiveTitleData` を統合する参照ストア。
-/// - `title`（JSON）: SCP-JP オリジナル一覧用。埋め込み辞書はここへフォールバック。
-/// - `mainlistTranslationTitle`（JSON）: 本家メインリスト和訳（`scp-series`）一覧専用。未同期時はタイトル不明（`title` にはフォールバックしない）。
+/// マニフェスト同期済みフィード（`SCPArticleFeedCacheRepository`）と Wikidot カタログを統合する参照ストア。
+/// - 支部オリジナル題名: `.jp` フィードの `t`、無ければ埋め込み `JapanSCPArchiveTitleData`。
+/// - 本家メイン和訳一覧題名: `.en` フィードの `t` のみ（未同期時は `nil`）。
 @Observable
 @MainActor
 final class JapanSCPListMetadataStore {
-    private let cacheRepository: SCPListCacheRepository
+    private let wikiCatalogCacheRepository: WikiCatalogCacheRepository
+    private let articleFeedCache: SCPArticleFeedCacheRepository?
     private var jpBranchTitleByMergeKey: [String: String] = [:]
     private var mainlistTranslationTitleByMergeKey: [String: String] = [:]
     /// `docs/catalog/scp_jp.json`
@@ -34,53 +35,44 @@ final class JapanSCPListMetadataStore {
     /// `docs/catalog/joke.json`
     private var objectClassJokeByMergeKey: [String: String] = [:]
     private var tagsJokeByMergeKey: [String: [String]] = [:]
-    /// ホーム「ランダムな報告書」用: 本家メインリスト和訳（`scp-NNN`）のプール（`entries` + `hubLinkedPaths`）。
+    /// ホーム「ランダムな報告書」用: 本家メインリスト和訳（`scp-NNN`）の URL プール（`.en` フィード）。
     private(set) var officialJapaneseTranslationRandomPool: [URL] = []
 
-    init(cacheRepository: SCPListCacheRepository) {
-        self.cacheRepository = cacheRepository
+    init(wikiCatalogCacheRepository: WikiCatalogCacheRepository, articleFeedCache: SCPArticleFeedCacheRepository? = nil) {
+        self.wikiCatalogCacheRepository = wikiCatalogCacheRepository
+        self.articleFeedCache = articleFeedCache
         reloadFromCache()
     }
 
     func reloadFromCache() {
-        guard let payload = cacheRepository.loadPersistedPayload() else {
+        reloadWikiCatalogIndexes()
+        if let fc = articleFeedCache {
+            jpBranchTitleByMergeKey = Self.buildJPBranchTitleIndexFromTrifoldFeed(fc)
+            mainlistTranslationTitleByMergeKey = Self.buildMainlistTitleIndexFromTrifoldFeed(fc)
+            officialJapaneseTranslationRandomPool = Self.buildOfficialJapaneseTranslationRandomPoolFromTrifoldFeed(fc)
+        } else {
             jpBranchTitleByMergeKey = [:]
             mainlistTranslationTitleByMergeKey = [:]
-            clearWikiDerivedIndexes()
             officialJapaneseTranslationRandomPool = []
-            return
         }
-        jpBranchTitleByMergeKey = Self.buildJPBranchTitleIndex(from: payload)
-        mainlistTranslationTitleByMergeKey = Self.buildMainlistTranslationTitleIndex(from: payload)
-        reloadWikiCatalogIndexes()
-        officialJapaneseTranslationRandomPool = Self.buildOfficialJapaneseTranslationRandomPool(from: payload)
-    }
-
-    private func clearWikiDerivedIndexes() {
-        objectClassJPByMergeKey = [:]
-        tagsJPByMergeKey = [:]
-        objectClassMainlistByMergeKey = [:]
-        tagsMainlistByMergeKey = [:]
-        objectClassJokeByMergeKey = [:]
-        tagsJokeByMergeKey = [:]
     }
 
     private func reloadWikiCatalogIndexes() {
-        if let c = cacheRepository.loadWikiCatalog(kind: .scpJp) {
+        if let c = wikiCatalogCacheRepository.loadWikiCatalog(kind: .scpJp) {
             tagsJPByMergeKey = Self.buildWikiTagsIndex(from: c)
             objectClassJPByMergeKey = Self.buildWikiObjectClassIndex(from: c)
         } else {
             tagsJPByMergeKey = [:]
             objectClassJPByMergeKey = [:]
         }
-        if let c = cacheRepository.loadWikiCatalog(kind: .scpMainlist) {
+        if let c = wikiCatalogCacheRepository.loadWikiCatalog(kind: .scpMainlist) {
             tagsMainlistByMergeKey = Self.buildWikiTagsIndex(from: c)
             objectClassMainlistByMergeKey = Self.buildWikiObjectClassIndex(from: c)
         } else {
             tagsMainlistByMergeKey = [:]
             objectClassMainlistByMergeKey = [:]
         }
-        if let c = cacheRepository.loadWikiCatalog(kind: .joke) {
+        if let c = wikiCatalogCacheRepository.loadWikiCatalog(kind: .joke) {
             tagsJokeByMergeKey = Self.buildWikiTagsIndex(from: c)
             objectClassJokeByMergeKey = Self.buildWikiObjectClassIndex(from: c)
         } else {
@@ -166,31 +158,50 @@ final class JapanSCPListMetadataStore {
         "\(series.rawValue)_\(scpNumber)"
     }
 
-    private static func buildJPBranchTitleIndex(from payload: SCPListRemotePayload) -> [String: String] {
+    private static func buildJPBranchTitleIndexFromTrifoldFeed(_ feed: SCPArticleFeedCacheRepository) -> [String: String] {
         var out: [String: String] = [:]
-        out.reserveCapacity(payload.entries.count)
-        for e in payload.entries {
-            guard let s = SCPJPSeries(rawValue: e.series), s.scpNumberRange.contains(e.scpNumber) else { continue }
-            let key = e.mergeKey
-            let t = e.title.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !t.isEmpty {
-                out[key] = t
-            }
+        let entries = feed.loadPersistedPayload(kind: .jp)?.entries ?? []
+        out.reserveCapacity(entries.count)
+        for a in entries {
+            guard let n = scpNumberFromJapanSlug(a.i), let series = Self.scpSeries(containing: n) else { continue }
+            let key = mergeKey(series: series, scpNumber: n)
+            let t = a.t.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !t.isEmpty { out[key] = t }
         }
         return out
     }
 
-    private static func buildMainlistTranslationTitleIndex(from payload: SCPListRemotePayload) -> [String: String] {
+    private static func buildMainlistTitleIndexFromTrifoldFeed(_ feed: SCPArticleFeedCacheRepository) -> [String: String] {
         var out: [String: String] = [:]
-        for e in payload.entries {
-            guard let s = SCPJPSeries(rawValue: e.series), s.scpNumberRange.contains(e.scpNumber) else { continue }
-            guard let raw = e.mainlistTranslationTitle else { continue }
-            let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !t.isEmpty {
-                out[e.mergeKey] = t
-            }
+        let entries = feed.loadPersistedPayload(kind: .en)?.entries ?? []
+        for a in entries {
+            guard let n = scpNumberFromMainSlug(a.i), let series = Self.scpSeries(containing: n) else { continue }
+            let key = mergeKey(series: series, scpNumber: n)
+            let t = a.t.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !t.isEmpty { out[key] = t }
         }
         return out
+    }
+
+    private static func buildOfficialJapaneseTranslationRandomPoolFromTrifoldFeed(_ feed: SCPArticleFeedCacheRepository) -> [URL] {
+        let entries = feed.loadPersistedPayload(kind: .en)?.entries ?? []
+        return entries.compactMap(\.resolvedURL)
+    }
+
+    private static func scpNumberFromJapanSlug(_ i: String) -> Int? {
+        let lower = i.lowercased()
+        guard lower.hasSuffix("-jp") else { return nil }
+        let digits = lower.dropLast(3).dropFirst(4).filter(\.isNumber)
+        guard !digits.isEmpty, let n = Int(String(digits)), n > 0, n <= 4999 else { return nil }
+        return n
+    }
+
+    private static func scpNumberFromMainSlug(_ i: String) -> Int? {
+        let lower = i.lowercased()
+        guard lower.hasPrefix("scp-"), !lower.contains("-jp") else { return nil }
+        let tail = String(lower.dropFirst(4))
+        guard !tail.contains("-"), tail.allSatisfy(\.isNumber), let n = Int(tail), n > 0, n <= 4999 else { return nil }
+        return n
     }
 
     private static func buildWikiTagsIndex(from catalog: WikiCategoryCatalogPayload) -> [String: [String]] {
@@ -214,59 +225,40 @@ final class JapanSCPListMetadataStore {
         return out
     }
 
-    private static let japanSiteBase = URL(string: "https://scp-jp.wikidot.com")!
-
-    private static func buildOfficialJapaneseTranslationRandomPool(from payload: SCPListRemotePayload) -> [URL] {
-        var seenPath = Set<String>()
-        var urls: [URL] = []
-        urls.reserveCapacity(payload.entries.count + payload.hubLinkedPaths.count)
-
-        for e in payload.entries {
-            guard let series = SCPJPSeries(rawValue: e.series), series.scpNumberRange.contains(e.scpNumber) else {
-                continue
-            }
-            let url = series.englishMainlistTranslationArticleURL(scpNumber: e.scpNumber)
-            let path = url.path
-            guard seenPath.insert(path).inserted else { continue }
-            urls.append(url)
-        }
-
-        for raw in payload.hubLinkedPaths {
-            let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !trimmed.isEmpty else { continue }
-            let path = trimmed.hasPrefix("/") ? trimmed : "/\(trimmed)"
-            guard seenPath.insert(path).inserted else { continue }
-            guard let u = URL(string: path, relativeTo: japanSiteBase) else { continue }
-            urls.append(u.absoluteURL)
-        }
-
-        return urls
-    }
-
-    /// `scp_list.json` 同期済みエントリを対象に、番号・タイトル・オブジェクトクラス・タグのいずれかに一致する報告書を返す（最大 `limit` 件）。
+    /// マニフェスト同期済み `.jp` / `.en` フィードを対象に、番号・タイトル・オブジェクトクラス・タグのいずれかに一致する報告書を返す（最大 `limit` 件）。
     func searchIndexedEntries(matching rawQuery: String, limit: Int = 200) -> [JapanSCPArchiveEntry] {
-        guard let payload = cacheRepository.loadPersistedPayload() else { return [] }
+        guard let fc = articleFeedCache else { return [] }
         let q = rawQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty else { return [] }
 
+        let jpArticles = fc.loadPersistedPayload(kind: .jp)?.entries ?? []
+        let enArticles = fc.loadPersistedPayload(kind: .en)?.entries ?? []
+
         if let dedicated = Self.parseDedicatedSCPNumber(from: q) {
-            let matches: [JapanSCPArchiveEntry] = payload.entries.compactMap { remote in
-                guard let series = SCPJPSeries(rawValue: remote.series),
-                      series.scpNumberRange.contains(remote.scpNumber),
-                      remote.scpNumber == dedicated
-                else { return nil }
-                return buildEnglishStyleEntryFromRemote(remote, series: series)
+            var matches: [JapanSCPArchiveEntry] = []
+            for a in jpArticles {
+                guard let entry = japanArchiveEntryFromJPTrifold(a), entry.scpNumber == dedicated else { continue }
+                matches.append(entry)
+            }
+            for a in enArticles {
+                guard let entry = japanArchiveEntryFromMainTrifold(a), entry.scpNumber == dedicated else { continue }
+                matches.append(entry)
             }
             return Array(matches.prefix(limit))
         }
 
         var results: [JapanSCPArchiveEntry] = []
-        results.reserveCapacity(min(limit, payload.entries.count))
-        for remote in payload.entries {
-            guard let series = SCPJPSeries(rawValue: remote.series),
-                  series.scpNumberRange.contains(remote.scpNumber) else { continue }
-            guard let entry = buildEnglishStyleEntryFromRemote(remote, series: series) else { continue }
-            if entryMatchesSearch(entry: entry, remote: remote, query: q) {
+        results.reserveCapacity(min(limit, jpArticles.count + enArticles.count))
+        for a in jpArticles {
+            guard let entry = japanArchiveEntryFromJPTrifold(a) else { continue }
+            if entryMatchesTrifoldSearch(entry: entry, articleTitle: a.t, articleTags: a.g, query: q) {
+                results.append(entry)
+                if results.count >= limit { break }
+            }
+        }
+        for a in enArticles where results.count < limit {
+            guard let entry = japanArchiveEntryFromMainTrifold(a) else { continue }
+            if entryMatchesTrifoldSearch(entry: entry, articleTitle: a.t, articleTags: a.g, query: q) {
                 results.append(entry)
                 if results.count >= limit { break }
             }
@@ -274,45 +266,61 @@ final class JapanSCPListMetadataStore {
         return results
     }
 
-    private func buildEnglishStyleEntryFromRemote(_ remote: SCPListRemoteEntry, series: SCPJPSeries) -> JapanSCPArchiveEntry? {
-        let n = remote.scpNumber
-        let key = remote.mergeKey
-        let url = series.englishMainlistTranslationArticleURL(scpNumber: n)
+    private func japanArchiveEntryFromJPTrifold(_ a: SCPArticle) -> JapanSCPArchiveEntry? {
+        guard let n = Self.scpNumberFromJapanSlug(a.i), let series = Self.scpSeries(containing: n) else { return nil }
+        let key = Self.mergeKey(series: series, scpNumber: n)
+        let slug: String
+        if n < 1000 {
+            slug = String(format: "scp-%03d-jp", n)
+        } else {
+            slug = "scp-\(n)-jp"
+        }
+        let oc = objectClassJPByMergeKey[key] ?? a.c
+        let catalogTags = tagsJPByMergeKey[key]
+        let tags = (catalogTags?.isEmpty == false) ? catalogTags! : a.g
+        return JapanSCPArchiveEntry(
+            id: slug,
+            scpNumber: n,
+            url: series.articleURL(scpNumber: n),
+            articleTitle: a.t,
+            objectClass: oc,
+            tags: tags
+        )
+    }
+
+    private func japanArchiveEntryFromMainTrifold(_ a: SCPArticle) -> JapanSCPArchiveEntry? {
+        guard let n = Self.scpNumberFromMainSlug(a.i), let series = Self.scpSeries(containing: n) else { return nil }
+        let key = Self.mergeKey(series: series, scpNumber: n)
         let slug: String
         if n < 1000 {
             slug = String(format: "scp-%03d", n)
         } else {
             slug = "scp-\(n)"
         }
-        let injected = mainlistTranslationTitleByMergeKey[key] ?? remote.mainlistTranslationTitle
-        let trimmed = injected?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let title: String? = trimmed.isEmpty ? nil : trimmed
-        let oc = objectClassMainlistByMergeKey[key] ?? remote.objectClass
-        let tags: [String]
-        if let tt = tagsMainlistByMergeKey[key], !tt.isEmpty {
-            tags = tt
-        } else {
-            tags = remote.tags
-        }
+        let oc = objectClassMainlistByMergeKey[key] ?? a.c
+        let catalogTags = tagsMainlistByMergeKey[key]
+        let tags = (catalogTags?.isEmpty == false) ? catalogTags! : a.g
         return JapanSCPArchiveEntry(
             id: slug,
             scpNumber: n,
-            url: url,
-            articleTitle: title,
+            url: series.englishMainlistTranslationArticleURL(scpNumber: n),
+            articleTitle: a.t,
             objectClass: oc,
             tags: tags
         )
     }
 
-    private func entryMatchesSearch(entry: JapanSCPArchiveEntry, remote: SCPListRemoteEntry, query: String) -> Bool {
+    private func entryMatchesTrifoldSearch(entry: JapanSCPArchiveEntry, articleTitle: String, articleTags: [String], query: String) -> Bool {
         if entry.articleTitle?.localizedStandardContains(query) == true { return true }
-        if remote.title.localizedStandardContains(query) { return true }
-        if remote.mainlistTranslationTitle?.localizedStandardContains(query) == true { return true }
+        if articleTitle.localizedStandardContains(query) { return true }
         if let oc = entry.objectClass, oc.localizedStandardContains(query) { return true }
         for t in entry.tags where t.localizedStandardContains(query) {
             return true
         }
-        let numStr = String(remote.scpNumber)
+        for t in articleTags where t.localizedStandardContains(query) {
+            return true
+        }
+        let numStr = String(entry.scpNumber)
         if query.allSatisfy(\.isNumber), numStr.contains(query) { return true }
         return false
     }
@@ -333,9 +341,9 @@ final class JapanSCPListMetadataStore {
         return nil
     }
 
-    // MARK: - Continue reading（`scp_list` 同期済みの日本支部 SCP 記事）
+    // MARK: - Continue reading（日本支部 Wikidot の SCP 記事）
 
-    /// `scp-jp.wikidot.com` の `scp_list.json` 対象ページ（JP オリジナル／本家メイン和訳／`-j`）のときだけ値がある。
+    /// `scp-jp.wikidot.com` の JP オリジナル／本家メイン和訳／`-J` 系のときだけ値がある。
     func readingHint(for url: URL) -> JapanSCPListReadingHint? {
         guard url.host?.caseInsensitiveCompare("scp-jp.wikidot.com") == .orderedSame else { return nil }
         let slug = url.path.split(separator: "/").map(String.init).filter { !$0.isEmpty }.last ?? ""

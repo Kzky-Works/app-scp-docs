@@ -12,21 +12,24 @@ final class SCPArticleTrifoldIndexStore {
 
     init(feedCache: SCPArticleFeedCacheRepository) {
         self.feedCache = feedCache
-        reloadFromCache()
     }
 
     func reloadFromCache() {
         jpTotalCount = feedCache.loadPersistedPayload(kind: .jp)?.entries.count ?? 0
         enTotalCount = feedCache.loadPersistedPayload(kind: .en)?.entries.count ?? 0
-        intTotalCount = feedCache.loadPersistedPayload(kind: .int)?.entries.count ?? 0
+        intTotalCount = catalogEntries(for: .int).count
     }
 
     func catalogEntries(for kind: SCPArticleFeedKind) -> [SCPArticle] {
-        feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+        let entries = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+        if kind == .int {
+            return entries.filter { !InternationalBranchPortalOption.SCPIntSlugLanguageTail.isEnglishBranchCatalogEntry($0) }
+        }
+        return entries
     }
 
     func unreadCount(kind: SCPArticleFeedKind, articleRepository: ArticleRepository) -> Int {
-        guard let entries = feedCache.loadPersistedPayload(kind: kind)?.entries else { return 0 }
+        let entries = catalogEntries(for: kind)
         var n = 0
         for article in entries {
             guard let url = article.resolvedURL else { continue }

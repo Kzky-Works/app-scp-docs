@@ -103,6 +103,10 @@
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.random.panel.subtitle" = "Read SCP articles at random";
 "home.random_article_read.section_title" = "Read a random article";
+"home.random.cli_prefix" = "$ random --scp=";
+"home.random.cli_wildcard" = "?????";
+"home.random.explore_subtitle" = "Explore an unknown object";
+"home.pillar.category_caption" = "Category";
 
 /* Home continue reading */
 "home.continue_reading.caption" = "Continue reading";
@@ -110,6 +114,7 @@
 "home.continue_reading.empty.subtitle" = "Open an article to build history. This area is unavailable after data is cleared.";
 "home.continue_reading.accessibility" = "Reading progress";
 "home.continue_reading.scroll_percent_format" = "%lld percent scrolled";
+"home.continue_reading.gauge_percent" = "%lld%%";
 "home.continue_reading.object_class_format" = "Object class: %@";
 "home.continue_reading.branch.scp_jp" = "SCP-JP";
 "home.continue_reading.branch.scp" = "SCP";
@@ -119,6 +124,8 @@
 "home.continue_reading.category.scp_main_jp" = "SCP (Japanese)";
 "home.continue_reading.category.scp_en" = "SCP-en";
 "home.continue_reading.category.scp_int" = "SCP-int";
+"home.continue_reading.category.scp_international" = "SCP-INTERNATIONAL";
+"home.continue_reading.category.tales" = "Tales";
 "home.continue_reading.category.tale" = "Tale";
 "home.continue_reading.category.canon" = "Canon";
 "home.continue_reading.category.goi" = "GoI";
@@ -132,9 +139,28 @@
 "home.personnel.daily_assignment_empty.title" = "NO ASSIGNMENT CURRENTLY AVAILABLE";
 "home.personnel.daily_assignment_empty.subtitle" = "No mission is currently assigned. Sync when online or pick an archive tile.";
 "home.hero.metrics_format" = "%1$d articles · %2$d unread";
-"home.feed_list.title.jp" = "SCP-JP catalog";
-"home.feed_list.title.en" = "SCP catalog (EN)";
-"home.feed_list.title.int" = "SCP International catalog";
+"home.feed_list.title.jp" = "SCP-JP Database";
+"home.feed_list.title.en" = "SCP Database";
+"home.feed_list.title.int" = "SCP INTERNATIONAL Database";
+"int.catalog_branch_picker.caption" = "Filter by tail language code";
+"int.catalog_branch_picker.open_site" = "Open this branch’s site";
+"int.catalog_branch_filter.empty.title" = "No articles for this code";
+"int.catalog_branch_filter.empty.subtitle" = "Pick another branch chip or sync and check the cache.";
+"int.catalog_branch_chip.ru" = "RU";
+"int.catalog_branch_chip.ko" = "KO";
+"int.catalog_branch_chip.cn" = "CN";
+"int.catalog_branch_chip.fr" = "FR";
+"int.catalog_branch_chip.pl" = "PL";
+"int.catalog_branch_chip.es" = "ES";
+"int.catalog_branch_chip.th" = "TH";
+"int.catalog_branch_chip.de" = "DE";
+"int.catalog_branch_chip.it" = "IT";
+"int.catalog_branch_chip.ua" = "UA";
+"int.catalog_branch_chip.pt_br" = "PT/BR";
+"int.catalog_branch_chip.cs" = "CS";
+"int.catalog_branch_chip.zh_tr" = "ZH/TR";
+"int.catalog_branch_chip.vn" = "VN";
+"int.catalog_branch_chip.other" = "Other";
 "home.feed_list.title.tales" = "Foundation Tales";
 "home.feed_list.title.gois" = "Groups of Interest";
 "home.feed_list.title.canons" = "Canons";
@@ -263,7 +289,7 @@
 "archive.filter.no_results" = "No matching reports";
 "archive.filter.no_results.hint" = "Change object class or tags, or tap Clear.";
 "archive.filter.object_class.accessibility" = "Object class filters";
-"archive.filter.no_tags_in_segment" = "No tag metadata in this block. Sync scp_list.json with tags from the generator script.";
+"archive.filter.no_tags_in_segment" = "No tag metadata in this block. Check Wikidot catalog sync.";
 "archive.list.row_tags.accessibility" = "Toggle showing tags on each list row. Tags also appear while filters or tag search are active.";
 
 "archive.sort.rating_high_low" = "Rating (high to low)";
@@ -466,6 +492,8 @@
 "article.load.timeout" = "The page took too long to load. Check your network and try again.";
 "article.load.failed" = "Could not load this page.";
 "article.load.retry" = "Retry";
+"article.reader_typography.loading_title" = "SECURE RENDER";
+"article.reader_typography.loading_subtitle" = "Stabilizing text scale for display…";
 "article.post_read.next_case" = "NEXT CASE";
 "article.post_read.random_case" = "RANDOM CASE";
 "article.diagnostic.minimal_banner" = "Diagnostics: minimal WebView (no injected scripts)";

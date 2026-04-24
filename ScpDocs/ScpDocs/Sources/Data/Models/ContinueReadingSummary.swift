@@ -2,12 +2,12 @@ import Foundation
 
 /// ホーム「続きから読む」3 行テキスト + 進捗ゲージの表示用（SwiftUI 以外の純データ）。
 struct ContinueReadingRowDisplay: Sendable, Equatable {
-    /// 一行目: 支部名（`SCP-JP` 等。ホスト基準。Tale/Canon 等の細分は同ファイルの `Classification` で扱い、本行は原則サイト名）。
-    let branchNameLine: String
-    /// 二行目: タイトル。
+    /// 一行目: カテゴリ（`SCP-JP` / `Tales` 等、`LocalizationKey` 経由）。
+    let categoryLine: String
+    /// 二行目: タイトル（JSON `t` を優先）。
     let titleLine: String
-    /// 三行目: SCP 番号（`SCP-001-JP` 形式）等の識別子。
-    let scpOrIdentifierLine: String
+    /// 三行目: オブジェクト番号表記＋（任意）オブジェクトクラス。
+    let line3Detail: String
     /// 四行目: 0...1 のスクロール進捗（ゲージ）。
     let scrollProgress: Double
     /// 右サムネイル用（任意）。
@@ -23,6 +23,7 @@ enum ContinueReadingSummaryBuilder {
         thumbnailURL: URL?,
         japanListHint: JapanSCPListReadingHint?,
         listMetaTitle: String?,
+        listMetaObjectClass: String?,
         localize: (String) -> String
     ) -> ContinueReadingRowDisplay {
         let slug = url.path.split(separator: "/").last.map(String.init) ?? ""
@@ -43,13 +44,58 @@ enum ContinueReadingSummaryBuilder {
             cachedPageTitle: cachedPageTitle,
             japanListHint: japanListHint
         )
+        let resolvedObjectClass = normalizedNonEmpty(listMetaObjectClass) ?? normalizedNonEmpty(japanListHint?.objectClass)
+        let line3 = resolveLine3Detail(
+            identifierLine: scpOrIdentifier,
+            objectClass: resolvedObjectClass,
+            localize: localize
+        )
         return ContinueReadingRowDisplay(
-            branchNameLine: localize(Self.branchNameLocalizationKey(host: host)),
+            categoryLine: localize(categoryLocalizationKey(classification: classification, host: host)),
             titleLine: title,
-            scpOrIdentifierLine: scpOrIdentifier,
+            line3Detail: line3,
             scrollProgress: min(1, max(0, scrollProgress)),
             thumbnailURL: thumbnailURL
         )
+    }
+
+    private static func normalizedNonEmpty(_ raw: String?) -> String? {
+        guard let t = raw?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty else { return nil }
+        return t
+    }
+
+    private static func resolveLine3Detail(
+        identifierLine: String,
+        objectClass: String?,
+        localize: (String) -> String
+    ) -> String {
+        guard let oc = objectClass else { return identifierLine }
+        let classSuffix = String(format: localize(LocalizationKey.homeContinueObjectClassFormat), oc)
+        return "\(identifierLine)  \(classSuffix)"
+    }
+
+    private static func categoryLocalizationKey(classification: Classification, host: String) -> String {
+        switch classification {
+        case .scpJapanOriginal, .scpJapanMainlistTranslation:
+            return LocalizationKey.homeContinueCategoryScpJp
+        case .scpJapanJoke:
+            return LocalizationKey.homeContinueCategoryJoke
+        case .scpEnglishMain:
+            return LocalizationKey.homeContinueBranchScp
+        case .scpEnglishJoke:
+            return LocalizationKey.homeContinueCategoryJoke
+        case .scpInternationalMain:
+            return LocalizationKey.homeContinueCategoryScpInternational
+        case .tale:
+            return LocalizationKey.homeContinueCategoryTales
+        case .canon:
+            return LocalizationKey.homeContinueCategoryCanon
+        case .goi:
+            return LocalizationKey.homeContinueCategoryGoi
+        case .other:
+            if host == "scp-kr.wikidot.com" { return LocalizationKey.homeContinueBranchScpKo }
+            return LocalizationKey.homeContinueCategoryOther
+        }
     }
 
     // MARK: - Tale 用（タイトル確定後に著者を切り出す）
@@ -89,16 +135,6 @@ enum ContinueReadingSummaryBuilder {
     }
 
     // MARK: - Private
-
-    private static func branchNameLocalizationKey(host: String) -> String {
-        switch host {
-        case "scp-jp.wikidot.com": LocalizationKey.homeContinueBranchScpJp
-        case "scp-wiki.wikidot.com": LocalizationKey.homeContinueBranchScp
-        case "scp-int.wikidot.com": LocalizationKey.homeContinueBranchScpInt
-        case "scp-kr.wikidot.com": LocalizationKey.homeContinueBranchScpKo
-        default: LocalizationKey.homeContinueCategoryOther
-        }
-    }
 
     private enum Classification: Equatable {
         case scpJapanOriginal

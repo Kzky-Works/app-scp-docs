@@ -7,7 +7,7 @@ import Observation
 // `SCPArticleTrifoldSyncService` を参照。`SCPArticle` の URL キーは `Self.storageKey(for:)` と一致させる。
 //
 // MARK: - Step 4（マルチフォーム）
-// `tales.json` / `gois.json` / `canons.json` / `jokes.json` の取得・キャッシュは
+// マルチフォーム `manifest_*.json` の取得・キャッシュは
 // `SCPGeneralContentCatalogRepository` と `MultiformContentSyncService`、および
 // `SCPArticleFeedCacheRepository` のマルチフォーム用ストレージが担当（本クラスは引き続きユーザー状態のみ）。
 

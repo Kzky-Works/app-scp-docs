@@ -16,6 +16,8 @@ final class WebViewModel {
     weak var webView: WKWebView?
     /// 記事本文の相対スケール（`SettingsRepository` と同期。既定 1.0）。
     var readerFontSizeMultiplier: Double = 1.0
+    /// `-webkit-text-size-adjust` 適用前は本文の誤スケールが見えないよう Web を隠し、ローディングに切り替える。
+    private(set) var isReaderSurfaceConcealed: Bool = false
 
     private let offlineStore: OfflineStore
 
@@ -119,6 +121,17 @@ final class WebViewModel {
 
     /// WebView 内の本文に `-webkit-text-size-adjust` 等を適用する（読み込み完了後や倍率変更時に呼ぶ）。
     /// 外観モード変更時に、既に読み込み済みの DOM へ CleanUI テーマを再適用する。
+    /// `WKNavigationDelegate` の本読み込み開始。注入による文字サイズ適用前のチラつきを隠す。
+    func markReaderSurfaceConcealedForPendingTypography() {
+        guard !WebViewDiagnostics.usesMinimalWebViewConfiguration else { return }
+        isReaderSurfaceConcealed = true
+    }
+
+    /// 失敗画面や最小構成では本文を隠し続けない。
+    func revealReaderSurface() {
+        isReaderSurfaceConcealed = false
+    }
+
     func applyWebContentPalette(_ palette: WebContentPalette) {
         guard let webView, !WebViewDiagnostics.usesMinimalWebViewConfiguration else { return }
         let js = """
@@ -137,8 +150,20 @@ final class WebViewModel {
         webView.evaluateJavaScript(js, completionHandler: nil)
     }
 
-    func applyReaderFontPresentation() {
-        guard let webView else { return }
+    /// - Parameters:
+    ///   - endsReaderTypographyConceal: 遷移完了後の初回適用で `true`（ローディングの解除）。スライダー等の手動調整は `false`。
+    ///   - onApplied: 本文への JS 適用後（失敗を含まない完了時。本文レイアウト基準の後処理用）。
+    func applyReaderFontPresentation(endsReaderTypographyConceal: Bool = true, onApplied: (() -> Void)? = nil) {
+        guard let webView else {
+            if endsReaderTypographyConceal { isReaderSurfaceConcealed = false }
+            onApplied?()
+            return
+        }
+        if WebViewDiagnostics.usesMinimalWebViewConfiguration {
+            if endsReaderTypographyConceal { isReaderSurfaceConcealed = false }
+            onApplied?()
+            return
+        }
         let pct = Int(round(readerFontSizeMultiplier * 100))
         let js = """
         (function(){
@@ -158,7 +183,16 @@ final class WebViewModel {
           }
         })();
         """
-        webView.evaluateJavaScript(js, completionHandler: nil)
+        webView.evaluateJavaScript(js) { [weak self] _, _ in
+            Task { @MainActor in
+                guard let self else {
+                    onApplied?()
+                    return
+                }
+                if endsReaderTypographyConceal { self.isReaderSurfaceConcealed = false }
+                onApplied?()
+            }
+        }
     }
 
     func recordNavigationFailure(_ error: Error) {

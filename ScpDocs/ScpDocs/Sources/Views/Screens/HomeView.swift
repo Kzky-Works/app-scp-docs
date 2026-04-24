@@ -49,7 +49,9 @@ struct HomeView: View {
         .toolbar(.hidden, for: .navigationBar)
         .tint(AppTheme.brandAccent)
         .onAppear {
-            homeViewModel.refreshTrifoldPersonnelDashboard()
+            Task { @MainActor in
+                homeViewModel.refreshTrifoldPersonnelDashboard()
+            }
         }
     }
 
@@ -62,6 +64,9 @@ struct HomeView: View {
         let usable = max(0, availableHeight - gapsTotal)
         let (hContinue, hRandom, hHero, hSupport) = flexSegmentHeights(usable: usable)
 
+        let categoryHeroOverhead: CGFloat = 28
+        let heroGridHeight = max(0, hHero - categoryHeroOverhead)
+
         return VStack(spacing: homeGridSpacing) {
             VStack(alignment: .leading, spacing: 0) {
                 sectionContinueReadingSlot()
@@ -73,9 +78,12 @@ struct HomeView: View {
                 Spacer(minLength: 0)
             }
             .frame(height: hRandom, alignment: .top)
-            sectionSplitHeroGrid(heroHeight: hHero)
-                .frame(height: hHero)
-                .clipped()
+            VStack(alignment: .leading, spacing: 6) {
+                homeSectionOuterTitle(localizationKey: LocalizationKey.homePillarCategorySectionCaption)
+                sectionSplitHeroGrid(heroHeight: heroGridHeight)
+            }
+            .frame(height: hHero, alignment: .top)
+            .clipped()
             sectionSupportHubs(fixedHeight: hSupport)
                 .frame(height: hSupport, alignment: .top)
                 .clipped()
@@ -116,24 +124,23 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         homeSectionOuterTitle(localizationKey: LocalizationKey.homeContinueReadingCaption)
                         terminalPanel {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(row.branchNameLine)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(AppTheme.textPrimary)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(row.categoryLine)
+                                    .font(continueReadingCategoryFont())
+                                    .foregroundStyle(AppTheme.textSecondary.opacity(0.9))
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.88)
                                 Text(row.titleLine)
-                                    .font(.body.weight(.semibold))
+                                    .font(continueReadingTitleFont())
                                     .foregroundStyle(AppTheme.textPrimary)
                                     .lineLimit(3)
                                     .minimumScaleFactor(0.85)
-                                Text(row.scpOrIdentifierLine)
-                                    .font(.body.weight(.heavy))
+                                Text(row.line3Detail)
+                                    .font(continueReadingLine3Font())
                                     .foregroundStyle(AppTheme.textPrimary)
-                                    .monospaced()
                                     .lineLimit(2)
                                     .minimumScaleFactor(0.78)
-                                readingProgressGauge(progress: row.scrollProgress)
+                                readingProgressGauge(progress: row.scrollProgress, locale: homeViewModel.resolvedLocale)
                             }
                         }
                     }
@@ -181,11 +188,32 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 6) {
                 homeSectionOuterTitle(localizationKey: LocalizationKey.homeRandomArticleReadSectionTitle)
                 terminalPanel {
-                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomPanelSubtitle)))
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .lineLimit(6)
-                        .minimumScaleFactor(0.82)
+                    HStack(alignment: .center, spacing: 12) {
+                        Image(systemName: "dice.fill")
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(AppTheme.textSecondary.opacity(0.95))
+                            .frame(width: 28, alignment: .center)
+                        VStack(alignment: .leading, spacing: 3) {
+                            (
+                                Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIPrefix)))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                + Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIWildcard)))
+                                    .foregroundStyle(AppTheme.readingProgressGaugeFill)
+                            )
+                            .font(homeDashboardMottoFont())
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.72)
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomExploreSubtitle)))
+                                .font(randomPanelExploreTitleFont())
+                                .foregroundStyle(AppTheme.textPrimary)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.85)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "chevron.right")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -204,6 +232,51 @@ struct HomeView: View {
         #endif
     }
 
+    private func continueReadingCategoryFont() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .subheadline).pointSize
+        return .system(size: max(6, pt - 1), weight: .regular, design: .default)
+        #else
+        return .subheadline
+        #endif
+    }
+
+    private func continueReadingTitleFont() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
+        return .system(size: pt + 1, weight: .bold, design: .default)
+        #else
+        return .body.weight(.bold)
+        #endif
+    }
+
+    private func continueReadingLine3Font() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
+        return .system(size: max(6, pt - 2), weight: .light, design: .default)
+        #else
+        return .callout
+        #endif
+    }
+
+    private func continueReadingPercentFont() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .caption2).pointSize
+        return .system(size: max(5, pt - 1), weight: .regular, design: .default)
+        #else
+        return .caption2
+        #endif
+    }
+
+    private func randomPanelExploreTitleFont() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
+        return .system(size: pt, weight: .bold, design: .default)
+        #else
+        return .body.weight(.bold)
+        #endif
+    }
+
     private func homeDashboardMottoFont() -> Font {
         #if canImport(UIKit)
         let pt = UIFont.preferredFont(forTextStyle: .subheadline).pointSize
@@ -213,26 +286,39 @@ struct HomeView: View {
         #endif
     }
 
-    private func readingProgressGauge(progress: Double) -> some View {
+    private func readingProgressGauge(progress: Double, locale: Locale) -> some View {
         let p = min(1, max(0, progress))
-        return GeometryReader { g in
-            let w = max(0, g.size.width)
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 3, style: .continuous)
-                    .fill(AppTheme.terminalSilver.opacity(0.22))
-                RoundedRectangle(cornerRadius: 3, style: .continuous)
-                    .fill(AppTheme.terminalSilver.opacity(0.9))
-                    .frame(width: max(2, w * p))
+        return VStack(alignment: .trailing, spacing: 3) {
+            GeometryReader { g in
+                let w = max(0, g.size.width)
+                ZStack(alignment: .leading) {
+                    Rectangle()
+                        .fill(AppTheme.readingProgressGaugeTrack)
+                    Rectangle()
+                        .fill(AppTheme.readingProgressGaugeFill)
+                        .frame(width: w * p)
+                }
             }
+            .frame(height: 2.5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Text(
+                String(
+                    format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueGaugePercentFormat)),
+                    locale: locale,
+                    Int((p * 100).rounded())
+                )
+            )
+            .font(continueReadingPercentFont())
+            .foregroundStyle(AppTheme.textSecondary.opacity(0.9))
+            .monospacedDigit()
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 8)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.homeContinueReadingAccessibility)))
         .accessibilityValue(
             String(
                 format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueScrollPercentFormat)),
-                locale: homeViewModel.resolvedLocale,
+                locale: locale,
                 Int((p * 100).rounded())
             )
         )

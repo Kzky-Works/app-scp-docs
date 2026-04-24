@@ -8,12 +8,11 @@ struct MainView: View {
     @Bindable var articleRepository: ArticleRepository
     @Bindable var purchaseRepository: PurchaseRepository
     let japanSCPListMetadataStore: JapanSCPListMetadataStore
-    let scpListCacheRepository: SCPListCacheRepository
+    let wikiCatalogCacheRepository: WikiCatalogCacheRepository
     let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository
     let personnelReadingJournal: PersonnelReadingJournal
     @Binding var selectedTab: AppRootTab
 
-    private let scpListSyncService = SCPListSyncService()
     private let wikiCatalogSyncService = WikiCatalogSyncService()
 
     private var scpArticleTrifoldSyncService: SCPArticleTrifoldSyncService {
@@ -91,16 +90,15 @@ struct MainView: View {
         .tint(AppTheme.brandAccent)
         .task {
             await Task.yield()
-            await scpListSyncService.syncIfNeeded(
-                metadataStore: japanSCPListMetadataStore,
-                cacheRepository: scpListCacheRepository
-            )
             await wikiCatalogSyncService.syncIfNeeded(
                 metadataStore: japanSCPListMetadataStore,
-                cacheRepository: scpListCacheRepository
+                wikiCatalogCacheRepository: wikiCatalogCacheRepository
             )
             await scpArticleTrifoldSyncService.syncAllFeedsIfNeeded()
             await multiformContentSyncService.syncAllMultiformFeedsIfNeeded()
+            await MainActor.run {
+                japanSCPListMetadataStore.reloadFromCache()
+            }
             try? personnelReadingJournal.reconcile(from: articleRepository)
             homeViewModel.refreshTrifoldPersonnelDashboard()
             Haptics.light()

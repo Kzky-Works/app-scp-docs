@@ -104,17 +104,23 @@ struct ArticleView: View {
                     }
                     : nil
             )
+                .opacity(webViewModel.isReaderSurfaceConcealed ? 0 : 1)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea(edges: [.horizontal, .bottom])
 
             WebViewTrailingScrollIndicator(viewModel: webViewModel)
+                .opacity(webViewModel.isReaderSurfaceConcealed ? 0 : 1)
                 .allowsHitTesting(false)
                 .ignoresSafeArea(edges: [.horizontal, .bottom])
 
-            if webViewModel.isLoading {
-                ProgressView()
-                    .tint(AppTheme.brandAccent)
-                    .scaleEffect(1.15)
+            if webViewModel.isReaderSurfaceConcealed, webViewModel.loadFailureMessage == nil {
+                ZStack {
+                    AppTheme.backgroundPrimary
+                    SCPArticleReaderLoadingOverlay()
+                }
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+                .transition(.opacity)
             }
 
             if showAutoArchiveToast {
@@ -258,7 +264,7 @@ struct ArticleView: View {
         }
         .onChange(of: homeViewModel.fontSizeMultiplier) { _, newValue in
             webViewModel.readerFontSizeMultiplier = newValue
-            webViewModel.applyReaderFontPresentation()
+            webViewModel.applyReaderFontPresentation(endsReaderTypographyConceal: false)
         }
         .tint(AppTheme.brandAccent)
     }

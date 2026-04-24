@@ -2,6 +2,20 @@ import Foundation
 
 /// 3 系統 `SCPArticleListPayload` のローカルキャッシュ（`UserDefaults`）。
 final class SCPArticleFeedCacheRepository: @unchecked Sendable {
+    private let cacheLock = NSLock()
+    private enum ListPayloadMemo {
+        case absent
+        case loaded(SCPArticleListPayload)
+    }
+
+    private enum GeneralMultiformMemo {
+        case absent
+        case loaded(SCPGeneralContentListPayload)
+    }
+
+    private var listPayloadMemo: [SCPArticleFeedKind: ListPayloadMemo] = [:]
+    private var generalMultiformMemo: [SCPArticleFeedKind: GeneralMultiformMemo] = [:]
+
     private enum StorageKey {
         static func payloadJSON(_ kind: SCPArticleFeedKind) -> String {
             "scp_article_feed.cache.\(kind.rawValue).payload_json"
@@ -40,16 +54,33 @@ final class SCPArticleFeedCacheRepository: @unchecked Sendable {
     }
 
     func loadPersistedPayload(kind: SCPArticleFeedKind) -> SCPArticleListPayload? {
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
+        if let memo = listPayloadMemo[kind] {
+            switch memo {
+            case .absent: return nil
+            case .loaded(let payload): return payload
+            }
+        }
         guard let data = defaults.data(forKey: StorageKey.payloadJSON(kind)), !data.isEmpty else {
+            listPayloadMemo[kind] = .absent
             return nil
         }
-        return try? decoder.decode(SCPArticleListPayload.self, from: data)
+        guard let decoded = try? decoder.decode(SCPArticleListPayload.self, from: data) else {
+            listPayloadMemo[kind] = .absent
+            return nil
+        }
+        listPayloadMemo[kind] = .loaded(decoded)
+        return decoded
     }
 
     func savePayload(_ payload: SCPArticleListPayload, kind: SCPArticleFeedKind) throws {
         let data = try encoder.encode(payload)
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
         defaults.set(data, forKey: StorageKey.payloadJSON(kind))
         defaults.set(payload.listVersion, forKey: StorageKey.appliedListVersion(kind))
+        listPayloadMemo[kind] = .loaded(payload)
     }
 
     // MARK: - Step 4（マルチフォーム）
@@ -61,16 +92,33 @@ final class SCPArticleFeedCacheRepository: @unchecked Sendable {
 
     func loadPersistedGeneralMultiformPayload(kind: SCPArticleFeedKind) -> SCPGeneralContentListPayload? {
         guard kind.isMultiformArchiveFeed else { return nil }
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
+        if let memo = generalMultiformMemo[kind] {
+            switch memo {
+            case .absent: return nil
+            case .loaded(let payload): return payload
+            }
+        }
         guard let data = defaults.data(forKey: StorageKey.generalMultiformPayloadJSON(kind)), !data.isEmpty else {
+            generalMultiformMemo[kind] = .absent
             return nil
         }
-        return try? decoder.decode(SCPGeneralContentListPayload.self, from: data)
+        guard let decoded = try? decoder.decode(SCPGeneralContentListPayload.self, from: data) else {
+            generalMultiformMemo[kind] = .absent
+            return nil
+        }
+        generalMultiformMemo[kind] = .loaded(decoded)
+        return decoded
     }
 
     func saveGeneralMultiformPayload(_ payload: SCPGeneralContentListPayload, kind: SCPArticleFeedKind) throws {
         precondition(kind.isMultiformArchiveFeed, "saveGeneralMultiformPayload expects a multiform feed kind")
         let data = try encoder.encode(payload)
+        cacheLock.lock()
+        defer { cacheLock.unlock() }
         defaults.set(data, forKey: StorageKey.generalMultiformPayloadJSON(kind))
         defaults.set(payload.listVersion, forKey: StorageKey.generalMultiformAppliedListVersion(kind))
+        generalMultiformMemo[kind] = .loaded(payload)
     }
 }

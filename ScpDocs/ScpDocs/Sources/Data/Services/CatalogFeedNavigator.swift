@@ -2,6 +2,14 @@ import Foundation
 
 /// キャッシュ済みカタログ（JP / EN / INT）内の「次の記事」「ランダム記事」を解決する。
 enum CatalogFeedNavigator: Sendable {
+    private static func trifoldCatalogEntries(kind: SCPArticleFeedKind, feedCache: SCPArticleFeedCacheRepository) -> [SCPArticle] {
+        let entries = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+        if kind == .int {
+            return entries.filter { !InternationalBranchPortalOption.SCPIntSlugLanguageTail.isEnglishBranchCatalogEntry($0) }
+        }
+        return entries
+    }
+
     /// `PersonnelReadingJournal` が保持する明示コンテキストがあれば優先し、なければ URL から推定する。
     static func effectiveKind(active: SCPArticleFeedKind?, for url: URL) -> SCPArticleFeedKind? {
         if let active { return active }
@@ -26,7 +34,7 @@ enum CatalogFeedNavigator: Sendable {
         kind: SCPArticleFeedKind,
         feedCache: SCPArticleFeedCacheRepository
     ) -> URL? {
-        let entries = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+        let entries = trifoldCatalogEntries(kind: kind, feedCache: feedCache)
         let key = ArticleRepository.storageKey(for: current)
         guard let idx = entries.firstIndex(where: { SCPArticleCatalogRepository.normalizedURLKey(for: $0) == key }) else {
             return entries.first?.resolvedURL
@@ -43,7 +51,7 @@ enum CatalogFeedNavigator: Sendable {
         feedCache: SCPArticleFeedCacheRepository,
         articleRepository: ArticleRepository
     ) -> URL? {
-        let entries = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []
+        let entries = trifoldCatalogEntries(kind: kind, feedCache: feedCache)
         let currentKey = current.map { ArticleRepository.storageKey(for: $0) }
         let unread = entries.filter { article in
             guard let u = article.resolvedURL else { return false }

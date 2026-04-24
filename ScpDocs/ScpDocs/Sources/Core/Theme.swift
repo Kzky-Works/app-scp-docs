@@ -89,6 +89,19 @@ enum AppTheme {
         blue: 192 / 255
     )
 
+    /// ホーム「続きから読む」進捗ゲージのフィル（#B85F14）。
+    static let readingProgressGaugeFill = Color(
+        red: 184 / 255,
+        green: 95 / 255,
+        blue: 20 / 255
+    )
+
+    /// ホーム進捗ゲージのトラック（#E6E6E6／ダークはやや下げる）。
+    static let readingProgressGaugeTrack = dynamicColor(
+        light: (230, 230, 230),
+        dark: (58, 58, 58)
+    )
+
     /// 旧コード互換: 主にアイコン・ラベルに使っていた「アクセント」＝ `textPrimary` と同系。
     static let accentPrimary = textPrimary
 
@@ -280,6 +293,13 @@ enum AppTypography {
         }
         let fallbackSize = UIFont.preferredFont(forTextStyle: .title2).pointSize + 5
         return Font.system(size: fallbackSize, weight: .semibold)
+    }
+
+    /// 記事一覧（ネイティブリスト）: 同じ `TextStyle` の**現在**のポイントを 1 下げる（Content Size の範囲で追従。長いナビタイトル対策）。
+    static func feedListOnePointDown(_ textStyle: UIFont.TextStyle, weight: Font.Weight) -> Font {
+        let base = UIFont.preferredFont(forTextStyle: textStyle)
+        let size = max(6, base.pointSize - 1)
+        return Font.system(size: size, weight: weight, design: .default)
     }
 #else
     static var homeBranchTitleRowReservedHeight: CGFloat { 34 }

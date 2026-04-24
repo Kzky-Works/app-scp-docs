@@ -13,7 +13,7 @@ struct ScpDocsApp: App {
     }()
 
     @State private var homeViewModel: HomeViewModel
-    @State private var scpListCacheRepository: SCPListCacheRepository
+    @State private var wikiCatalogCacheRepository: WikiCatalogCacheRepository
     @State private var japanSCPListMetadataStore: JapanSCPListMetadataStore
     private let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository
     private let personnelReadingJournal: PersonnelReadingJournal
@@ -24,7 +24,7 @@ struct ScpDocsApp: App {
         AppTypography.registerBundledHomePillarOpenFonts()
 #endif
         let settingsRepository = SettingsRepository()
-        let scpCache = SCPListCacheRepository()
+        let wikiCatalogCache = WikiCatalogCacheRepository()
         let articleRepo = ArticleRepository()
         let feedCache = SCPArticleFeedCacheRepository()
         let trifoldIndex = SCPArticleTrifoldIndexStore(feedCache: feedCache)
@@ -33,9 +33,7 @@ struct ScpDocsApp: App {
         self.scpArticleFeedCacheRepository = feedCache
         self.personnelReadingJournal = personnelJournal
 
-        try? personnelJournal.reconcile(from: articleRepo)
-
-        let japanMeta = JapanSCPListMetadataStore(cacheRepository: scpCache)
+        let japanMeta = JapanSCPListMetadataStore(wikiCatalogCacheRepository: wikiCatalogCache, articleFeedCache: feedCache)
         let homeVM = HomeViewModel(
             settingsRepository: settingsRepository,
             articleRepository: articleRepo,
@@ -44,12 +42,17 @@ struct ScpDocsApp: App {
             japanSCPListMetadataStore: japanMeta,
             scpArticleFeedCacheRepository: feedCache
         )
-        trifoldIndex.reloadFromCache()
-        homeVM.refreshTrifoldPersonnelDashboard()
+
+        /// 起動 `init` はメインスレッド・ウォッチドッグ対象。巨大 JSON の多重デコードや SwiftData 整列は初回描画後に回す。
+        Task { @MainActor in
+            try? personnelJournal.reconcile(from: articleRepo)
+            japanMeta.reloadFromCache()
+            homeVM.refreshTrifoldPersonnelDashboard()
+        }
 
         _articleRepository = State(wrappedValue: articleRepo)
         _homeViewModel = State(wrappedValue: homeVM)
-        _scpListCacheRepository = State(wrappedValue: scpCache)
+        _wikiCatalogCacheRepository = State(wrappedValue: wikiCatalogCache)
         _japanSCPListMetadataStore = State(wrappedValue: japanMeta)
 
         AppTheme.configureTabBarAppearance()
@@ -73,7 +76,7 @@ struct ScpDocsApp: App {
                 articleRepository: articleRepository,
                 purchaseRepository: purchaseRepository,
                 japanSCPListMetadataStore: japanSCPListMetadataStore,
-                scpListCacheRepository: scpListCacheRepository,
+                wikiCatalogCacheRepository: wikiCatalogCacheRepository,
                 scpArticleFeedCacheRepository: scpArticleFeedCacheRepository,
                 personnelReadingJournal: personnelReadingJournal,
                 selectedTab: $rootTab

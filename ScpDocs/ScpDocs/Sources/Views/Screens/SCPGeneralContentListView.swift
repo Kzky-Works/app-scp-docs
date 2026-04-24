@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Step 4: Tale / GoI / Canon / Joke のネイティブ一覧（`SCPGeneralContent`）。
 struct SCPGeneralContentListView: View {
@@ -32,7 +35,8 @@ struct SCPGeneralContentListView: View {
                     subtitleLocalizationKey: connectivity.isPathSatisfied
                         ? LocalizationKey.tacticalEmptyArchiveSubtitle
                         : LocalizationKey.tacticalEmptyNetworkSubtitle,
-                    usesNetworkInterruptedCopy: !connectivity.isPathSatisfied
+                    usesNetworkInterruptedCopy: !connectivity.isPathSatisfied,
+                    useCompactListTypography: true
                 )
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, minHeight: 220)
@@ -47,19 +51,19 @@ struct SCPGeneralContentListView: View {
                         HStack(alignment: .top, spacing: 10) {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text(row.t)
-                                    .font(.headline.weight(.heavy))
+                                    .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
                                     .foregroundStyle(AppTheme.textPrimary)
                                     .multilineTextAlignment(.leading)
                                     .lineLimit(2)
                                     .fixedSize(horizontal: false, vertical: true)
                                 if let author = row.trimmedAuthor {
                                     Text(author)
-                                        .font(.caption.weight(.medium))
+                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
                                         .foregroundStyle(AppTheme.textSecondary)
                                         .lineLimit(2)
                                 } else {
                                     Text(String(localized: String.LocalizationValue(LocalizationKey.multiformAuthorUnknown)))
-                                        .font(.caption.weight(.heavy))
+                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .heavy))
                                         .foregroundStyle(AppTheme.brandAccent)
                                         .lineLimit(1)
                                 }
@@ -67,7 +71,7 @@ struct SCPGeneralContentListView: View {
                             Spacer(minLength: 8)
                             if let u = row.resolvedURL, articleRepository.isRead(url: u) {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .font(.body.weight(.medium))
+                                    .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
                                     .foregroundStyle(AppTheme.textSecondary)
                             }
                         }
@@ -80,8 +84,17 @@ struct SCPGeneralContentListView: View {
             }
         }
         .background(AppTheme.mainBackground)
-        .navigationTitle(screenTitle)
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(screenTitle)
+                    .font(AppTypography.feedListOnePointDown(.headline, weight: .semibold))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.8)
+            }
+        }
         .task(id: kind) {
             cachedEntries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
         }

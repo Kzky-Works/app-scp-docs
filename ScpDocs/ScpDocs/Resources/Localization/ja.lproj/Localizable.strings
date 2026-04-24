@@ -103,6 +103,10 @@
 "home.random.access.caption" = "RANDOM ACCESS";
 "home.random.panel.subtitle" = "ランダムにSCP記事を読む";
 "home.random_article_read.section_title" = "ランダム記事を読む";
+"home.random.cli_prefix" = "$ random --scp=";
+"home.random.cli_wildcard" = "?????";
+"home.random.explore_subtitle" = "未知のオブジェクトを探索";
+"home.pillar.category_caption" = "カテゴリ";
 
 /* Home continue reading */
 "home.continue_reading.caption" = "続きから読む";
@@ -110,6 +114,7 @@
 "home.continue_reading.empty.subtitle" = "記事を開くと再開用の情報が表示されます。初回やデータ消去後は利用できません。";
 "home.continue_reading.accessibility" = "読了の目安";
 "home.continue_reading.scroll_percent_format" = "スクロール %lld パーセント";
+"home.continue_reading.gauge_percent" = "%lld%%";
 "home.continue_reading.object_class_format" = "オブジェクトクラス: %@";
 "home.continue_reading.branch.scp_jp" = "SCP-JP";
 "home.continue_reading.branch.scp" = "SCP";
@@ -119,6 +124,8 @@
 "home.continue_reading.category.scp_main_jp" = "SCP（和訳）";
 "home.continue_reading.category.scp_en" = "SCP-en";
 "home.continue_reading.category.scp_int" = "SCP-int";
+"home.continue_reading.category.scp_international" = "SCP-INTERNATIONAL";
+"home.continue_reading.category.tales" = "Tales";
 "home.continue_reading.category.tale" = "Tale";
 "home.continue_reading.category.canon" = "Canon";
 "home.continue_reading.category.goi" = "GoI";
@@ -132,9 +139,28 @@
 "home.personnel.daily_assignment_empty.title" = "NO ASSIGNMENT CURRENTLY AVAILABLE";
 "home.personnel.daily_assignment_empty.subtitle" = "現在割り当てられた任務なし — オンラインで同期するか、グリッドから任務を選択してください。";
 "home.hero.metrics_format" = "全%1$d件 · 未読%2$d";
-"home.feed_list.title.jp" = "SCP-JP カタログ";
-"home.feed_list.title.en" = "SCP カタログ（EN）";
-"home.feed_list.title.int" = "SCP International カタログ";
+"home.feed_list.title.jp" = "SCP-JP データベース";
+"home.feed_list.title.en" = "SCP データベース";
+"home.feed_list.title.int" = "SCP INTERNATIONAL データベース";
+"int.catalog_branch_picker.caption" = "末尾コードで絞り込み";
+"int.catalog_branch_picker.open_site" = "この支部のサイトを開く";
+"int.catalog_branch_filter.empty.title" = "このコードの記事がありません";
+"int.catalog_branch_filter.empty.subtitle" = "別の支部を選ぶか、同期後にキャッシュを確認してください。";
+"int.catalog_branch_chip.ru" = "RU";
+"int.catalog_branch_chip.ko" = "KO";
+"int.catalog_branch_chip.cn" = "CN";
+"int.catalog_branch_chip.fr" = "FR";
+"int.catalog_branch_chip.pl" = "PL";
+"int.catalog_branch_chip.es" = "ES";
+"int.catalog_branch_chip.th" = "TH";
+"int.catalog_branch_chip.de" = "DE";
+"int.catalog_branch_chip.it" = "IT";
+"int.catalog_branch_chip.ua" = "UA";
+"int.catalog_branch_chip.pt_br" = "PT/BR";
+"int.catalog_branch_chip.cs" = "CS";
+"int.catalog_branch_chip.zh_tr" = "ZH/TR";
+"int.catalog_branch_chip.vn" = "VN";
+"int.catalog_branch_chip.other" = "その他";
 "home.feed_list.title.tales" = "財団の物語（Tales）";
 "home.feed_list.title.gois" = "要注意団体（GoI）";
 "home.feed_list.title.canons" = "カノン";
@@ -263,7 +289,7 @@
 "archive.filter.no_results" = "該当する報告書がありません";
 "archive.filter.no_results.hint" = "オブジェクトクラスやタグを変えるか、「クリア」を押してください。";
 "archive.filter.object_class.accessibility" = "オブジェクトクラスで絞り込み";
-"archive.filter.no_tags_in_segment" = "このブロックにタグデータがありません。scp_list.json にタグを含めて同期してください。";
+"archive.filter.no_tags_in_segment" = "このブロックにタグデータがありません。Wikidot カタログの同期を確認してください。";
 "archive.list.row_tags.accessibility" = "一覧の各行にタグを表示する切り替え。フィルタやタグ検索中は自動で表示されます。";
 
 "archive.sort.rating_high_low" = "評価（高い順）";
@@ -466,6 +492,8 @@
 "article.load.timeout" = "読み込みがタイムアウトしました。通信状況を確認してから再試行してください。";
 "article.load.failed" = "ページを読み込めませんでした。";
 "article.load.retry" = "再試行";
+"article.reader_typography.loading_title" = "表示同期";
+"article.reader_typography.loading_subtitle" = "文字サイズを反映して本文を表示します";
 "article.post_read.next_case" = "次の任務";
 "article.post_read.random_case" = "ランダム任務";
 "article.diagnostic.minimal_banner" = "診断: 最小 WebView（注入スクリプトなし）";
