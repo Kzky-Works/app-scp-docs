@@ -106,9 +106,15 @@
 
 /* Home continue reading */
 "home.continue_reading.caption" = "続きから読む";
+"home.continue_reading.empty.title" = "続きから読める記録がありません";
+"home.continue_reading.empty.subtitle" = "記事を開くと再開用の情報が表示されます。初回やデータ消去後は利用できません。";
 "home.continue_reading.accessibility" = "読了の目安";
 "home.continue_reading.scroll_percent_format" = "スクロール %lld パーセント";
 "home.continue_reading.object_class_format" = "オブジェクトクラス: %@";
+"home.continue_reading.branch.scp_jp" = "SCP-JP";
+"home.continue_reading.branch.scp" = "SCP";
+"home.continue_reading.branch.scp_int" = "SCP-INT";
+"home.continue_reading.branch.scp_ko" = "SCP-KO";
 "home.continue_reading.category.scp_jp" = "SCP-JP";
 "home.continue_reading.category.scp_main_jp" = "SCP（和訳）";
 "home.continue_reading.category.scp_en" = "SCP-en";

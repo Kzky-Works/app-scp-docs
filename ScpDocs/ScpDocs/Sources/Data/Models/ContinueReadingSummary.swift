@@ -1,16 +1,14 @@
 import Foundation
 
-/// ホーム「続きから読む」5 行分の表示用（SwiftUI 以外の純データ）。
+/// ホーム「続きから読む」3 行テキスト + 進捗ゲージの表示用（SwiftUI 以外の純データ）。
 struct ContinueReadingRowDisplay: Sendable, Equatable {
-    /// 一行目: カテゴリ短名（ローカライズ済み）。
-    let categoryLine: String
-    /// 二行目: 番号・ハブ名・著者名など。
-    let identifierLine: String
-    /// 三行目: タイトル。
+    /// 一行目: 支部名（`SCP-JP` 等。ホスト基準。Tale/Canon 等の細分は同ファイルの `Classification` で扱い、本行は原則サイト名）。
+    let branchNameLine: String
+    /// 二行目: タイトル。
     let titleLine: String
-    /// 四行目: オブジェクトクラス全文（`nil` のときは行ごと非表示）。
-    let objectClassLine: String?
-    /// 五行目: 0...1 のスクロール進捗。
+    /// 三行目: SCP 番号（`SCP-001-JP` 形式）等の識別子。
+    let scpOrIdentifierLine: String
+    /// 四行目: 0...1 のスクロール進捗（ゲージ）。
     let scrollProgress: Double
     /// 右サムネイル用（任意）。
     let thumbnailURL: URL?
@@ -25,15 +23,14 @@ enum ContinueReadingSummaryBuilder {
         thumbnailURL: URL?,
         japanListHint: JapanSCPListReadingHint?,
         listMetaTitle: String?,
-        categoryLabel: (String) -> String,
-        objectClassFormat: (String) -> String
+        localize: (String) -> String
     ) -> ContinueReadingRowDisplay {
         let slug = url.path.split(separator: "/").last.map(String.init) ?? ""
         let host = url.host?.lowercased() ?? ""
 
         let classification = classify(host: host, slug: slug, url: url, japanListHint: japanListHint)
 
-        let identifier = resolveIdentifier(
+        let scpOrIdentifier = resolveScpOrIdentifierLine(
             classification: classification,
             slug: slug,
             cachedPageTitle: cachedPageTitle,
@@ -46,17 +43,10 @@ enum ContinueReadingSummaryBuilder {
             cachedPageTitle: cachedPageTitle,
             japanListHint: japanListHint
         )
-        let objectLine = objectClassLine(
-            classification: classification,
-            japanHint: japanListHint,
-            format: objectClassFormat
-        )
-
         return ContinueReadingRowDisplay(
-            categoryLine: categoryLabel(classification.categoryLocalizationKey),
-            identifierLine: identifier,
+            branchNameLine: localize(Self.branchNameLocalizationKey(host: host)),
             titleLine: title,
-            objectClassLine: objectLine,
+            scpOrIdentifierLine: scpOrIdentifier,
             scrollProgress: min(1, max(0, scrollProgress)),
             thumbnailURL: thumbnailURL
         )
@@ -100,6 +90,16 @@ enum ContinueReadingSummaryBuilder {
 
     // MARK: - Private
 
+    private static func branchNameLocalizationKey(host: String) -> String {
+        switch host {
+        case "scp-jp.wikidot.com": LocalizationKey.homeContinueBranchScpJp
+        case "scp-wiki.wikidot.com": LocalizationKey.homeContinueBranchScp
+        case "scp-int.wikidot.com": LocalizationKey.homeContinueBranchScpInt
+        case "scp-kr.wikidot.com": LocalizationKey.homeContinueBranchScpKo
+        default: LocalizationKey.homeContinueCategoryOther
+        }
+    }
+
     private enum Classification: Equatable {
         case scpJapanOriginal
         case scpJapanMainlistTranslation
@@ -111,20 +111,6 @@ enum ContinueReadingSummaryBuilder {
         case canon
         case goi
         case other
-
-        var categoryLocalizationKey: String {
-            switch self {
-            case .scpJapanOriginal: LocalizationKey.homeContinueCategoryScpJp
-            case .scpJapanMainlistTranslation: LocalizationKey.homeContinueCategoryScpMainJp
-            case .scpJapanJoke: LocalizationKey.homeContinueCategoryJoke
-            case .scpEnglishMain, .scpEnglishJoke: LocalizationKey.homeContinueCategoryScpEn
-            case .scpInternationalMain: LocalizationKey.homeContinueCategoryScpInt
-            case .tale: LocalizationKey.homeContinueCategoryTale
-            case .canon: LocalizationKey.homeContinueCategoryCanon
-            case .goi: LocalizationKey.homeContinueCategoryGoi
-            case .other: LocalizationKey.homeContinueCategoryOther
-            }
-        }
     }
 
     private static func classify(
@@ -209,25 +195,33 @@ enum ContinueReadingSummaryBuilder {
         return .other
     }
 
-    private static func resolveIdentifier(
+    /// 三行目: 報告書番号表記。Tale / Canon 等の専用レイアウトは別途指示可。
+    private static func resolveScpOrIdentifierLine(
         classification: Classification,
         slug: String,
         cachedPageTitle: String?,
         japanListHint: JapanSCPListReadingHint?
     ) -> String {
         if let japanListHint {
-            return japanListHint.displaySlug
+            return scpNumberLikeDisplayIfApplicable(japanListHint.displaySlug)
         }
         switch classification {
         case .tale:
-            return taleIdentifierLine(cachedPageTitle: cachedPageTitle, slug: slug)
+            return humanizedSlug(slug)
         case .scpEnglishMain, .scpEnglishJoke, .scpInternationalMain:
             return scpSlugDisplay(slug)
         case .canon, .goi, .other:
             return humanizedSlug(slug)
         default:
+            if slug.lowercased().hasPrefix("scp-") { return scpSlugDisplay(slug) }
             return humanizedSlug(slug)
         }
+    }
+
+    private static func scpNumberLikeDisplayIfApplicable(_ s: String) -> String {
+        let t = s.trimmingCharacters(in: .whitespacesAndNewlines)
+        if t.lowercased().hasPrefix("scp-") { return scpSlugDisplay(t) }
+        return t
     }
 
     private static func resolveMetaTitle(
@@ -253,24 +247,6 @@ enum ContinueReadingSummaryBuilder {
             return taleTitleLine(cachedPageTitle: nil, slug: slug)
         }
         return humanizedSlug(slug)
-    }
-
-    private static func objectClassLine(
-        classification: Classification,
-        japanHint: JapanSCPListReadingHint?,
-        format: (String) -> String
-    ) -> String? {
-        switch classification {
-        case .scpJapanOriginal, .scpJapanMainlistTranslation, .scpJapanJoke, .scpEnglishJoke:
-            if let oc = japanHint?.objectClass?.trimmingCharacters(in: .whitespacesAndNewlines), !oc.isEmpty {
-                return format(oc)
-            }
-            return nil
-        case .scpEnglishMain, .scpInternationalMain:
-            return nil
-        default:
-            return nil
-        }
     }
 
     private static func scpSlugDisplay(_ slug: String) -> String {

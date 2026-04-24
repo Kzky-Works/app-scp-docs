@@ -33,7 +33,7 @@ struct SCPArticleCatalogRepository: Sendable {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let decoded = try decoder.decode(SCPArticleListPayload.self, from: data)
-        guard decoded.schemaVersion == AppRemoteConfig.scpArticleFeedSchemaVersion else {
+        guard AppRemoteConfig.supportedSCPArticleFeedSchemaVersions.contains(decoded.schemaVersion) else {
             throw SCPArticleCatalogError.schemaMismatch
         }
         return decoded

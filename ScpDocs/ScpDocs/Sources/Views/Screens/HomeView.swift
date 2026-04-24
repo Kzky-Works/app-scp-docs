@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// 職員ダッシュボード。縦スクロールなしで表示領域に収め、`HomeViewModel` と `NavigationRouter` をバインドする。
 struct HomeView: View {
@@ -23,7 +26,7 @@ struct HomeView: View {
         self.onOpenSettings = onOpenSettings
     }
 
-    private var hasContinueReading: Bool {
+    private var hasActiveContinueReading: Bool {
         homeViewModel.continueReadingTargetURL != nil && homeViewModel.continueReadingRow != nil
     }
 
@@ -53,27 +56,23 @@ struct HomeView: View {
     // MARK: - 可変縦スタック（続き → ランダム → SCP 3 系統 → 2×2）
 
     private func homeFlexColumn(availableHeight: CGFloat) -> some View {
-        let sectionCount = hasContinueReading ? 4 : 3
+        let sectionCount = 4
         let gapCount = max(0, sectionCount - 1)
         let gapsTotal = CGFloat(gapCount) * homeGridSpacing
         let usable = max(0, availableHeight - gapsTotal)
         let (hContinue, hRandom, hHero, hSupport) = flexSegmentHeights(usable: usable)
 
         return VStack(spacing: homeGridSpacing) {
-            if hasContinueReading, let url = homeViewModel.continueReadingTargetURL, let row = homeViewModel.continueReadingRow {
-                VStack(alignment: .leading, spacing: 0) {
-                    sectionContinueReading(url: url, row: row)
-                    Spacer(minLength: 0)
-                }
-                .frame(height: hContinue, alignment: .top)
-                .clipped()
+            VStack(alignment: .leading, spacing: 0) {
+                sectionContinueReadingSlot()
+                Spacer(minLength: 0)
             }
+            .frame(height: hContinue, alignment: .top)
             VStack(spacing: 0) {
                 randomArticleSection
                 Spacer(minLength: 0)
             }
             .frame(height: hRandom, alignment: .top)
-            .clipped()
             sectionSplitHeroGrid(heroHeight: hHero)
                 .frame(height: hHero)
                 .clipped()
@@ -85,78 +84,85 @@ struct HomeView: View {
     }
 
     private func flexSegmentHeights(usable: CGFloat) -> (CGFloat, CGFloat, CGFloat, CGFloat) {
-        let wContinue: CGFloat
-        let wRandom: CGFloat
-        let wHero: CGFloat
-        let wSupport: CGFloat
-        if hasContinueReading {
-            wContinue = 0.30
-            wRandom = 0.12
-            wHero = 0.38
-            wSupport = 0.20
-        } else {
-            wContinue = 0
-            wRandom = 0.14
-            wHero = 0.42
-            wSupport = 0.44
-        }
-        let hc = hasContinueReading ? usable * wContinue : 0
-        let hr = usable * wRandom
-        let hh = usable * wHero
-        let hs = usable * wSupport
-        return (hc, hr, hh, hs)
+        let wContinue: CGFloat = 0.26
+        let wRandom: CGFloat = 0.16
+        let wHero: CGFloat = 0.36
+        let wSupport: CGFloat = 0.22
+        return (
+            usable * wContinue,
+            usable * wRandom,
+            usable * wHero,
+            usable * wSupport
+        )
     }
 
-    // MARK: - Continue reading
+    // MARK: - Continue reading（常時。記録なしはグレーアウト）
 
-    private func sectionContinueReading(url: URL, row: ContinueReadingRowDisplay) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text(String(localized: String.LocalizationValue(LocalizationKey.homeContinueReadingCaption)))
-                    .font(.caption.weight(.heavy))
-                    .foregroundStyle(AppTheme.terminalSilver)
-                    .tracking(1.1)
-                Text(row.identifierLine)
-                    .font(.body.weight(.bold))
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.72)
-                Spacer(minLength: 0)
-            }
+    private func homeSectionOuterTitle(localizationKey: String) -> some View {
+        Text(String(localized: String.LocalizationValue(localizationKey)))
+            .font(continueReadingOuterTitleFont())
+            .foregroundStyle(AppTheme.textPrimary)
+            .tracking(0.8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
 
-            Button {
-                Haptics.medium()
-                navigationRouter.pushArticle(url: url)
-            } label: {
-                terminalPanel {
+    private func sectionContinueReadingSlot() -> some View {
+        Group {
+            if hasActiveContinueReading, let url = homeViewModel.continueReadingTargetURL, let row = homeViewModel.continueReadingRow {
+                Button {
+                    Haptics.medium()
+                    navigationRouter.pushArticle(url: url)
+                } label: {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(row.categoryLine)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.85)
-                        Text(row.identifierLine)
-                            .font(.body.weight(.heavy))
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .monospaced()
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.78)
-                        Text(row.titleLine)
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .lineLimit(3)
-                            .minimumScaleFactor(0.82)
-                        readingProgressGauge(progress: row.scrollProgress)
-                        HStack {
-                            Spacer(minLength: 0)
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(AppTheme.terminalSilver.opacity(0.75))
+                        homeSectionOuterTitle(localizationKey: LocalizationKey.homeContinueReadingCaption)
+                        terminalPanel {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(row.branchNameLine)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.88)
+                                Text(row.titleLine)
+                                    .font(.body.weight(.semibold))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                    .lineLimit(3)
+                                    .minimumScaleFactor(0.85)
+                                Text(row.scpOrIdentifierLine)
+                                    .font(.body.weight(.heavy))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                    .monospaced()
+                                    .lineLimit(2)
+                                    .minimumScaleFactor(0.78)
+                                readingProgressGauge(progress: row.scrollProgress)
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(DashboardPressButtonStyle())
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    homeSectionOuterTitle(localizationKey: LocalizationKey.homeContinueReadingCaption)
+                    terminalPanel {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.homeContinueReadingEmptyTitle)))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(AppTheme.textSecondary)
+                                .lineLimit(3)
+                                .minimumScaleFactor(0.85)
+                            Text(String(localized: String.LocalizationValue(LocalizationKey.homeContinueReadingEmptySubtitle)))
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(AppTheme.textSecondary.opacity(0.95))
+                                .lineLimit(5)
+                                .minimumScaleFactor(0.88)
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .opacity(0.52)
+                .allowsHitTesting(false)
             }
-            .buttonStyle(DashboardPressButtonStyle())
         }
         .frame(maxWidth: .infinity, alignment: .top)
     }
@@ -172,28 +178,39 @@ struct HomeView: View {
                 navigationRouter.pushArticle(url: homeViewModel.selectedBranch.randomSCPURL)
             }
         } label: {
-            terminalPanel {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomArticleReadSectionTitle)))
-                        .font(.caption.weight(.heavy))
-                        .foregroundStyle(AppTheme.terminalSilver)
-                        .tracking(1.1)
+            VStack(alignment: .leading, spacing: 6) {
+                homeSectionOuterTitle(localizationKey: LocalizationKey.homeRandomArticleReadSectionTitle)
+                terminalPanel {
                     Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomPanelSubtitle)))
                         .font(.subheadline.weight(.medium))
                         .foregroundStyle(AppTheme.textSecondary)
-                        .lineLimit(5)
+                        .lineLimit(6)
                         .minimumScaleFactor(0.82)
-                    HStack {
-                        Spacer()
-                        Image(systemName: "shuffle")
-                            .font(.title3.weight(.semibold))
-                            .foregroundStyle(AppTheme.terminalSilver.opacity(0.85))
-                    }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
         }
         .buttonStyle(DashboardPressButtonStyle())
         .frame(maxWidth: .infinity, alignment: .top)
+    }
+
+    private func continueReadingOuterTitleFont() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .caption1).pointSize
+        return .system(size: pt + 1, weight: .heavy)
+        #else
+        return .caption.weight(.heavy)
+        #endif
+    }
+
+    private func homeDashboardMottoFont() -> Font {
+        #if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .subheadline).pointSize
+        return .system(size: max(10, pt - 2), weight: .medium, design: .monospaced)
+        #else
+        return .subheadline.weight(.medium)
+        #endif
     }
 
     private func readingProgressGauge(progress: Double) -> some View {
@@ -432,9 +449,8 @@ struct HomeView: View {
                 .buttonStyle(.plain)
 
                 Text(String(localized: String.LocalizationValue(LocalizationKey.homeDashboardMotto)))
-                    .font(.subheadline.weight(.medium))
+                    .font(homeDashboardMottoFont())
                     .foregroundStyle(AppTheme.textSecondary)
-                    .monospaced()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 

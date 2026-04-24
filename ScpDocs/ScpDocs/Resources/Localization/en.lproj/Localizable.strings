@@ -106,9 +106,15 @@
 
 /* Home continue reading */
 "home.continue_reading.caption" = "Continue reading";
+"home.continue_reading.empty.title" = "No saved progress";
+"home.continue_reading.empty.subtitle" = "Open an article to build history. This area is unavailable after data is cleared.";
 "home.continue_reading.accessibility" = "Reading progress";
 "home.continue_reading.scroll_percent_format" = "%lld percent scrolled";
 "home.continue_reading.object_class_format" = "Object class: %@";
+"home.continue_reading.branch.scp_jp" = "SCP-JP";
+"home.continue_reading.branch.scp" = "SCP";
+"home.continue_reading.branch.scp_int" = "SCP-INT";
+"home.continue_reading.branch.scp_ko" = "SCP-KO";
 "home.continue_reading.category.scp_jp" = "SCP-JP";
 "home.continue_reading.category.scp_main_jp" = "SCP (Japanese)";
 "home.continue_reading.category.scp_en" = "SCP-en";

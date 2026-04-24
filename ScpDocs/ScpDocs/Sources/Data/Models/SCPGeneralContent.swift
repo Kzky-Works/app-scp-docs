@@ -1,5 +1,19 @@
 import Foundation
 
+// MARK: - Manifest (schema 2) DTO
+
+struct SCPGeneralContentManifestMetadata: Codable, Sendable, Equatable {
+    var a: String?
+    var o: String?
+    var g: [String]?
+}
+
+private struct SCPGeneralContentLightEntryDTO: Codable, Sendable {
+    let u: String
+    let i: String
+    let t: String
+}
+
 /// 非ナンバリング記事（Tale / GoI / Canon / Joke）の 1 エントリ。配信 JSON の短縮キーに合わせる。
 struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
     /// 記事 URL（絶対 URL 文字列）。
@@ -12,6 +26,8 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
     var o: String?
     /// タグ。
     var g: [String]
+    /// 安定識別子（マニフェスト `entries[].i`）。従来 JSON では省略可。
+    var i: String?
 
     enum CodingKeys: String, CodingKey {
         case u
@@ -19,14 +35,16 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         case a
         case o
         case g
+        case i
     }
 
-    init(u: String, t: String, a: String? = nil, o: String? = nil, g: [String] = []) {
+    init(u: String, t: String, a: String? = nil, o: String? = nil, g: [String] = [], i: String? = nil) {
         self.u = u
         self.t = t
         self.a = Self.trimmedOptional(a)
         self.o = Self.trimmedOptional(o)
         self.g = Self.normalizedTags(g)
+        self.i = Self.trimmedOptional(i)
     }
 
     init(from decoder: Decoder) throws {
@@ -36,6 +54,7 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         a = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .a))
         o = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .o))
         g = Self.normalizedTags(try container.decodeIfPresent([String].self, forKey: .g) ?? [])
+        i = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .i))
     }
 
     func encode(to encoder: Encoder) throws {
@@ -47,6 +66,7 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         if !g.isEmpty {
             try container.encode(g, forKey: .g)
         }
+        try container.encodeIfPresent(i, forKey: .i)
     }
 
     /// `ArticleRepository.storageKey(for:)` と一致させるための正規化 URL。
@@ -81,9 +101,10 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
     }
 }
 
-/// `tales.json` / `gois.json` 等のラッパー。`SCPArticleListPayload` と同形のメタで増分取得に対応。
+/// `manifest_tales.json` 等 / 従来フラット JSON のラッパー。増分取得に対応。
 struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
     var listVersion: Int
+    /// 常に `AppRemoteConfig.scpGeneralContentFeedSchemaVersion`（1）へ正規化してキャッシュする。
     var schemaVersion: Int
     var generatedAt: Date
     var entries: [SCPGeneralContent]
@@ -93,6 +114,7 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         case schemaVersion
         case generatedAt
         case entries
+        case metadata
     }
 
     init(listVersion: Int, schemaVersion: Int, generatedAt: Date, entries: [SCPGeneralContent]) {
@@ -105,8 +127,34 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         listVersion = try c.decode(Int.self, forKey: .listVersion)
-        schemaVersion = try c.decode(Int.self, forKey: .schemaVersion)
+        let rawSchema = try c.decode(Int.self, forKey: .schemaVersion)
         generatedAt = try c.decode(Date.self, forKey: .generatedAt)
-        entries = try c.decode([SCPGeneralContent].self, forKey: .entries)
+        if rawSchema >= 2 {
+            let lights = try c.decode([SCPGeneralContentLightEntryDTO].self, forKey: .entries)
+            let meta = try c.decodeIfPresent([String: SCPGeneralContentManifestMetadata].self, forKey: .metadata) ?? [:]
+            entries = lights.map { lite in
+                let m = meta[lite.i]
+                return SCPGeneralContent(
+                    u: lite.u,
+                    t: lite.t,
+                    a: m?.a,
+                    o: m?.o,
+                    g: m?.g ?? [],
+                    i: lite.i
+                )
+            }
+            schemaVersion = AppRemoteConfig.scpGeneralContentFeedSchemaVersion
+        } else {
+            schemaVersion = rawSchema
+            entries = try c.decode([SCPGeneralContent].self, forKey: .entries)
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(listVersion, forKey: .listVersion)
+        try c.encode(schemaVersion, forKey: .schemaVersion)
+        try c.encode(generatedAt, forKey: .generatedAt)
+        try c.encode(entries, forKey: .entries)
     }
 }

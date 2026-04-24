@@ -22,7 +22,7 @@ struct SCPGeneralContentCatalogRepository: Sendable {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let decoded = try decoder.decode(SCPGeneralContentListPayload.self, from: data)
-        guard decoded.schemaVersion == AppRemoteConfig.scpGeneralContentFeedSchemaVersion else {
+        guard AppRemoteConfig.supportedSCPGeneralContentFeedSchemaVersions.contains(decoded.schemaVersion) else {
             throw SCPGeneralContentCatalogError.schemaMismatch
         }
         return decoded

@@ -120,9 +120,6 @@ final class HomeViewModel {
         let fromRepo = articleRepository.readingScrollDepth(for: url)
         let fromPersonnel = (try? personnelJournal?.scrollProgress(forNormalizedURLKey: key)) ?? 0
         let scroll = max(fromRepo, fromPersonnel)
-        let objectClassFormat: (String) -> String = { oc in
-            String(format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueObjectClassFormat)), oc)
-        }
         return ContinueReadingSummaryBuilder.build(
             url: url,
             scrollProgress: scroll,
@@ -130,8 +127,7 @@ final class HomeViewModel {
             thumbnailURL: articleRepository.cachedFirstImageURL(for: url),
             japanListHint: japanSCPListMetadataStore?.readingHint(for: url),
             listMetaTitle: catalogListMetaTitle(for: url),
-            categoryLabel: { String(localized: String.LocalizationValue($0)) },
-            objectClassFormat: objectClassFormat
+            localize: { String(localized: String.LocalizationValue($0)) }
         )
     }
 

@@ -1,5 +1,20 @@
 import Foundation
 
+// MARK: - Manifest (schema 2) DTO
+
+/// `manifest_*.json` の `metadata[i]` 断片。
+struct SCPArticleManifestMetadata: Codable, Sendable, Equatable {
+    var c: String?
+    var o: String?
+    var g: [String]?
+}
+
+private struct SCPArticleLightEntryDTO: Codable, Sendable {
+    let u: String
+    let i: String
+    let t: String
+}
+
 /// 3 系統 SCP 報告書 JSON ＋ Tale / GoI / Canon / Joke マルチフォーム一覧の識別子（キャッシュキー・URL 解決に使用）。
 enum SCPArticleFeedKind: String, Codable, CaseIterable, Sendable {
     case jp
@@ -109,9 +124,10 @@ struct SCPArticle: Codable, Sendable, Hashable, Equatable {
     }
 }
 
-/// 各 `scp-*.json` のラッパー。`SCPListRemotePayload` と同様に `listVersion` で増分取得の足場とする。
+/// 各 `manifest_scp-*.json` / 従来 `scp-*.json` のラッパー。`listVersion` で増分取得の足場とする。
 struct SCPArticleListPayload: Codable, Sendable, Equatable {
     var listVersion: Int
+    /// 常に `AppRemoteConfig.scpArticleFeedSchemaVersion`（1）へ正規化してキャッシュする。
     var schemaVersion: Int
     var generatedAt: Date
     var entries: [SCPArticle]
@@ -121,6 +137,7 @@ struct SCPArticleListPayload: Codable, Sendable, Equatable {
         case schemaVersion
         case generatedAt
         case entries
+        case metadata
     }
 
     init(listVersion: Int, schemaVersion: Int, generatedAt: Date, entries: [SCPArticle]) {
@@ -133,8 +150,34 @@ struct SCPArticleListPayload: Codable, Sendable, Equatable {
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         listVersion = try c.decode(Int.self, forKey: .listVersion)
-        schemaVersion = try c.decode(Int.self, forKey: .schemaVersion)
+        let rawSchema = try c.decode(Int.self, forKey: .schemaVersion)
         generatedAt = try c.decode(Date.self, forKey: .generatedAt)
-        entries = try c.decode([SCPArticle].self, forKey: .entries)
+        if rawSchema >= 2 {
+            let lights = try c.decode([SCPArticleLightEntryDTO].self, forKey: .entries)
+            let meta = try c.decodeIfPresent([String: SCPArticleManifestMetadata].self, forKey: .metadata) ?? [:]
+            entries = lights.map { lite in
+                let m = meta[lite.i]
+                return SCPArticle(
+                    u: lite.u,
+                    i: lite.i,
+                    t: lite.t,
+                    c: m?.c,
+                    o: m?.o,
+                    g: m?.g ?? []
+                )
+            }
+            schemaVersion = AppRemoteConfig.scpArticleFeedSchemaVersion
+        } else {
+            schemaVersion = rawSchema
+            entries = try c.decode([SCPArticle].self, forKey: .entries)
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(listVersion, forKey: .listVersion)
+        try c.encode(schemaVersion, forKey: .schemaVersion)
+        try c.encode(generatedAt, forKey: .generatedAt)
+        try c.encode(entries, forKey: .entries)
     }
 }

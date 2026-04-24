@@ -1,6 +1,6 @@
 import Foundation
 
-/// `tales.json` / `gois.json` / `canons.json` / `jokes.json` を並列取得し、マルチフォーム用キャッシュへ保存する。
+/// `manifest_tales.json` / `manifest_gois.json` / `canons.json` / `jokes.json` を並列取得し、マルチフォーム用キャッシュへ保存する。
 struct MultiformContentSyncService: Sendable {
     private let catalogRepository: SCPGeneralContentCatalogRepository
     private let cacheRepository: SCPArticleFeedCacheRepository

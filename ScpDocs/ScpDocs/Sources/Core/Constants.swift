@@ -102,9 +102,16 @@ enum LocalizationKey {
     static let homeRandomPanelSubtitle = "home.random.panel.subtitle"
     static let homeRandomArticleReadSectionTitle = "home.random_article_read.section_title"
     static let homeContinueReadingCaption = "home.continue_reading.caption"
+    static let homeContinueReadingEmptyTitle = "home.continue_reading.empty.title"
+    static let homeContinueReadingEmptySubtitle = "home.continue_reading.empty.subtitle"
     static let homeContinueReadingAccessibility = "home.continue_reading.accessibility"
     static let homeContinueScrollPercentFormat = "home.continue_reading.scroll_percent_format"
     static let homeContinueObjectClassFormat = "home.continue_reading.object_class_format"
+    /// 続きから読む 1 行目: Wikidot ホストに対応する短い支部名。
+    static let homeContinueBranchScpJp = "home.continue_reading.branch.scp_jp"
+    static let homeContinueBranchScp = "home.continue_reading.branch.scp"
+    static let homeContinueBranchScpInt = "home.continue_reading.branch.scp_int"
+    static let homeContinueBranchScpKo = "home.continue_reading.branch.scp_ko"
     static let homeContinueCategoryScpJp = "home.continue_reading.category.scp_jp"
     static let homeContinueCategoryScpMainJp = "home.continue_reading.category.scp_main_jp"
     static let homeContinueCategoryScpEn = "home.continue_reading.category.scp_en"
@@ -444,11 +451,17 @@ enum AppRemoteConfig {
     /// `SCPListRemotePayload` の `schemaVersion` と一致させる。
     static let scpListSchemaVersion = 1
 
-    /// `SCPArticleListPayload` の `schemaVersion` と一致させる（3 系統 `scp-*.json`）。
+    /// キャッシュへ保存する正規形の `schemaVersion`（フラット entries のみ）。
     static let scpArticleFeedSchemaVersion = 1
 
-    /// `SCPGeneralContentListPayload`（`tales.json` 等）の `schemaVersion`。
+    /// ネットワーク上で受け入れる記事フィードの `schemaVersion`（1=従来、2=manifest）。
+    static let supportedSCPArticleFeedSchemaVersions: Set<Int> = [1, 2]
+
+    /// キャッシュへ保存する正規形の `schemaVersion`。
     static let scpGeneralContentFeedSchemaVersion = 1
+
+    /// Tales/GoI 等で受け入れる `schemaVersion`（1=従来、2=manifest）。
+    static let supportedSCPGeneralContentFeedSchemaVersions: Set<Int> = [1, 2]
 
     /// `WikiCategoryCatalogPayload` の `schemaVersion` と一致させる（data-scp-docs `docs/catalog`）。
     static let wikiCatalogSchemaVersion = 1
@@ -467,15 +480,15 @@ enum AppRemoteConfig {
     /// 本番では HTTPS の絶対 URL に差し替える（例: `https://<user>.github.io/scp-docs/scp_list.json`）。
     static let scpListJSONURLString = "\(scpDataHostBaseURLString)/scp_list.json"
 
-    /// 日本支部系統の記事一覧（`list/jp/scp-jp.json`）。
-    static let scpJPListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/scp-jp.json"
-    /// 本家メイン和訳系の記事一覧（`list/jp/scp.json`）。
-    static let scpENListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/scp.json"
-    /// 国際支部系統の記事一覧（`list/jp/scp-int.json`）。
-    static let scpINTListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/scp-int.json"
+    /// 日本支部系統のマニフェスト（`list/jp/manifest_scp-jp.json`）。
+    static let scpJPListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_scp-jp.json"
+    /// 本家メイン和訳系のマニフェスト（`list/jp/manifest_scp-main.json`）。
+    static let scpENListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_scp-main.json"
+    /// 国際支部系統のマニフェスト（`list/jp/manifest_scp-int.json`）。
+    static let scpINTListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_scp-int.json"
 
-    static let talesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/tales.json"
-    static let goisListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/gois.json"
+    static let talesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_tales.json"
+    static let goisListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_gois.json"
     static let canonsListJSONPathComponent = "canons.json"
     static let jokesListJSONPathComponent = "jokes.json"
 

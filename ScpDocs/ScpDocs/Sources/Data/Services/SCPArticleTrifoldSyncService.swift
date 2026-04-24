@@ -1,6 +1,6 @@
 import Foundation
 
-/// `list/jp/scp-jp.json` 等（`AppRemoteConfig` 解決 URL）を非同期に並列取得し、キャッシュへ保存する。
+/// `list/jp/manifest_scp-*.json`（`AppRemoteConfig` 解決 URL）を非同期に並列取得し、キャッシュへ保存する。
 struct SCPArticleTrifoldSyncService: Sendable {
     private let catalogRepository: SCPArticleCatalogRepository
     private let cacheRepository: SCPArticleFeedCacheRepository
