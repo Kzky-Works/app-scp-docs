@@ -139,6 +139,11 @@
 "home.personnel.daily_assignment_empty.title" = "NO ASSIGNMENT CURRENTLY AVAILABLE";
 "home.personnel.daily_assignment_empty.subtitle" = "No mission is currently assigned. Sync when online or pick an archive tile.";
 "home.hero.metrics_format" = "%1$d articles · %2$d unread";
+"home.hero.jp.tagline" = "Japanese branch official list — secure, contain, protect.";
+"home.hero.en.tagline" = "Mainlist in Japanese translation — same navigation as SCP-JP.";
+"home.hero.int.tagline" = "International hub — translated reports from branch sites.";
+"home.hero.catalog_gauge.a11y.label" = "Catalog read progress";
+"home.hero.catalog_gauge.a11y.value_format" = "%1$d of %2$d articles read";
 "home.feed_list.title.jp" = "SCP-JP Database";
 "home.feed_list.title.en" = "SCP Database";
 "home.feed_list.title.int" = "SCP INTERNATIONAL Database";
@@ -161,6 +166,13 @@
 "int.catalog_branch_chip.zh_tr" = "ZH/TR";
 "int.catalog_branch_chip.vn" = "VN";
 "int.catalog_branch_chip.other" = "Other";
+
+/* Joke catalog (JP branch vs main -J) */
+"joke.catalog_origin.jp" = "JP";
+"joke.catalog_origin.main" = "Main";
+"joke.catalog_origin.picker.a11y" = "Joke report origin";
+"joke.catalog_filter.empty.title" = "No entries for this origin";
+"joke.catalog_filter.empty.subtitle" = "Switch between JP and Main, or sync and check the cache.";
 "home.feed_list.title.tales" = "Foundation Tales";
 "home.feed_list.title.gois" = "Groups of Interest";
 "home.feed_list.title.canons" = "Canons";

@@ -196,11 +196,10 @@ struct HomeView: View {
                         VStack(alignment: .leading, spacing: 3) {
                             (
                                 Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIPrefix)))
-                                    .foregroundStyle(AppTheme.textPrimary)
                                 + Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIWildcard)))
-                                    .foregroundStyle(AppTheme.readingProgressGaugeFill)
                             )
-                            .font(homeDashboardMottoFont())
+                            .font(continueReadingCategoryFont())
+                            .foregroundStyle(AppTheme.textSecondary.opacity(0.9))
                             .lineLimit(2)
                             .minimumScaleFactor(0.72)
                             Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomExploreSubtitle)))
@@ -244,7 +243,7 @@ struct HomeView: View {
     private func continueReadingTitleFont() -> Font {
         #if canImport(UIKit)
         let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
-        return .system(size: pt + 1, weight: .bold, design: .default)
+        return .system(size: pt + 4, weight: .bold, design: .default)
         #else
         return .body.weight(.bold)
         #endif
@@ -271,7 +270,7 @@ struct HomeView: View {
     private func randomPanelExploreTitleFont() -> Font {
         #if canImport(UIKit)
         let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
-        return .system(size: pt, weight: .bold, design: .default)
+        return .system(size: pt + 2, weight: .bold, design: .default)
         #else
         return .body.weight(.bold)
         #endif
@@ -283,6 +282,19 @@ struct HomeView: View {
         return .system(size: max(10, pt - 2), weight: .medium, design: .monospaced)
         #else
         return .subheadline.weight(.medium)
+        #endif
+    }
+
+    /// ホーム支部名左の財団マーク高さ。`AppTypography.homeBranchTitleFont` と同一の text style / weight でスケールする。
+    private func homeDashboardBranchMarkHeight() -> CGFloat {
+        #if canImport(UIKit)
+        let style: UIFont.TextStyle = .title2
+        let base = UIFont.preferredFont(forTextStyle: style)
+        let semibold = UIFont.systemFont(ofSize: base.pointSize, weight: .semibold)
+        let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: semibold)
+        return ceil(scaled.lineHeight * 0.94)
+        #else
+        return 28
         #endif
     }
 
@@ -326,6 +338,89 @@ struct HomeView: View {
 
     // MARK: - Split Hero（SCP-JP / SCP-en / SCP-int）
 
+    private func heroArchiveTitleFont(kind: SCPArticleFeedKind, isDoubleHeight: Bool, compact: Bool) -> Font {
+        if kind == .jp, isDoubleHeight {
+#if canImport(UIKit)
+            let style: UIFont.TextStyle = compact ? .title2 : .largeTitle
+            let base = UIFont.preferredFont(forTextStyle: style)
+            let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
+            let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
+            return Font(scaled)
+#else
+            return compact ? .title.weight(.heavy) : .largeTitle.weight(.heavy)
+#endif
+        }
+        return isDoubleHeight
+            ? (compact ? .headline.weight(.heavy) : .title2.weight(.heavy))
+            : (compact ? .caption.weight(.heavy) : .subheadline.weight(.heavy))
+    }
+
+#if canImport(UIKit)
+    private func heroJpLogoHeight(compact: Bool) -> CGFloat {
+        let style: UIFont.TextStyle = compact ? .title2 : .largeTitle
+        let base = UIFont.preferredFont(forTextStyle: style)
+        let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
+        let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
+        return ceil(scaled.lineHeight * 0.92)
+    }
+#else
+    private func heroJpLogoHeight(compact: Bool) -> CGFloat {
+        compact ? 28 : 38
+    }
+#endif
+
+    private func heroJpTaglineFont() -> Font {
+#if canImport(UIKit)
+        let pt = UIFont.preferredFont(forTextStyle: .caption2).pointSize
+        return .system(size: max(9, pt), weight: .light, design: .default)
+#else
+        return .caption2.weight(.light)
+#endif
+    }
+
+    /// Split Hero の SCP-JP / 本家翻訳 / 国際版：カタログ内の既読割合（％表記なし・点線風ダッシュ）。
+    private func heroTrifoldCatalogReadGauge(
+        readFraction: Double,
+        readCount: Int,
+        total: Int,
+        locale: Locale
+    ) -> some View {
+        let p = min(1, max(0, readFraction))
+        return GeometryReader { g in
+            let midY = g.size.height / 2
+            let w = g.size.width
+            ZStack(alignment: .leading) {
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: midY))
+                    path.addLine(to: CGPoint(x: w, y: midY))
+                }
+                .stroke(
+                    AppTheme.readingProgressGaugeTrack.opacity(0.95),
+                    style: StrokeStyle(lineWidth: 1.25, lineCap: .round, dash: [2, 5])
+                )
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: midY))
+                    path.addLine(to: CGPoint(x: w * p, y: midY))
+                }
+                .stroke(
+                    AppTheme.readingProgressGaugeFill,
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [2, 5])
+                )
+            }
+        }
+        .frame(height: 6)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.homeHeroCatalogGaugeA11yLabel)))
+        .accessibilityValue(
+            String(
+                format: String(localized: String.LocalizationValue(LocalizationKey.homeHeroCatalogGaugeA11yValueFormat)),
+                locale: locale,
+                readCount,
+                total
+            )
+        )
+    }
+
     private func sectionSplitHeroGrid(heroHeight: CGFloat) -> some View {
         let rightRowHeight = max(48, (heroHeight - homeGridSpacing) / 2)
 
@@ -353,12 +448,15 @@ struct HomeView: View {
         let total = homeViewModel.totalCount(for: kind)
         let unread = homeViewModel.unreadCount(for: kind)
         let innerSpacing: CGFloat = compact ? 5 : (isDoubleHeight ? 10 : 6)
-        let titleFont: Font = isDoubleHeight
-            ? (compact ? .headline.weight(.heavy) : .title2.weight(.heavy))
-            : (compact ? .caption.weight(.heavy) : .subheadline.weight(.heavy))
+        let titleFont: Font = heroArchiveTitleFont(kind: kind, isDoubleHeight: isDoubleHeight, compact: compact)
         let subtitleFont: Font = isDoubleHeight
             ? (compact ? .caption2.weight(.semibold) : .caption.weight(.semibold))
             : (compact ? .caption2.weight(.medium) : .caption2.weight(.medium))
+        let jpTagline = String(localized: String.LocalizationValue(LocalizationKey.homeHeroJpTagline))
+        let enTagline = String(localized: String.LocalizationValue(LocalizationKey.homeHeroEnTagline))
+        let intTagline = String(localized: String.LocalizationValue(LocalizationKey.homeHeroIntTagline))
+        let readCount = max(0, total - unread)
+        let readFraction: Double = total > 0 ? Double(readCount) / Double(total) : 0
 
         return Button {
             Haptics.medium()
@@ -367,17 +465,64 @@ struct HomeView: View {
         } label: {
             ZStack(alignment: .topTrailing) {
                 VStack(alignment: .leading, spacing: innerSpacing) {
-                    Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
-                        .font(titleFont)
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(isDoubleHeight ? 4 : 3)
-                        .minimumScaleFactor(0.68)
-                    Text(labels.subtitle)
-                        .font(subtitleFont)
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .lineLimit(isDoubleHeight ? 3 : 2)
-                        .minimumScaleFactor(0.78)
+                    Group {
+                        if kind == .jp {
+                            HStack(alignment: .center, spacing: 8) {
+                                Image("HomeScpLogoJP")
+                                    .resizable()
+                                    .renderingMode(.original)
+                                    .scaledToFit()
+                                    .frame(height: heroJpLogoHeight(compact: compact))
+                                    .accessibilityHidden(true)
+                                Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
+                                    .font(titleFont)
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                    .multilineTextAlignment(.leading)
+                                    .lineLimit(isDoubleHeight ? 4 : 3)
+                                    .minimumScaleFactor(0.68)
+                            }
+                        } else {
+                            Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
+                                .font(titleFont)
+                                .foregroundStyle(AppTheme.textPrimary)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(isDoubleHeight ? 4 : 3)
+                                .minimumScaleFactor(0.68)
+                        }
+                    }
+                    if kind == .jp {
+                        Text(jpTagline)
+                            .font(heroJpTaglineFont())
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.85)
+                    } else if kind == .en {
+                        Text(enTagline)
+                            .font(heroJpTaglineFont())
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.85)
+                    } else if kind == .int {
+                        Text(intTagline)
+                            .font(heroJpTaglineFont())
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.85)
+                    } else if !labels.subtitle.isEmpty {
+                        Text(labels.subtitle)
+                            .font(subtitleFont)
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .lineLimit(isDoubleHeight ? 3 : 2)
+                            .minimumScaleFactor(0.78)
+                    }
+                    if kind == .jp || kind == .en || kind == .int {
+                        heroTrifoldCatalogReadGauge(
+                            readFraction: readFraction,
+                            readCount: readCount,
+                            total: total,
+                            locale: homeViewModel.resolvedLocale
+                        )
+                    }
                     Spacer(minLength: 0)
                     Text(metricsSummary(total: total, unread: unread))
                         .font(.caption2.weight(.semibold))
@@ -388,7 +533,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
-                if unread > 0 {
+                if unread > 0, kind != .jp {
                     Circle()
                         .fill(AppTheme.terminalSilver.opacity(0.95))
                         .frame(width: 7, height: 7)
@@ -520,6 +665,12 @@ struct HomeView: View {
                     }
                 } label: {
                     HStack(alignment: .center, spacing: 8) {
+                        Image("HomeBranchMark")
+                            .resizable()
+                            .renderingMode(.original)
+                            .scaledToFit()
+                            .frame(height: homeDashboardBranchMarkHeight())
+                            .accessibilityHidden(true)
                         Text(homeViewModel.homeDashboardBranchTitle)
                             .font(AppTypography.homeBranchTitleFont())
                             .foregroundStyle(AppTheme.textPrimary)

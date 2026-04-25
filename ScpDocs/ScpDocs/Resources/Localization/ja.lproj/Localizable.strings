@@ -139,6 +139,11 @@
 "home.personnel.daily_assignment_empty.title" = "NO ASSIGNMENT CURRENTLY AVAILABLE";
 "home.personnel.daily_assignment_empty.subtitle" = "現在割り当てられた任務なし — オンラインで同期するか、グリッドから任務を選択してください。";
 "home.hero.metrics_format" = "全%1$d件 · 未読%2$d";
+"home.hero.jp.tagline" = "日本支部公式リスト — 確保・収容・保護。";
+"home.hero.en.tagline" = "本家メインリストの和訳 — SCP-JP と同じ操作で閲覧。";
+"home.hero.int.tagline" = "国際ハブ — 各支部サイトの翻訳報告書。";
+"home.hero.catalog_gauge.a11y.label" = "カタログの読了状況";
+"home.hero.catalog_gauge.a11y.value_format" = "全%2$d件中%1$d件を読了";
 "home.feed_list.title.jp" = "SCP-JP データベース";
 "home.feed_list.title.en" = "SCP データベース";
 "home.feed_list.title.int" = "SCP INTERNATIONAL データベース";
@@ -161,6 +166,13 @@
 "int.catalog_branch_chip.zh_tr" = "ZH/TR";
 "int.catalog_branch_chip.vn" = "VN";
 "int.catalog_branch_chip.other" = "その他";
+
+/* Joke catalog (JP / 本家) */
+"joke.catalog_origin.jp" = "JP";
+"joke.catalog_origin.main" = "本家";
+"joke.catalog_origin.picker.a11y" = "ジョーク報告書の出典";
+"joke.catalog_filter.empty.title" = "この出典の記事がありません";
+"joke.catalog_filter.empty.subtitle" = "「JP」か「本家」を切り替えるか、マニフェスト同期後にキャッシュを確認してください。";
 "home.feed_list.title.tales" = "財団の物語（Tales）";
 "home.feed_list.title.gois" = "要注意団体（GoI）";
 "home.feed_list.title.canons" = "カノン";
