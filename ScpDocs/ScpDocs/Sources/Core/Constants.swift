@@ -134,6 +134,8 @@ enum LocalizationKey {
     static let homeDashboardMotto = "home.dashboard.motto"
     /// ホーム上部の支部名（日本支部選択時のみ「日本支部」を省いた短表記）。
     static let homeDashboardBranchShortJapan = "home.dashboard.branch_short_jp"
+    static let homeDashboardBranchShortEN = "home.dashboard.branch_short_en"
+    static let homeDashboardBranchShortINT = "home.dashboard.branch_short_int"
 
     /// Split Hero / 職員ダッシュボード（Step 2）。
     static let homePersonnelResumeMission = "home.personnel.resume_mission"
@@ -155,6 +157,7 @@ enum LocalizationKey {
     static let intCatalogBranchPickerOpenSite = "int.catalog_branch_picker.open_site"
     static let intCatalogBranchFilterEmptyTitle = "int.catalog_branch_filter.empty.title"
     static let intCatalogBranchFilterEmptySubtitle = "int.catalog_branch_filter.empty.subtitle"
+    static let intCatalogBranchChipAll = "int.catalog_branch_chip.all"
     static let intCatalogBranchChipRU = "int.catalog_branch_chip.ru"
     static let intCatalogBranchChipKO = "int.catalog_branch_chip.ko"
     static let intCatalogBranchChipCN = "int.catalog_branch_chip.cn"
@@ -180,6 +183,11 @@ enum LocalizationKey {
     static let homeFeedListTitleGois = "home.feed_list.title.gois"
     static let homeFeedListTitleCanons = "home.feed_list.title.canons"
     static let homeFeedListTitleJokes = "home.feed_list.title.jokes"
+    static let goiCatalogSourceTabJP = "goi.catalog_source_tab.jp"
+    static let goiCatalogSourceTabEN = "goi.catalog_source_tab.en"
+    static let goiCatalogSourceTabOther = "goi.catalog_source_tab.other"
+    static let goiCatalogSourcePickerAccessibility = "goi.catalog_source_picker.a11y"
+    static let goiFeedEmptyNoGroupTags = "goi.feed.empty.no_group_tags"
 
     static let multiformAuthorUnknown = "multiform.author.unknown"
 
@@ -515,8 +523,8 @@ enum AppRemoteConfig {
     /// キャッシュへ保存する正規形の `schemaVersion`。
     static let scpGeneralContentFeedSchemaVersion = 1
 
-    /// Tales/GoI 等で受け入れる `schemaVersion`（1=従来、2=manifest）。
-    static let supportedSCPGeneralContentFeedSchemaVersions: Set<Int> = [1, 2]
+    /// Tales/GoI 等で受け入れる `schemaVersion`（1=従来、2=manifest、3=GoI 階層）。
+    static let supportedSCPGeneralContentFeedSchemaVersions: Set<Int> = [1, 2, 3]
 
     /// マニフェスト JSON 等を置くベース URL（末尾スラッシュなし）。
     /// `list/jp/manifest_*.json` はリポジトリ `main` に存在するが、GitHub Pages の現行公開では 404 になるため、

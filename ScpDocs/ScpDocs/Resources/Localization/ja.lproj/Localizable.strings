@@ -133,6 +133,8 @@
 "home.continue_reading.category.other" = "その他";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.dashboard.branch_short_jp" = "SCP財団";
+"home.dashboard.branch_short_en" = "SCP財団（本家・英語）";
+"home.dashboard.branch_short_int" = "国際（INT）";
 "home.personnel.resume_mission" = "任務再開";
 "home.personnel.random_discovery" = "ランダム探索";
 "home.personnel.daily_assignment" = "本日の任務";
@@ -151,6 +153,7 @@
 "int.catalog_branch_picker.open_site" = "この支部のサイトを開く";
 "int.catalog_branch_filter.empty.title" = "このコードの記事がありません";
 "int.catalog_branch_filter.empty.subtitle" = "別の支部を選ぶか、同期後にキャッシュを確認してください。";
+"int.catalog_branch_chip.all" = "すべて";
 "int.catalog_branch_chip.ru" = "RU";
 "int.catalog_branch_chip.ko" = "KO";
 "int.catalog_branch_chip.cn" = "CN";
@@ -177,6 +180,11 @@
 "home.feed_list.title.gois" = "要注意団体（GoI）";
 "home.feed_list.title.canons" = "カノン";
 "home.feed_list.title.jokes" = "ジョーク報告書";
+"goi.catalog_source_tab.jp" = "JP";
+"goi.catalog_source_tab.en" = "EN";
+"goi.catalog_source_tab.other" = "OTHER";
+"goi.catalog_source_picker.a11y" = "要注意団体の出典分類";
+"goi.feed.empty.no_group_tags" = "表示できる団体タグ（g）がありません。マニフェストを確認するか、同期後に再度お試しください。";
 "home.feed_list.empty" = "キャッシュがありません。ネットワーク接続後に同期してください。";
 
 "multiform.author.unknown" = "著者: 不明";
@@ -194,7 +202,7 @@
 "home.section.en_archive.subtitle" = "本家メインリスト和訳 001–4999（1000 / 100 のピッカー・SCP-JP と同じ操作）";
 "home.section.scp_library.title" = "SCPライブラリ";
 "home.section.scp_library.subtitle" = "書庫タブで物語・カノン・連作（ネイティブ一覧）";
-"home.section.international.title" = "SCP\nINTERNATIONAL";
+"home.section.international.title" = "SCP\n国際版";
 "home.section.international.subtitle" = "各国支部ハブ — scp-int.wikidot.com";
 "home.section.guide.title" = "新人職員ガイドと規約";
 "home.section.guide.subtitle" = "ルール・ライセンス・オブジェクトクラス";

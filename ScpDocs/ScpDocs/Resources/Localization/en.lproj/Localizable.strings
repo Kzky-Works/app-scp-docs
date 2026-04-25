@@ -133,6 +133,8 @@
 "home.continue_reading.category.other" = "Other";
 "home.dashboard.motto" = "SECURE • CONTAIN • PROTECT";
 "home.dashboard.branch_short_jp" = "SCP Foundation";
+"home.dashboard.branch_short_en" = "SCP Foundation (EN)";
+"home.dashboard.branch_short_int" = "SCP International";
 "home.personnel.resume_mission" = "RESUME MISSION";
 "home.personnel.random_discovery" = "RANDOM DISCOVERY";
 "home.personnel.daily_assignment" = "DAILY ASSIGNMENT";
@@ -151,6 +153,7 @@
 "int.catalog_branch_picker.open_site" = "Open this branch’s site";
 "int.catalog_branch_filter.empty.title" = "No articles for this code";
 "int.catalog_branch_filter.empty.subtitle" = "Pick another branch chip or sync and check the cache.";
+"int.catalog_branch_chip.all" = "All";
 "int.catalog_branch_chip.ru" = "RU";
 "int.catalog_branch_chip.ko" = "KO";
 "int.catalog_branch_chip.cn" = "CN";
@@ -177,6 +180,11 @@
 "home.feed_list.title.gois" = "Groups of Interest";
 "home.feed_list.title.canons" = "Canons";
 "home.feed_list.title.jokes" = "Joke SCP";
+"goi.catalog_source_tab.jp" = "JP";
+"goi.catalog_source_tab.en" = "EN";
+"goi.catalog_source_tab.other" = "OTHER";
+"goi.catalog_source_picker.a11y" = "Group of interest source filter";
+"goi.feed.empty.no_group_tags" = "No group tags to display. Check the manifest or try again after sync.";
 "home.feed_list.empty" = "No cached entries. Connect to the network and wait for sync.";
 
 "multiform.author.unknown" = "AUTHOR: UNKNOWN";

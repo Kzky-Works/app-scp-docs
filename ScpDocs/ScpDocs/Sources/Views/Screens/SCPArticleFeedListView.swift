@@ -14,7 +14,7 @@ struct SCPArticleFeedListView: View {
 
     @Bindable private var connectivity = ConnectivityMonitor.shared
     @State private var cachedEntries: [SCPArticle] = []
-    @State private var intBranchFilterID: String = "ru"
+    @State private var intBranchFilterID: String = "all"
 
     private var screenTitle: String {
         let key = switch kind {

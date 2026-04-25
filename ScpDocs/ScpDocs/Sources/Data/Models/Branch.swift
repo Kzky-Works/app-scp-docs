@@ -13,6 +13,8 @@ struct Branch: Sendable, Equatable, Identifiable {
     let id: String
     /// `Localizable.strings` の支部名キー。
     let displayNameKey: String
+    /// ホーム画面上部の短い表記（設定の「コンテンツ支部」と対応。記事閲覧やピラー操作では切り替えない）。
+    let homeHeaderShortTitleKey: String
     let baseURL: URL
     let logoSystemName: String?
     /// `HomeView` で表示する主要カテゴリ。
@@ -32,6 +34,7 @@ struct Branch: Sendable, Equatable, Identifiable {
     static let japan = Branch(
         id: BranchIdentifier.scpJapan,
         displayNameKey: "branch.name.scp_jp",
+        homeHeaderShortTitleKey: LocalizationKey.homeDashboardBranchShortJapan,
         baseURL: URL(string: "https://scp-jp.wikidot.com/")!,
         logoSystemName: "building.columns.fill",
         homeCategories: [
@@ -50,6 +53,7 @@ struct Branch: Sendable, Equatable, Identifiable {
     static let englishMain = Branch(
         id: BranchIdentifier.scpWikiEN,
         displayNameKey: "branch.name.scp_en",
+        homeHeaderShortTitleKey: LocalizationKey.homeDashboardBranchShortEN,
         baseURL: URL(string: "https://scp-wiki.wikidot.com/")!,
         logoSystemName: "globe.americas.fill",
         homeCategories: [
@@ -68,6 +72,7 @@ struct Branch: Sendable, Equatable, Identifiable {
     static let international = Branch(
         id: BranchIdentifier.scpInternational,
         displayNameKey: "branch.name.scp_int",
+        homeHeaderShortTitleKey: LocalizationKey.homeDashboardBranchShortINT,
         baseURL: URL(string: "https://scp-int.wikidot.com/")!,
         logoSystemName: "globe",
         homeCategories: [

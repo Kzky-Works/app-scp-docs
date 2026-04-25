@@ -6,12 +6,42 @@ struct SCPGeneralContentManifestMetadata: Codable, Sendable, Equatable {
     var a: String?
     var o: String?
     var g: [String]?
+    /// GoI 等: 出典分類。ハーベストで `jp` / `en` / `other` 等を格納想定（未設定時はピッカー全タブに表示）。
+    var r: String?
 }
 
 private struct SCPGeneralContentLightEntryDTO: Codable, Sendable {
     let u: String
     let i: String
     let t: String
+}
+
+// MARK: - GoI manifest (schema 3) — `goi-formats-jp` 階層
+
+/// 団体下の 1 フォーマット文書行（`goiRegions.*[].entries`）。
+struct GoIFormatArticleLine: Codable, Sendable, Hashable, Equatable, Identifiable {
+    var u: String
+    var i: String
+    var t: String
+
+    var id: String { i }
+}
+
+/// 1 要注意団体（`h2` 相当）+ 子記事。
+struct GoIFormatGroupPayload: Codable, Sendable, Hashable, Equatable, Identifiable {
+    var i: String
+    var t: String
+    var u: String?
+    var entries: [GoIFormatArticleLine]
+
+    var id: String { i }
+}
+
+/// `en` / `jp` / `other`（`要注意団体-CN` 等はすべて other に束ねる）
+struct GoIRegionsLayoutPayload: Codable, Sendable, Hashable, Equatable {
+    var en: [GoIFormatGroupPayload]
+    var jp: [GoIFormatGroupPayload]
+    var other: [GoIFormatGroupPayload]
 }
 
 /// 非ナンバリング記事（Tale / GoI / Canon / Joke）の 1 エントリ。配信 JSON の短縮キーに合わせる。
@@ -28,6 +58,8 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
     var g: [String]
     /// 安定識別子（マニフェスト `entries[].i`）。従来 JSON では省略可。
     var i: String?
+    /// 出典・系列タブ用（主に GoI）。`metadata[].r` またはフラット `r`。
+    var r: String?
 
     enum CodingKeys: String, CodingKey {
         case u
@@ -36,15 +68,17 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         case o
         case g
         case i
+        case r
     }
 
-    init(u: String, t: String, a: String? = nil, o: String? = nil, g: [String] = [], i: String? = nil) {
+    init(u: String, t: String, a: String? = nil, o: String? = nil, g: [String] = [], i: String? = nil, r: String? = nil) {
         self.u = u
         self.t = t
         self.a = Self.trimmedOptional(a)
         self.o = Self.trimmedOptional(o)
         self.g = Self.normalizedTags(g)
         self.i = Self.trimmedOptional(i)
+        self.r = Self.trimmedOptional(r)
     }
 
     init(from decoder: Decoder) throws {
@@ -55,6 +89,7 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         o = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .o))
         g = Self.normalizedTags(try container.decodeIfPresent([String].self, forKey: .g) ?? [])
         i = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .i))
+        r = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .r))
     }
 
     func encode(to encoder: Encoder) throws {
@@ -67,6 +102,7 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
             try container.encode(g, forKey: .g)
         }
         try container.encodeIfPresent(i, forKey: .i)
+        try container.encodeIfPresent(r, forKey: .r)
     }
 
     /// `ArticleRepository.storageKey(for:)` と一致させるための正規化 URL。
@@ -108,6 +144,8 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
     var schemaVersion: Int
     var generatedAt: Date
     var entries: [SCPGeneralContent]
+    /// ネット上の `manifest_gois.json` schema 3 時のみ（団体階層）。キャッシュにも保存。
+    var goiRegions: GoIRegionsLayoutPayload?
 
     enum CodingKeys: String, CodingKey {
         case listVersion
@@ -115,13 +153,21 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         case generatedAt
         case entries
         case metadata
+        case goiRegions
     }
 
-    init(listVersion: Int, schemaVersion: Int, generatedAt: Date, entries: [SCPGeneralContent]) {
+    init(
+        listVersion: Int,
+        schemaVersion: Int,
+        generatedAt: Date,
+        entries: [SCPGeneralContent],
+        goiRegions: GoIRegionsLayoutPayload? = nil
+    ) {
         self.listVersion = listVersion
         self.schemaVersion = schemaVersion
         self.generatedAt = generatedAt
         self.entries = entries
+        self.goiRegions = goiRegions
     }
 
     init(from decoder: Decoder) throws {
@@ -129,6 +175,7 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         listVersion = try c.decode(Int.self, forKey: .listVersion)
         let rawSchema = try c.decode(Int.self, forKey: .schemaVersion)
         generatedAt = try c.decode(Date.self, forKey: .generatedAt)
+        goiRegions = try c.decodeIfPresent(GoIRegionsLayoutPayload.self, forKey: .goiRegions)
         if rawSchema >= 2 {
             let lights = try c.decode([SCPGeneralContentLightEntryDTO].self, forKey: .entries)
             let meta = try c.decodeIfPresent([String: SCPGeneralContentManifestMetadata].self, forKey: .metadata) ?? [:]
@@ -140,7 +187,8 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
                     a: m?.a,
                     o: m?.o,
                     g: m?.g ?? [],
-                    i: lite.i
+                    i: lite.i,
+                    r: m?.r
                 )
             }
             schemaVersion = AppRemoteConfig.scpGeneralContentFeedSchemaVersion
@@ -156,5 +204,6 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         try c.encode(schemaVersion, forKey: .schemaVersion)
         try c.encode(generatedAt, forKey: .generatedAt)
         try c.encode(entries, forKey: .entries)
+        try c.encodeIfPresent(goiRegions, forKey: .goiRegions)
     }
 }

@@ -239,13 +239,9 @@ final class HomeViewModel {
         String(localized: String.LocalizationValue(selectedBranch.displayNameKey))
     }
 
-    /// ホーム `dashboardHeaderCard` の支部名（日本支部のみ短表記「SCP財団」）。
+    /// ホーム `dashboardHeaderCard` の支部名（設定の「コンテンツ支部」のみに連動。記事の閲覧文脈では切り替わらない）。
     var homeDashboardBranchTitle: String {
-        if selectedBranch.id == BranchIdentifier.scpJapan {
-            String(localized: String.LocalizationValue(LocalizationKey.homeDashboardBranchShortJapan))
-        } else {
-            branchDisplayTitle
-        }
+        String(localized: String.LocalizationValue(selectedBranch.homeHeaderShortTitleKey))
     }
 
     var branchBaseURLDisplay: String {

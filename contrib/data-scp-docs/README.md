@@ -21,7 +21,7 @@
 |------|------|
 | **Canon** | `canon-hub-jp` / `canon-hub` / `series-hub-jp` の `#page-content` から単一スラッグリンクを収集 → `manifest_canons.json` |
 | **Joke** | `joke-scps` / `joke-scps-jp` からジョーク記事パス（`-j` / `-jp-j` 等）を抽出 → `manifest_jokes.json` |
-| **GoI** | `goi-formats-jp` ハブリンクに切替（旧: `goi-format` タグページのみ）。`metadata` に `o`（団体表示名＝リンクテキスト） |
+| **GoI** | `goi-formats-jp` の **h1/h2/ul 構造**をパース（schema **3**）。`goiRegions`（en / jp / other）+ 団体別 `entries` + フラット `entries`＋`metadata`（`g`・`r`）。仕様: `docs/GOI_MANIFEST_V3_ja.md` |
 | **Tales** | `foundation-tales`（本家翻訳ハブ）を `foundation-tales-jp` に続けて取得し、`i` で重複除去してマージ |
 | **listVersion** | 前回出力と `entries`+`metadata` が同一なら据え置き、変化時のみ `+1`（§13.2） |
 

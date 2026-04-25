@@ -6,6 +6,7 @@ foundation-tales-jp（著者層）を統合し list/jp/*.json を生成する。
 マニフェスト（schemaVersion 2）: `manifest_scp-*.json` / `manifest_tales.json` /
 `manifest_gois.json` / `manifest_canons.json` / `manifest_jokes.json` に entries（u,i,t）と
 スパース metadata（主キー i）を出力する。listVersion は前回出力と差分が無い場合は据え置き。
+GoI（`manifest_gois.json`）のみ schemaVersion 3: `goi-formats-jp` の h1/h2 構造に基づき `en` / `jp` / `other` の団体ツリー + 子記事を格納（`goiRegions`）。詳細は同梱 `docs/GOI_MANIFEST_V3_ja.md`。
 
 収集は Wikidot のみ（scp_list.json には依存しない）。
 """
@@ -29,6 +30,7 @@ from bs4 import BeautifulSoup
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 MANIFEST_SCHEMA_VERSION = 2
+GOI_MANIFEST_SCHEMA_VERSION = 3
 
 HTTP_HEADERS = {
     "User-Agent": "ScpDocsHarvester/1.0 (+https://github.com/Kzky-Works/data-scp-docs)",
@@ -594,27 +596,216 @@ def scrape_canon_hub_entries(session: requests.Session, cfg: BranchConfig) -> li
     return out
 
 
-def scrape_goi_formats_hub_entries(session: requests.Session, cfg: BranchConfig) -> list[dict[str, Any]]:
-    """goi-formats-jp ハブ上の要注意団体リンク（§11）。"""
-    m = extract_page_content_link_map(session, cfg, GOI_FORMATS_HUB)
-    base = cfg.site_host.rstrip("/")
-    skip = frozenset(
-        {
-            "/goi-formats-jp",
-            "/goi-formats",
-            "/goi-formats-jp/",
-        }
-    )
-    out: list[dict[str, Any]] = []
-    for path, title in sorted(m.items(), key=lambda x: x[0]):
-        pl = path.lower()
-        if pl in skip or pl.rstrip("/") in skip:
+def _goi_h1_region_label(h1_text: str) -> str | None:
+    """要注意団体ブロック用 h1 から en / jp / other、該当しなければ None。"""
+    t = " ".join(h1_text.split())
+    if "要注意団体-JP" in t:
+        return "jp"
+    if "要注意団体-EN" in t:
+        return "en"
+    if t.startswith("要注意団体-") and "インフォメーション" not in t:
+        return "other"
+    return None
+
+
+def _goi_find_anchor_name_before_h2(h2) -> str | None:
+    prev = h2.find_previous_sibling()
+    while prev is not None:
+        if prev.name == "p":
+            an = prev.find("a", attrs={"name": True})
+            if an is not None:
+                name = (an.get("name") or "").strip()
+                if name:
+                    return name
+        prev = prev.find_previous_sibling()
+    return None
+
+
+def _goi_abs_path_for_href(
+    href: str, page_url: str, site_host_base: str
+) -> str | None:
+    raw = (href or "").strip().split("#")[0]
+    if not raw or raw.startswith("javascript:"):
+        return None
+    absu = urljoin(page_url, raw)
+    pu = urlparse(absu)
+    site_netloc = urlparse(site_host_base).netloc
+    if pu.netloc and pu.netloc.lower() != site_netloc.lower():
+        return None
+    p = (pu.path or "/").rstrip("/") or "/"
+    if p == "/" or _page_link_excluded(p):
+        return None
+    segs = [x for x in p.strip("/").split("/") if x]
+    if len(segs) != 1:
+        return None
+    if ":" in segs[0]:
+        return None
+    return p if p.startswith("/") else "/" + p
+
+
+def _goi_collect_links_after_h2(h2, page_url: str, site_host: str) -> list[dict[str, str]]:
+    """h2 直後から次の h1/h2 までの兄弟ノード内の同一サイト article リンク。"""
+    base = site_host.rstrip("/")
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    n = h2.next_sibling
+    while n is not None:
+        if isinstance(n, str):
+            n = n.next_sibling
             continue
-        i = path.lstrip("/").lower()
-        u = base + path
-        disp = title.strip() if title.strip() else i
-        out.append({"u": u, "i": i, "t": disp, "o": disp})
+        if not getattr(n, "name", None):
+            n = n.next_sibling
+            continue
+        if n.name in ("h1", "h2"):
+            break
+        for a in n.find_all("a", href=True):
+            pth = _goi_abs_path_for_href(a.get("href", ""), page_url, base)
+            if pth is None or pth in seen:
+                continue
+            title = a.get_text(" ", strip=True) or pth.lstrip("/")
+            seen.add(pth)
+            i = pth.lstrip("/").lower()
+            u = base + pth
+            out.append({"u": u, "i": i, "t": title})
+        n = n.next_sibling
     return out
+
+
+def _goi_parse_h2_group(h2, page_url: str, site_host: str) -> dict[str, Any] | None:
+    span = h2.find("span")
+    if span is None:
+        return None
+    a = span.find("a", href=True)
+    hub_path: str | None = None
+    if a is not None:
+        raw_h = (a.get("href") or "").strip()
+        hub_path = _goi_abs_path_for_href(raw_h, page_url, site_host.rstrip("/"))
+        name = a.get_text(" ", strip=True) or (hub_path or "").lstrip("/")
+    else:
+        name = span.get_text(" ", strip=True)
+        if not name:
+            return None
+    anchor = _goi_find_anchor_name_before_h2(h2) or (
+        re.sub(r"[^0-9a-zA-Z]+", "-", name).strip("-").lower() or "goi-group"
+    )
+    entries = _goi_collect_links_after_h2(h2, page_url, site_host)
+    grp: dict[str, Any] = {
+        "i": anchor[:120],
+        "t": name,
+        "entries": entries,
+    }
+    if hub_path is not None:
+        grp["u"] = site_host.rstrip("/") + hub_path
+    return grp
+
+
+def scrape_goi_formats_hub_structured(
+    session: requests.Session, cfg: BranchConfig
+) -> tuple[dict[str, list[dict[str, Any]]], list[dict[str, Any]], dict[str, Any]]:
+    """goi-formats-jp を DOM 構造で解釈し、en/jp/other の団体ツリーと flat entries + metadata を返す。"""
+    base = cfg.site_host.rstrip("/")
+    page_url = cfg.abs_url(GOI_FORMATS_HUB)
+    html = fetch_html(session, page_url)
+    soup = BeautifulSoup(html, "html.parser")
+    root = soup.select_one("#page-content .content-panel") or soup.select_one("#page-content")
+    regions: dict[str, list[dict[str, Any]]] = {"en": [], "jp": [], "other": []}
+    if root is None:
+        return regions, [], {}
+
+    current: str | None = None
+    for h in root.find_all(["h1", "h2"]):
+        if h.name == "h1":
+            r = _goi_h1_region_label(h.get_text(" ", strip=True))
+            if r is not None:
+                current = r
+            continue
+        if h.name == "h2" and current is not None:
+            g = _goi_parse_h2_group(h, page_url, base)
+            if g is not None:
+                regions[current].append(g)
+
+    flat_by_id: dict[str, dict[str, str]] = {}
+    metadata: dict[str, Any] = {}
+    region_key: dict[str, str] = {"en": "en", "jp": "jp", "other": "other"}
+    for reg, groups in regions.items():
+        r_label = region_key[reg]
+        for grp in groups:
+            gname = (grp.get("t") or "").strip() or str(grp.get("i", ""))
+            for e in grp.get("entries") or []:
+                if not isinstance(e, dict):
+                    continue
+                i = e.get("i", "")
+                u = e.get("u", "")
+                if not isinstance(i, str) or not i.strip() or not isinstance(u, str) or not u.strip():
+                    continue
+                ii = i.strip()
+                t = (e.get("t") or "").strip() or ii
+                prev = flat_by_id.get(ii)
+                if prev is None or len(t) > len((prev.get("t") or "")):
+                    flat_by_id[ii] = {"u": u.strip(), "i": ii, "t": t}
+                if ii not in metadata:
+                    metadata[ii] = {"g": [gname] if gname else [], "r": r_label}
+                else:
+                    m = metadata[ii]
+                    if not isinstance(m, dict):
+                        continue
+                    otags = [str(x) for x in (m.get("g") or []) if str(x).strip()]
+                    if gname and gname not in otags:
+                        otags.append(gname)
+                    metadata[ii] = {**m, "g": otags, "r": m.get("r") or r_label}
+
+    flat = sorted(flat_by_id.values(), key=lambda e: e.get("i") or "")
+    return regions, flat, metadata
+
+
+def _next_goi_v3_list_version(
+    path: str, new_payload: dict[str, Any]
+) -> int:
+    """entries + metadata + goiRegions が不変なら listVersion 据え置き。"""
+    if not os.path.isfile(path):
+        return int(datetime.now(timezone.utc).timestamp())
+
+    try:
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f)
+    except Exception:
+        return int(datetime.now(timezone.utc).timestamp())
+    if int(old.get("schemaVersion") or 0) < GOI_MANIFEST_SCHEMA_VERSION:
+        return int(old.get("listVersion") or 0) + 1
+
+    def norm(p: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "entries": p.get("entries"),
+            "metadata": p.get("metadata") or {},
+            "goiRegions": p.get("goiRegions") or {},
+        }
+
+    if norm(old) == norm(new_payload):
+        return int(old.get("listVersion") or 0)
+    return int(old.get("listVersion") or 0) + 1
+
+
+def write_goi_manifest_v3(path: str, payload: dict[str, Any]) -> None:
+    light = payload.get("entries")
+    if not isinstance(light, list):
+        raise ValueError("goi v3: entries must be a list")
+    md = payload.get("metadata") or {}
+    if not isinstance(md, dict):
+        raise ValueError("goi v3: metadata must be object")
+    validate_manifest_entries_metadata(light, md, os.path.basename(path))
+    tmp_payload = {**payload}
+    tmp_payload["metadata"] = md
+    tmp_payload["schemaVersion"] = GOI_MANIFEST_SCHEMA_VERSION
+    lv = _next_goi_v3_list_version(path, tmp_payload)
+    gen = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    tmp_payload["listVersion"] = lv
+    tmp_payload["generatedAt"] = gen
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    tpath = path + ".tmp"
+    with open(tpath, "w", encoding="utf-8") as f:
+        json.dump(tmp_payload, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(tpath, path)
 
 
 def tales_raw_to_manifest_parts(raw: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -634,37 +825,6 @@ def tales_raw_to_manifest_parts(raw: list[dict[str, Any]]) -> tuple[list[dict[st
         a = e.get("a")
         if isinstance(a, str) and a.strip():
             metadata[i.strip()] = {"a": a.strip()}
-    return light, metadata
-
-
-def goi_raw_to_manifest_parts(raw: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    light: list[dict[str, Any]] = []
-    metadata: dict[str, Any] = {}
-    for e in raw:
-        if not isinstance(e, dict):
-            continue
-        i = e.get("i")
-        u = e.get("u")
-        if not isinstance(i, str) or not i.strip() or not isinstance(u, str) or not u.strip():
-            continue
-        t = e.get("t")
-        ikey = i.strip()
-        light.append(
-            {
-                "u": u.strip(),
-                "i": ikey,
-                "t": (t if isinstance(t, str) and t.strip() else ikey),
-            }
-        )
-        chunk: dict[str, Any] = {}
-        o = e.get("o")
-        if isinstance(o, str) and o.strip():
-            chunk["o"] = o.strip()
-        g = e.get("g")
-        if isinstance(g, list) and g:
-            chunk["g"] = [str(x).strip() for x in g if isinstance(x, str) and str(x).strip()]
-        if chunk:
-            metadata[ikey] = chunk
     return light, metadata
 
 
@@ -867,8 +1027,21 @@ class JapaneseBranchHarvester:
                 tale_by_i[ik.strip()] = ent
         tale_entries = list(tale_by_i.values())
 
-        print("INFO: gois — goi-formats-jp hub", file=sys.stderr)
-        goi_entries = scrape_goi_formats_hub_entries(self.session, cfg)
+        print("INFO: gois — goi-formats-jp (structured, schema v3)", file=sys.stderr)
+        goi_regions, goi_flat, goi_meta = scrape_goi_formats_hub_structured(
+            self.session, cfg
+        )
+        goi_payload: dict[str, Any] = {
+            "entries": goi_flat,
+            "metadata": {
+                k: v for k, v in goi_meta.items() if isinstance(v, dict) and v
+            },
+            "goiRegions": {
+                "en": goi_regions.get("en") or [],
+                "jp": goi_regions.get("jp") or [],
+                "other": goi_regions.get("other") or [],
+            },
+        }
 
         print("INFO: canons — hub index pages", file=sys.stderr)
         canon_entries = scrape_canon_hub_entries(self.session, cfg)
@@ -892,8 +1065,7 @@ class JapaneseBranchHarvester:
 
         tl, tm = tales_raw_to_manifest_parts(tale_entries)
         write_manifest(man_tales, tl, tm)
-        gl, gm = goi_raw_to_manifest_parts(goi_entries)
-        write_manifest(man_gois, gl, gm)
+        write_goi_manifest_v3(man_gois, goi_payload)
         cl, cm = simple_multiform_raw_to_manifest_parts(canon_entries)
         write_manifest(man_canons, cl, cm)
         jl, jm = simple_multiform_raw_to_manifest_parts(joke_entries)

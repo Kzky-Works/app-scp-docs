@@ -41,7 +41,7 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.top, 2)
+            .padding(.top, 0)
             .padding(.bottom, bottomPad)
             .frame(height: geo.size.height, alignment: .top)
         }
@@ -186,7 +186,7 @@ struct HomeView: View {
                 homeSectionOuterTitle(localizationKey: LocalizationKey.homeRandomArticleReadSectionTitle)
                 terminalPanel {
                     HStack(alignment: .center, spacing: 12) {
-                        randomPanelFontAwesomeDiceIcon()
+                        randomPanelDiceIcon()
                         VStack(alignment: .leading, spacing: 3) {
                             HStack(alignment: .firstTextBaseline, spacing: 0) {
                                 Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIPrefix)))
@@ -217,25 +217,16 @@ struct HomeView: View {
         .frame(maxWidth: .infinity, alignment: .top)
     }
 
-    /// `fa-solid fa-dice`（U+F522）— TTF 未同梱時は SF `dice.fill`。
+    /// ホーム「ランダム記事」左アイコン（`dice.fill`）。
     @ViewBuilder
-    private func randomPanelFontAwesomeDiceIcon() -> some View {
+    private func randomPanelDiceIcon() -> some View {
         #if canImport(UIKit)
-        let point = AppTypography.randomPanelDiceIconPointSize()
-        let w = point * 1.12
-        Group {
-            if let faFont = AppTypography.fontAwesome6SolidDiceIconFont() {
-                Text(AppTypography.fontAwesome6SolidDiceGlyph)
-                    .font(faFont)
-            } else {
-                Image(systemName: "dice.fill")
-                    .font(.system(size: point, weight: .semibold))
-            }
-        }
-        .foregroundStyle(AppTheme.readingProgressGaugeFill)
-        .frame(width: w, alignment: .center)
+        Image(systemName: "dice.fill")
+            .font(.system(size: AppTypography.randomPanelDiceIconPointSize(), weight: .semibold))
+            .foregroundStyle(AppTheme.readingProgressGaugeFill)
         #else
-        EmptyView()
+        Image(systemName: "dice.fill")
+            .foregroundStyle(AppTheme.readingProgressGaugeFill)
         #endif
     }
 
@@ -326,22 +317,9 @@ struct HomeView: View {
     private func homeDashboardMottoFont() -> Font {
         #if canImport(UIKit)
         let pt = UIFont.preferredFont(forTextStyle: .subheadline).pointSize
-        return .system(size: max(10, pt - 2), weight: .medium, design: .monospaced)
+        return .system(size: max(8, pt - 4), weight: .medium, design: .monospaced)
         #else
         return .subheadline.weight(.medium)
-        #endif
-    }
-
-    /// ホーム支部名左の財団マーク高さ。`AppTypography.homeBranchTitleFont` と同一の text style / weight でスケールする。
-    private func homeDashboardBranchMarkHeight() -> CGFloat {
-        #if canImport(UIKit)
-        let style: UIFont.TextStyle = .title2
-        let base = UIFont.preferredFont(forTextStyle: style)
-        let semibold = UIFont.systemFont(ofSize: base.pointSize, weight: .semibold)
-        let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: semibold)
-        return ceil(scaled.lineHeight * 0.94)
-        #else
-        return 28
         #endif
     }
 
@@ -397,6 +375,30 @@ struct HomeView: View {
             return compact ? .title.weight(.heavy) : .largeTitle.weight(.heavy)
 #endif
         }
+        /// 右列 本家翻訳：太めだが 1 行に入り切らない略称を避ける。
+        if kind == .en && !isDoubleHeight {
+#if canImport(UIKit)
+            let style: UIFont.TextStyle = compact ? .title2 : .title1
+            let base = UIFont.preferredFont(forTextStyle: style)
+            let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
+            let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
+            return Font(scaled)
+#else
+            return (compact ? .title2 : .title).weight(.heavy)
+#endif
+        }
+        /// 国際版タイルは列幅が狭いため EN より一段小さくし「SCP…」省略を防ぐ。
+        if kind == .int && !isDoubleHeight {
+#if canImport(UIKit)
+            let style: UIFont.TextStyle = compact ? .title3 : .title2
+            let base = UIFont.preferredFont(forTextStyle: style)
+            let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
+            let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
+            return Font(scaled)
+#else
+            return (compact ? .title3 : .title2).weight(.heavy)
+#endif
+        }
         return isDoubleHeight
             ? (compact ? .headline.weight(.heavy) : .title2.weight(.heavy))
             : (compact ? .caption.weight(.heavy) : .subheadline.weight(.heavy))
@@ -415,15 +417,6 @@ struct HomeView: View {
         compact ? 28 : 38
     }
 #endif
-
-    private func heroJpTaglineFont() -> Font {
-#if canImport(UIKit)
-        let pt = UIFont.preferredFont(forTextStyle: .caption2).pointSize
-        return .system(size: max(9, pt), weight: .light, design: .default)
-#else
-        return .caption2.weight(.light)
-#endif
-    }
 
     /// Split Hero の SCP-JP / 本家翻訳 / 国際版：カタログ内の既読割合（％表記なし・点線風ダッシュ）。
     private func heroTrifoldCatalogReadGauge(
@@ -494,100 +487,63 @@ struct HomeView: View {
         let labels = splitHeroLabels(for: kind)
         let total = homeViewModel.totalCount(for: kind)
         let unread = homeViewModel.unreadCount(for: kind)
-        let innerSpacing: CGFloat = compact ? 5 : (isDoubleHeight ? 10 : 6)
+        let titleBottomSpacing: CGFloat = compact ? 5 : (isDoubleHeight ? 8 : 6)
         let titleFont: Font = heroArchiveTitleFont(kind: kind, isDoubleHeight: isDoubleHeight, compact: compact)
-        let subtitleFont: Font = isDoubleHeight
-            ? (compact ? .caption2.weight(.semibold) : .caption.weight(.semibold))
-            : (compact ? .caption2.weight(.medium) : .caption2.weight(.medium))
-        let jpTagline = String(localized: String.LocalizationValue(LocalizationKey.homeHeroJpTagline))
-        let enTagline = String(localized: String.LocalizationValue(LocalizationKey.homeHeroEnTagline))
-        let intTagline = String(localized: String.LocalizationValue(LocalizationKey.homeHeroIntTagline))
         let readCount = max(0, total - unread)
         let readFraction: Double = total > 0 ? Double(readCount) / Double(total) : 0
 
         return Button {
             Haptics.medium()
-            selectBranch(for: kind)
             navigationRouter.push(.scpArticleCatalogFeed(kind))
         } label: {
-            ZStack(alignment: .topTrailing) {
-                VStack(alignment: .leading, spacing: innerSpacing) {
-                    Group {
-                        if kind == .jp {
-                            HStack(alignment: .center, spacing: 8) {
-                                Image("HomeScpLogoJP")
-                                    .resizable()
-                                    .renderingMode(.original)
-                                    .scaledToFit()
-                                    .frame(height: heroJpLogoHeight(compact: compact))
-                                    .accessibilityHidden(true)
-                                Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
-                                    .font(titleFont)
-                                    .foregroundStyle(AppTheme.textPrimary)
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(isDoubleHeight ? 4 : 3)
-                                    .minimumScaleFactor(0.68)
-                            }
-                        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                Group {
+                    if kind == .jp {
+                        HStack(alignment: .center, spacing: 8) {
+                            Image("HomeScpLogoJP")
+                                .resizable()
+                                .renderingMode(.original)
+                                .scaledToFit()
+                                .frame(height: heroJpLogoHeight(compact: compact))
+                                .accessibilityHidden(true)
                             Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
                                 .font(titleFont)
                                 .foregroundStyle(AppTheme.textPrimary)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(isDoubleHeight ? 4 : 3)
-                                .minimumScaleFactor(0.68)
+                                .minimumScaleFactor(0.6)
                         }
+                    } else {
+                        Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
+                            .font(titleFont)
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(kind == .int ? 4 : 3)
+                            .minimumScaleFactor(kind == .int ? 0.5 : 0.6)
                     }
-                    if kind == .jp {
-                        Text(jpTagline)
-                            .font(heroJpTaglineFont())
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.85)
-                    } else if kind == .en {
-                        Text(enTagline)
-                            .font(heroJpTaglineFont())
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.85)
-                    } else if kind == .int {
-                        Text(intTagline)
-                            .font(heroJpTaglineFont())
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.85)
-                    } else if !labels.subtitle.isEmpty {
-                        Text(labels.subtitle)
-                            .font(subtitleFont)
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .lineLimit(isDoubleHeight ? 3 : 2)
-                            .minimumScaleFactor(0.78)
-                    }
-                    if kind == .jp || kind == .en || kind == .int {
+                }
+                .padding(.bottom, titleBottomSpacing)
+
+                Spacer(minLength: 0)
+
+                if kind == .jp || kind == .en || kind == .int {
+                    VStack(alignment: .leading, spacing: 4) {
                         heroTrifoldCatalogReadGauge(
                             readFraction: readFraction,
                             readCount: readCount,
                             total: total,
                             locale: homeViewModel.resolvedLocale
                         )
+                        Text(metricsSummary(total: total, unread: unread))
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(AppTheme.terminalSilver.opacity(0.92))
+                            .monospaced()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
-                    Spacer(minLength: 0)
-                    Text(metricsSummary(total: total, unread: unread))
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(AppTheme.terminalSilver.opacity(0.92))
-                        .monospaced()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-
-                if unread > 0, kind != .jp {
-                    Circle()
-                        .fill(AppTheme.terminalSilver.opacity(0.95))
-                        .frame(width: 7, height: 7)
-                        .padding(compact ? 6 : 10)
-                        .accessibilityHidden(true)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(compact ? 10 : 14)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(
@@ -628,19 +584,6 @@ struct HomeView: View {
             total,
             unread
         )
-    }
-
-    private func selectBranch(for kind: SCPArticleFeedKind) {
-        switch kind {
-        case .jp:
-            homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-        case .en:
-            homeViewModel.selectBranch(id: BranchIdentifier.scpWikiEN)
-        case .int:
-            homeViewModel.selectBranch(id: BranchIdentifier.scpInternational)
-        case .tales, .gois, .canons, .jokes:
-            break
-        }
     }
 
     // MARK: - Support Hubs (2×2)
@@ -700,7 +643,7 @@ struct HomeView: View {
 
     private var dashboardHeaderCard: some View {
         HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 Menu {
                     ForEach(homeViewModel.availableBranches, id: \.id) { branch in
                         Button {
@@ -716,7 +659,7 @@ struct HomeView: View {
                             .resizable()
                             .renderingMode(.original)
                             .scaledToFit()
-                            .frame(height: homeDashboardBranchMarkHeight())
+                            .frame(height: AppTypography.homeBranchMarkImageHeight())
                             .accessibilityHidden(true)
                         Text(homeViewModel.homeDashboardBranchTitle)
                             .font(AppTypography.homeBranchTitleFont())
@@ -766,7 +709,7 @@ struct HomeView: View {
                 .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.tabSettings)))
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.clear)
     }
@@ -790,10 +733,8 @@ struct HomeView: View {
     private func handleCategoryTap(_ category: HomeCategory) {
         switch category {
         case .jpArticles:
-            homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
             navigationRouter.push(.scpJapanArchive(ScpArchiveListSeed()))
         case .originalArticles:
-            homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
             navigationRouter.push(.scpEnglishArchive(ScpArchiveListSeed()))
         case .tales:
             navigationRouter.push(.scpArticleCatalogFeed(.tales))

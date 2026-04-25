@@ -22,7 +22,6 @@ struct ScpDocsApp: App {
 #if canImport(UIKit)
         AppTypography.registerBundledBauhausLTDemiIfPresent()
         AppTypography.registerBundledHomePillarOpenFonts()
-        AppTypography.registerFontAwesome6SolidIfPresent()
 #endif
         let settingsRepository = SettingsRepository()
         let jpTagCache = JPTagMapCacheRepository()

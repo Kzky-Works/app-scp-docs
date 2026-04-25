@@ -130,9 +130,6 @@ struct HomeSearchView: View {
                 await runGlobalSearch(submitted: false)
             }
         }
-        .onAppear {
-            homeViewModel.selectBranch(id: BranchIdentifier.scpJapan)
-        }
         .onDisappear {
             debouncedSearchTask?.cancel()
         }

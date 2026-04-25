@@ -15,9 +15,4 @@ Bundled fonts for the SCP docs app (commercial redistribution permitted under ea
 4) ITC Bauhaus LT Demi (optional; used for the home branch title when bundled)
    - Third-party commercial font; bundle only if your license permits.
 
-5) Font Awesome 6 Free — fa-solid-900.ttf (home “random report” dice icon, Unicode U+F522 / fa-dice)
-   - Copyright: Fonticons, Inc. (https://fontawesome.com)
-   - License: SIL Open Font License 1.1 — see https://scripts.sil.org/OFL (Font Awesome Free: Icons — CC BY 4.0; Fonts — OFL 1.1; Code — MIT)
-   - Source: https://github.com/FortAwesome/Font-Awesome (tag 6.7.2)
-
-Source: Asap, Open Sans, and Source Sans 3 from https://github.com/google/fonts. Font Awesome from FortAwesome/Font-Awesome.
+Source: Asap, Open Sans, and Source Sans 3 from https://github.com/google/fonts.

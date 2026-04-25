@@ -160,12 +160,17 @@ enum AppTheme {
     // MARK: Tab bar
 
 #if canImport(UIKit)
-    /// 下部のシステム `TabView` タブバー: やや透過のブラー。周囲はコンテンツが透けて見える（記事 WebView など）。
+    /// 下部のシステム `TabView` タブバー。`configureWithDefaultBackground` ベースで OS 標準に近い高さ・下揃いにし、透過 alone 時の「浮き」を抑える。
     static func configureTabBarAppearance() {
         let appearance = UITabBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
-        appearance.backgroundColor = UIColor.black.withAlphaComponent(0.12)
+        appearance.configureWithDefaultBackground()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemChromeMaterial)
+        let overlay = UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor.black.withAlphaComponent(0.12)
+                : UIColor.white.withAlphaComponent(0.5)
+        }
+        appearance.backgroundColor = overlay
 
         let line = UIColor { trait in
             trait.userInterfaceStyle == .dark
@@ -181,11 +186,20 @@ enum AppTheme {
                 : UIColor(white: 0.45, alpha: 1)
         }
         let selected = brandAccentUIKit
-        let stacked = appearance.stackedLayoutAppearance
-        stacked.normal.titleTextAttributes = [.foregroundColor: normal]
-        stacked.normal.iconColor = normal
-        stacked.selected.titleTextAttributes = [.foregroundColor: selected]
-        stacked.selected.iconColor = selected
+        let titleNudge = UIOffset(horizontal: 0, vertical: 2)
+        let apply: (UITabBarItemAppearance) -> Void = { item in
+            item.normal.titleTextAttributes = [.foregroundColor: normal]
+            item.normal.iconColor = normal
+            item.selected.titleTextAttributes = [.foregroundColor: selected]
+            item.selected.iconColor = selected
+            item.normal.titlePositionAdjustment = titleNudge
+            item.selected.titlePositionAdjustment = titleNudge
+            item.focused.titlePositionAdjustment = titleNudge
+            item.disabled.titlePositionAdjustment = titleNudge
+        }
+        apply(appearance.stackedLayoutAppearance)
+        apply(appearance.inlineLayoutAppearance)
+        apply(appearance.compactInlineLayoutAppearance)
 
         let tabBar = UITabBar.appearance()
         tabBar.standardAppearance = appearance
@@ -258,64 +272,43 @@ enum AppTypography {
         }
     }
 
-    /// Font Awesome 6 Free Solid（`webfonts/fa-solid-900.ttf`）。`fa-solid fa-dice` のグリフは U+F522。
-    private static var cachedFontAwesome6SolidPostScriptName: String?
-
-    static func registerFontAwesome6SolidIfPresent() {
-        guard let url = Bundle.main.url(forResource: "fa-solid-900", withExtension: "ttf", subdirectory: "Fonts")
-            ?? Bundle.main.url(forResource: "fa-solid-900", withExtension: "ttf") else { return }
-        if CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil) {
-            cachedFontAwesome6SolidPostScriptName = nil
-        }
-    }
-
-    static let fontAwesome6SolidDiceGlyph: String = String(UnicodeScalar(0xF522)!)
-
-    private static func resolvedFontAwesome6SolidPostScriptName() -> String? {
-        if let c = cachedFontAwesome6SolidPostScriptName { return c }
-        let size: CGFloat = 20
-        let candidates = [
-            "Font Awesome 6 Free Solid",
-            "FontAwesome6Free-Solid"
-        ]
-        for name in candidates where UIFont(name: name, size: size) != nil {
-            cachedFontAwesome6SolidPostScriptName = name
-            return name
-        }
-        for fam in UIFont.familyNames where fam.contains("Font Awesome 6") {
-            let names = UIFont.fontNames(forFamilyName: fam)
-            if let solid = names.first(where: { $0.localizedCaseInsensitiveContains("Solid") }) {
-                cachedFontAwesome6SolidPostScriptName = solid
-                return solid
-            }
-            if let first = names.first {
-                cachedFontAwesome6SolidPostScriptName = first
-                return first
-            }
-        }
-        return nil
-    }
-
-    /// ホーム「ランダム記事」ダイス。TTF 未同梱時は `nil`（`SF Symbol` にフォールバック）。
-    static func fontAwesome6SolidDiceIconFont() -> Font? {
-        guard let name = resolvedFontAwesome6SolidPostScriptName() else { return nil }
-        let size = max(26, UIFont.preferredFont(forTextStyle: .title1).pointSize + 4)
-        return Font.custom(name, size: size, relativeTo: .title)
-    }
-
+    /// ホーム「ランダム記事」`dice.fill` の論理ポイント（Dynamic Type 追従）。
     static func randomPanelDiceIconPointSize() -> CGFloat {
         max(26, UIFont.preferredFont(forTextStyle: .title1).pointSize + 4)
     }
 
-    /// ホーム支部名行の最小高さ（`largeTitle` の行ボックス。フォントを 2pt 縮めても縦の取りを維持）。
-    static var homeBranchTitleRowReservedHeight: CGFloat {
-        UIFont.preferredFont(forTextStyle: .largeTitle).lineHeight
+    /// `largeTitle` 比で 5pt 小さい支部名の論理ポイント（2pt+3pt 縮小。Dynamic Type 追従の基準）。
+    private static var homeBranchTitlePointSize: CGFloat {
+        let base = UIFont.preferredFont(forTextStyle: .largeTitle).pointSize
+        return max(10, base - 5)
     }
 
-    /// ホーム `dashboardHeaderCard` の支部名。`largeTitle` 比で 2pt 小さく、未バンドル時はシステム太字。
+    /// ホーム支部名行の最小高さ（実フォント行ボックスに合わせ、中央可視域の確保のため取りすぎない）。
+    static var homeBranchTitleRowReservedHeight: CGFloat {
+        let ps = homeBranchTitlePointSize
+        for name in homeBranchTitleFontPostScriptCandidates {
+            if let f = UIFont(name: name, size: ps) {
+                return ceil(f.lineHeight)
+            }
+        }
+        return ceil(UIFont.systemFont(ofSize: ps, weight: .bold).lineHeight)
+    }
+
+    /// 左の財団マーク画像高さ。支部名文字ボックスに合わせる。
+    static func homeBranchMarkImageHeight() -> CGFloat {
+        let ps = homeBranchTitlePointSize
+        for name in homeBranchTitleFontPostScriptCandidates {
+            if let f = UIFont(name: name, size: ps) {
+                return ceil(f.lineHeight * 0.94)
+            }
+        }
+        let f = UIFont.systemFont(ofSize: ps, weight: .bold)
+        return ceil(f.lineHeight * 0.94)
+    }
+
+    /// ホーム `dashboardHeaderCard` の支部名。`largeTitle` 比で 5pt 小さく、未バンドル時はシステム太字。
     static func homeBranchTitleFont() -> Font {
-        let base = UIFont.preferredFont(forTextStyle: .largeTitle).pointSize
-        let size = max(10, base - 2)
+        let size = homeBranchTitlePointSize
         for name in homeBranchTitleFontPostScriptCandidates {
             if UIFont(name: name, size: size) != nil {
                 return Font.custom(name, size: size, relativeTo: .largeTitle)
@@ -360,12 +353,6 @@ enum AppTypography {
     static func homePillarTitleFont() -> Font {
         .title.weight(.semibold)
     }
-
-    static func registerFontAwesome6SolidIfPresent() {}
-
-    static let fontAwesome6SolidDiceGlyph: String = String(UnicodeScalar(0xF522)!)
-
-    static func fontAwesome6SolidDiceIconFont() -> Font? { nil }
 
     static func randomPanelDiceIconPointSize() -> CGFloat { 32 }
 #endif
