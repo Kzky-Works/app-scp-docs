@@ -11,8 +11,8 @@
 - 報告書マニフェスト（例: `list/jp/manifest_scp-*.json`）および 3 系統フィードのソース
 - マルチフォーム一覧（Tales / GoI / Canon / Joke の manifest）
 - Wikidot カタログ（例: `docs/catalog/*.json`）およびそのビルド入力・スクリプト
-- タグ一覧・記事逆引きマップ（例: `lists/jp/jp_tag.json`）と **`build_jp_wikidot_tag_article_map.py` のような収集スクリプト**
-- 上記を生成・検証する **`scripts/`** 配下のツールと、それらを動かす **GitHub Actions（data-scp-docs 側）**
+- タグ一覧・記事逆引きマップ（例: `list/jp/jp_tag.json`）と **`build_jp_wikidot_tag_article_map.py` のような収集スクリプト**
+- 上記を生成・検証する **`scripts/`** 配下のツール。CI は **app-scp-docs** の **`.github/workflows/`** から起動し、**data-scp-docs** の `list/jp` 等へ push（シークレット `DATA_SCP_DOCS_PUSH_TOKEN`）
 
 ## `scp_docs`（アプリリポジトリ）側の扱い
 
@@ -23,7 +23,7 @@
 
 ## 新規作業の手順（要約）
 
-1. 記事 JSON やそれに依存するスクリプト・ワークフローを追加・変更するときは **data-scp-docs で PR / push** する。
+1. 配信用 JSON や `docs/catalog` の更新は **data-scp-docs** の `main` が正。スクリプト改修は同リポ（または `contrib` から同期）。**収集用ワークフロー**の追加・変更は **app-scp-docs** の `.github/workflows/` で行い、必要なら data-scp-docs 用 PAT を同リポのシークレットに登録する。
 2. アプリ側の変更が必要なのは **URL・スキーマ消費・型** に限る（必要なら `docs/APP_SPEC_HANDOVER_ja.md` や `AppRemoteConfig` の説明を更新）。
 3. `scp_docs` にだけ残っている旧パスや重複スクリプトに気づいたら、**data-scp-docs へ移し** `scp_docs` からは削除する。
 

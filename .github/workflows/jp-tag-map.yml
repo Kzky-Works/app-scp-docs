@@ -1,7 +1,6 @@
-# data-scp-docs 専用: lists/jp/jp_tag.json を週1回（または手動）生成し、差分があれば main へ push。
-# Hybrid harvester（update.yml）とは別ワークフロー。成果物の正本は本リポジトリのみ。
-# 前提: ルートに scripts/build_jp_wikidot_tag_article_map.py があること。
-name: JP tag map (lists/jp/jp_tag.json)
+# 本リポ（app-scp-docs）のスクリプトでタグ逆引き JSON を生成し、Kzky-Works/data-scp-docs の list/jp/jp_tag.json へ push する。
+# 前提: リポジトリシークレット DATA_SCP_DOCS_PUSH_TOKEN（data-scp-docs へ contents:write できる PAT）
+name: JP tag map to data-scp-docs
 
 on:
   workflow_dispatch:
@@ -22,15 +21,14 @@ on:
         description: "リクエスト間隔（秒）"
         type: string
         default: "0.35"
-  # 週1回（日曜 00:00 UTC）。Wikidot 負荷を避けるため毎日の harvest とは分離。
   schedule:
     - cron: "0 0 * * 0"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: data-scp-docs-jp-tag-map
+  group: data-scp-docs-list-jp-write
   cancel-in-progress: false
 
 jobs:
@@ -38,20 +36,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - name: Checkout
+      - name: Checkout app-scp-docs
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Checkout data-scp-docs
+        uses: actions/checkout@v4
+        with:
+          repository: Kzky-Works/data-scp-docs
+          ref: main
+          path: data-scp-docs
+          token: ${{ secrets.DATA_SCP_DOCS_PUSH_TOKEN }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Build JSON
         run: |
           set -euxo pipefail
-          # schedule 時は event.inputs が空のため、未設定ならここで既定に落とす
           PAGE_MIN='${{ github.event.inputs.jp_tag_hub_page_min }}'
           PAGE_MAX='${{ github.event.inputs.jp_tag_hub_page_max }}'
           MAX_TAGS='${{ github.event.inputs.max_tags }}'
@@ -60,31 +65,33 @@ jobs:
           : "${PAGE_MAX:=59}"
           : "${MAX_TAGS:=0}"
           : "${SLEEP:=0.35}"
-          mkdir -p lists/jp
+          OUT="data-scp-docs/list/jp/jp_tag.json"
+          mkdir -p "$(dirname "$OUT")"
           MAX_TAGS_FLAG=()
           if [ -n "${MAX_TAGS}" ] && [ "${MAX_TAGS}" != "0" ]; then
             MAX_TAGS_FLAG=(--max-tags "${MAX_TAGS}")
           fi
-          python3 scripts/build_jp_wikidot_tag_article_map.py \
+          python3 contrib/data-scp-docs/scripts/build_jp_wikidot_tag_article_map.py \
             --jp-tag-hub-page-min "${PAGE_MIN}" \
             --jp-tag-hub-page-max "${PAGE_MAX}" \
             "${MAX_TAGS_FLAG[@]}" \
             --sleep-sec "${SLEEP}" \
-            -o lists/jp/jp_tag.json
-          ls -la lists/jp/jp_tag.json
-          python3 -c "import json; d=json.load(open('lists/jp/jp_tag.json')); print('tags', len(d.get('tags',[])), 'articles', len(d.get('articles',{})))"
+            -o "$OUT"
+          ls -la "$OUT"
+          python3 -c "import json; d=json.load(open('$OUT')); print('tags', len(d.get('tags',[])), 'articles', len(d.get('articles',{})))"
 
       - name: Commit and push if changed
         run: |
           set -euo pipefail
+          cd data-scp-docs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add lists/jp/jp_tag.json
+          git add list/jp/jp_tag.json
           if git diff --staged --quiet; then
             echo "No changes — skipping commit."
             exit 0
           fi
-          git commit -m "chore(data): refresh lists/jp/jp_tag.json [skip ci]"
+          git commit -m "chore(data): refresh list/jp/jp_tag.json [skip ci]"
           git fetch origin main
           git rebase origin/main
           git push origin main

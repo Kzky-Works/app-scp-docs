@@ -9,6 +9,6 @@ globs:
 
 # 記事データのリポジトリ境界
 
-- **正本**: 記事系配信 JSON（manifest / catalog / タグマップ等）、それを生成する **スクリプト**、収集用の **元データ**、およびそれらの **GitHub Actions** はすべて **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** に置く。`scp_docs` に新規のハーベスタや配信物の長期コピーを増やさない。
-- **`scp_docs` の `contrib/data-scp-docs/`**: data-scp-docs へ取り込む前の一時置き場。マージ後は data-scp-docs がソース・オブ・トゥルース。
+- **正本**: 記事系配信 JSON（`list/jp` / `docs/catalog` 等）、生成 **スクリプト**、収集用 **元データ**は **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)**。日次・週次の **CI ワークフロー**は **app-scp-docs** ルートの **`.github/workflows/`**（`list/jp` へ `git push` するジョブ）。`DATA_SCP_DOCS_PUSH_TOKEN` で data-scp-docs に書き込む。`scp_docs` に新規のハーベスタや配信物の長期コピーを増やさない。
+- **`scp_docs` の `contrib/data-scp-docs/`**: スクリプトの同梱ミラー；data-scp-docs の `main` へ手同期する前提。`list/jp` JSON の生データの正本は常に data-scp-docs 上のパス。
 - **アプリ変更**: URL 取得・デコード・キャッシュ・UI のみ。詳細ルールは `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md` を参照。

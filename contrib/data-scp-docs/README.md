@@ -1,16 +1,19 @@
 # data-scp-docs 変更候補（scp_docs 同梱ミラー）
 
-このフォルダは **[Kzky-Works/data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** リポジトリへ取り込むための **スクリプト・ワークフロー案**です。GitHub Pages の実データは data-scp-docs 側の `main` が正です。
+このフォルダは **[Kzky-Works/data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** へ同梱する **スクリプト正本**です。`list/jp/*.json` の配信物は同リポの `main` 上のパスが正です。
 
-## 反映手順
+**CI の所在:** 日次のハーベストと週次のタグマップ生成は、**[app-scp-docs](https://github.com/Kzky-Works/app-scp-docs)** ルートの **`.github/workflows/`**（`update-list-feeds.yml` / `jp-tag-map.yml`）で動きます。ジョブ内で本ディレクトリのスクリプトを使い、成果物だけ **`data-scp-docs` リポジトリ**の `list/jp/` へ `git push` します。data-scp-docs 側に同名ワークフローは不要です（スクリプトのコピー先としてだけ同期する）。
 
-1. `data-scp-docs` を clone し、本ディレクトリの内容で上書き（少なくとも `scripts/harvester.py`）。
+**必須シークレット（app-scp-docs）:** リポジトリに **`DATA_SCP_DOCS_PUSH_TOKEN`** を登録する。`Kzky-Works/data-scp-docs` へ **contents:write** できる fine-grained PAT または classic PAT。未設定だと `data-scp-docs` の checkout が失敗します。
+
+## 反映手順（data-scp-docs リポの手作業でスクリプトを更新する場合）
+
+1. `data-scp-docs` を clone し、本ディレクトリの `scripts/` / `requirements.txt` を上書きコピー（Actions は上記のとおり app-scp-docs 側のため、ワークフローはコピー不要）。
 2. `pip install -r requirements.txt`
-3. `python3 scripts/harvester.py`（Wikidot へのリクエストが多く **数十分かかる**場合があります）
-4. （任意）`mkdir -p lists/jp && python3 scripts/build_jp_wikidot_tag_article_map.py -o lists/jp/jp_tag.json` — `system:page-tags/tag/jp/p/1..59` からタグ名を集め、各タグの `list-pages-item` 由来で記事スラッグ→タグ配列の JSON を生成。`docs/catalog` への取り込みは data-scp-docs 側のスキーマに合わせてマージする。
-   - **GitHub Actions（正本）**: **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** の `.github/workflows/jp-tag-map.yml` は **週1回（日曜 00:00 UTC）**に自動実行され、差分があれば `main` の **`lists/jp/jp_tag.json`** を更新する。Hybrid harvester（`update.yml`）とは別ジョブ。**手動実行**（`workflow_dispatch`）も可。フル実行は Wikidot へのリクエストが極めて多いため **既定のジョブ上限 6 時間**に収まらない場合がある。試験時は入力 `max_tags` に小さな数（例: `20`）を指定すること。
-5. `python3 scripts/validate_manifests.py`
-6. `list/jp/` に `manifest_canons.json` / `manifest_jokes.json` が生成されていることを確認してコミット・プッシュ
+3. `python3 scripts/harvester.py`（未指定なら、clone 先の `list/jp` に書く。別ディレクトリへ出すときは `python3 scripts/harvester.py --output-dir <絶対パス>/list/jp`）
+4. （任意）`mkdir -p list/jp && python3 scripts/build_jp_wikidot_tag_article_map.py -o list/jp/jp_tag.json` — `tag/jp/p/1..59` 周辺からタグ名を集め、記事スラッグ→タグ配列の JSON を `list/jp/` へ。`docs/catalog` 取り込みは data-scp-docs 側スキーマに合わせる。
+5. `python3 scripts/validate_manifests.py`（`list/jp` を省略可。別ディレクトリなら第1引数で渡す）
+6. 変更を `data-scp-docs` の `main` へプッシュ
 
 ## 主な変更（マルチフォーム計画対応）
 

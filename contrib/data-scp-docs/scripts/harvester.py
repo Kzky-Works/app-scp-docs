@@ -907,9 +907,18 @@ class JapaneseBranchHarvester:
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Hybrid harvester for list/jp/*.json")
+    p.add_argument(
+        "--output-dir",
+        type=str,
+        default="",
+        help="list/jp 相当の書き出し先（未指定なら <本スクリプトの直上>/list/jp）",
+    )
     args = p.parse_args()
+    cfg = BranchConfig()
+    if args.output_dir:
+        cfg.output_dir = os.path.abspath(args.output_dir)
     try:
-        JapaneseBranchHarvester().run()
+        JapaneseBranchHarvester(cfg).run()
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 1
