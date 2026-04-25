@@ -3,6 +3,62 @@ import SwiftUI
 import UIKit
 #endif
 
+#if canImport(UIKit)
+/// Split Hero 左（SCP-JP）／右下（国際版）: 1 行のまま、与えられた矩形内で最太・最大のポイントサイズに収める。
+private struct HomeHeroFittingLineTitle: View {
+    let rawTitle: String
+    let locale: Locale
+
+    var body: some View {
+        let display = rawTitle.uppercased(with: locale)
+        GeometryReader { geo in
+            let w = max(0, geo.size.width)
+            let h = max(0, geo.size.height)
+            let pt = Self.maxPointSizeSingleLine(
+                text: display,
+                maxWidth: w,
+                maxHeight: h,
+                weight: .heavy
+            )
+            Text(display)
+                .font(.system(size: pt, weight: .heavy, design: .default))
+                .foregroundStyle(AppTheme.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+    }
+
+    /// 1 行のバウンディングが `maxWidth` / `maxHeight` に入る最も大きいフォント（二分探索）。
+    private static func maxPointSizeSingleLine(
+        text: String,
+        maxWidth: CGFloat,
+        maxHeight: CGFloat,
+        weight: UIFont.Weight
+    ) -> CGFloat {
+        guard !text.isEmpty, maxWidth > 2, maxHeight > 2 else { return 8 }
+        var lo: CGFloat = 4
+        var hi: CGFloat = min(maxWidth * 1.4, maxHeight * 1.4, 160)
+        for _ in 0 ..< 28 {
+            let mid = (lo + hi) * 0.5
+            let f = UIFont.systemFont(ofSize: mid, weight: weight)
+            let size = (text as NSString).boundingRect(
+                with: CGSize(width: 9_999, height: 9_999),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: [.font: f],
+                context: nil
+            ).size
+            if size.width <= maxWidth * 0.99, size.height <= maxHeight * 0.99 {
+                lo = mid
+            } else {
+                hi = mid
+            }
+        }
+        return max(4, lo)
+    }
+}
+#endif
+
 /// 職員ダッシュボード。縦スクロールなしで表示領域に収め、`HomeViewModel` と `NavigationRouter` をバインドする。
 struct HomeView: View {
     @Bindable var navigationRouter: NavigationRouter
@@ -363,20 +419,9 @@ struct HomeView: View {
 
     // MARK: - Split Hero（SCP-JP / SCP-en / SCP-int）
 
+    /// 右列 本家翻訳（SCP / EN 本家訳）のみ。SCP-JP / 国際版は可変1行 `HomeHeroFittingLineTitle`。
     private func heroArchiveTitleFont(kind: SCPArticleFeedKind, isDoubleHeight: Bool, compact: Bool) -> Font {
-        if kind == .jp, isDoubleHeight {
-#if canImport(UIKit)
-            let style: UIFont.TextStyle = compact ? .title2 : .largeTitle
-            let base = UIFont.preferredFont(forTextStyle: style)
-            let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
-            let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
-            return Font(scaled)
-#else
-            return compact ? .title.weight(.heavy) : .largeTitle.weight(.heavy)
-#endif
-        }
-        /// 右列 本家翻訳：太めだが 1 行に入り切らない略称を避ける。
-        if kind == .en && !isDoubleHeight {
+        if kind == .en, !isDoubleHeight {
 #if canImport(UIKit)
             let style: UIFont.TextStyle = compact ? .title2 : .title1
             let base = UIFont.preferredFont(forTextStyle: style)
@@ -387,36 +432,10 @@ struct HomeView: View {
             return (compact ? .title2 : .title).weight(.heavy)
 #endif
         }
-        /// 国際版タイルは列幅が狭いため EN より一段小さくし「SCP…」省略を防ぐ。
-        if kind == .int && !isDoubleHeight {
-#if canImport(UIKit)
-            let style: UIFont.TextStyle = compact ? .title3 : .title2
-            let base = UIFont.preferredFont(forTextStyle: style)
-            let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
-            let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
-            return Font(scaled)
-#else
-            return (compact ? .title3 : .title2).weight(.heavy)
-#endif
-        }
         return isDoubleHeight
             ? (compact ? .headline.weight(.heavy) : .title2.weight(.heavy))
             : (compact ? .caption.weight(.heavy) : .subheadline.weight(.heavy))
     }
-
-#if canImport(UIKit)
-    private func heroJpLogoHeight(compact: Bool) -> CGFloat {
-        let style: UIFont.TextStyle = compact ? .title2 : .largeTitle
-        let base = UIFont.preferredFont(forTextStyle: style)
-        let heavy = UIFont.systemFont(ofSize: base.pointSize, weight: .heavy)
-        let scaled = UIFontMetrics(forTextStyle: style).scaledFont(for: heavy)
-        return ceil(scaled.lineHeight * 0.92)
-    }
-#else
-    private func heroJpLogoHeight(compact: Bool) -> CGFloat {
-        compact ? 28 : 38
-    }
-#endif
 
     /// Split Hero の SCP-JP / 本家翻訳 / 国際版：カタログ内の既読割合（％表記なし・点線風ダッシュ）。
     private func heroTrifoldCatalogReadGauge(
@@ -491,40 +510,51 @@ struct HomeView: View {
         let titleFont: Font = heroArchiveTitleFont(kind: kind, isDoubleHeight: isDoubleHeight, compact: compact)
         let readCount = max(0, total - unread)
         let readFraction: Double = total > 0 ? Double(readCount) / Double(total) : 0
+        let locale = homeViewModel.resolvedLocale
 
         return Button {
             Haptics.medium()
             navigationRouter.push(.scpArticleCatalogFeed(kind))
         } label: {
             VStack(alignment: .leading, spacing: 0) {
-                Group {
-                    if kind == .jp {
-                        HStack(alignment: .center, spacing: 8) {
-                            Image("HomeScpLogoJP")
-                                .resizable()
-                                .renderingMode(.original)
-                                .scaledToFit()
-                                .frame(height: heroJpLogoHeight(compact: compact))
-                                .accessibilityHidden(true)
-                            Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
-                                .font(titleFont)
-                                .foregroundStyle(AppTheme.textPrimary)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(isDoubleHeight ? 4 : 3)
-                                .minimumScaleFactor(0.6)
-                        }
-                    } else {
-                        Text(labels.title.uppercased(with: homeViewModel.resolvedLocale))
-                            .font(titleFont)
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(kind == .int ? 4 : 3)
-                            .minimumScaleFactor(kind == .int ? 0.5 : 0.6)
-                    }
+                if kind == .jp {
+#if canImport(UIKit)
+                    HomeHeroFittingLineTitle(rawTitle: labels.title, locale: locale)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.bottom, titleBottomSpacing)
+#else
+                    Text(labels.title.uppercased(with: locale))
+                        .font(isDoubleHeight ? .title.weight(.heavy) : .headline.weight(.heavy))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.2)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.bottom, titleBottomSpacing)
+#endif
+                } else if kind == .int {
+#if canImport(UIKit)
+                    HomeHeroFittingLineTitle(rawTitle: labels.title, locale: locale)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.bottom, titleBottomSpacing)
+#else
+                    Text(labels.title.uppercased(with: locale))
+                        .font(.subheadline.weight(.heavy))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.2)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.bottom, titleBottomSpacing)
+#endif
+                } else {
+                    Text(labels.title.uppercased(with: locale))
+                        .font(titleFont)
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.6)
+                        .padding(.bottom, titleBottomSpacing)
+                    Spacer(minLength: 0)
                 }
-                .padding(.bottom, titleBottomSpacing)
-
-                Spacer(minLength: 0)
 
                 if kind == .jp || kind == .en || kind == .int {
                     VStack(alignment: .leading, spacing: 4) {
