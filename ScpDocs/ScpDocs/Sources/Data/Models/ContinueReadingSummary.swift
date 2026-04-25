@@ -6,8 +6,10 @@ struct ContinueReadingRowDisplay: Sendable, Equatable {
     let categoryLine: String
     /// 二行目: タイトル（JSON `t` を優先）。
     let titleLine: String
-    /// 三行目: オブジェクト番号表記＋（任意）オブジェクトクラス。
-    let line3Detail: String
+    /// 三行目: SCP 番号等の識別子（スラッグ・リスト由来）。
+    let line3Identifier: String
+    /// 三行目: カタログ等から取れたオブジェクトクラス。無い場合は `nil`（識別子のみ表示）。
+    let line3ObjectClass: String?
     /// 四行目: 0...1 のスクロール進捗（ゲージ）。
     let scrollProgress: Double
     /// 右サムネイル用（任意）。
@@ -45,15 +47,11 @@ enum ContinueReadingSummaryBuilder {
             japanListHint: japanListHint
         )
         let resolvedObjectClass = normalizedNonEmpty(listMetaObjectClass) ?? normalizedNonEmpty(japanListHint?.objectClass)
-        let line3 = resolveLine3Detail(
-            identifierLine: scpOrIdentifier,
-            objectClass: resolvedObjectClass,
-            localize: localize
-        )
         return ContinueReadingRowDisplay(
             categoryLine: localize(categoryLocalizationKey(classification: classification, host: host)),
             titleLine: title,
-            line3Detail: line3,
+            line3Identifier: scpOrIdentifier,
+            line3ObjectClass: resolvedObjectClass,
             scrollProgress: min(1, max(0, scrollProgress)),
             thumbnailURL: thumbnailURL
         )
@@ -62,16 +60,6 @@ enum ContinueReadingSummaryBuilder {
     private static func normalizedNonEmpty(_ raw: String?) -> String? {
         guard let t = raw?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty else { return nil }
         return t
-    }
-
-    private static func resolveLine3Detail(
-        identifierLine: String,
-        objectClass: String?,
-        localize: (String) -> String
-    ) -> String {
-        guard let oc = objectClass else { return identifierLine }
-        let classSuffix = String(format: localize(LocalizationKey.homeContinueObjectClassFormat), oc)
-        return "\(identifierLine)  \(classSuffix)"
     }
 
     private static func categoryLocalizationKey(classification: Classification, host: String) -> String {

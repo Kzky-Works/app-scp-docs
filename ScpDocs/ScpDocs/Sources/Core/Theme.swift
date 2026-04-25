@@ -258,6 +258,55 @@ enum AppTypography {
         }
     }
 
+    /// Font Awesome 6 Free Solid（`webfonts/fa-solid-900.ttf`）。`fa-solid fa-dice` のグリフは U+F522。
+    private static var cachedFontAwesome6SolidPostScriptName: String?
+
+    static func registerFontAwesome6SolidIfPresent() {
+        guard let url = Bundle.main.url(forResource: "fa-solid-900", withExtension: "ttf", subdirectory: "Fonts")
+            ?? Bundle.main.url(forResource: "fa-solid-900", withExtension: "ttf") else { return }
+        if CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil) {
+            cachedFontAwesome6SolidPostScriptName = nil
+        }
+    }
+
+    static let fontAwesome6SolidDiceGlyph: String = String(UnicodeScalar(0xF522)!)
+
+    private static func resolvedFontAwesome6SolidPostScriptName() -> String? {
+        if let c = cachedFontAwesome6SolidPostScriptName { return c }
+        let size: CGFloat = 20
+        let candidates = [
+            "Font Awesome 6 Free Solid",
+            "FontAwesome6Free-Solid"
+        ]
+        for name in candidates where UIFont(name: name, size: size) != nil {
+            cachedFontAwesome6SolidPostScriptName = name
+            return name
+        }
+        for fam in UIFont.familyNames where fam.contains("Font Awesome 6") {
+            let names = UIFont.fontNames(forFamilyName: fam)
+            if let solid = names.first(where: { $0.localizedCaseInsensitiveContains("Solid") }) {
+                cachedFontAwesome6SolidPostScriptName = solid
+                return solid
+            }
+            if let first = names.first {
+                cachedFontAwesome6SolidPostScriptName = first
+                return first
+            }
+        }
+        return nil
+    }
+
+    /// ホーム「ランダム記事」ダイス。TTF 未同梱時は `nil`（`SF Symbol` にフォールバック）。
+    static func fontAwesome6SolidDiceIconFont() -> Font? {
+        guard let name = resolvedFontAwesome6SolidPostScriptName() else { return nil }
+        let size = max(26, UIFont.preferredFont(forTextStyle: .title1).pointSize + 4)
+        return Font.custom(name, size: size, relativeTo: .title)
+    }
+
+    static func randomPanelDiceIconPointSize() -> CGFloat {
+        max(26, UIFont.preferredFont(forTextStyle: .title1).pointSize + 4)
+    }
+
     /// ホーム支部名行の最小高さ（`largeTitle` の行ボックス。フォントを 2pt 縮めても縦の取りを維持）。
     static var homeBranchTitleRowReservedHeight: CGFloat {
         UIFont.preferredFont(forTextStyle: .largeTitle).lineHeight
@@ -311,6 +360,14 @@ enum AppTypography {
     static func homePillarTitleFont() -> Font {
         .title.weight(.semibold)
     }
+
+    static func registerFontAwesome6SolidIfPresent() {}
+
+    static let fontAwesome6SolidDiceGlyph: String = String(UnicodeScalar(0xF522)!)
+
+    static func fontAwesome6SolidDiceIconFont() -> Font? { nil }
+
+    static func randomPanelDiceIconPointSize() -> CGFloat { 32 }
 #endif
 }
 

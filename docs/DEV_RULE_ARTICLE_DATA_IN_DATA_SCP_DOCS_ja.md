@@ -11,7 +11,7 @@
 - 報告書マニフェスト（例: `list/jp/manifest_scp-*.json`）および 3 系統フィードのソース
 - マルチフォーム一覧（Tales / GoI / Canon / Joke の manifest）
 - Wikidot カタログ（例: `docs/catalog/*.json`）およびそのビルド入力・スクリプト
-- タグ一覧・記事逆引きマップ（例: `list/jp/jp_tag.json`）と **`build_jp_wikidot_tag_article_map.py` のような収集スクリプト**
+- タグ一覧・記事逆引きマップ（例: `lists/jp/jp_tag.json`）と **`build_jp_wikidot_tag_article_map.py` のような収集スクリプト**
 - 上記を生成・検証する **`scripts/`** 配下のツールと、それらを動かす **GitHub Actions（data-scp-docs 側）**
 
 ## `scp_docs`（アプリリポジトリ）側の扱い

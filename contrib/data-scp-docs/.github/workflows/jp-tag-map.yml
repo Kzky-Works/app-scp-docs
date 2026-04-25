@@ -1,7 +1,7 @@
-# data-scp-docs 専用: リポジトリルートで list/jp/jp_tag.json を生成し Artifact 名 jp-tag として保存する。
-# 実行・成果物の正本は本リポジトリのみ（scp_docs / app-scp-docs では動かさない）。
+# data-scp-docs 専用: lists/jp/jp_tag.json を週1回（または手動）生成し、差分があれば main へ push。
+# Hybrid harvester（update.yml）とは別ワークフロー。成果物の正本は本リポジトリのみ。
 # 前提: ルートに scripts/build_jp_wikidot_tag_article_map.py があること。
-name: JP tag map (list/jp/jp_tag.json)
+name: JP tag map (lists/jp/jp_tag.json)
 
 on:
   workflow_dispatch:
@@ -22,9 +22,12 @@ on:
         description: "リクエスト間隔（秒）"
         type: string
         default: "0.35"
+  # 週1回（日曜 00:00 UTC）。Wikidot 負荷を避けるため毎日の harvest とは分離。
+  schedule:
+    - cron: "0 0 * * 0"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: data-scp-docs-jp-tag-map
@@ -37,6 +40,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -44,14 +49,18 @@ jobs:
           python-version: "3.12"
 
       - name: Build JSON
-        env:
-          PAGE_MIN: ${{ inputs.jp_tag_hub_page_min }}
-          PAGE_MAX: ${{ inputs.jp_tag_hub_page_max }}
-          MAX_TAGS: ${{ inputs.max_tags }}
-          SLEEP: ${{ inputs.sleep_sec }}
         run: |
           set -euxo pipefail
-          mkdir -p list/jp
+          # schedule 時は event.inputs が空のため、未設定ならここで既定に落とす
+          PAGE_MIN='${{ github.event.inputs.jp_tag_hub_page_min }}'
+          PAGE_MAX='${{ github.event.inputs.jp_tag_hub_page_max }}'
+          MAX_TAGS='${{ github.event.inputs.max_tags }}'
+          SLEEP='${{ github.event.inputs.sleep_sec }}'
+          : "${PAGE_MIN:=1}"
+          : "${PAGE_MAX:=59}"
+          : "${MAX_TAGS:=0}"
+          : "${SLEEP:=0.35}"
+          mkdir -p lists/jp
           MAX_TAGS_FLAG=()
           if [ -n "${MAX_TAGS}" ] && [ "${MAX_TAGS}" != "0" ]; then
             MAX_TAGS_FLAG=(--max-tags "${MAX_TAGS}")
@@ -61,13 +70,21 @@ jobs:
             --jp-tag-hub-page-max "${PAGE_MAX}" \
             "${MAX_TAGS_FLAG[@]}" \
             --sleep-sec "${SLEEP}" \
-            -o list/jp/jp_tag.json
-          ls -la list/jp/jp_tag.json
-          python3 -c "import json; d=json.load(open('list/jp/jp_tag.json')); print('tags', len(d.get('tags',[])), 'articles', len(d.get('articles',{})))"
+            -o lists/jp/jp_tag.json
+          ls -la lists/jp/jp_tag.json
+          python3 -c "import json; d=json.load(open('lists/jp/jp_tag.json')); print('tags', len(d.get('tags',[])), 'articles', len(d.get('articles',{})))"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: jp-tag
-          path: list/jp/jp_tag.json
-          if-no-files-found: error
+      - name: Commit and push if changed
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lists/jp/jp_tag.json
+          if git diff --staged --quiet; then
+            echo "No changes — skipping commit."
+            exit 0
+          fi
+          git commit -m "chore(data): refresh lists/jp/jp_tag.json [skip ci]"
+          git fetch origin main
+          git rebase origin/main
+          git push origin main

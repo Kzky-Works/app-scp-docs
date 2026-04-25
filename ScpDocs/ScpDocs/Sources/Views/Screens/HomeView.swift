@@ -11,6 +11,7 @@ struct HomeView: View {
     var onOpenSettings: () -> Void
 
     @Environment(\.scpHomeAdBottomReserve) private var homeAdBottomReserve
+    @Environment(\.colorScheme) private var colorScheme
 
     private let homeGridSpacing: CGFloat = 12
 
@@ -135,11 +136,7 @@ struct HomeView: View {
                                     .foregroundStyle(AppTheme.textPrimary)
                                     .lineLimit(3)
                                     .minimumScaleFactor(0.85)
-                                Text(row.line3Detail)
-                                    .font(continueReadingLine3Font())
-                                    .foregroundStyle(AppTheme.textPrimary)
-                                    .lineLimit(2)
-                                    .minimumScaleFactor(0.78)
+                                continueReadingLine3Block(row: row)
                                 readingProgressGauge(progress: row.scrollProgress, locale: homeViewModel.resolvedLocale)
                             }
                         }
@@ -189,17 +186,15 @@ struct HomeView: View {
                 homeSectionOuterTitle(localizationKey: LocalizationKey.homeRandomArticleReadSectionTitle)
                 terminalPanel {
                     HStack(alignment: .center, spacing: 12) {
-                        Image(systemName: "dice.fill")
-                            .font(.title2.weight(.semibold))
-                            .foregroundStyle(AppTheme.textSecondary.opacity(0.95))
-                            .frame(width: 28, alignment: .center)
+                        randomPanelFontAwesomeDiceIcon()
                         VStack(alignment: .leading, spacing: 3) {
-                            (
+                            HStack(alignment: .firstTextBaseline, spacing: 0) {
                                 Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIPrefix)))
-                                + Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIWildcard)))
-                            )
+                                    .foregroundStyle(AppTheme.textSecondary.opacity(0.9))
+                                Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomCLIWildcard)))
+                                    .foregroundStyle(AppTheme.readingProgressGaugeFill)
+                            }
                             .font(continueReadingCategoryFont())
-                            .foregroundStyle(AppTheme.textSecondary.opacity(0.9))
                             .lineLimit(2)
                             .minimumScaleFactor(0.72)
                             Text(String(localized: String.LocalizationValue(LocalizationKey.homeRandomExploreSubtitle)))
@@ -220,6 +215,28 @@ struct HomeView: View {
         }
         .buttonStyle(DashboardPressButtonStyle())
         .frame(maxWidth: .infinity, alignment: .top)
+    }
+
+    /// `fa-solid fa-dice`（U+F522）— TTF 未同梱時は SF `dice.fill`。
+    @ViewBuilder
+    private func randomPanelFontAwesomeDiceIcon() -> some View {
+        #if canImport(UIKit)
+        let point = AppTypography.randomPanelDiceIconPointSize()
+        let w = point * 1.12
+        Group {
+            if let faFont = AppTypography.fontAwesome6SolidDiceIconFont() {
+                Text(AppTypography.fontAwesome6SolidDiceGlyph)
+                    .font(faFont)
+            } else {
+                Image(systemName: "dice.fill")
+                    .font(.system(size: point, weight: .semibold))
+            }
+        }
+        .foregroundStyle(AppTheme.readingProgressGaugeFill)
+        .frame(width: w, alignment: .center)
+        #else
+        EmptyView()
+        #endif
     }
 
     private func continueReadingOuterTitleFont() -> Font {
@@ -252,10 +269,40 @@ struct HomeView: View {
     private func continueReadingLine3Font() -> Font {
         #if canImport(UIKit)
         let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
-        return .system(size: max(6, pt - 2), weight: .light, design: .default)
+        return .system(size: max(8, pt), weight: .light, design: .default)
         #else
         return .callout
         #endif
+    }
+
+    private func continueReadingLine3TextColor() -> Color {
+        switch colorScheme {
+        case .dark: AppTheme.textPrimary
+        case .light: Color.black
+        @unknown default: Color.black
+        }
+    }
+
+    @ViewBuilder
+    private func continueReadingLine3Block(row: ContinueReadingRowDisplay) -> some View {
+        let idFont = continueReadingLine3Font().monospaced()
+        let suffixFont = continueReadingLine3Font()
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Text(row.line3Identifier)
+                .font(idFont)
+            if let oc = row.line3ObjectClass {
+                Text(
+                    String(
+                        format: String(localized: String.LocalizationValue(LocalizationKey.homeContinueObjectClassFormat)),
+                        oc
+                    )
+                )
+                .font(suffixFont)
+            }
+        }
+        .foregroundStyle(continueReadingLine3TextColor())
+        .lineLimit(2)
+        .minimumScaleFactor(0.78)
     }
 
     private func continueReadingPercentFont() -> Font {

@@ -99,6 +99,7 @@
 		BF000000000000000000006C /* InternationalBranchPortalOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000078 /* InternationalBranchPortalOption.swift */; };
 		BF000000000000000000006D /* SCPArticleReaderLoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000079 /* SCPArticleReaderLoadingOverlay.swift */; };
 		BF000000000000000000006E /* SCPJPTagObjectClassCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000007A /* SCPJPTagObjectClassCatalog.swift */; };
+		BF000000000000000000006F /* fa-solid-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000007B /* fa-solid-900.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -195,6 +196,7 @@
 		FR0000000000000000000078 /* InternationalBranchPortalOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternationalBranchPortalOption.swift; sourceTree = "<group>"; };
 		FR0000000000000000000079 /* SCPArticleReaderLoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPArticleReaderLoadingOverlay.swift; sourceTree = "<group>"; };
 		FR000000000000000000007A /* SCPJPTagObjectClassCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPJPTagObjectClassCatalog.swift; sourceTree = "<group>"; };
+		FR000000000000000000007B /* fa-solid-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-solid-900.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -356,6 +358,7 @@
 				FR0000000000000000000051 /* Asap-VF.ttf */,
 				FR0000000000000000000052 /* OpenSans-VF.ttf */,
 				FR0000000000000000000053 /* SourceSans3-VF.ttf */,
+				FR000000000000000000007B /* fa-solid-900.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -516,6 +519,7 @@
 				BF000000000000000000004C /* OpenSans-VF.ttf in Resources */,
 				BF000000000000000000004D /* SourceSans3-VF.ttf in Resources */,
 				BF000000000000000000004E /* FONT_THIRD_PARTY_NOTICES.txt in Resources */,
+				BF000000000000000000006F /* fa-solid-900.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
