@@ -363,6 +363,8 @@ struct ArticleView: View {
             navigationRouter.push(.scpJapanArchive(seed))
         case .englishMainlistTranslation:
             navigationRouter.push(.scpEnglishArchive(seed))
+        case .internationalBranch:
+            navigationRouter.push(.scpArticleCatalogFeed(.int))
         }
     }
 
@@ -374,6 +376,8 @@ struct ArticleView: View {
             navigationRouter.push(.scpJapanArchive(seed))
         case .englishMainlistTranslation:
             navigationRouter.push(.scpEnglishArchive(seed))
+        case .internationalBranch:
+            navigationRouter.push(.scpArticleCatalogFeed(.int))
         }
     }
 

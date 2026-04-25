@@ -367,7 +367,7 @@ struct ArchiveArticleListView: View {
 #Preview("JP") {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var repo = ArticleRepository()
-    let meta = JapanSCPListMetadataStore(wikiCatalogCacheRepository: WikiCatalogCacheRepository())
+    let meta = JapanSCPListMetadataStore(jpTagMapCache: JPTagMapCacheRepository())
     NavigationStack {
         ArchiveArticleListView(
             navigationRouter: router,
@@ -381,7 +381,7 @@ struct ArchiveArticleListView: View {
 #Preview("EN") {
     @Previewable @State var router = NavigationRouter()
     @Previewable @State var repo = ArticleRepository()
-    let meta = JapanSCPListMetadataStore(wikiCatalogCacheRepository: WikiCatalogCacheRepository())
+    let meta = JapanSCPListMetadataStore(jpTagMapCache: JPTagMapCacheRepository())
     NavigationStack {
         ArchiveArticleListView(
             navigationRouter: router,

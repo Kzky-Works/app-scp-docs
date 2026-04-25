@@ -1,6 +1,6 @@
 import Foundation
 
-/// キャッシュ済みカタログ（JP / EN / INT）内の「次の記事」「ランダム記事」を解決する。
+/// キャッシュ済み 3 系統フィード（JP / EN / INT）内の「次の記事」「ランダム記事」を解決する。
 enum CatalogFeedNavigator: Sendable {
     private static func trifoldCatalogEntries(kind: SCPArticleFeedKind, feedCache: SCPArticleFeedCacheRepository) -> [SCPArticle] {
         let entries = feedCache.loadPersistedPayload(kind: kind)?.entries ?? []

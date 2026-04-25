@@ -7,6 +7,7 @@ import UIKit
 struct SCPArticleFeedListView: View {
     let kind: SCPArticleFeedKind
     let feedCache: SCPArticleFeedCacheRepository
+    let japanSCPListMetadataStore: JapanSCPListMetadataStore?
     let personnelReadingJournal: PersonnelReadingJournal?
     @Bindable var articleRepository: ArticleRepository
     @Bindable var navigationRouter: NavigationRouter
@@ -88,10 +89,13 @@ struct SCPArticleFeedListView: View {
                                 Text(article.t)
                                     .font(AppTypography.feedListOnePointDown(.body, weight: .semibold))
                                     .foregroundStyle(AppTheme.textPrimary)
-                                Text(article.u)
-                                    .font(AppTypography.feedListOnePointDown(.caption2, weight: .regular))
-                                    .foregroundStyle(AppTheme.textSecondary)
-                                    .lineLimit(1)
+                                if let meta = japanSCPListMetadataStore,
+                                   let oc = meta.trifoldListRowObjectClass(article: article) {
+                                    Text(listRowObjectClassLabel(wiki: oc))
+                                        .font(AppTypography.feedListOnePointDown(.caption2, weight: .semibold))
+                                        .foregroundStyle(AppTheme.textSecondary)
+                                        .lineLimit(1)
+                                }
                             }
                             Spacer(minLength: 6)
                             if let u = article.resolvedURL, articleRepository.isRead(url: u) {
@@ -131,6 +135,13 @@ struct SCPArticleFeedListView: View {
         .onAppear {
             personnelReadingJournal?.setActiveCatalogFeed(kind)
         }
+    }
+
+    private func listRowObjectClassLabel(wiki: String) -> String {
+        if let key = SCPJPTagObjectClassCatalog.chipLocalizationKey(forWikiEqualityTitle: wiki) {
+            return String(localized: String.LocalizationValue(key))
+        }
+        return wiki
     }
 
     @ViewBuilder

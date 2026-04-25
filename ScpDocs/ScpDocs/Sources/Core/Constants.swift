@@ -518,9 +518,6 @@ enum AppRemoteConfig {
     /// Tales/GoI 等で受け入れる `schemaVersion`（1=従来、2=manifest）。
     static let supportedSCPGeneralContentFeedSchemaVersions: Set<Int> = [1, 2]
 
-    /// `WikiCategoryCatalogPayload` の `schemaVersion` と一致させる（data-scp-docs `docs/catalog`）。
-    static let wikiCatalogSchemaVersion = 1
-
     /// マニフェスト JSON 等を置くベース URL（末尾スラッシュなし）。
     /// `list/jp/manifest_*.json` はリポジトリ `main` に存在するが、GitHub Pages の現行公開では 404 になるため、
     /// `raw.githubusercontent.com` の `main` を参照する（Pages を `list/` まで配信できたら差し替え可能）。
@@ -545,9 +542,8 @@ enum AppRemoteConfig {
     static let canonsListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_canons.json"
     static let jokesListJSONPathComponent = "\(scpArticleFeedListPathPrefix)/manifest_jokes.json"
 
-    /// `docs/catalog/` を配信するベース URL（末尾スラッシュなし）。空なら Wikidot カタログ JSON は同期しない。
-    /// リポジトリ上の実体は `docs/catalog/*.json`（`scpDataHostBaseURLString` は `main` ルートを指す）。
-    static let wikiCatalogBaseURLString = "\(scpDataHostBaseURLString)/docs/catalog"
+    /// タグ逆引きマップ（`build_jp_wikidot_tag_article_map.py` → `list/jp/jp_tag.json`）。
+    static let jpTagMapJSONPathComponent = "\(scpArticleFeedListPathPrefix)/jp_tag.json"
 
     /// Step 1: 3 系統 SCP 報告書フィード URL。マルチフォーム（`manifest_*.json`）は `resolvedMultiformArchiveJSONURL` を使う。
     static func resolvedSCPArticleFeedURL(kind: SCPArticleFeedKind) -> URL? {
@@ -596,19 +592,9 @@ enum AppRemoteConfig {
         return components.url
     }
 
-    /// カタログ同期が有効か（ベース URL が設定されているか）。
-    static func resolvedWikiCatalogBaseURL() -> URL? {
-        let trimmed = wikiCatalogBaseURLString.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, let base = URL(string: trimmed) else { return nil }
-        guard let scheme = base.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
-            return nil
-        }
-        return base
-    }
-
-    static func resolvedWikiCatalogURL(kind: WikiCatalogKind) -> URL? {
-        guard let base = resolvedWikiCatalogBaseURL() else { return nil }
-        return base.appendingPathComponent(kind.fileName)
+    /// `list/jp/jp_tag.json` の完全 URL（タグ・オブジェクトクラス補完用）。
+    static func resolvedJPTagMapURL() -> URL? {
+        resolvedJSONURLAppendingPathComponent(jpTagMapJSONPathComponent)
     }
 }
 

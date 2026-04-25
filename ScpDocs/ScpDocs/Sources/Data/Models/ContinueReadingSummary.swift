@@ -46,7 +46,8 @@ enum ContinueReadingSummaryBuilder {
             cachedPageTitle: cachedPageTitle,
             japanListHint: japanListHint
         )
-        let resolvedObjectClass = normalizedNonEmpty(listMetaObjectClass) ?? normalizedNonEmpty(japanListHint?.objectClass)
+        // `jp_tag.json` 由来の `japanListHint` を優先（マニフェストの `c` は補助）。
+        let resolvedObjectClass = normalizedNonEmpty(japanListHint?.objectClass) ?? normalizedNonEmpty(listMetaObjectClass)
         return ContinueReadingRowDisplay(
             categoryLine: localize(categoryLocalizationKey(classification: classification, host: host)),
             titleLine: title,
@@ -148,6 +149,7 @@ enum ContinueReadingSummaryBuilder {
             case .jpOriginal: return .scpJapanOriginal
             case .mainlistTranslation: return .scpJapanMainlistTranslation
             case .jokeJp: return .scpJapanJoke
+            case .intInternational: return .scpInternationalMain
             }
         }
 

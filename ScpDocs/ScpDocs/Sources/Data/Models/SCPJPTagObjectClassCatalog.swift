@@ -1,6 +1,6 @@
 import Foundation
 
-/// SCP-JP Wikidot のタグ（`safe` 等）とオブジェクトクラス表示の対応。カタログ `objectClass` が空のときタグから補完する。
+/// SCP-JP Wikidot のタグ（`safe` 等）とオブジェクトクラス表示の対応。`objectClass` 文字列が空のときタグから補完する。
 enum SCPJPTagObjectClassCatalog: Sendable {
     private struct Row: Sendable {
         let slug: String

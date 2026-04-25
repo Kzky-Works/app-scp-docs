@@ -8,12 +8,12 @@ struct MainView: View {
     @Bindable var articleRepository: ArticleRepository
     @Bindable var purchaseRepository: PurchaseRepository
     let japanSCPListMetadataStore: JapanSCPListMetadataStore
-    let wikiCatalogCacheRepository: WikiCatalogCacheRepository
+    let jpTagMapCacheRepository: JPTagMapCacheRepository
     let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository
     let personnelReadingJournal: PersonnelReadingJournal
     @Binding var selectedTab: AppRootTab
 
-    private let wikiCatalogSyncService = WikiCatalogSyncService()
+    private let jpTagMapSyncService = JPTagMapSyncService()
 
     private var scpArticleTrifoldSyncService: SCPArticleTrifoldSyncService {
         SCPArticleTrifoldSyncService(cacheRepository: scpArticleFeedCacheRepository)
@@ -90,9 +90,9 @@ struct MainView: View {
         .tint(AppTheme.brandAccent)
         .task {
             await Task.yield()
-            await wikiCatalogSyncService.syncIfNeeded(
+            await jpTagMapSyncService.syncIfNeeded(
                 metadataStore: japanSCPListMetadataStore,
-                wikiCatalogCacheRepository: wikiCatalogCacheRepository
+                cacheRepository: jpTagMapCacheRepository
             )
             await scpArticleTrifoldSyncService.syncAllFeedsIfNeeded()
             await multiformContentSyncService.syncAllMultiformFeedsIfNeeded()
@@ -172,6 +172,7 @@ struct MainView: View {
                 SCPGeneralContentListView(
                     kind: kind,
                     feedCache: scpArticleFeedCacheRepository,
+                    japanSCPListMetadataStore: japanSCPListMetadataStore,
                     personnelReadingJournal: personnelReadingJournal,
                     articleRepository: articleRepository,
                     navigationRouter: navigationRouter
@@ -180,6 +181,7 @@ struct MainView: View {
                 SCPArticleFeedListView(
                     kind: kind,
                     feedCache: scpArticleFeedCacheRepository,
+                    japanSCPListMetadataStore: japanSCPListMetadataStore,
                     personnelReadingJournal: personnelReadingJournal,
                     articleRepository: articleRepository,
                     navigationRouter: navigationRouter

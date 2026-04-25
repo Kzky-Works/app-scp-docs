@@ -58,6 +58,7 @@ private enum JokeReportCatalogLineage {
 struct SCPGeneralContentListView: View {
     let kind: SCPArticleFeedKind
     let feedCache: SCPArticleFeedCacheRepository
+    let japanSCPListMetadataStore: JapanSCPListMetadataStore?
     let personnelReadingJournal: PersonnelReadingJournal?
     @Bindable var articleRepository: ArticleRepository
     @Bindable var navigationRouter: NavigationRouter
@@ -134,6 +135,12 @@ struct SCPGeneralContentListView: View {
                                     .multilineTextAlignment(.leading)
                                     .lineLimit(2)
                                     .fixedSize(horizontal: false, vertical: true)
+                                if kind == .jokes, let meta = japanSCPListMetadataStore, let oc = meta.jokeMultiformListRowObjectClass(entry: row) {
+                                    Text(jokeListObjectClassLabel(wiki: oc))
+                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
+                                        .foregroundStyle(AppTheme.textSecondary)
+                                        .lineLimit(1)
+                                }
                                 if let author = row.trimmedAuthor {
                                     Text(author)
                                         .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
@@ -226,5 +233,12 @@ struct SCPGeneralContentListView: View {
 
     private func reloadCachedEntriesFromDisk() {
         cachedEntries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
+    }
+
+    private func jokeListObjectClassLabel(wiki: String) -> String {
+        if let key = SCPJPTagObjectClassCatalog.chipLocalizationKey(forWikiEqualityTitle: wiki) {
+            return String(localized: String.LocalizationValue(key))
+        }
+        return wiki
     }
 }

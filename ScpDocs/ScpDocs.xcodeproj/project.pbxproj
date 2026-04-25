@@ -50,8 +50,10 @@
 		BF000000000000000000002B /* GoIPortalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000029 /* GoIPortalView.swift */; };
 		BF000000000000000000002C /* SCPJPSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000030 /* SCPJPSeries.swift */; };
 		BF000000000000000000002E /* ArchiveArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000032 /* ArchiveArticleListView.swift */; };
-		BF0000000000000000000031 /* WikiCatalogCacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000035 /* WikiCatalogCacheRepository.swift */; };
 		BF0000000000000000000032 /* JapanSCPListMetadataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000036 /* JapanSCPListMetadataStore.swift */; };
+		BF000000000000000000007C /* JPTagMapPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000007C /* JPTagMapPayload.swift */; };
+		BF000000000000000000007D /* JPTagMapCacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000007D /* JPTagMapCacheRepository.swift */; };
+		BF000000000000000000007E /* JPTagMapSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000007E /* JPTagMapSyncService.swift */; };
 		BF0000000000000000000034 /* FoundationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000038 /* FoundationCard.swift */; };
 		BF0000000000000000000035 /* StaffGuideIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000039 /* StaffGuideIndexView.swift */; };
 		BF0000000000000000000038 /* FoundationIndexRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000042 /* FoundationIndexRow.swift */; };
@@ -78,8 +80,6 @@
 		BF0000000000000000000057 /* FoundationTalesJPRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000063 /* FoundationTalesJPRepository.swift */; };
 		BF0000000000000000000058 /* FoundationTalesJPIndexViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000064 /* FoundationTalesJPIndexViewModel.swift */; };
 		BF0000000000000000000059 /* FoundationTalesJPIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000065 /* FoundationTalesJPIndexView.swift */; };
-		BF000000000000000000005A /* WikiCategoryCatalogPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000066 /* WikiCategoryCatalogPayload.swift */; };
-		BF000000000000000000005B /* WikiCatalogSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000067 /* WikiCatalogSyncService.swift */; };
 		BF000000000000000000005C /* SCPArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000068 /* SCPArticle.swift */; };
 		BF000000000000000000005D /* PersonnelRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR0000000000000000000069 /* PersonnelRecord.swift */; };
 		BF000000000000000000005E /* SCPArticleFeedCacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FR000000000000000000006A /* SCPArticleFeedCacheRepository.swift */; };
@@ -147,8 +147,10 @@
 		FR0000000000000000000029 /* GoIPortalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoIPortalView.swift; sourceTree = "<group>"; };
 		FR0000000000000000000030 /* SCPJPSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPJPSeries.swift; sourceTree = "<group>"; };
 		FR0000000000000000000032 /* ArchiveArticleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveArticleListView.swift; sourceTree = "<group>"; };
-		FR0000000000000000000035 /* WikiCatalogCacheRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiCatalogCacheRepository.swift; sourceTree = "<group>"; };
 		FR0000000000000000000036 /* JapanSCPListMetadataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapanSCPListMetadataStore.swift; sourceTree = "<group>"; };
+		FR000000000000000000007C /* JPTagMapPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPTagMapPayload.swift; sourceTree = "<group>"; };
+		FR000000000000000000007D /* JPTagMapCacheRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPTagMapCacheRepository.swift; sourceTree = "<group>"; };
+		FR000000000000000000007E /* JPTagMapSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPTagMapSyncService.swift; sourceTree = "<group>"; };
 		FR0000000000000000000038 /* FoundationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationCard.swift; sourceTree = "<group>"; };
 		FR0000000000000000000039 /* StaffGuideIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffGuideIndexView.swift; sourceTree = "<group>"; };
 		FR0000000000000000000042 /* FoundationIndexRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationIndexRow.swift; sourceTree = "<group>"; };
@@ -175,8 +177,6 @@
 		FR0000000000000000000063 /* FoundationTalesJPRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationTalesJPRepository.swift; sourceTree = "<group>"; };
 		FR0000000000000000000064 /* FoundationTalesJPIndexViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationTalesJPIndexViewModel.swift; sourceTree = "<group>"; };
 		FR0000000000000000000065 /* FoundationTalesJPIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationTalesJPIndexView.swift; sourceTree = "<group>"; };
-		FR0000000000000000000066 /* WikiCategoryCatalogPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiCategoryCatalogPayload.swift; sourceTree = "<group>"; };
-		FR0000000000000000000067 /* WikiCatalogSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiCatalogSyncService.swift; sourceTree = "<group>"; };
 		FR0000000000000000000068 /* SCPArticle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPArticle.swift; sourceTree = "<group>"; };
 		FR0000000000000000000069 /* PersonnelRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonnelRecord.swift; sourceTree = "<group>"; };
 		FR000000000000000000006A /* SCPArticleFeedCacheRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCPArticleFeedCacheRepository.swift; sourceTree = "<group>"; };
@@ -294,7 +294,7 @@
 				FR0000000000000000000010 /* NavigationRoute.swift */,
 				FR000000000000000000001C /* AppUILanguage.swift */,
 				FR0000000000000000000030 /* SCPJPSeries.swift */,
-				FR0000000000000000000066 /* WikiCategoryCatalogPayload.swift */,
+				FR000000000000000000007C /* JPTagMapPayload.swift */,
 				FR000000000000000000007A /* SCPJPTagObjectClassCatalog.swift */,
 				FR0000000000000000000068 /* SCPArticle.swift */,
 				FR0000000000000000000078 /* InternationalBranchPortalOption.swift */,
@@ -314,7 +314,7 @@
 				FR0000000000000000000011 /* ArticleRepository.swift */,
 				FR0000000000000000000017 /* SettingsRepository.swift */,
 				FR0000000000000000000027 /* PurchaseRepository.swift */,
-				FR0000000000000000000035 /* WikiCatalogCacheRepository.swift */,
+				FR000000000000000000007D /* JPTagMapCacheRepository.swift */,
 				FR0000000000000000000036 /* JapanSCPListMetadataStore.swift */,
 				FR0000000000000000000063 /* FoundationTalesJPRepository.swift */,
 				FR000000000000000000006A /* SCPArticleFeedCacheRepository.swift */,
@@ -378,7 +378,7 @@
 				FR0000000000000000000006 /* ContentGateway.swift */,
 				FR000000000000000000000C /* WebViewService.swift */,
 				FR0000000000000000000019 /* OfflineStore.swift */,
-				FR0000000000000000000067 /* WikiCatalogSyncService.swift */,
+				FR000000000000000000007E /* JPTagMapSyncService.swift */,
 				FR000000000000000000006C /* SCPArticleTrifoldSyncService.swift */,
 				FR0000000000000000000073 /* MultiformContentSyncService.swift */,
 				FR0000000000000000000070 /* CatalogFeedNavigator.swift */,
@@ -574,7 +574,9 @@
 				BF000000000000000000002B /* GoIPortalView.swift in Sources */,
 				BF000000000000000000002C /* SCPJPSeries.swift in Sources */,
 				BF000000000000000000002E /* ArchiveArticleListView.swift in Sources */,
-				BF0000000000000000000031 /* WikiCatalogCacheRepository.swift in Sources */,
+				BF000000000000000000007C /* JPTagMapPayload.swift in Sources */,
+				BF000000000000000000007D /* JPTagMapCacheRepository.swift in Sources */,
+				BF000000000000000000007E /* JPTagMapSyncService.swift in Sources */,
 				BF0000000000000000000032 /* JapanSCPListMetadataStore.swift in Sources */,
 				BF0000000000000000000034 /* FoundationCard.swift in Sources */,
 				BF0000000000000000000038 /* FoundationIndexRow.swift in Sources */,
@@ -593,8 +595,6 @@
 				BF0000000000000000000057 /* FoundationTalesJPRepository.swift in Sources */,
 				BF0000000000000000000058 /* FoundationTalesJPIndexViewModel.swift in Sources */,
 				BF0000000000000000000059 /* FoundationTalesJPIndexView.swift in Sources */,
-				BF000000000000000000005A /* WikiCategoryCatalogPayload.swift in Sources */,
-				BF000000000000000000005B /* WikiCatalogSyncService.swift in Sources */,
 				BF000000000000000000005C /* SCPArticle.swift in Sources */,
 				BF000000000000000000005D /* PersonnelRecord.swift in Sources */,
 				BF000000000000000000005E /* SCPArticleFeedCacheRepository.swift in Sources */,

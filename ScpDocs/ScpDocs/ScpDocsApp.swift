@@ -13,7 +13,7 @@ struct ScpDocsApp: App {
     }()
 
     @State private var homeViewModel: HomeViewModel
-    @State private var wikiCatalogCacheRepository: WikiCatalogCacheRepository
+    @State private var jpTagMapCacheRepository: JPTagMapCacheRepository
     @State private var japanSCPListMetadataStore: JapanSCPListMetadataStore
     private let scpArticleFeedCacheRepository: SCPArticleFeedCacheRepository
     private let personnelReadingJournal: PersonnelReadingJournal
@@ -25,7 +25,7 @@ struct ScpDocsApp: App {
         AppTypography.registerFontAwesome6SolidIfPresent()
 #endif
         let settingsRepository = SettingsRepository()
-        let wikiCatalogCache = WikiCatalogCacheRepository()
+        let jpTagCache = JPTagMapCacheRepository()
         let articleRepo = ArticleRepository()
         let feedCache = SCPArticleFeedCacheRepository()
         let trifoldIndex = SCPArticleTrifoldIndexStore(feedCache: feedCache)
@@ -34,7 +34,7 @@ struct ScpDocsApp: App {
         self.scpArticleFeedCacheRepository = feedCache
         self.personnelReadingJournal = personnelJournal
 
-        let japanMeta = JapanSCPListMetadataStore(wikiCatalogCacheRepository: wikiCatalogCache, articleFeedCache: feedCache)
+        let japanMeta = JapanSCPListMetadataStore(jpTagMapCache: jpTagCache, articleFeedCache: feedCache)
         let homeVM = HomeViewModel(
             settingsRepository: settingsRepository,
             articleRepository: articleRepo,
@@ -53,7 +53,7 @@ struct ScpDocsApp: App {
 
         _articleRepository = State(wrappedValue: articleRepo)
         _homeViewModel = State(wrappedValue: homeVM)
-        _wikiCatalogCacheRepository = State(wrappedValue: wikiCatalogCache)
+        _jpTagMapCacheRepository = State(wrappedValue: jpTagCache)
         _japanSCPListMetadataStore = State(wrappedValue: japanMeta)
 
         AppTheme.configureTabBarAppearance()
@@ -77,7 +77,7 @@ struct ScpDocsApp: App {
                 articleRepository: articleRepository,
                 purchaseRepository: purchaseRepository,
                 japanSCPListMetadataStore: japanSCPListMetadataStore,
-                wikiCatalogCacheRepository: wikiCatalogCacheRepository,
+                jpTagMapCacheRepository: jpTagMapCacheRepository,
                 scpArticleFeedCacheRepository: scpArticleFeedCacheRepository,
                 personnelReadingJournal: personnelReadingJournal,
                 selectedTab: $rootTab
