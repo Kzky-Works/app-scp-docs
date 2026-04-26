@@ -154,7 +154,6 @@ enum LocalizationKey {
     static let homeFeedListTitleINT = "home.feed_list.title.int"
     /// SCP International カタログ下部の横スクロール支部チップ（末尾言語コードで絞り込み）。
     static let intCatalogBranchPickerCaption = "int.catalog_branch_picker.caption"
-    static let intCatalogBranchPickerOpenSite = "int.catalog_branch_picker.open_site"
     static let intCatalogBranchFilterEmptyTitle = "int.catalog_branch_filter.empty.title"
     static let intCatalogBranchFilterEmptySubtitle = "int.catalog_branch_filter.empty.subtitle"
     static let intCatalogBranchChipAll = "int.catalog_branch_chip.all"
@@ -191,6 +190,8 @@ enum LocalizationKey {
     static let canonHubSourcePickerAccessibility = "canon.hub_source_picker.a11y"
     static let canonHubFeedTabEmptyTitle = "canon.hub_feed.tab_empty.title"
     static let canonHubFeedTabEmptySubtitle = "canon.hub_feed.tab_empty.subtitle"
+    /// 引数: yyyy/MM/dd（`String(format:locale:)` 用）。
+    static let canonCardLastUpdatedFormat = "canon.card.last_updated_format"
     static let goiFeedEmptyNoGroupTags = "goi.feed.empty.no_group_tags"
 
     static let multiformAuthorUnknown = "multiform.author.unknown"

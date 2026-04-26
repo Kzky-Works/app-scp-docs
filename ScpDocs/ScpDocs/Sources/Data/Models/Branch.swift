@@ -250,4 +250,18 @@ struct Branch: Sendable, Equatable, Identifiable {
             return Branch.japan.randomSCPURL
         }
     }
+
+    /// カタログ一覧（カノンカードの最終更新日など）の表示用タイムゾーン。Wikidot の慣習に合わせる。
+    var catalogListingsTimeZone: TimeZone {
+        switch id {
+        case BranchIdentifier.scpJapan:
+            TimeZone(identifier: "Asia/Tokyo") ?? TimeZone(secondsFromGMT: 0)!
+        case BranchIdentifier.scpWikiEN:
+            TimeZone(identifier: "America/New_York") ?? TimeZone(secondsFromGMT: 0)!
+        case BranchIdentifier.scpInternational:
+            TimeZone(identifier: "UTC") ?? TimeZone(secondsFromGMT: 0)!
+        default:
+            TimeZone.current
+        }
+    }
 }

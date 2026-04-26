@@ -10,7 +10,7 @@
 
 1. `data-scp-docs` を clone し、本ディレクトリの `scripts/` / `requirements.txt` を上書きコピー（Actions は上記のとおり app-scp-docs 側のため、ワークフローはコピー不要）。
 2. `pip install -r requirements.txt`
-3. `python3 scripts/harvester.py`（未指定なら、clone 先の `list/jp` に書く。別ディレクトリへ出すときは `python3 scripts/harvester.py --output-dir <絶対パス>/list/jp`）
+3. `python3 scripts/harvester.py`（未指定なら、clone 先の `list/jp` に書く。別ディレクトリへ出すときは `python3 scripts/harvester.py --output-dir <絶対パス>/list/jp`）。同一リポ内でコミット／プッシュまで行う場合: `python3 scripts/harvester.py --git-commit` または `python3 scripts/harvester.py --git-push`（後者は変更があればコミット後に `git push origin`）。`--git-message` / `--git-remote` / `--git-repo` で上書き可。
 4. （任意）`mkdir -p list/jp && python3 scripts/build_jp_wikidot_tag_article_map.py -o list/jp/jp_tag.json` — `tag/jp/p/1..59` 周辺からタグ名を集め、記事スラッグ→タグ配列の JSON を `list/jp/` へ。`docs/catalog` 取り込みは data-scp-docs 側スキーマに合わせる。
 5. `python3 scripts/validate_manifests.py`（`list/jp` を省略可。別ディレクトリなら第1引数で渡す）
 6. 変更を `data-scp-docs` の `main` へプッシュ

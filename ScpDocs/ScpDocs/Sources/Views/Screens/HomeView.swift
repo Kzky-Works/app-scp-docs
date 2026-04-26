@@ -316,7 +316,7 @@ struct HomeView: View {
     private func continueReadingLine3Font() -> Font {
         #if canImport(UIKit)
         let pt = UIFont.preferredFont(forTextStyle: .body).pointSize
-        return .system(size: max(8, pt), weight: .light, design: .default)
+        return .system(size: max(5, pt - 3), weight: .light, design: .default)
         #else
         return .callout
         #endif
@@ -334,7 +334,7 @@ struct HomeView: View {
     private func continueReadingLine3Block(row: ContinueReadingRowDisplay) -> some View {
         let idFont = continueReadingLine3Font().monospaced()
         let suffixFont = continueReadingLine3Font()
-        HStack(alignment: .firstTextBaseline, spacing: 6) {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
             Text(row.line3Identifier)
                 .font(idFont)
             if let oc = row.line3ObjectClass {

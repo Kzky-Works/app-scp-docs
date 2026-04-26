@@ -96,12 +96,15 @@ private struct MultiformTalesAuthorGroup: Identifiable {
 /// Step 4: Tale / GoI / Canon / Joke のネイティブ一覧（`SCPGeneralContent`）。
 struct SCPGeneralContentListView: View {
     let kind: SCPArticleFeedKind
+    /// 設定のコンテンツ支部（カノンカードの日付タイムゾーン等）。
+    let contentBranch: Branch
     let feedCache: SCPArticleFeedCacheRepository
     let japanSCPListMetadataStore: JapanSCPListMetadataStore?
     let personnelReadingJournal: PersonnelReadingJournal?
     @Bindable var articleRepository: ArticleRepository
     @Bindable var navigationRouter: NavigationRouter
 
+    @Environment(\.colorScheme) private var colorScheme
     @Bindable private var connectivity = ConnectivityMonitor.shared
     @State private var cachedEntries: [SCPGeneralContent] = []
     @State private var goisManifest: SCPGeneralContentListPayload?
@@ -173,19 +176,39 @@ struct SCPGeneralContentListView: View {
         return cachedEntries.filter { goiEntryMatchesSourceTab($0) }
     }
 
-    /// `manifest_gois` schema 3: タブに応じた団体配列
+    /// `manifest_gois` schema 3: タブに応じた団体行（団体名 → ハブ `u` のみ。`u` 空は除外）
     private var goiV3TabGroups: [GoIFormatGroupPayload] {
         guard let r = goisManifest?.goiRegions else { return [] }
-        switch goiSourceTab {
-        case .jp: return r.jp
-        case .en: return r.en
-        case .other: return r.other
+        let raw: [GoIFormatGroupPayload] = switch goiSourceTab {
+        case .jp: r.jp
+        case .en: r.en
+        case .other: r.other
         }
+        return raw.filter { !$0.u.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    }
+
+    /// マニフェストの `canonRegions`、または `entries[].r`（jp/en）から組み立て。旧 JSON でも JP タブに一覧を載せてピッカーを出せる。
+    private var resolvedCanonRegions: CanonRegionsLayoutPayload? {
+        if let cr = canonsManifest?.canonRegions, !cr.jp.isEmpty || !cr.en.isEmpty {
+            return cr
+        }
+        var jp: [GoIFormatArticleLine] = []
+        var en: [GoIFormatArticleLine] = []
+        for e in cachedEntries {
+            guard let line = goIFormatArticleLine(from: e) else { continue }
+            if canonHubLineageTab(e) == .en {
+                en.append(line)
+            } else {
+                jp.append(line)
+            }
+        }
+        if jp.isEmpty && en.isEmpty { return nil }
+        return CanonRegionsLayoutPayload(jp: jp, en: en)
     }
 
     /// `manifest_canons` のカノンハブ行（タブで JP / EN を切替）。
     private var canonV3TabHubLines: [GoIFormatArticleLine] {
-        guard let r = canonsManifest?.canonRegions else { return [] }
+        guard let r = resolvedCanonRegions else { return [] }
         switch canonHubSourceTab {
         case .jp: return r.jp
         case .en: return r.en
@@ -227,10 +250,11 @@ struct SCPGeneralContentListView: View {
             return false
         }
         if kind == .canons {
-            if let cr = canonsManifest?.canonRegions {
+            if let cr = resolvedCanonRegions {
                 let anyHub = !cr.jp.isEmpty || !cr.en.isEmpty
                 return !anyHub && cachedEntries.isEmpty
             }
+            return cachedEntries.isEmpty
         }
         return cachedEntries.isEmpty
     }
@@ -284,35 +308,7 @@ struct SCPGeneralContentListView: View {
             } else if kind == .gois, goisManifest?.goiRegions != nil {
                 List {
                     ForEach(goiV3TabGroups) { group in
-                        Section {
-                            ForEach(group.entries) { line in
-                                Button {
-                                    Haptics.medium()
-                                    if let url = URL(string: line.u) {
-                                        navigationRouter.pushArticle(url: url)
-                                    }
-                                } label: {
-                                    HStack(alignment: .top, spacing: 10) {
-                                        Text(line.t)
-                                            .font(AppTypography.feedListOnePointDown(.headline, weight: .semibold))
-                                            .foregroundStyle(AppTheme.textPrimary)
-                                            .multilineTextAlignment(.leading)
-                                            .lineLimit(3)
-                                            .fixedSize(horizontal: false, vertical: true)
-                                        Spacer(minLength: 8)
-                                        if let url = URL(string: line.u), articleRepository.isRead(url: url) {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
-                                                .foregroundStyle(AppTheme.textSecondary)
-                                        }
-                                    }
-                                    .padding(.vertical, 4)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        } header: {
-                            goiV3GroupHeader(group: group)
-                        }
+                        goiV3GroupHubRow(group: group)
                     }
                 }
                 .listStyle(.plain)
@@ -325,7 +321,7 @@ struct SCPGeneralContentListView: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-            } else if kind == .canons, canonsManifest?.canonRegions != nil {
+            } else if kind == .canons, resolvedCanonRegions != nil {
                 if canonV3TabHubLines.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text(String(localized: String.LocalizationValue(LocalizationKey.canonHubFeedTabEmptyTitle)))
@@ -342,6 +338,7 @@ struct SCPGeneralContentListView: View {
                     List {
                         ForEach(canonV3TabHubLines) { line in
                             canonHubLineRow(line: line)
+                                .indexListRowChrome()
                         }
                     }
                     .listStyle(.plain)
@@ -442,7 +439,7 @@ struct SCPGeneralContentListView: View {
                 jokeReportOriginPickerChrome
             } else if kind == .gois, !cachedEntries.isEmpty || goisManifest?.goiRegions != nil {
                 goiSourceTabPickerChrome
-            } else if kind == .canons, canonsManifest?.canonRegions != nil {
+            } else if kind == .canons, resolvedCanonRegions != nil {
                 canonHubSourceTabPickerChrome
             }
         }
@@ -461,54 +458,24 @@ struct SCPGeneralContentListView: View {
     }
 
     @ViewBuilder
-    private func goiV3GroupHeader(group: GoIFormatGroupPayload) -> some View {
-        let rawU = group.u?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if !rawU.isEmpty, let hubURL = URL(string: rawU) {
-            Button {
-                Haptics.medium()
-                navigationRouter.pushArticle(url: hubURL)
-            } label: {
-                HStack(alignment: .top, spacing: 8) {
-                    Text(group.t)
-                        .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .multilineTextAlignment(.leading)
-                    Spacer(minLength: 0)
-                    if articleRepository.isRead(url: hubURL) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
-                            .foregroundStyle(AppTheme.textSecondary)
-                    }
-                }
-                .padding(.vertical, 4)
-            }
-            .buttonStyle(.plain)
-        } else {
-            Text(group.t)
-                .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
-                .foregroundStyle(AppTheme.textPrimary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 4)
-        }
-    }
-
-    @ViewBuilder
-    private func canonHubLineRow(line: GoIFormatArticleLine) -> some View {
+    private func goiV3GroupHubRow(group: GoIFormatGroupPayload) -> some View {
         Button {
             Haptics.medium()
-            if let url = URL(string: line.u) {
+            if let url = URL(string: group.u.trimmingCharacters(in: .whitespacesAndNewlines)) {
                 navigationRouter.pushArticle(url: url)
             }
         } label: {
             HStack(alignment: .top, spacing: 10) {
-                Text(line.t)
-                    .font(AppTypography.feedListOnePointDown(.headline, weight: .semibold))
+                Text(group.t)
+                    .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
                     .foregroundStyle(AppTheme.textPrimary)
                     .multilineTextAlignment(.leading)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
-                if let url = URL(string: line.u), articleRepository.isRead(url: url) {
+                if let url = URL(string: group.u.trimmingCharacters(in: .whitespacesAndNewlines)),
+                   articleRepository.isRead(url: url)
+                {
                     Image(systemName: "checkmark.circle.fill")
                         .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
                         .foregroundStyle(AppTheme.textSecondary)
@@ -517,6 +484,105 @@ struct SCPGeneralContentListView: View {
             .padding(.vertical, 6)
         }
         .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private func canonHubLineRow(line: GoIFormatArticleLine) -> some View {
+        Button {
+            Haptics.medium()
+            if let url = URL(string: line.u.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                navigationRouter.pushArticle(url: url)
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .center, spacing: 8) {
+                    if let chip = canonHubSeriesTagChipText(line: line) {
+                        Text(chip)
+                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
+                            .foregroundStyle(AppTheme.brandAccent)
+                            .lineLimit(1)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .stroke(AppTheme.brandAccent, lineWidth: max(0.5, AppTheme.borderWidthHairline))
+                            )
+                    }
+                    Spacer(minLength: 8)
+                    if let updated = canonHubLastUpdatedLabel(line: line) {
+                        Text(updated)
+                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .multilineTextAlignment(.trailing)
+                            .lineLimit(2)
+                            .monospacedDigit()
+                    }
+                }
+                Text(line.t)
+                    .font(AppTypography.feedListOnePointDown(.title3, weight: .bold))
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 10)
+                Text(canonHubSlugDisplay(line: line))
+                    .font(AppTypography.feedListOnePointDown(.subheadline, weight: .medium))
+                    .foregroundStyle(AppTheme.brandAccent)
+                    .lineLimit(1)
+                    .padding(.top, 4)
+                Text((line.ds ?? "").trimmingCharacters(in: .whitespacesAndNewlines))
+                    .font(AppTypography.feedListOnePointDown(.subheadline, weight: .regular))
+                    .foregroundStyle(canonCardDescriptionForeground)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, minHeight: canonCardDescriptionBlockHeight, alignment: .topLeading)
+                    .padding(.top, 12)
+            }
+            .frame(maxWidth: .infinity, minHeight: canonHubCardMinHeight, alignment: .topLeading)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 4)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var canonCardDescriptionForeground: Color {
+        switch colorScheme {
+        case .dark:
+            AppTheme.textSecondary.opacity(0.92)
+        default:
+            AppTheme.textPrimary.opacity(0.52)
+        }
+    }
+
+    /// 3 行分の `subheadline` 相当の最小高さ（空でも確保）。
+    private var canonCardDescriptionBlockHeight: CGFloat { 54 }
+
+    private var canonHubCardMinHeight: CGFloat { 196 }
+
+    private func canonHubSeriesTagChipText(line: GoIFormatArticleLine) -> String? {
+        guard let raw = line.ct?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else { return nil }
+        return raw
+    }
+
+    private func canonHubSlugDisplay(line: GoIFormatArticleLine) -> String {
+        let slug = line.i.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !slug.isEmpty else { return "" }
+        return "/" + slug
+    }
+
+    private func canonHubLastUpdatedLabel(line: GoIFormatArticleLine) -> String? {
+        guard let lu = line.lu else { return nil }
+        let tz = contentBranch.catalogListingsTimeZone
+        let date = Date(timeIntervalSince1970: TimeInterval(lu))
+        let fmt = DateFormatter()
+        fmt.calendar = Calendar(identifier: .gregorian)
+        fmt.timeZone = tz
+        fmt.locale = Locale.current
+        fmt.dateFormat = "yyyy/MM/dd"
+        let dateStr = fmt.string(from: date)
+        let format = String(localized: String.LocalizationValue(LocalizationKey.canonCardLastUpdatedFormat))
+        return String(format: format, locale: .current, dateStr)
     }
 
     @ViewBuilder
@@ -700,6 +766,37 @@ struct SCPGeneralContentListView: View {
             Rectangle()
                 .fill(AppTheme.terminalSilver.opacity(0.35))
                 .frame(height: 1)
+        }
+    }
+
+    /// マニフェストの軽量行と同一形（カノンハブ一覧用）。
+    private func goIFormatArticleLine(from entry: SCPGeneralContent) -> GoIFormatArticleLine? {
+        let u = entry.u.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !u.isEmpty else { return nil }
+        let id: String
+        if let i = entry.i, !i.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            id = i.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        } else if let url = URL(string: u),
+                  let last = url.path.split(separator: "/").filter({ !$0.isEmpty }).last
+        {
+            id = String(last).lowercased()
+        } else {
+            return nil
+        }
+        return GoIFormatArticleLine(u: u, i: id, t: entry.t)
+    }
+
+    /// `metadata.r` 由来のカノン出典（jp / en）。欠損時は JP タブへまとめる。
+    private func canonHubLineageTab(_ entry: SCPGeneralContent) -> CanonHubCatalogTab {
+        guard let raw = entry.r?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else {
+            return .jp
+        }
+        let lower = raw.lowercased()
+        switch lower {
+        case "en", "english", "enwiki", "us", "scp-wiki", "scpen", "main":
+            return .en
+        default:
+            return .jp
         }
     }
 

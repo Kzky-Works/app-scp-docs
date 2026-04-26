@@ -174,20 +174,6 @@ struct SCPArticleFeedListView: View {
             }
             .accessibilityElement(children: .contain)
             .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.intCatalogBranchPickerCaption)))
-
-            Button {
-                Haptics.medium()
-                guard let url = InternationalBranchPortalOption.option(id: intBranchFilterID)?.portalURL else { return }
-                navigationRouter.pushArticle(url: url)
-            } label: {
-                Text(String(localized: String.LocalizationValue(LocalizationKey.intCatalogBranchPickerOpenSite)))
-                    .font(AppTypography.feedListOnePointDown(.subheadline, weight: .semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(AppTheme.brandAccent)
-            .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

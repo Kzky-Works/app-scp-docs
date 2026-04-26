@@ -150,7 +150,6 @@
 "home.feed_list.title.en" = "SCP Database";
 "home.feed_list.title.int" = "SCP INTERNATIONAL Database";
 "int.catalog_branch_picker.caption" = "Filter by tail language code";
-"int.catalog_branch_picker.open_site" = "Open this branch’s site";
 "int.catalog_branch_filter.empty.title" = "No articles for this code";
 "int.catalog_branch_filter.empty.subtitle" = "Pick another branch chip or sync and check the cache.";
 "int.catalog_branch_chip.all" = "All";
@@ -188,6 +187,7 @@
 "canon.hub_source_picker.a11y" = "Canon hub language";
 "canon.hub_feed.tab_empty.title" = "No canon hubs in this tab";
 "canon.hub_feed.tab_empty.subtitle" = "Try the other tab.";
+"canon.card.last_updated_format" = "Last updated: %@";
 "goi.feed.empty.no_group_tags" = "No group tags to display. Check the manifest or try again after sync.";
 "home.feed_list.empty" = "No cached entries. Connect to the network and wait for sync.";
 

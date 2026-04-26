@@ -72,15 +72,28 @@ enum CatalogFeedNavigator: Sendable {
         articleRepository: ArticleRepository
     ) -> URL? {
         guard kind.isMultiformArchiveFeed else { return nil }
-        let entries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
+        let payload = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)
+        let entries = payload?.entries ?? []
+        var orderedURLs: [URL] = entries.compactMap(\.resolvedURL)
+        if kind == .gois, let gr = payload?.goiRegions {
+            for g in gr.en + gr.jp + gr.other {
+                let raw = g.u.trimmingCharacters(in: .whitespacesAndNewlines)
+                if let u = URL(string: raw) { orderedURLs.append(u) }
+            }
+        }
+        var seen = Set<String>()
+        var uniqueURLs: [URL] = []
+        for u in orderedURLs {
+            let k = ArticleRepository.storageKey(for: u)
+            if seen.insert(k).inserted { uniqueURLs.append(u) }
+        }
         let currentKey = current.map { ArticleRepository.storageKey(for: $0) }
-        let unread = entries.filter { row in
-            guard let u = row.resolvedURL else { return false }
+        let unread = uniqueURLs.filter { u in
             if currentKey == ArticleRepository.storageKey(for: u) { return false }
             return !articleRepository.isRead(url: u)
         }
-        if let pick = unread.randomElement(), let u = pick.resolvedURL { return u }
-        let pool = entries.compactMap(\.resolvedURL).filter { currentKey != ArticleRepository.storageKey(for: $0) }
+        if let u = unread.randomElement() { return u }
+        let pool = uniqueURLs.filter { currentKey != ArticleRepository.storageKey(for: $0) }
         return pool.randomElement()
     }
 }

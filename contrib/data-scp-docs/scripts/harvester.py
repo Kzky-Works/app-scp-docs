@@ -6,12 +6,17 @@ foundation-tales-jp（著者層）を統合し list/jp/*.json を生成する。
 マニフェスト（schemaVersion 2）: `manifest_scp-*.json` / `manifest_tales.json` /
 `manifest_gois.json` / `manifest_canons.json` / `manifest_jokes.json` に entries（u,i,t）と
 スパース metadata（主キー i）を出力する。listVersion は前回出力と差分が無い場合は据え置き。
-GoI（`manifest_gois.json`）のみ schemaVersion 3: `goi-formats-jp` の h1/h2 構造に基づき `en` / `jp` / `other` の団体ツリー + 子記事を格納（`goiRegions`）。詳細は同梱 `docs/GOI_MANIFEST_V3_ja.md`。
+GoI（`manifest_gois.json`）のみ schemaVersion 3: `goi-formats-jp` の h1/h2 構造に基づき `en` / `jp` / `other` の団体行（団体名 + ハブ `u` のみ。ハブのない団体は除外）を `goiRegions` に格納。フラット `entries` / `metadata` は空。詳細は同梱 `docs/GOI_MANIFEST_V3_ja.md`。
 
 Canon（`manifest_canons.json`）: `canon-hub-jp` / `canon-hub` の `#page-content div.canon-title` 内リンクのみをカノンハブとして収集し、
-`canonRegions.jp` / `canonRegions.en` に分離。フラット `entries` + `metadata[].r`（`jp` / `en`）も併記。
+`canonRegions.jp` / `canonRegions.en` に分離。各行に `tag-list` のシリーズタグ（`ct`）、ハブ本文の `div.canon-description` 要約（`ds`）、
+`#page-info` の最終更新 unix（`lu`）を付与。フラット `entries` + `metadata[].r`（`jp` / `en`）も併記。
 
 収集は Wikidot のみ（scp_list.json には依存しない）。
+
+Git: `--git-commit` で `output-dir` 直下の `*.json` をステージし、差分があればコミット。
+`--git-push` はコミットを含め（変更がなければスキップ）、`git push <remote>` を実行。
+認証・upstream は利用者環境に依存（CI なら token、ローカルなら SSH 等）。
 """
 
 from __future__ import annotations
@@ -20,12 +25,13 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -94,14 +100,48 @@ INTL_LIST_HINTS = (
     "scp-series-unofficial",
     "joke-scp-series-unofficial",
 )
-INTL_PATH_RE = re.compile(r"^/scp-\d+-[a-z]{2}$")
-MAX_INTL_LIST_PAGES = 80
+MAX_INTL_LIST_PAGES = 96
+
+# 国際版ハブから <a> が辿れない主一覧（例: PL / ES / ZH 系）を補完する。
+INTL_SEED_PATHS: tuple[str, ...] = (
+    "/lista-pl",
+    "/serie-scp-es",
+    "/scp-series-cn",
+    "/scp-series-zh",
+)
+
+
+def is_intl_scp_article_path(pth: str) -> bool:
+    """
+    日本支部の国際訳文として一覧に載る /scp-… 記事路径。
+
+    - 番号先: /scp-100-ru, /scp-100-zh-tr（Wikidot 既定）
+    - 言語先: /scp-cn-601, /scp-pl-302, /scp-zh-001 等（中・波・日支部の慣習差）
+    """
+    p = (pth or "").strip()
+    if not p.startswith("/"):
+        p = "/" + p
+    p = p.rstrip("/")
+    pl = p.lower()
+    if pl.endswith("-jp") or pl.endswith("/jp"):
+        return False
+    if re.match(r"^/scp-\d+(-[a-z]{2})+$", p, re.I):
+        return True
+    m = re.match(r"^/scp-([a-z]{2,3})-(\d+)(-[a-z0-9]+)*$", p, re.I)
+    if m:
+        lang = m.group(1).lower()
+        # 誤マッチ（例: /scp-scp-1）と本家日本オリジナル置き換えを除外
+        if lang in ("jp", "scp"):
+            return False
+        return True
+    return False
 
 # カノンハブ索引（div.canon-title のみ解析。series-hub-jp は対象外）
 CANON_HUB_PAGES: tuple[tuple[str, str], ...] = (
     ("/canon-hub-jp", "jp"),
     ("/canon-hub", "en"),
 )
+TAG_LIST_PATH = "/tag-list"
 JOKE_INDEX_PATHS: tuple[str, ...] = ("/joke-scps", "/joke-scps-jp")
 GOI_FORMATS_HUB = "/goi-formats-jp"
 FOUNDATION_TALES_EN = "/foundation-tales"
@@ -403,6 +443,13 @@ def discover_intl_list_urls(session: requests.Session, cfg: BranchConfig) -> lis
             seen.add(u)
             out.append(u)
     out.sort()
+    # ハブにリンクが無い国別一覧（テキストのみ等）向け
+    for rel in INTL_SEED_PATHS:
+        u = f"{base}{rel}"
+        if u not in seen:
+            seen.add(u)
+            out.append(u)
+    out.sort()
     return out
 
 
@@ -417,7 +464,7 @@ def extract_intl_titles(html: str, base_host: str) -> dict[str, str]:
         raw = (a.get("href") or "").strip()
         pu = urlparse(urljoin(base + "/", raw))
         pth = pu.path
-        if not INTL_PATH_RE.match(pth) or pth.endswith("-jp"):
+        if not is_intl_scp_article_path(pth):
             continue
         t = extract_title_from_li(li) or a.get_text(separator=" ", strip=True)
         if not t:
@@ -446,7 +493,7 @@ def crawl_intl_titles(session: requests.Session, cfg: BranchConfig) -> dict[str,
 
 
 def build_int_rows_from_wikidot(session: requests.Session, cfg: BranchConfig) -> list[dict[str, Any]]:
-    """国際支部リンクは /scp-international から辿った各一覧ページのスクレイプ結果のみ（scp_list 不要）。"""
+    """国際訳文: /scp-international から辿る各一覧 + INTL_SEED_PATHS（ハブ未リンクの主一覧）。"""
     titles = crawl_intl_titles(session, cfg)
     base = cfg.site_host.rstrip("/")
     rows: list[dict[str, Any]] = []
@@ -462,10 +509,14 @@ def build_int_rows_from_wikidot(session: requests.Session, cfg: BranchConfig) ->
 
 
 def _fallback_int_title(path: str) -> str:
-    m = re.match(r"^/scp-(\d+)-([a-z]{2})$", path)
-    if not m:
-        return path.lstrip("/").upper()
-    return f"SCP-{m.group(1)}-{m.group(2).upper()}"
+    p = path.rstrip("/")
+    m = re.match(r"^/scp-(\d+)-([a-z]{2}(?:-[a-z]{2})*)$", p, re.I)
+    if m:
+        return f"SCP-{m.group(1)}-{m.group(2).upper()}"
+    m = re.match(r"^/scp-([a-z]{2,3})-(\d+)", p, re.I)
+    if m:
+        return f"SCP-{m.group(1).upper()}-{m.group(2)}"
+    return p.lstrip("/").upper()
 
 
 def next_list_version_and_generated_at(
@@ -692,10 +743,169 @@ def extract_canon_title_hubs(
     return [(p, best_title[p]) for p in seen_order]
 
 
+def _ul_immediately_after_h3(h3) -> Any | None:
+    """h3 の直後（任意の1つの p をスキップ）の ul。"""
+    n = h3.find_next_sibling()
+    if n is not None and n.name == "p":
+        n = n.find_next_sibling()
+    if n is not None and n.name == "ul":
+        return n
+    return None
+
+
+def _hub_slugs_from_li(li) -> list[str]:
+    """単一スラッグの内部リンク（タグページ以外）を文書順で列挙。"""
+    out: list[str] = []
+    for a in li.find_all("a", href=True):
+        raw = (a.get("href") or "").strip().split("#")[0]
+        if not raw or raw.startswith("javascript:"):
+            continue
+        if "/system:page-tags/tag/" in raw or "system:page-tags" in raw:
+            continue
+        pu = urlparse(urljoin("https://x/", raw))
+        path = (pu.path or "").strip("/")
+        if not path:
+            continue
+        parts = [x for x in path.split("/") if x]
+        if len(parts) != 1:
+            continue
+        slug = parts[0]
+        if ":" in slug:
+            continue
+        out.append(slug.lower())
+    return out
+
+
+def _parse_canon_tag_list_li(
+    li, *, prefer_em_slug: bool
+) -> tuple[str, str] | None:
+    """
+    tag-list の1行から (hub_slug_lower, tag_label)。
+    カノン-EN は em (slug) を優先、カノン-JP は page-tags リンクの末尾を優先。
+    """
+    hubs = _hub_slugs_from_li(li)
+    if not hubs:
+        return None
+    hub_slug = hubs[-1]
+    tag_label: str | None = None
+    if prefer_em_slug:
+        em = li.find("em")
+        if em is not None:
+            txt = " ".join(em.get_text(" ", strip=True).split())
+            m = re.match(r"^\(([^)]+)\)\s*$", txt)
+            if m:
+                tag_label = m.group(1).strip()
+    if not tag_label:
+        for a in li.find_all("a", href=True):
+            raw = (a.get("href") or "").strip()
+            if "/system:page-tags/tag/" not in raw:
+                continue
+            part = raw.split("/system:page-tags/tag/", 1)[-1]
+            part = part.split("#")[0].split("?")[0]
+            if part:
+                tag_label = unquote(part)
+                break
+    if not tag_label:
+        tag_label = hub_slug
+    return hub_slug, tag_label
+
+
+def scrape_canon_tag_hub_mapping(
+    session: requests.Session, cfg: BranchConfig
+) -> dict[str, str]:
+    """tag-list の カノン-EN / カノン-JP から {hub_slug_lower: series_tag_label}。"""
+    url = cfg.abs_url(TAG_LIST_PATH)
+    html = fetch_html(session, url)
+    soup = BeautifulSoup(html, "html.parser")
+    root = soup.select_one("#page-content") or soup.body
+    out: dict[str, str] = {}
+    if root is None:
+        return out
+    for h3 in root.find_all("h3"):
+        title = h3.get_text(strip=True)
+        if title == "カノン-EN":
+            ul = _ul_immediately_after_h3(h3)
+            if ul is not None:
+                for li in ul.find_all("li", recursive=False):
+                    pair = _parse_canon_tag_list_li(li, prefer_em_slug=True)
+                    if pair:
+                        slug, tag = pair
+                        out[slug] = tag
+        elif title == "カノン-JP":
+            ul = _ul_immediately_after_h3(h3)
+            if ul is not None:
+                for li in ul.find_all("li", recursive=False):
+                    pair = _parse_canon_tag_list_li(li, prefer_em_slug=False)
+                    if pair:
+                        slug, tag = pair
+                        out[slug] = tag
+    return out
+
+
+def extract_canon_hub_card_fields(html: str) -> tuple[str, int | None]:
+    """
+    カノンハブ1ページから (description プレーン, 最終更新 unix)。
+    div.canon-description.unmargined / #page-info span.odate.time_* を参照。
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    desc = ""
+    div = soup.select_one("div.canon-description.unmargined")
+    if div is None:
+        div = soup.select_one("div.canon-description")
+    if div is not None:
+        parts = [p.get_text(" ", strip=True) for p in div.find_all("p")]
+        desc = " ".join(x for x in parts if x)
+        desc = re.sub(r"\s+", " ", desc).strip()
+    ts: int | None = None
+    info = soup.select_one("#page-info")
+    if info is not None:
+        span = info.find("span", class_="odate")
+        if span is not None:
+            classes = span.get("class") or []
+            for cl in classes:
+                m = re.match(r"time_(\d+)$", str(cl))
+                if m:
+                    ts = int(m.group(1))
+                    break
+    return desc, ts
+
+
+def enrich_canon_hub_lines_in_place(
+    session: requests.Session,
+    region_lines: dict[str, list[dict[str, Any]]],
+    tag_map: dict[str, str],
+) -> None:
+    """各ハブ行に ct / ds / lu を付与（同一 URL は1回だけ取得）。"""
+    url_cache: dict[str, tuple[str, int | None]] = {}
+    for _region, lines in region_lines.items():
+        for line in lines:
+            ik = (line.get("i") or "").strip().lower()
+            if ik:
+                ct = tag_map.get(ik)
+                if ct:
+                    line["ct"] = ct
+            u = (line.get("u") or "").strip()
+            if not u:
+                line["ds"] = ""
+                continue
+            if u not in url_cache:
+                html = fetch_html(session, u)
+                url_cache[u] = extract_canon_hub_card_fields(html)
+            ds, lu = url_cache[u]
+            if ds:
+                line["ds"] = ds
+            else:
+                line["ds"] = ""
+            if lu is not None:
+                line["lu"] = lu
+
+
 def scrape_canon_manifest_payload(
     session: requests.Session, cfg: BranchConfig
 ) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, list[dict[str, Any]]]]:
     """canon-hub-jp → jp / canon-hub → en のハブ行とフラット entries + metadata.r。"""
+    print("INFO: canons — tag-list (series tags)", file=sys.stderr)
+    tag_map = scrape_canon_tag_hub_mapping(session, cfg)
     base = cfg.site_host.rstrip("/")
     region_lines: dict[str, list[dict[str, Any]]] = {"jp": [], "en": []}
     for hub_path, region in CANON_HUB_PAGES:
@@ -705,6 +915,8 @@ def scrape_canon_manifest_payload(
             region_lines[region].append(
                 {"u": base + path, "i": ikey, "t": title}
             )
+    print("INFO: canons — per-hub description + last-updated", file=sys.stderr)
+    enrich_canon_hub_lines_in_place(session, region_lines, tag_map)
     by_i: dict[str, tuple[dict[str, Any], str]] = {}
     for region in ("jp", "en"):
         for line in region_lines[region]:
@@ -776,34 +988,6 @@ def _goi_abs_path_for_href(
     return p if p.startswith("/") else "/" + p
 
 
-def _goi_collect_links_after_h2(h2, page_url: str, site_host: str) -> list[dict[str, str]]:
-    """h2 直後から次の h1/h2 までの兄弟ノード内の同一サイト article リンク。"""
-    base = site_host.rstrip("/")
-    seen: set[str] = set()
-    out: list[dict[str, str]] = []
-    n = h2.next_sibling
-    while n is not None:
-        if isinstance(n, str):
-            n = n.next_sibling
-            continue
-        if not getattr(n, "name", None):
-            n = n.next_sibling
-            continue
-        if n.name in ("h1", "h2"):
-            break
-        for a in n.find_all("a", href=True):
-            pth = _goi_abs_path_for_href(a.get("href", ""), page_url, base)
-            if pth is None or pth in seen:
-                continue
-            title = a.get_text(" ", strip=True) or pth.lstrip("/")
-            seen.add(pth)
-            i = pth.lstrip("/").lower()
-            u = base + pth
-            out.append({"u": u, "i": i, "t": title})
-        n = n.next_sibling
-    return out
-
-
 def _goi_parse_h2_group(h2, page_url: str, site_host: str) -> dict[str, Any] | None:
     span = h2.find("span")
     if span is None:
@@ -818,24 +1002,22 @@ def _goi_parse_h2_group(h2, page_url: str, site_host: str) -> dict[str, Any] | N
         name = span.get_text(" ", strip=True)
         if not name:
             return None
+    if hub_path is None:
+        return None
     anchor = _goi_find_anchor_name_before_h2(h2) or (
         re.sub(r"[^0-9a-zA-Z]+", "-", name).strip("-").lower() or "goi-group"
     )
-    entries = _goi_collect_links_after_h2(h2, page_url, site_host)
-    grp: dict[str, Any] = {
+    return {
         "i": anchor[:120],
         "t": name,
-        "entries": entries,
+        "u": site_host.rstrip("/") + hub_path,
     }
-    if hub_path is not None:
-        grp["u"] = site_host.rstrip("/") + hub_path
-    return grp
 
 
 def scrape_goi_formats_hub_structured(
     session: requests.Session, cfg: BranchConfig
 ) -> tuple[dict[str, list[dict[str, Any]]], list[dict[str, Any]], dict[str, Any]]:
-    """goi-formats-jp を DOM 構造で解釈し、en/jp/other の団体ツリーと flat entries + metadata を返す。"""
+    """goi-formats-jp を DOM 構造で解釈し、en/jp/other の団体行（各 u は団体ハブ）を返す。flat entries / metadata は空。"""
     base = cfg.site_host.rstrip("/")
     page_url = cfg.abs_url(GOI_FORMATS_HUB)
     html = fetch_html(session, page_url)
@@ -857,38 +1039,7 @@ def scrape_goi_formats_hub_structured(
             if g is not None:
                 regions[current].append(g)
 
-    flat_by_id: dict[str, dict[str, str]] = {}
-    metadata: dict[str, Any] = {}
-    region_key: dict[str, str] = {"en": "en", "jp": "jp", "other": "other"}
-    for reg, groups in regions.items():
-        r_label = region_key[reg]
-        for grp in groups:
-            gname = (grp.get("t") or "").strip() or str(grp.get("i", ""))
-            for e in grp.get("entries") or []:
-                if not isinstance(e, dict):
-                    continue
-                i = e.get("i", "")
-                u = e.get("u", "")
-                if not isinstance(i, str) or not i.strip() or not isinstance(u, str) or not u.strip():
-                    continue
-                ii = i.strip()
-                t = (e.get("t") or "").strip() or ii
-                prev = flat_by_id.get(ii)
-                if prev is None or len(t) > len((prev.get("t") or "")):
-                    flat_by_id[ii] = {"u": u.strip(), "i": ii, "t": t}
-                if ii not in metadata:
-                    metadata[ii] = {"g": [gname] if gname else [], "r": r_label}
-                else:
-                    m = metadata[ii]
-                    if not isinstance(m, dict):
-                        continue
-                    otags = [str(x) for x in (m.get("g") or []) if str(x).strip()]
-                    if gname and gname not in otags:
-                        otags.append(gname)
-                    metadata[ii] = {**m, "g": otags, "r": m.get("r") or r_label}
-
-    flat = sorted(flat_by_id.values(), key=lambda e: e.get("i") or "")
-    return regions, flat, metadata
+    return regions, [], {}
 
 
 def _next_goi_v3_list_version(
@@ -1211,6 +1362,103 @@ class JapaneseBranchHarvester:
         )
 
 
+def _git_toplevel(start_dir: str) -> str | None:
+    try:
+        r = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=start_dir,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            check=False,
+        )
+        if r.returncode == 0 and r.stdout.strip():
+            return os.path.abspath(r.stdout.strip())
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    return None
+
+
+def _resolve_git_repo_root(output_dir: str, override: str) -> str:
+    if override.strip():
+        root = os.path.abspath(override.strip())
+        if not os.path.isdir(os.path.join(root, ".git")):
+            raise ValueError(f"--git-repo is not a git root: {root!r}")
+        return root
+    for start in (output_dir, REPO_ROOT):
+        if not start or not os.path.isdir(start):
+            continue
+        top = _git_toplevel(start)
+        if top:
+            return top
+    raise ValueError(
+        "Could not find a git repository. Run from a clone, set --git-repo, "
+        "or use --output-dir inside the data-scp-docs (or mirror) repo."
+    )
+
+
+def git_stage_commit_push_json(
+    output_dir: str,
+    *,
+    do_commit: bool,
+    do_push: bool,
+    message: str,
+    remote: str,
+    repo_root_override: str,
+) -> None:
+    """output_dir 直下の *.json を stage → 差分があれば commit → do_push なら push。"""
+    if not do_commit and not do_push:
+        return
+    out_abs = os.path.abspath(output_dir)
+    if not os.path.isdir(out_abs):
+        raise ValueError(f"output-dir does not exist: {out_abs!r}")
+    repo_root = _resolve_git_repo_root(out_abs, repo_root_override)
+    json_names = sorted(
+        n
+        for n in os.listdir(out_abs)
+        if n.endswith(".json") and os.path.isfile(os.path.join(out_abs, n))
+    )
+    if not json_names:
+        print("GIT: no *.json under output-dir; nothing to stage", file=sys.stderr)
+        return
+    rel_paths = [os.path.relpath(os.path.join(out_abs, n), repo_root) for n in json_names]
+    for rp in rel_paths:
+        if rp.startswith(".."):
+            raise ValueError(
+                f"output-dir must be inside git repo root {repo_root!r} (got {rp!r})"
+            )
+    subprocess.run(
+        ["git", "add", "--"] + rel_paths,
+        cwd=repo_root,
+        check=True,
+        timeout=120,
+    )
+    st = subprocess.run(
+        ["git", "diff", "--cached", "--quiet"],
+        cwd=repo_root,
+        check=False,
+        timeout=60,
+    )
+    if st.returncode == 0:
+        print("GIT: no staged changes; skip commit", file=sys.stderr)
+    else:
+        subprocess.run(
+            ["git", "commit", "-m", message],
+            cwd=repo_root,
+            check=True,
+            timeout=120,
+        )
+        print("GIT: committed", file=sys.stderr)
+    if do_push:
+        subprocess.run(
+            ["git", "push", remote],
+            cwd=repo_root,
+            check=True,
+            timeout=600,
+        )
+        print(f"GIT: pushed to {remote}", file=sys.stderr)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="Hybrid harvester for list/jp/*.json")
     p.add_argument(
@@ -1219,6 +1467,34 @@ def main() -> int:
         default="",
         help="list/jp 相当の書き出し先（未指定なら <本スクリプトの直上>/list/jp）",
     )
+    p.add_argument(
+        "--git-commit",
+        action="store_true",
+        help="ハーベスト後、output-dir 内の *.json を git add / commit（変更がある場合のみコミット）",
+    )
+    p.add_argument(
+        "--git-push",
+        action="store_true",
+        help="--git-commit 後に git push（--git-commit 未指定時はコミット処理も行う）",
+    )
+    p.add_argument(
+        "--git-message",
+        type=str,
+        default="data: refresh list/jp manifests (harvester)",
+        help="git commit メッセージ",
+    )
+    p.add_argument(
+        "--git-remote",
+        type=str,
+        default="origin",
+        help="git push 先 remote 名",
+    )
+    p.add_argument(
+        "--git-repo",
+        type=str,
+        default="",
+        help="リポジトリルート（未指定時は output-dir またはミラー REPO_ROOT から自動検出）",
+    )
     args = p.parse_args()
     cfg = BranchConfig()
     if args.output_dir:
@@ -1226,6 +1502,22 @@ def main() -> int:
     try:
         JapaneseBranchHarvester(cfg).run()
     except Exception as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 1
+    want_commit = bool(args.git_commit or args.git_push)
+    try:
+        git_stage_commit_push_json(
+            cfg.output_dir,
+            do_commit=want_commit,
+            do_push=bool(args.git_push),
+            message=args.git_message.strip() or "data: refresh list/jp manifests (harvester)",
+            remote=args.git_remote.strip() or "origin",
+            repo_root_override=args.git_repo,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"ERROR: git failed (exit {e.returncode})", file=sys.stderr)
+        return e.returncode if e.returncode else 1
+    except ValueError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 1
     return 0

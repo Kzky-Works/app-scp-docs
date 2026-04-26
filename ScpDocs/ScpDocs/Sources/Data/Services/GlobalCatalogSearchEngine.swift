@@ -126,8 +126,12 @@ enum CatalogSearchSnapshotBuilder {
 
         for kind in SCPArticleFeedKind.allCases where kind.isMultiformArchiveFeed {
             guard let badge = GlobalSearchBadge.badge(forMultiform: kind) else { continue }
-            let entries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
-            for g in entries {
+            guard let payload = feedCache.loadPersistedGeneralMultiformPayload(kind: kind) else { continue }
+            var seenKeys = Set<String>()
+            for g in payload.entries {
+                guard let u = g.resolvedURL else { continue }
+                let k = ArticleRepository.storageKey(for: u)
+                guard seenKeys.insert(k).inserted else { continue }
                 genRows.append(
                     CatalogSearchSnapshot.GenRow(
                         urlString: g.u,
@@ -136,6 +140,22 @@ enum CatalogSearchSnapshotBuilder {
                         badge: badge
                     )
                 )
+            }
+            if kind == .gois, let gr = payload.goiRegions {
+                for hub in gr.en + gr.jp + gr.other {
+                    let raw = hub.u.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !raw.isEmpty, let u = URL(string: raw) else { continue }
+                    let k = ArticleRepository.storageKey(for: u)
+                    guard seenKeys.insert(k).inserted else { continue }
+                    genRows.append(
+                        CatalogSearchSnapshot.GenRow(
+                            urlString: raw,
+                            title: hub.t,
+                            author: nil,
+                            badge: badge
+                        )
+                    )
+                }
             }
         }
 

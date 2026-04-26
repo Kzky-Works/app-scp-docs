@@ -171,6 +171,7 @@ struct MainView: View {
             if kind.isMultiformArchiveFeed {
                 SCPGeneralContentListView(
                     kind: kind,
+                    contentBranch: homeViewModel.selectedBranch,
                     feedCache: scpArticleFeedCacheRepository,
                     japanSCPListMetadataStore: japanSCPListMetadataStore,
                     personnelReadingJournal: personnelReadingJournal,

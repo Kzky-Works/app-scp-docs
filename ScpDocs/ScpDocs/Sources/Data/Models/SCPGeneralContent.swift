@@ -18,23 +18,50 @@ private struct SCPGeneralContentLightEntryDTO: Codable, Sendable {
 
 // MARK: - GoI manifest (schema 3) — `goi-formats-jp` 階層
 
-/// 団体下の 1 フォーマット文書行（`goiRegions.*[].entries`）。
+/// カノンハブ索引の 1 行（`canonRegions.*`）。`u` / `i` / `t` 短縮形。
+/// ハーベスト拡張: `tag-list` 由来のシリーズタグ（`ct`）、本文要約（`ds`）、最終更新 unix（`lu`）。
 struct GoIFormatArticleLine: Codable, Sendable, Hashable, Equatable, Identifiable {
     var u: String
     var i: String
     var t: String
+    var ct: String?
+    var ds: String?
+    var lu: Int?
 
     var id: String { i }
 }
 
-/// 1 要注意団体（`h2` 相当）+ 子記事。
+/// `goi-formats-jp` 由来の 1 要注意団体（`h2` 相当）。`u` は団体ハブ（配信 JSON に載るのはハブ付きのみ）。
 struct GoIFormatGroupPayload: Codable, Sendable, Hashable, Equatable, Identifiable {
     var i: String
     var t: String
-    var u: String?
-    var entries: [GoIFormatArticleLine]
+    var u: String
 
     var id: String { i }
+
+    private enum CodingKeys: String, CodingKey {
+        case i, t, u
+    }
+
+    init(i: String, t: String, u: String) {
+        self.i = i
+        self.t = t
+        self.u = u
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        i = try c.decode(String.self, forKey: .i)
+        t = try c.decode(String.self, forKey: .t)
+        u = (try c.decodeIfPresent(String.self, forKey: .u))?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(i, forKey: .i)
+        try c.encode(t, forKey: .t)
+        try c.encode(u, forKey: .u)
+    }
 }
 
 /// `en` / `jp` / `other`（`要注意団体-CN` 等はすべて other に束ねる）

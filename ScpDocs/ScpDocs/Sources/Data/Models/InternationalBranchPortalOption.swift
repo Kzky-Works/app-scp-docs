@@ -39,6 +39,17 @@ struct InternationalBranchPortalOption: Identifiable, Sendable {
             let body = String(slug.dropFirst(4))
             let parts = body.split(separator: "-").map { String($0).lowercased() }
             guard let first = parts.first, !first.isEmpty else { return nil }
+
+            // 言語先+番号: scp-cn-601, scp-pl-302, scp-zh-001 等（和訳置き先のスラッグ差）
+            if parts.count >= 2,
+               (2 ... 3).contains(first.count),
+               first.allSatisfy({ $0.isLetter }),
+               parts[1].allSatisfy({ $0.isNumber })
+            {
+                if first == "jp" { return nil }
+                return [first]
+            }
+
             guard first.first?.isNumber == true else { return nil }
             var tail = Array(parts.dropFirst())
             while let last = tail.last {

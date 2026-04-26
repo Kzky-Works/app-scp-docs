@@ -143,10 +143,17 @@ final class HomeViewModel {
         }
         guard let feed = scpArticleFeedCacheRepository else { return nil }
         for kind in [SCPArticleFeedKind.tales, .gois, .canons, .jokes] {
-            let entries = feed.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
-            for row in entries {
+            let payload = feed.loadPersistedGeneralMultiformPayload(kind: kind)
+            for row in payload?.entries ?? [] {
                 guard let u = row.resolvedURL else { continue }
                 if ArticleRepository.storageKey(for: u) == key { return row.t }
+            }
+            if kind == .gois, let gr = payload?.goiRegions {
+                for g in gr.en + gr.jp + gr.other {
+                    let raw = g.u.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !raw.isEmpty, let u = URL(string: raw) else { continue }
+                    if ArticleRepository.storageKey(for: u) == key { return g.t }
+                }
             }
         }
         return nil
