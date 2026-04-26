@@ -44,6 +44,12 @@ struct GoIRegionsLayoutPayload: Codable, Sendable, Hashable, Equatable {
     var other: [GoIFormatGroupPayload]
 }
 
+/// カノンハブ索引（`canon-hub-jp` / `canon-hub` の `div.canon-title` 由来）。行は GoI の子記事と同形。
+struct CanonRegionsLayoutPayload: Codable, Sendable, Hashable, Equatable {
+    var jp: [GoIFormatArticleLine]
+    var en: [GoIFormatArticleLine]
+}
+
 /// 非ナンバリング記事（Tale / GoI / Canon / Joke）の 1 エントリ。配信 JSON の短縮キーに合わせる。
 struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
     /// 記事 URL（絶対 URL 文字列）。
@@ -146,6 +152,8 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
     var entries: [SCPGeneralContent]
     /// ネット上の `manifest_gois.json` schema 3 時のみ（団体階層）。キャッシュにも保存。
     var goiRegions: GoIRegionsLayoutPayload?
+    /// `manifest_canons.json` のカノンハブ JP/EN 索引。
+    var canonRegions: CanonRegionsLayoutPayload?
 
     enum CodingKeys: String, CodingKey {
         case listVersion
@@ -154,6 +162,7 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         case entries
         case metadata
         case goiRegions
+        case canonRegions
     }
 
     init(
@@ -161,13 +170,15 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         schemaVersion: Int,
         generatedAt: Date,
         entries: [SCPGeneralContent],
-        goiRegions: GoIRegionsLayoutPayload? = nil
+        goiRegions: GoIRegionsLayoutPayload? = nil,
+        canonRegions: CanonRegionsLayoutPayload? = nil
     ) {
         self.listVersion = listVersion
         self.schemaVersion = schemaVersion
         self.generatedAt = generatedAt
         self.entries = entries
         self.goiRegions = goiRegions
+        self.canonRegions = canonRegions
     }
 
     init(from decoder: Decoder) throws {
@@ -176,6 +187,7 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         let rawSchema = try c.decode(Int.self, forKey: .schemaVersion)
         generatedAt = try c.decode(Date.self, forKey: .generatedAt)
         goiRegions = try c.decodeIfPresent(GoIRegionsLayoutPayload.self, forKey: .goiRegions)
+        canonRegions = try c.decodeIfPresent(CanonRegionsLayoutPayload.self, forKey: .canonRegions)
         if rawSchema >= 2 {
             let lights = try c.decode([SCPGeneralContentLightEntryDTO].self, forKey: .entries)
             let meta = try c.decodeIfPresent([String: SCPGeneralContentManifestMetadata].self, forKey: .metadata) ?? [:]
@@ -205,5 +217,6 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
         try c.encode(generatedAt, forKey: .generatedAt)
         try c.encode(entries, forKey: .entries)
         try c.encodeIfPresent(goiRegions, forKey: .goiRegions)
+        try c.encodeIfPresent(canonRegions, forKey: .canonRegions)
     }
 }

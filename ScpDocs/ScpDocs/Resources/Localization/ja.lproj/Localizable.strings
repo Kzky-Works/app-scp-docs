@@ -184,6 +184,10 @@
 "goi.catalog_source_tab.en" = "EN";
 "goi.catalog_source_tab.other" = "OTHER";
 "goi.catalog_source_picker.a11y" = "要注意団体の出典分類";
+
+"canon.hub_source_picker.a11y" = "カノンハブの言語区分";
+"canon.hub_feed.tab_empty.title" = "このタブにカノンハブがありません";
+"canon.hub_feed.tab_empty.subtitle" = "別のタブを選んでください。";
 "goi.feed.empty.no_group_tags" = "表示できる団体タグ（g）がありません。マニフェストを確認するか、同期後に再度お試しください。";
 "home.feed_list.empty" = "キャッシュがありません。ネットワーク接続後に同期してください。";
 

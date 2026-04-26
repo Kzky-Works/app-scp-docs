@@ -33,6 +33,20 @@ private enum GoICatalogSourceTab: String, CaseIterable, Identifiable {
     }
 }
 
+// MARK: - カノンハブ: `canon-hub-jp` / `canon-hub`
+
+private enum CanonHubCatalogTab: String, CaseIterable, Identifiable {
+    case jp
+    case en
+    var id: String { rawValue }
+    var titleLocalizationKey: String {
+        switch self {
+        case .jp: return LocalizationKey.goiCatalogSourceTabJP
+        case .en: return LocalizationKey.goiCatalogSourceTabEN
+        }
+    }
+}
+
 /// `i` または URL 末 slug が `scp-数字-j` か `scp-数字-jp-j` かで分類（マニフェストと整合）。
 private enum JokeReportCatalogLineage {
     case jpBranch
@@ -70,6 +84,15 @@ private enum JokeReportCatalogLineage {
     }
 }
 
+// MARK: - Tales: 著者別アコーディオン
+
+private struct MultiformTalesAuthorGroup: Identifiable {
+    static let unknownAuthorID = "multiform_tales_author_unknown"
+    let id: String
+    let displayName: String
+    let entries: [SCPGeneralContent]
+}
+
 /// Step 4: Tale / GoI / Canon / Joke のネイティブ一覧（`SCPGeneralContent`）。
 struct SCPGeneralContentListView: View {
     let kind: SCPArticleFeedKind
@@ -82,8 +105,11 @@ struct SCPGeneralContentListView: View {
     @Bindable private var connectivity = ConnectivityMonitor.shared
     @State private var cachedEntries: [SCPGeneralContent] = []
     @State private var goisManifest: SCPGeneralContentListPayload?
+    @State private var canonsManifest: SCPGeneralContentListPayload?
     @State private var jokeReportOrigin: JokeReportCatalogOrigin = .jpBranch
     @State private var goiSourceTab: GoICatalogSourceTab = .jp
+    @State private var canonHubSourceTab: CanonHubCatalogTab = .jp
+    @State private var expandedMultiformTalesAuthorKeys: Set<String> = []
 
     private var screenTitle: String {
         let key = switch kind {
@@ -106,6 +132,38 @@ struct SCPGeneralContentListView: View {
         }
     }
 
+    /// マルチフォーム Tales 専用: 著者（欠損は「著者不明」1 バケツにまとめて末尾へ）。
+    private var multiformTalesAuthorGroups: [MultiformTalesAuthorGroup] {
+        guard kind == .tales else { return [] }
+        var buckets: [String: [SCPGeneralContent]] = [:]
+        for entry in listEntries {
+            let bucketID: String
+            if let name = entry.trimmedAuthor, !name.isEmpty {
+                bucketID = name
+            } else {
+                bucketID = MultiformTalesAuthorGroup.unknownAuthorID
+            }
+            buckets[bucketID, default: []].append(entry)
+        }
+        let unknownLabel = String(localized: String.LocalizationValue(LocalizationKey.multiformAuthorUnknown))
+        var groups: [MultiformTalesAuthorGroup] = []
+        for (key, var items) in buckets {
+            items.sort { $0.t.localizedStandardCompare($1.t) == .orderedAscending }
+            if key == MultiformTalesAuthorGroup.unknownAuthorID {
+                groups.append(MultiformTalesAuthorGroup(id: key, displayName: unknownLabel, entries: items))
+            } else {
+                groups.append(MultiformTalesAuthorGroup(id: key, displayName: key, entries: items))
+            }
+        }
+        groups.sort { a, b in
+            let aU = a.id == MultiformTalesAuthorGroup.unknownAuthorID
+            let bU = b.id == MultiformTalesAuthorGroup.unknownAuthorID
+            if aU != bU { return !aU }
+            return a.displayName.localizedStandardCompare(b.displayName) == .orderedAscending
+        }
+        return groups
+    }
+
     private var jokeFilterEmpty: Bool {
         kind == .jokes && !cachedEntries.isEmpty && listEntries.isEmpty
     }
@@ -122,6 +180,15 @@ struct SCPGeneralContentListView: View {
         case .jp: return r.jp
         case .en: return r.en
         case .other: return r.other
+        }
+    }
+
+    /// `manifest_canons` のカノンハブ行（タブで JP / EN を切替）。
+    private var canonV3TabHubLines: [GoIFormatArticleLine] {
+        guard let r = canonsManifest?.canonRegions else { return [] }
+        switch canonHubSourceTab {
+        case .jp: return r.jp
+        case .en: return r.en
         }
     }
 
@@ -154,9 +221,18 @@ struct SCPGeneralContentListView: View {
             && goiDistinctGroupTags.isEmpty
     }
 
-    /// GoI schema 3 では子記事ゼロでも団体ブロックはあるため、空パネルに落とさない。
+    /// GoI schema 3 / Canon `canonRegions` では構造化データのみで表示できるため、entries が空でも一覧を出す。
     private var shouldShowTacticalEmptyPanel: Bool {
-        cachedEntries.isEmpty && !(kind == .gois && goisManifest?.goiRegions != nil)
+        if kind == .gois, goisManifest?.goiRegions != nil {
+            return false
+        }
+        if kind == .canons {
+            if let cr = canonsManifest?.canonRegions {
+                let anyHub = !cr.jp.isEmpty || !cr.en.isEmpty
+                return !anyHub && cachedEntries.isEmpty
+            }
+        }
+        return cachedEntries.isEmpty
     }
 
     var body: some View {
@@ -249,6 +325,55 @@ struct SCPGeneralContentListView: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
+            } else if kind == .canons, canonsManifest?.canonRegions != nil {
+                if canonV3TabHubLines.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.canonHubFeedTabEmptyTitle)))
+                            .font(AppTypography.feedListOnePointDown(.body, weight: .semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.canonHubFeedTabEmptySubtitle)))
+                            .font(AppTypography.feedListOnePointDown(.subheadline, weight: .medium))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 28)
+                } else {
+                    List {
+                        ForEach(canonV3TabHubLines) { line in
+                            canonHubLineRow(line: line)
+                        }
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                }
+            } else if kind == .tales, !listEntries.isEmpty {
+                List {
+                    ForEach(multiformTalesAuthorGroups) { group in
+                        DisclosureGroup(
+                            isExpanded: Binding(
+                                get: { expandedMultiformTalesAuthorKeys.contains(group.id) },
+                                set: { newValue in
+                                    if newValue {
+                                        Haptics.selection()
+                                        expandedMultiformTalesAuthorKeys.insert(group.id)
+                                    } else {
+                                        expandedMultiformTalesAuthorKeys.remove(group.id)
+                                    }
+                                }
+                            )
+                        ) {
+                            ForEach(group.entries, id: \.self) { row in
+                                multiformTalesArticleRow(row: row)
+                            }
+                        } label: {
+                            multiformTalesAuthorDisclosureLabel(group: group)
+                        }
+                        .indexListRowChrome()
+                    }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             } else {
                 List(Array(listEntries.enumerated()), id: \.offset) { _, row in
                     Button {
@@ -271,16 +396,18 @@ struct SCPGeneralContentListView: View {
                                         .foregroundStyle(AppTheme.textSecondary)
                                         .lineLimit(1)
                                 }
-                                if let author = row.trimmedAuthor {
-                                    Text(author)
-                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
-                                        .foregroundStyle(AppTheme.textSecondary)
-                                        .lineLimit(2)
-                                } else {
-                                    Text(String(localized: String.LocalizationValue(LocalizationKey.multiformAuthorUnknown)))
-                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .heavy))
-                                        .foregroundStyle(AppTheme.brandAccent)
-                                        .lineLimit(1)
+                                if kind != .canons {
+                                    if let author = row.trimmedAuthor {
+                                        Text(author)
+                                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
+                                            .foregroundStyle(AppTheme.textSecondary)
+                                            .lineLimit(2)
+                                    } else {
+                                        Text(String(localized: String.LocalizationValue(LocalizationKey.multiformAuthorUnknown)))
+                                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .heavy))
+                                            .foregroundStyle(AppTheme.brandAccent)
+                                            .lineLimit(1)
+                                    }
                                 }
                             }
                             Spacer(minLength: 8)
@@ -315,9 +442,13 @@ struct SCPGeneralContentListView: View {
                 jokeReportOriginPickerChrome
             } else if kind == .gois, !cachedEntries.isEmpty || goisManifest?.goiRegions != nil {
                 goiSourceTabPickerChrome
+            } else if kind == .canons, canonsManifest?.canonRegions != nil {
+                canonHubSourceTabPickerChrome
             }
         }
         .task(id: kind) {
+            expandedMultiformTalesAuthorKeys = []
+            canonHubSourceTab = .jp
             reloadCachedEntriesFromDisk()
         }
         .onReceive(NotificationCenter.default.publisher(for: .scpMultiformManifestsDidSync)) { _ in
@@ -362,6 +493,33 @@ struct SCPGeneralContentListView: View {
     }
 
     @ViewBuilder
+    private func canonHubLineRow(line: GoIFormatArticleLine) -> some View {
+        Button {
+            Haptics.medium()
+            if let url = URL(string: line.u) {
+                navigationRouter.pushArticle(url: url)
+            }
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                Text(line.t)
+                    .font(AppTypography.feedListOnePointDown(.headline, weight: .semibold))
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 8)
+                if let url = URL(string: line.u), articleRepository.isRead(url: url) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+            }
+            .padding(.vertical, 6)
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
     private func goiGroupTagRow(tag: String) -> some View {
         let hub = GoIManifestTagHubResolver.hubURL(forManifestTag: tag)
         Button {
@@ -385,6 +543,96 @@ struct SCPGeneralContentListView: View {
             .padding(.vertical, 6)
         }
         .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private func multiformTalesAuthorDisclosureLabel(group: MultiformTalesAuthorGroup) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "person.fill")
+                .font(AppTypography.feedListOnePointDown(.body, weight: .semibold))
+                .foregroundStyle(AppTheme.brandAccent)
+                .frame(width: 22, alignment: .center)
+            Text(group.displayName)
+                .font(AppTypography.feedListOnePointDown(.headline, weight: .semibold))
+                .foregroundStyle(AppTheme.textPrimary)
+                .multilineTextAlignment(.leading)
+            Spacer(minLength: 0)
+            Text(
+                String(
+                    format: String(localized: String.LocalizationValue(LocalizationKey.talesJpTaleCountFormat)),
+                    locale: .current,
+                    group.entries.count
+                )
+            )
+            .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
+            .foregroundStyle(AppTheme.textSecondary)
+            .monospacedDigit()
+        }
+        .padding(.vertical, 2)
+    }
+
+    @ViewBuilder
+    private func multiformTalesArticleRow(row: SCPGeneralContent) -> some View {
+        Button {
+            Haptics.medium()
+            if let u = row.resolvedURL {
+                navigationRouter.pushArticle(url: u)
+            }
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(row.t)
+                        .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 8)
+                if let u = row.resolvedURL, articleRepository.isRead(url: u) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+            }
+            .padding(.vertical, 6)
+        }
+        .buttonStyle(.plain)
+        .indexListRowChromeIndented()
+    }
+
+    @ViewBuilder
+    private var canonHubSourceTabPickerChrome: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(CanonHubCatalogTab.allCases) { tab in
+                        Button {
+                            Haptics.selection()
+                            canonHubSourceTab = tab
+                        } label: {
+                            TagChipView(
+                                label: String(localized: String.LocalizationValue(tab.titleLocalizationKey)),
+                                isSelected: canonHubSourceTab == tab
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.canonHubSourcePickerAccessibility)))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.cardStandard.ignoresSafeArea(edges: .bottom))
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(AppTheme.terminalSilver.opacity(0.35))
+                .frame(height: 1)
+        }
     }
 
     @ViewBuilder
@@ -459,9 +707,16 @@ struct SCPGeneralContentListView: View {
         if kind == .gois {
             let p = feedCache.loadPersistedGeneralMultiformPayload(kind: .gois)
             goisManifest = p
+            canonsManifest = nil
+            cachedEntries = p?.entries ?? []
+        } else if kind == .canons {
+            let p = feedCache.loadPersistedGeneralMultiformPayload(kind: .canons)
+            canonsManifest = p
+            goisManifest = nil
             cachedEntries = p?.entries ?? []
         } else {
             goisManifest = nil
+            canonsManifest = nil
             cachedEntries = feedCache.loadPersistedGeneralMultiformPayload(kind: kind)?.entries ?? []
         }
     }

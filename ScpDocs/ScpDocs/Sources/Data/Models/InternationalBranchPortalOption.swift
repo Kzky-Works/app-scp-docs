@@ -15,7 +15,8 @@ struct InternationalBranchPortalOption: Identifiable, Sendable {
         case other
     }
 
-    /// `scp-int` の `scp-番号-言語` 系スラッグから、末尾の言語コード断片を抽出する。
+    /// `scp-番号-言語` 系スラッグ（パス末尾）から言語コード断片を抽出する。
+    /// 配信 JSON は `scp-int.wikidot.com` だけでなく `scp-jp.wikidot.com/scp-123-ru` 等のホストでも与えられる。
     enum SCPIntSlugLanguageTail: Sendable {
         /// 公式支部タブに割り当て済みの末尾コード（`その他` 判定の否定形に使用）。
         static let namedBranchCodes: Set<String> = [
@@ -30,7 +31,6 @@ struct InternationalBranchPortalOption: Identifiable, Sendable {
 
         static func tailTokens(from article: SCPArticle) -> [String]? {
             guard let url = article.resolvedURL else { return nil }
-            guard url.host?.localizedCaseInsensitiveContains("scp-int") == true else { return nil }
             var slug = url.lastPathComponent.lowercased()
             if let hash = slug.firstIndex(of: "#") {
                 slug = String(slug[..<hash])

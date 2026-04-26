@@ -19,7 +19,7 @@
 
 | 項目 | 内容 |
 |------|------|
-| **Canon** | `canon-hub-jp` / `canon-hub` / `series-hub-jp` の `#page-content` から単一スラッグリンクを収集 → `manifest_canons.json` |
+| **Canon** | `canon-hub-jp` / `canon-hub` の `#page-content div.canon-title` 内リンクのみ → `manifest_canons.json`（`canonRegions.jp` / `canonRegions.en` + `metadata[].r`） |
 | **Joke** | `joke-scps` / `joke-scps-jp` からジョーク記事パス（`-j` / `-jp-j` 等）を抽出 → `manifest_jokes.json` |
 | **GoI** | `goi-formats-jp` の **h1/h2/ul 構造**をパース（schema **3**）。`goiRegions`（en / jp / other）+ 団体別 `entries` + フラット `entries`＋`metadata`（`g`・`r`）。仕様: `docs/GOI_MANIFEST_V3_ja.md` |
 | **Tales** | `foundation-tales`（本家翻訳ハブ）を `foundation-tales-jp` に続けて取得し、`i` で重複除去してマージ |

@@ -187,6 +187,10 @@ enum LocalizationKey {
     static let goiCatalogSourceTabEN = "goi.catalog_source_tab.en"
     static let goiCatalogSourceTabOther = "goi.catalog_source_tab.other"
     static let goiCatalogSourcePickerAccessibility = "goi.catalog_source_picker.a11y"
+
+    static let canonHubSourcePickerAccessibility = "canon.hub_source_picker.a11y"
+    static let canonHubFeedTabEmptyTitle = "canon.hub_feed.tab_empty.title"
+    static let canonHubFeedTabEmptySubtitle = "canon.hub_feed.tab_empty.subtitle"
     static let goiFeedEmptyNoGroupTags = "goi.feed.empty.no_group_tags"
 
     static let multiformAuthorUnknown = "multiform.author.unknown"

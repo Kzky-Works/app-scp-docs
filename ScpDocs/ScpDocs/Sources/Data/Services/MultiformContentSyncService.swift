@@ -31,7 +31,7 @@ struct MultiformContentSyncService: Sendable {
         guard AppRemoteConfig.resolvedMultiformArchiveJSONURL(kind: kind) != nil else { return }
         do {
             let remote = try await catalogRepository.fetchMultiform(kind: kind)
-            let remoteUsable = !remote.entries.isEmpty || remote.goiRegions != nil
+            let remoteUsable = !remote.entries.isEmpty || remote.goiRegions != nil || remote.canonRegions != nil
             guard remoteUsable else { return }
 
             let localVersion = cacheRepository.persistedGeneralMultiformListVersion(kind: kind)
@@ -82,7 +82,8 @@ struct MultiformContentSyncService: Sendable {
             schemaVersion: remote.schemaVersion,
             generatedAt: remote.generatedAt,
             entries: combined,
-            goiRegions: remote.goiRegions ?? existing?.goiRegions
+            goiRegions: remote.goiRegions ?? existing?.goiRegions,
+            canonRegions: remote.canonRegions ?? existing?.canonRegions
         )
     }
 }

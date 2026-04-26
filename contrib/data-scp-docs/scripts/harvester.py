@@ -8,6 +8,9 @@ foundation-tales-jp（著者層）を統合し list/jp/*.json を生成する。
 スパース metadata（主キー i）を出力する。listVersion は前回出力と差分が無い場合は据え置き。
 GoI（`manifest_gois.json`）のみ schemaVersion 3: `goi-formats-jp` の h1/h2 構造に基づき `en` / `jp` / `other` の団体ツリー + 子記事を格納（`goiRegions`）。詳細は同梱 `docs/GOI_MANIFEST_V3_ja.md`。
 
+Canon（`manifest_canons.json`）: `canon-hub-jp` / `canon-hub` の `#page-content div.canon-title` 内リンクのみをカノンハブとして収集し、
+`canonRegions.jp` / `canonRegions.en` に分離。フラット `entries` + `metadata[].r`（`jp` / `en`）も併記。
+
 収集は Wikidot のみ（scp_list.json には依存しない）。
 """
 
@@ -94,8 +97,11 @@ INTL_LIST_HINTS = (
 INTL_PATH_RE = re.compile(r"^/scp-\d+-[a-z]{2}$")
 MAX_INTL_LIST_PAGES = 80
 
-# マルチフォーム SoT（docs/HANDOVER_TALES_CANON_COLLECTION_RULES_ja.md §9–12）
-CANON_INDEX_PATHS: tuple[str, ...] = ("/canon-hub-jp", "/canon-hub", "/series-hub-jp")
+# カノンハブ索引（div.canon-title のみ解析。series-hub-jp は対象外）
+CANON_HUB_PAGES: tuple[tuple[str, str], ...] = (
+    ("/canon-hub-jp", "jp"),
+    ("/canon-hub", "en"),
+)
 JOKE_INDEX_PATHS: tuple[str, ...] = ("/joke-scps", "/joke-scps-jp")
 GOI_FORMATS_HUB = "/goi-formats-jp"
 FOUNDATION_TALES_EN = "/foundation-tales"
@@ -482,6 +488,39 @@ def next_list_version_and_generated_at(
     return int(dt.timestamp()), gen
 
 
+def next_canon_list_version_and_generated_at(
+    path: str,
+    entries: list[dict[str, Any]],
+    metadata: dict[str, Any],
+    canon_regions: dict[str, list[dict[str, Any]]],
+) -> tuple[int, str]:
+    """entries + metadata + canonRegions が前回と同一なら listVersion 据え置き。"""
+    dt = datetime.now(timezone.utc)
+    gen = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    md_norm = {k: v for k, v in metadata.items() if isinstance(v, dict) and v}
+    cr_norm = {
+        "jp": canon_regions.get("jp") or [],
+        "en": canon_regions.get("en") or [],
+    }
+    if os.path.isfile(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                old = json.load(f)
+        except Exception:
+            old = {}
+        old_lv = int(old.get("listVersion") or 0)
+        old_cr = old.get("canonRegions") or {}
+        if (
+            old.get("entries") == entries
+            and (old.get("metadata") or {}) == md_norm
+            and (old_cr.get("jp") or []) == cr_norm["jp"]
+            and (old_cr.get("en") or []) == cr_norm["en"]
+        ):
+            return old_lv, gen
+        return old_lv + 1, gen
+    return int(dt.timestamp()), gen
+
+
 def write_manifest(path: str, entries: list[dict[str, Any]], metadata: dict[str, Any]) -> None:
     """schemaVersion 2: entries（軽）+ metadata（スパース、キーは i）。"""
     md = {k: v for k, v in metadata.items() if isinstance(v, dict) and v}
@@ -493,6 +532,36 @@ def write_manifest(path: str, entries: list[dict[str, Any]], metadata: dict[str,
         "generatedAt": gen,
         "entries": entries,
         "metadata": md,
+    }
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(tmp, path)
+
+
+def write_canon_manifest(
+    path: str,
+    entries: list[dict[str, Any]],
+    metadata: dict[str, Any],
+    canon_regions: dict[str, list[dict[str, Any]]],
+) -> None:
+    """manifest_canons.json: entries + metadata（r=jp|en）+ canonRegions。"""
+    md = {k: v for k, v in metadata.items() if isinstance(v, dict) and v}
+    validate_manifest_entries_metadata(entries, md, os.path.basename(path))
+    cr_norm: dict[str, list[dict[str, Any]]] = {
+        "jp": canon_regions.get("jp") or [],
+        "en": canon_regions.get("en") or [],
+    }
+    lv, gen = next_canon_list_version_and_generated_at(path, entries, metadata, cr_norm)
+    payload: dict[str, Any] = {
+        "listVersion": lv,
+        "schemaVersion": MANIFEST_SCHEMA_VERSION,
+        "generatedAt": gen,
+        "entries": entries,
+        "metadata": md,
+        "canonRegions": cr_norm,
     }
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
@@ -582,18 +651,82 @@ def scrape_joke_index_entries(session: requests.Session, cfg: BranchConfig) -> l
     return out
 
 
-def scrape_canon_hub_entries(session: requests.Session, cfg: BranchConfig) -> list[dict[str, Any]]:
-    merged: dict[str, str] = {}
-    for hub in CANON_INDEX_PATHS:
-        part = extract_page_content_link_map(session, cfg, hub)
-        merged.update(part)
+def extract_canon_title_hubs(
+    session: requests.Session, cfg: BranchConfig, page_path: str
+) -> list[tuple[str, str]]:
+    """#page-content 内の div.canon-title に限り、カノンハブへの単一スラッグリンクを文書順で列挙。"""
     base = cfg.site_host.rstrip("/")
-    out: list[dict[str, Any]] = []
-    for path, title in sorted(merged.items(), key=lambda x: x[0]):
-        i = path.lstrip("/").lower()
-        u = base + path
-        out.append({"u": u, "i": i, "t": title})
-    return out
+    page_url = cfg.abs_url(page_path)
+    html = fetch_html(session, page_url)
+    soup = BeautifulSoup(html, "html.parser")
+    root = soup.select_one("#page-content") or soup.body
+    if root is None:
+        return []
+    site_netloc = urlparse(base).netloc.lower()
+    seen_order: list[str] = []
+    best_title: dict[str, str] = {}
+    for block in root.select("div.canon-title"):
+        for a in block.find_all("a", href=True):
+            raw = (a.get("href") or "").strip().split("#")[0]
+            if not raw or raw.startswith("javascript:"):
+                continue
+            absu = urljoin(page_url, raw)
+            pu = urlparse(absu)
+            if pu.netloc and pu.netloc.lower() != site_netloc:
+                continue
+            p = pu.path or "/"
+            if p == "/" or _page_link_excluded(p):
+                continue
+            segs = [x for x in p.strip("/").split("/") if x]
+            if len(segs) != 1:
+                continue
+            slug = segs[0]
+            if ":" in slug:
+                continue
+            title = a.get_text(" ", strip=True) or slug
+            if p not in best_title:
+                seen_order.append(p)
+                best_title[p] = title
+            elif len(title) > len(best_title[p]):
+                best_title[p] = title
+    return [(p, best_title[p]) for p in seen_order]
+
+
+def scrape_canon_manifest_payload(
+    session: requests.Session, cfg: BranchConfig
+) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, list[dict[str, Any]]]]:
+    """canon-hub-jp → jp / canon-hub → en のハブ行とフラット entries + metadata.r。"""
+    base = cfg.site_host.rstrip("/")
+    region_lines: dict[str, list[dict[str, Any]]] = {"jp": [], "en": []}
+    for hub_path, region in CANON_HUB_PAGES:
+        hubs = extract_canon_title_hubs(session, cfg, hub_path)
+        for path, title in hubs:
+            ikey = path.lstrip("/").lower()
+            region_lines[region].append(
+                {"u": base + path, "i": ikey, "t": title}
+            )
+    by_i: dict[str, tuple[dict[str, Any], str]] = {}
+    for region in ("jp", "en"):
+        for line in region_lines[region]:
+            ik = line.get("i")
+            if not isinstance(ik, str) or not ik.strip():
+                continue
+            iks = ik.strip()
+            if iks not in by_i:
+                by_i[iks] = (line, region)
+    light: list[dict[str, Any]] = []
+    metadata: dict[str, Any] = {}
+    for iks in sorted(by_i.keys()):
+        line, region = by_i[iks]
+        t_raw = line.get("t")
+        t_str = (
+            t_raw.strip()
+            if isinstance(t_raw, str) and t_raw.strip()
+            else iks
+        )
+        light.append({"u": line["u"], "i": iks, "t": t_str})
+        metadata[iks] = {"r": region}
+    return light, metadata, region_lines
 
 
 def _goi_h1_region_label(h1_text: str) -> str | None:
@@ -1043,8 +1176,10 @@ class JapaneseBranchHarvester:
             },
         }
 
-        print("INFO: canons — hub index pages", file=sys.stderr)
-        canon_entries = scrape_canon_hub_entries(self.session, cfg)
+        print("INFO: canons — canon-hub-jp + canon-hub (div.canon-title only)", file=sys.stderr)
+        canon_light, canon_meta, canon_regions = scrape_canon_manifest_payload(
+            self.session, cfg
+        )
 
         print("INFO: jokes — joke-scps + joke-scps-jp", file=sys.stderr)
         joke_entries = scrape_joke_index_entries(self.session, cfg)
@@ -1066,8 +1201,7 @@ class JapaneseBranchHarvester:
         tl, tm = tales_raw_to_manifest_parts(tale_entries)
         write_manifest(man_tales, tl, tm)
         write_goi_manifest_v3(man_gois, goi_payload)
-        cl, cm = simple_multiform_raw_to_manifest_parts(canon_entries)
-        write_manifest(man_canons, cl, cm)
+        write_canon_manifest(man_canons, canon_light, canon_meta, canon_regions)
         jl, jm = simple_multiform_raw_to_manifest_parts(joke_entries)
         write_manifest(man_jokes, jl, jm)
 
