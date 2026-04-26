@@ -22,7 +22,7 @@ final class ArticleDetailViewModel {
         self.articleURL = articleURL
     }
 
-    /// WebView のスクロール進捗（0...1）。85% 到達かつ未評価なら L3.0（既読）を書き込み、触覚・トースト・評価バーを促す。
+    /// WebView のスクロール進捗（0...1）。95% 到達かつ未評価なら L3.0（既読）を書き込み、触覚・トースト・評価バーを促す。
     func handleScrollDepthFraction(_ fraction: Double) {
         guard !didApplyAutoArchive else { return }
         guard fraction >= ArticleDetailViewModel.autoReadCompletionThreshold else { return }
@@ -36,5 +36,5 @@ final class ArticleDetailViewModel {
     }
 
     /// Step 3: 自動読了（収容完了）しきい値。ネイティブ `UIScrollView` の進捗と一致。
-    static let autoReadCompletionThreshold: Double = 0.85
+    static let autoReadCompletionThreshold: Double = 0.95
 }

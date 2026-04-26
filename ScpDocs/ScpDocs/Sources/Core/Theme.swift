@@ -102,6 +102,44 @@ enum AppTheme {
         dark: (58, 58, 58)
     )
 
+    // MARK: - 記事評価（サークル・アナリティクス／ライト＋ダーク）
+
+    /// プライマリ #F97316（ダークではやや明るめでコントラスト確保）。
+    static let ratingAnalyticsPrimary = dynamicColor(
+        light: (249, 115, 22),
+        dark: (251, 146, 60)
+    )
+
+    /// 高評価（L≥4）でやや濃いオレンジ。
+    static let ratingAnalyticsPrimaryStrong = dynamicColor(
+        light: (234, 88, 12),
+        dark: (249, 115, 22)
+    )
+
+    /// 低評価寄りで Soft #FDBA74 系。
+    static let ratingAnalyticsPrimarySoft = dynamicColor(
+        light: (253, 186, 116),
+        dark: (180, 90, 40)
+    )
+
+    /// トラック／リング背景 #E5E7EB 相当。
+    static let ratingAnalyticsTrack = dynamicColor(
+        light: (229, 231, 235),
+        dark: (55, 58, 64)
+    )
+
+    /// 見出し・数値のインク #111827 相当。
+    static let ratingAnalyticsInk = dynamicColor(
+        light: (17, 24, 39),
+        dark: (243, 244, 246)
+    )
+
+    /// 評価カード境界（フラット。シャドウは使わない）。
+    static let ratingAnalyticsBorder = dynamicColor(
+        light: (229, 231, 235),
+        dark: (60, 64, 72)
+    )
+
     /// 旧コード互換: 主にアイコン・ラベルに使っていた「アクセント」＝ `textPrimary` と同系。
     static let accentPrimary = textPrimary
 

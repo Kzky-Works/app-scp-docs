@@ -394,6 +394,8 @@ enum LocalizationKey {
 
     static let articleRatingUnsetShort = "article.rating.unset_short"
     static let articleRatingScaleMax = "article.rating.scale_max"
+    static let articleRatingCardTitle = "article.rating.card_title"
+    static let articleRatingCardSubtitle = "article.rating.card_subtitle"
     static let articleRatingAccessibility = "article.rating.a11y"
     static let articleAutoArchiveToastFormat = "article.auto_archive.toast_format"
 

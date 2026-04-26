@@ -536,6 +536,8 @@
 "article.diagnostic.minimal_banner" = "Diagnostics: minimal WebView (no injected scripts)";
 
 "article.rating.unset_short" = "—";
+"article.rating.card_title" = "Rate this article";
+"article.rating.card_subtitle" = "Adjust in 0.1 steps.";
 "article.rating.scale_max" = "/ 5.0";
 "article.rating.a11y" = "Article rating";
 "article.rating.nav_accessibility" = "Show or hide rating bar";

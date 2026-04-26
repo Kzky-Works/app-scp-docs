@@ -536,6 +536,8 @@
 "article.diagnostic.minimal_banner" = "診断: 最小 WebView（注入スクリプトなし）";
 
 "article.rating.unset_short" = "—";
+"article.rating.card_title" = "記事の評価をつけてください";
+"article.rating.card_subtitle" = "0.1刻みで評価できます";
 "article.rating.scale_max" = "/ 5.0";
 "article.rating.a11y" = "報告書レーティング";
 "article.rating.nav_accessibility" = "評価バーの表示／非表示";
