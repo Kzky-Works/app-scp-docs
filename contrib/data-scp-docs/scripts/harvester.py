@@ -34,6 +34,7 @@ from typing import Any
 from urllib.parse import unquote, urljoin, urlparse
 
 import requests
+from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -1043,8 +1044,19 @@ def enrich_canon_hub_lines_in_place(
                 continue
             ds_from_hub = region_ds.get(ik, "") if ik else ""
             if u not in url_cache:
-                html = fetch_html(session, u)
-                url_cache[u] = extract_canon_hub_card_fields(html)
+                try:
+                    html = fetch_html(session, u)
+                    url_cache[u] = extract_canon_hub_card_fields(html)
+                except HTTPError as e:
+                    st = e.response.status_code if e.response is not None else 0
+                    if st == 404:
+                        print(
+                            f"WARN: canon hub page 404 (index link stale?): {u}",
+                            file=sys.stderr,
+                        )
+                        url_cache[u] = ("", None)
+                    else:
+                        raise
             ds_page, lu = url_cache[u]
             ds = ds_from_hub or ds_page
             line["ds"] = ds if ds else ""
