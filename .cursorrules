@@ -38,3 +38,7 @@ You are the Lead Architect and Senior iOS Engineer for "SCP docs". Adhere to the
 - Strict `guard` usage for early returns and unwrap.
 - Model-View separation: Views are passive. Logic belongs in ViewModels.
 - Use Monospaced fonts for IDs (SCP-XXX) and numeric rating displays.
+
+## 6. Article data & `contrib/data-scp-docs`
+- **Source of truth** for versioned work: **GitHub `main` after merge** (each repo). Local clones are not authoritative until pushed.
+- **`contrib/data-scp-docs/`** is the **working tree** for harvesters in this repo; maintainers **push to `main`** to update the canonical copy. Hosted JSON/catalog: **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** repo’s `main`. Details: `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`.

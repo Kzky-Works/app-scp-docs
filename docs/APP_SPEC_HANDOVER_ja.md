@@ -2,7 +2,7 @@
 
 最終更新目安: 2026-04-25。リポジトリ: `scp_docs`（Xcode プロジェクトは `ScpDocs/ScpDocs.xcodeproj`）。
 
-**データ開発ルール（必須）**: 配信用 JSON ・生成スクリプト・元データの正本は **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)** 。Wikidot 収集・タグ取得の **CI ワークフローは [app-scp-docs](https://github.com/Kzky-Works/app-scp-docs)** ルートの `.github/workflows/` から起動し、PAT 経由で `data-scp-docs` へ `list/jp` 等を push する。`scp_docs` は取得・キャッシュのみ。詳細は `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`。
+**データ開発ルール（必須）**: **原本**は**各リポの GitHub `main` にマージ・プッシュされた内容**（`docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`）。配信 JSON・カタログ等の**格納**は **[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs)**。ハーベスタ作業用は本リポの `contrib/data-scp-docs/` から。Wikidot 収集・タグ取得の **CI** は [app-scp-docs](https://github.com/Kzky-Works/app-scp-docs) の `.github/workflows/` から起動し、PAT で `data-scp-docs` へ `list/jp` 等を push。アプリは取得・キャッシュのみ。詳細は上記 `DEV_RULE`。
 
 **関連引き継ぎ**: Tales / GoI / Canon / Joke のマルチフォーム収集ルールおよびタグ・オブジェクトクラス収集方針を別チャットで進める場合は `docs/HANDOVER_TALES_CANON_COLLECTION_RULES_ja.md` を参照。
 
@@ -125,9 +125,9 @@
 | 埋め込みタイトル                    | `JapanSCPArchiveTitleData.swift`（ビルド時同梱。支部オリジナル題名のフォールバック）                                                                                                                                                           |
 
 
-マニフェスト・カタログのスキーマ・生成は **data-scp-docs** リポジトリ（`docs/` 配下、`scripts/`）が正。本アプリリポには同梱しない。
+マニフェスト・カタログのスキーマ・**生成**は [data-scp-docs](https://github.com/Kzky-Works/data-scp-docs) 側（**原本＝同リポの `main`**）。**稼働スクリプト**は本リポの `contrib/data-scp-docs/`（**原本＝[app-scp-docs](https://github.com/Kzky-Works/app-scp-docs) の `main`**。作業用→push はメンテが実行）から CI が参照。本アプリリポには**配信 JSON 本体**は同梱しない。
 
-**集約の範囲**: タグマップ（`list/jp/jp_tag.json`）・マニフェスト等の**成果物**と **data-scp-docs 上の `scripts/`** を正本とし、**CI の YML 本体は app-scp-docs** に置く（`contrib/data-scp-docs` はスクリプト同梱用ミラー。data-scp-docs へ手同期可）。方針の詳細は `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`。
+**集約の範囲**: タグマップ・マニフェスト等の**成果物**の原本は **data-scp-docs の `main`** 上の `list/jp` 等。**CI の YML** は app-scp-docs ルート。data-scp-docs の `scripts/` と**内容を揃える**必要がある場合は、両リポの `main` へ反映する。詳細は `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`。
 
 ---
 
@@ -166,7 +166,7 @@
 
 - App Store 掲載文言、プライバシーポリシー本文。
 - 本番 AdMob / IAP プロダクト ID の確定値（テスト用定数がコードに残っている可能性）。
-- **データホスト URL**（`AppRemoteConfig.scpDataHostBaseURLString` および `wikiCatalogBaseURLString` の運用値）。マニフェスト・カタログの**生成スクリプト**正本は data-scp-docs の `scripts/` 。**収集用 CI** は app-scp-docs（本アプリリポには同梱しない）。
+- **データホスト URL**（`AppRemoteConfig` の運用値）。スクリプトの**作業**は本リポ `contrib/...`、**原本**は各リポの GitHub `main`（`DEV_RULE` 参照）。**収集用 CI** は app-scp-docs ルート。
 
 ---
 

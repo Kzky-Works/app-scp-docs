@@ -1,4 +1,5 @@
 # 本リポ（app-scp-docs）のスクリプトでタグ逆引き JSON を生成し、Kzky-Works/data-scp-docs の list/jp/jp_tag.json へ push する。
+# 実行するスクリプトの原本は GitHub 上の本リポ main（checkout 済みの contrib/data-scp-docs/scripts）。
 # 前提: リポジトリシークレット DATA_SCP_DOCS_PUSH_TOKEN（data-scp-docs へ contents:write できる PAT）
 name: JP tag map to data-scp-docs
 

@@ -1,4 +1,5 @@
 # 本リポ（app-scp-docs）のスクリプトで Wikidot を収集し、成果物を Kzky-Works/data-scp-docs の list/jp/ へ push する。
+# 実行するスクリプトの原本は GitHub 上の本リポ main（checkout 済みの contrib/data-scp-docs/scripts）。
 # 前提: リポジトリシークレット DATA_SCP_DOCS_PUSH_TOKEN（data-scp-docs へ contents:write できる PAT）
 name: Update data-scp-docs list/jp
 

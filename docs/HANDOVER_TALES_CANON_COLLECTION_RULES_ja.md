@@ -171,8 +171,7 @@ data-scp-docs 側のスクリプト・CI とセットで決めるとよい論点
 
 ## 7. data-scp-docs 側（別リポジトリ）で想定される作業
 
-本リポジトリにはハーベスター本体を同梱しない運用のため、**収集ルールの実装の本体は data-scp-docs**（`docs/` 配信物、`list/` 配下マニフェスト、`scripts/`、GitHub Actions）になる想定。  
-**実装スクリプトの反映候補**は scp_docs 同梱の [`contrib/data-scp-docs/`](../contrib/data-scp-docs/README.md) に置き、同内容を **Kzky-Works/data-scp-docs** へコピーしてコミットする。
+**格納**（配信物・生成物）の**原本**は [data-scp-docs](https://github.com/Kzky-Works/data-scp-docs) の **GitHub `main`**。**ハーベスタ等の作業**は [app-scp-docs](https://github.com/Kzky-Works/app-scp-docs) 上の [`contrib/data-scp-docs/`](../contrib/data-scp-docs/README.md) から行い、**原本に反映**は **`main` へ push**（CI はこのパスを参照）。[data-scp-docs](https://github.com/Kzky-Works/data-scp-docs) の `scripts/` へ**同内容を揃える**場合は、README の手作業手順に従う。全体の定義は `docs/DEV_RULE_ARTICLE_DATA_IN_DATA_SCP_DOCS_ja.md`。
 
 - **マルチフォーム 4 種**それぞれについて、インクルード条件・除外・ソート・`listVersion` バンプ方針をドキュメント化する。  
 - **`docs/catalog/*.json`** について、§4 の **タグ／オブジェクトクラス**の収集元とフィールド割当を **種別ごと**に定義する。  

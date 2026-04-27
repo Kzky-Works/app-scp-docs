@@ -1,8 +1,8 @@
 # `manifest_gois.json`（schemaVersion 3）
 
-## 正本
+## 収集ソース（Wikidot）
 
-- ソース: `https://scp-jp.wikidot.com/goi-formats-jp` の `#page-content` 内、`.content-panel` 優先（無ければ `#page-content` 直下を走査）
+- 取得元: `https://scp-jp.wikidot.com/goi-formats-jp` の `#page-content` 内、`.content-panel` 優先（無ければ `#page-content` 直下を走査）
 
 ## 分類
 
