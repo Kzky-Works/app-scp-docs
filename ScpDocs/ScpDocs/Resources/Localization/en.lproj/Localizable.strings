@@ -532,8 +532,8 @@
 "article.load.retry" = "Retry";
 "article.reader_typography.loading_title" = "SECURE RENDER";
 "article.reader_typography.loading_subtitle" = "Stabilizing text scale for display…";
-"article.post_read.next_case" = "NEXT CASE";
-"article.post_read.random_case" = "RANDOM CASE";
+"article.post_read.next_case" = "NEXT OBJECT";
+"article.post_read.random_case" = "RANDOM OBJECT";
 "article.diagnostic.minimal_banner" = "Diagnostics: minimal WebView (no injected scripts)";
 
 "article.rating.unset_short" = "—";

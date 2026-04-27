@@ -2,14 +2,6 @@ import Foundation
 import Observation
 import WebKit
 
-/// `scrollDepthFraction` の更新経路（評価バー自動表示の判定に使う）。
-enum ArticleScrollDepthMutationSource: Equatable, Sendable {
-    /// `UIScrollView` の KVO（ユーザー操作・レイアウト変化を含む）。
-    case scrollViewObservation
-    /// 保存深度からのスクロール復元。
-    case persistedPositionRestore
-}
-
 @Observable
 @MainActor
 final class WebViewModel {
@@ -21,8 +13,6 @@ final class WebViewModel {
     private(set) var loadFailureMessage: String?
     /// メイン `UIScrollView` の縦スクロール進捗 0...1（本文下端に近いほど 1）。
     private(set) var scrollDepthFraction: Double = 0
-    /// 直近で `scrollDepthFraction` を変えた経路（同一値なら更新されないが、その直前の試行でもセットする）。
-    private(set) var lastScrollDepthMutationSource: ArticleScrollDepthMutationSource = .scrollViewObservation
     weak var webView: WKWebView?
     /// 記事本文の相対スケール（`SettingsRepository` と同期。既定 1.0）。
     var readerFontSizeMultiplier: Double = 1.0
@@ -124,7 +114,7 @@ final class WebViewModel {
         }
         let y = CGFloat(fraction) * scrollable
         sv.setContentOffset(CGPoint(x: 0, y: y), animated: false)
-        updateScrollDepthFraction(fraction, source: .persistedPositionRestore)
+        updateScrollDepthFraction(fraction)
         pendingScrollRestoreFraction = nil
         scrollRestoreAttemptCount = 0
     }
@@ -277,9 +267,8 @@ final class WebViewModel {
     }
 
     /// `SCPWebView` のスクロール観測（および復元）から更新する。
-    func updateScrollDepthFraction(_ value: Double, source: ArticleScrollDepthMutationSource = .scrollViewObservation) {
+    func updateScrollDepthFraction(_ value: Double) {
         let clamped = min(1, max(0, value))
-        lastScrollDepthMutationSource = source
         guard scrollDepthFraction != clamped else { return }
         scrollDepthFraction = clamped
     }

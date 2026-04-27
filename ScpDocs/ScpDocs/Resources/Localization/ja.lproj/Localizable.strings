@@ -532,8 +532,8 @@
 "article.load.retry" = "再試行";
 "article.reader_typography.loading_title" = "表示同期";
 "article.reader_typography.loading_subtitle" = "文字サイズを反映して本文を表示します";
-"article.post_read.next_case" = "次の任務";
-"article.post_read.random_case" = "ランダム任務";
+"article.post_read.next_case" = "次のオブジェクト";
+"article.post_read.random_case" = "ランダムオブジェクト";
 "article.diagnostic.minimal_banner" = "診断: 最小 WebView（注入スクリプトなし）";
 
 "article.rating.unset_short" = "—";

@@ -71,6 +71,16 @@ struct ArticleView: View {
             || webViewModel.scrollDepthFraction >= ArticleDetailViewModel.autoReadCompletionThreshold
     }
 
+    /// NEXT／ランダム行の表示条件（`postReadTacticalRow` と同一）。
+    private var showPostReadCatalogChrome: Bool {
+        showPostReadTacticalBar && canOfferCatalogHops
+    }
+
+    /// 評価バー: ナビのゲージで開く、またはカタログのポストリード帯と同じ条件で自動表示。
+    private var shouldShowRatingControl: Bool {
+        showRatingBar || showPostReadCatalogChrome
+    }
+
     private var canOfferCatalogHops: Bool {
         guard scpArticleFeedCacheRepository != nil else { return false }
         let active = personnelReadingJournal?.activeCatalogFeedKind()
@@ -177,17 +187,17 @@ struct ArticleView: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 8) {
-                articleMetadataStripView
-                if showPostReadTacticalBar, canOfferCatalogHops {
+                if showPostReadCatalogChrome {
                     postReadTacticalRow
                 }
-                if showRatingBar {
+                if shouldShowRatingControl {
                     RatingControlView(rating: articleRatingBinding)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
                 readerBottomChrome
+                articleMetadataStripView
             }
-            .animation(.easeInOut(duration: 0.22), value: showRatingBar)
+            .animation(.easeInOut(duration: 0.22), value: shouldShowRatingControl)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
@@ -237,10 +247,9 @@ struct ArticleView: View {
                 addedReadingSeconds: secs
             )
         }
-        .onChange(of: webViewModel.scrollDepthFraction) { oldFraction, newFraction in
+        .onChange(of: webViewModel.scrollDepthFraction) { _, newFraction in
             articleDetailViewModel.handleScrollDepthFraction(newFraction)
             scheduleScrollDepthPersist(newFraction)
-            revealRatingBarIfUserScrolledPastThreshold(oldFraction: oldFraction, newFraction: newFraction)
         }
         .onChange(of: webViewModel.pageTitle) { _, newTitle in
             articleRepository.updateCachedPageTitle(newTitle, for: shareURL)
@@ -283,14 +292,6 @@ struct ArticleView: View {
         if clamped < hi, prev >= hi {
             OfflineStore.shared.deleteHTML(for: url)
         }
-    }
-
-    /// 保存深度の復元では開かない。本文スクロールで閾値を下から上に跨いだときだけ自動表示する。
-    private func revealRatingBarIfUserScrolledPastThreshold(oldFraction: Double, newFraction: Double) {
-        let threshold = ArticleDetailViewModel.autoReadCompletionThreshold
-        guard oldFraction < threshold && newFraction >= threshold else { return }
-        guard webViewModel.lastScrollDepthMutationSource != .persistedPositionRestore else { return }
-        showRatingBar = true
     }
 
     // MARK: - Wikidot メタデータ（タグ逆引き）
@@ -408,11 +409,22 @@ struct ArticleView: View {
         } label: {
             Text(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavTapHint)))
                 .font(.caption2.weight(.semibold))
-                .foregroundStyle(AppTheme.textPrimary.opacity(0.92))
+                .foregroundStyle(AppTheme.textPrimary.opacity(0.96))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
-                .background(.ultraThinMaterial.opacity(0.55))
+                .background {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(AppTheme.cardStandard.opacity(0.92))
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(.ultraThinMaterial.opacity(0.88))
+                    }
+                }
                 .clipShape(Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(AppTheme.borderSubtle.opacity(0.45), lineWidth: AppTheme.borderWidthHairline)
+                )
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)

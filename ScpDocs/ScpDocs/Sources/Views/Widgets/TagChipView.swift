@@ -13,14 +13,14 @@ struct TagChipView: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
             .background(
-                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
                     .fill(isSelected ? AppTheme.brandAccent.opacity(0.18) : AppTheme.cardBackground)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
                     .stroke(
                         isSelected ? AppTheme.brandAccent : AppTheme.borderSubtle,
-                        lineWidth: isSelected ? 1.25 : AppTheme.borderWidthHairline
+                        lineWidth: 1.0
                     )
             )
     }
