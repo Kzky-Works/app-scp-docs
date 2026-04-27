@@ -14,15 +14,13 @@ final class ArticleDetailViewModel {
 
     /// トースト用（ローカライズキーではなく本文を保持しない — View がキーから組み立てる）。
     var transientToastToken: UInt64 = 0
-    /// 自動 L3.0 適用時に評価バーを開くための通知。
-    var ratingBarRevealToken: UInt64 = 0
 
     init(articleRepository: ArticleRepository, articleURL: URL) {
         self.articleRepository = articleRepository
         self.articleURL = articleURL
     }
 
-    /// WebView のスクロール進捗（0...1）。95% 到達かつ未評価なら L3.0（既読）を書き込み、触覚・トースト・評価バーを促す。
+    /// WebView のスクロール進捗（0...1）。95% 到達かつ未評価なら L3.0（既読）を書き込み、触覚・トーストを出す。評価バー表示は View 側でスクロール経路に応じて制御する。
     func handleScrollDepthFraction(_ fraction: Double) {
         guard !didApplyAutoArchive else { return }
         guard fraction >= ArticleDetailViewModel.autoReadCompletionThreshold else { return }
@@ -32,7 +30,6 @@ final class ArticleDetailViewModel {
         articleRepository.setRatingScore(3.0, for: articleURL)
         Haptics.medium()
         transientToastToken += 1
-        ratingBarRevealToken += 1
     }
 
     /// Step 3: 自動読了（収容完了）しきい値。ネイティブ `UIScrollView` の進捗と一致。

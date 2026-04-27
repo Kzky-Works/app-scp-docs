@@ -71,10 +71,42 @@ struct GoIRegionsLayoutPayload: Codable, Sendable, Hashable, Equatable {
     var other: [GoIFormatGroupPayload]
 }
 
-/// カノンハブ索引（`canon-hub-jp` / `canon-hub` の `div.canon-title` 由来）。行は GoI の子記事と同形。
+/// カノンハブ索引（`canon-hub-jp` / `series-hub-jp` / `canon-hub`）。行は GoI の子記事と同形。
 struct CanonRegionsLayoutPayload: Codable, Sendable, Hashable, Equatable {
     var jp: [GoIFormatArticleLine]
     var en: [GoIFormatArticleLine]
+    /// `series-hub-jp`（連作-JP）。JSON キー `seriesJp`。
+    var seriesJp: [GoIFormatArticleLine]
+
+    enum CodingKeys: String, CodingKey {
+        case jp
+        case en
+        case seriesJp
+    }
+
+    init(
+        jp: [GoIFormatArticleLine] = [],
+        en: [GoIFormatArticleLine] = [],
+        seriesJp: [GoIFormatArticleLine] = []
+    ) {
+        self.jp = jp
+        self.en = en
+        self.seriesJp = seriesJp
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        jp = try c.decodeIfPresent([GoIFormatArticleLine].self, forKey: .jp) ?? []
+        en = try c.decodeIfPresent([GoIFormatArticleLine].self, forKey: .en) ?? []
+        seriesJp = try c.decodeIfPresent([GoIFormatArticleLine].self, forKey: .seriesJp) ?? []
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(jp, forKey: .jp)
+        try c.encode(en, forKey: .en)
+        try c.encode(seriesJp, forKey: .seriesJp)
+    }
 }
 
 /// 非ナンバリング記事（Tale / GoI / Canon / Joke）の 1 エントリ。配信 JSON の短縮キーに合わせる。

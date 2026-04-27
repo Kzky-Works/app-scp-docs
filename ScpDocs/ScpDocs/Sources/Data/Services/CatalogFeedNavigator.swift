@@ -36,6 +36,26 @@ enum CatalogFeedNavigator: Sendable {
     ) -> URL? {
         let entries = trifoldCatalogEntries(kind: kind, feedCache: feedCache)
         let key = ArticleRepository.storageKey(for: current)
+        let currentNum =
+            TrifoldReportFeedRowFormatter.catalogOrderingNumber(from: current, feedKind: kind)
+            ?? entries.first(where: { SCPArticleCatalogRepository.normalizedURLKey(for: $0) == key })
+                .flatMap { TrifoldReportFeedRowFormatter.catalogOrderingNumber(article: $0, feedKind: kind) }
+
+        if let currentNum {
+            var best: SCPArticle?
+            var bestNum: Int?
+            for article in entries {
+                guard let n = TrifoldReportFeedRowFormatter.catalogOrderingNumber(article: article, feedKind: kind),
+                      n > currentNum
+                else { continue }
+                if bestNum.map({ n < $0 }) ?? true {
+                    best = article
+                    bestNum = n
+                }
+            }
+            return best?.resolvedURL
+        }
+
         guard let idx = entries.firstIndex(where: { SCPArticleCatalogRepository.normalizedURLKey(for: $0) == key }) else {
             return entries.first?.resolvedURL
         }

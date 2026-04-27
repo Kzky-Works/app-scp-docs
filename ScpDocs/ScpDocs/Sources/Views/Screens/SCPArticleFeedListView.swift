@@ -86,13 +86,18 @@ struct SCPArticleFeedListView: View {
                     } label: {
                         HStack(alignment: .top, spacing: 10) {
                             VStack(alignment: .leading, spacing: 4) {
+                                Text(TrifoldReportFeedRowFormatter.scpNumberLine(article: article, feedKind: kind))
+                                    .font(AppTypography.feedListOnePointDown(.subheadline, weight: .semibold))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                    .monospaced()
+                                    .lineLimit(1)
                                 Text(article.t)
                                     .font(AppTypography.feedListOnePointDown(.body, weight: .semibold))
                                     .foregroundStyle(AppTheme.textPrimary)
-                                if let meta = japanSCPListMetadataStore,
-                                   let oc = meta.trifoldListRowObjectClass(article: article) {
-                                    Text(listRowObjectClassLabel(wiki: oc))
-                                        .font(AppTypography.feedListOnePointDown(.caption2, weight: .semibold))
+                                    .lineLimit(3)
+                                if let oc = trifoldListRowObjectClassDisplay(article: article) {
+                                    Text(oc)
+                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
                                         .foregroundStyle(AppTheme.textSecondary)
                                         .lineLimit(1)
                                 }
@@ -142,6 +147,16 @@ struct SCPArticleFeedListView: View {
             return String(localized: String.LocalizationValue(key))
         }
         return wiki
+    }
+
+    private func trifoldListRowObjectClassDisplay(article: SCPArticle) -> String? {
+        if let meta = japanSCPListMetadataStore, let oc = meta.trifoldListRowObjectClass(article: article) {
+            return listRowObjectClassLabel(wiki: oc)
+        }
+        if let c = article.c?.trimmingCharacters(in: .whitespacesAndNewlines), !c.isEmpty {
+            return listRowObjectClassLabel(wiki: c)
+        }
+        return nil
     }
 
     @ViewBuilder

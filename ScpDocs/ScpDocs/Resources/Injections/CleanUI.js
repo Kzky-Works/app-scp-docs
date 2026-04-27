@@ -14,6 +14,7 @@
       link: "#C0C0C0",
       linkHover: "#E0E0E0",
       container: "#0A0A0A",
+      inset: "#1C1C1E",
     };
   }
 
@@ -29,6 +30,7 @@
       link: t.link || d.link,
       linkHover: t.linkHover || d.linkHover,
       container: t.container || d.container,
+      inset: t.inset || d.inset,
     };
   }
 
@@ -41,6 +43,26 @@
       style.type = "text/css";
       (document.head || document.documentElement).appendChild(style);
     }
+    var insetBorder =
+      T.inset && T.background && T.inset !== T.background
+        ? "rgba(226, 224, 214, 0.32)"
+        : "rgba(26, 26, 26, 0.14)";
+    var boxSelectors = [
+      "#page-content blockquote",
+      "#page-content .blockquote",
+      "#page-content .content-panel",
+      "#page-content .jumbo",
+      "#page-content .collapsible-block",
+      "#page-content .quote",
+      "#page-content .pseudonote",
+      "#page-content .note",
+      "#page-content .dashed",
+      "#page-content .paper",
+      "#page-content .modal-body",
+      "#page-content table.wiki-content-table",
+      "#page-content pre",
+    ];
+    var insetIs = ":is(" + boxSelectors.join(", ") + ")";
     style.textContent =
       "html, body { background: " +
       T.background +
@@ -68,6 +90,33 @@
       "padding: 10px 4px !important; box-sizing: border-box !important; }" +
       "#container { background: " +
       T.container +
+      " !important; }" +
+      /* Wikidot テーマの白/オフ白ボックスをダークで可読化（:is で子孫一括。リンクは下で別指定） */
+      insetIs +
+      " { background: " +
+      T.inset +
+      " !important; color: " +
+      T.text +
+      " !important; " +
+      "border: 1px dashed " +
+      insetBorder +
+      " !important; " +
+      "box-shadow: none !important; }" +
+      insetIs +
+      " *:not(a):not(svg) { color: " +
+      T.text +
+      " !important; }" +
+      insetIs +
+      " a, " +
+      insetIs +
+      " a:visited { color: " +
+      T.link +
+      " !important; text-decoration-color: " +
+      T.link +
+      " !important; }" +
+      insetIs +
+      " a:hover { color: " +
+      T.linkHover +
       " !important; }";
   }
 

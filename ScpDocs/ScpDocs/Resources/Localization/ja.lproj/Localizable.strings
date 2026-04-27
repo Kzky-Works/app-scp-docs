@@ -183,6 +183,7 @@
 "goi.catalog_source_tab.en" = "EN";
 "goi.catalog_source_tab.other" = "OTHER";
 "goi.catalog_source_picker.a11y" = "要注意団体の出典分類";
+"canon.catalog_source_tab.series_jp" = "連作-JP";
 
 "canon.hub_source_picker.a11y" = "カノンハブの言語区分";
 "canon.hub_feed.tab_empty.title" = "このタブにカノンハブがありません";

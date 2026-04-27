@@ -185,6 +185,8 @@ enum LocalizationKey {
     static let goiCatalogSourceTabJP = "goi.catalog_source_tab.jp"
     static let goiCatalogSourceTabEN = "goi.catalog_source_tab.en"
     static let goiCatalogSourceTabOther = "goi.catalog_source_tab.other"
+    /// カノンフィード下部ピッカー: 連作-JP（`series-hub-jp`）。
+    static let canonCatalogSourceTabSeriesJP = "canon.catalog_source_tab.series_jp"
     static let goiCatalogSourcePickerAccessibility = "goi.catalog_source_picker.a11y"
 
     static let canonHubSourcePickerAccessibility = "canon.hub_source_picker.a11y"

@@ -8,9 +8,9 @@ foundation-tales-jp（著者層）を統合し list/jp/*.json を生成する。
 スパース metadata（主キー i）を出力する。listVersion は前回出力と差分が無い場合は据え置き。
 GoI（`manifest_gois.json`）のみ schemaVersion 3: `goi-formats-jp` の h1/h2 構造に基づき `en` / `jp` / `other` の団体行（団体名 + ハブ `u` のみ。ハブのない団体は除外）を `goiRegions` に格納。フラット `entries` / `metadata` は空。詳細は同梱 `docs/GOI_MANIFEST_V3_ja.md`。
 
-Canon（`manifest_canons.json`）: `canon-hub-jp`（`div.canon-title` 内）と `canon-hub`（`div.canon-block` 内 h1/h2 リンク）からカノンハブを収集し、
-`canonRegions.jp` / `canonRegions.en` に分離。各行に `tag-list` のシリーズタグ（`ct`）、**カノンハブ索引ページ**上の要約（`ds`）: JP は各 `div.canon-title` 直後の `div.canon-description`、EN 索引 `canon-hub` は `div.canon-block` 内・見出し直後の `p`（当該頁に `div.canon-title`/`div.canon-description` は無い）。個別ハブ本文の `div.canon-description` はフォールバック、
-`#page-info` の最終更新 unix（`lu`）を付与。フラット `entries` + `metadata[].r`（`jp` / `en`）も併記。
+Canon（`manifest_canons.json`）: `canon-hub-jp`（`div.canon-title` 内）、`series-hub-jp`（`div.series-title` 内）、`canon-hub`（`div.canon-block` 内 h1/h2 リンク）からハブを収集し、
+`canonRegions.jp` / `canonRegions.seriesJp` / `canonRegions.en` に分離。各行に `tag-list` のシリーズタグ（`ct`）、**索引ページ**上の要約（`ds`）: カノン JP は各 `div.canon-title` 直後の `div.canon-description`、連作 JP は `div.series-title` 直後の `div.series-description`、EN 索引は `div.canon-block` 内・見出し直後の `p`。個別ハブ本文は `div.canon-description` / `div.series-description`、無ければ `#page-content` 先頭の `blockquote` をフォールバック。
+`#page-info` の最終更新 unix（`lu`）を付与。フラット `entries` + `metadata[].r`（`jp` / `series_jp` / `en`）も併記。
 
 収集は Wikidot のみ（scp_list.json には依存しない）。
 
@@ -137,13 +137,15 @@ def is_intl_scp_article_path(pth: str) -> bool:
         return True
     return False
 
-# カノンハブ索引: JP は div.canon-title + div.canon-description、EN (canon-hub) は
-# div.canon-block 内 h1/h2 直後の p（#page-content に div.canon-title は無い）。series-hub-jp は対象外
+# カノンハブ索引: JP canon は div.canon-title + div.canon-description、連作 JP は
+# div.series-title + div.series-description、EN (canon-hub) は div.canon-block 内 h1/h2 直後の p。
 CANON_HUB_PAGES: tuple[tuple[str, str], ...] = (
     ("/canon-hub-jp", "jp"),
+    ("/series-hub-jp", "series_jp"),
     ("/canon-hub", "en"),
 )
 EN_CANON_HUB_PATH: str = "/canon-hub"
+SERIES_HUB_JP_PATH: str = "/series-hub-jp"
 TAG_LIST_PATH = "/tag-list"
 JOKE_INDEX_PATHS: tuple[str, ...] = ("/joke-scps", "/joke-scps-jp")
 GOI_FORMATS_HUB = "/goi-formats-jp"
@@ -555,6 +557,7 @@ def next_canon_list_version_and_generated_at(
     cr_norm = {
         "jp": canon_regions.get("jp") or [],
         "en": canon_regions.get("en") or [],
+        "seriesJp": canon_regions.get("series_jp") or [],
     }
     if os.path.isfile(path):
         try:
@@ -569,6 +572,7 @@ def next_canon_list_version_and_generated_at(
             and (old.get("metadata") or {}) == md_norm
             and (old_cr.get("jp") or []) == cr_norm["jp"]
             and (old_cr.get("en") or []) == cr_norm["en"]
+            and (old_cr.get("seriesJp") or []) == cr_norm["seriesJp"]
         ):
             return old_lv, gen
         return old_lv + 1, gen
@@ -601,14 +605,17 @@ def write_canon_manifest(
     metadata: dict[str, Any],
     canon_regions: dict[str, list[dict[str, Any]]],
 ) -> None:
-    """manifest_canons.json: entries + metadata（r=jp|en）+ canonRegions。"""
+    """manifest_canons.json: entries + metadata（r=jp|series_jp|en）+ canonRegions。"""
     md = {k: v for k, v in metadata.items() if isinstance(v, dict) and v}
     validate_manifest_entries_metadata(entries, md, os.path.basename(path))
     cr_norm: dict[str, list[dict[str, Any]]] = {
         "jp": canon_regions.get("jp") or [],
         "en": canon_regions.get("en") or [],
+        "seriesJp": canon_regions.get("series_jp") or [],
     }
-    lv, gen = next_canon_list_version_and_generated_at(path, entries, metadata, cr_norm)
+    lv, gen = next_canon_list_version_and_generated_at(
+        path, entries, metadata, canon_regions
+    )
     payload: dict[str, Any] = {
         "listVersion": lv,
         "schemaVersion": MANIFEST_SCHEMA_VERSION,
@@ -795,6 +802,65 @@ def parse_canon_hub_description_map_from_root(
     return out
 
 
+def parse_series_title_hubs_from_root(
+    root, page_url: str, site_netloc: str
+) -> list[tuple[str, str]]:
+    """`series-hub-jp` 内の div.series-title から連作ハブへの単一スラッグリンクを文書順で列挙。"""
+    seen_order: list[str] = []
+    best_title: dict[str, str] = {}
+    for block in root.select("div.series-title"):
+        for a in block.find_all("a", href=True):
+            p = _canon_valid_hub_path(a.get("href") or "", page_url, site_netloc)
+            if p is None:
+                continue
+            segs = [x for x in p.strip("/").split("/") if x]
+            slug = segs[0] if segs else ""
+            title = a.get_text(" ", strip=True) or slug
+            if p not in best_title:
+                seen_order.append(p)
+                best_title[p] = title
+            elif len(title) > len(best_title[p]):
+                best_title[p] = title
+    return [(p, best_title[p]) for p in seen_order]
+
+
+def parse_series_hub_description_map_from_root(
+    root, page_url: str, site_netloc: str
+) -> dict[str, str]:
+    """
+    `series-hub-jp` 上の各 div.series-title 直後の div.series-description から
+    { hub スラッグ小文字: 要約 } を作る。
+    """
+    out: dict[str, str] = {}
+    for block in root.select("div.series-title"):
+        paths: list[str] = []
+        seen: set[str] = set()
+        for a in block.find_all("a", href=True):
+            p = _canon_valid_hub_path(a.get("href") or "", page_url, site_netloc)
+            if p is None or p in seen:
+                continue
+            seen.add(p)
+            paths.append(p)
+        if not paths:
+            continue
+        desc_el = block.find_next_sibling()
+        while desc_el is not None:
+            if desc_el.name == "div":
+                cl = desc_el.get("class") or []
+                if "series-description" in cl:
+                    break
+            desc_el = desc_el.find_next_sibling()
+        else:
+            desc_el = None
+        desc = _plain_text_from_canon_description_div(desc_el)
+        if not desc:
+            continue
+        for p in paths:
+            ikey = p.lstrip("/").lower()
+            out[ikey] = desc
+    return out
+
+
 def parse_canon_en_hub_blocks_hubs_and_descriptions(
     root, page_url: str, site_netloc: str
 ) -> tuple[list[tuple[str, str]], dict[str, str]]:
@@ -947,7 +1013,7 @@ def _parse_canon_tag_list_li(
 def scrape_canon_tag_hub_mapping(
     session: requests.Session, cfg: BranchConfig
 ) -> dict[str, str]:
-    """tag-list の カノン-EN / カノン-JP から {hub_slug_lower: series_tag_label}。"""
+    """tag-list の カノン-EN / カノン-JP / 連作-JP から {hub_slug_lower: series_tag_label}。"""
     url = cfg.abs_url(TAG_LIST_PATH)
     html = fetch_html(session, url)
     soup = BeautifulSoup(html, "html.parser")
@@ -973,19 +1039,39 @@ def scrape_canon_tag_hub_mapping(
                     if pair:
                         slug, tag = pair
                         out[slug] = tag
+        elif title == "連作-JP":
+            ul = _ul_immediately_after_h3(h3)
+            if ul is not None:
+                for li in ul.find_all("li", recursive=False):
+                    pair = _parse_canon_tag_list_li(li, prefer_em_slug=False)
+                    if pair:
+                        slug, tag = pair
+                        out[slug] = tag
     return out
 
 
 def extract_canon_hub_card_fields(html: str) -> tuple[str, int | None]:
     """
-    カノンハブ1ページから (description プレーン, 最終更新 unix)。
-    div.canon-description.unmargined / #page-info span.odate.time_* を参照。
+    カノン／連作ハブ1ページから (description プレーン, 最終更新 unix)。
+    div.canon-description → div.series-description → #page-content 先頭 blockquote の順で要約。
+    #page-info span.odate.time_* を参照。
     """
     soup = BeautifulSoup(html, "html.parser")
     div = soup.select_one("div.canon-description.unmargined")
     if div is None:
         div = soup.select_one("div.canon-description")
     desc = _plain_text_from_canon_description_div(div)
+    if not desc:
+        sdiv = soup.select_one("div.series-description.unmargined")
+        if sdiv is None:
+            sdiv = soup.select_one("div.series-description")
+        desc = _plain_text_from_canon_description_div(sdiv)
+    if not desc:
+        root = soup.select_one("#page-content") or soup.body
+        if root is not None:
+            bq = root.find("blockquote")
+            if bq is not None:
+                desc = re.sub(r"\s+", " ", bq.get_text(" ", strip=True)).strip()
     ts: int | None = None
     info = soup.select_one("#page-info")
     if info is not None:
@@ -1005,7 +1091,7 @@ def _log_canon_enrich_sample(
 ) -> None:
     """stderr に ct/ds/lu の付与状況を短く出す（出力ファイルの取り違え防止用）。"""
     n = 0
-    for region in ("jp", "en"):
+    for region in ("jp", "en", "series_jp"):
         for line in region_lines.get(region) or []:
             if n >= limit:
                 return
@@ -1067,13 +1153,21 @@ def enrich_canon_hub_lines_in_place(
 def scrape_canon_manifest_payload(
     session: requests.Session, cfg: BranchConfig
 ) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, list[dict[str, Any]]]]:
-    """canon-hub-jp → jp / canon-hub → en のハブ行とフラット entries + metadata.r。"""
+    """canon-hub-jp / series-hub-jp / canon-hub からハブ行とフラット entries + metadata.r。"""
     print("INFO: canons — tag-list (series tags)", file=sys.stderr)
     tag_map = scrape_canon_tag_hub_mapping(session, cfg)
     base = cfg.site_host.rstrip("/")
     site_netloc = urlparse(base).netloc.lower()
-    region_lines: dict[str, list[dict[str, Any]]] = {"jp": [], "en": []}
-    hub_desc_by_region: dict[str, dict[str, str]] = {"jp": {}, "en": {}}
+    region_lines: dict[str, list[dict[str, Any]]] = {
+        "jp": [],
+        "en": [],
+        "series_jp": [],
+    }
+    hub_desc_by_region: dict[str, dict[str, str]] = {
+        "jp": {},
+        "en": {},
+        "series_jp": {},
+    }
     for hub_path, region in CANON_HUB_PAGES:
         page_url = cfg.abs_url(hub_path)
         html = fetch_html(session, page_url)
@@ -1081,11 +1175,16 @@ def scrape_canon_manifest_payload(
         root = soup.select_one("#page-content") or soup.body
         if root is None:
             hubs = []
-        elif hub_path == EN_CANON_HUB_PATH:
+        elif hub_path.rstrip("/") == EN_CANON_HUB_PATH.rstrip("/"):
             hubs, hub_desc_by_region[region] = (
                 parse_canon_en_hub_blocks_hubs_and_descriptions(
                     root, page_url, site_netloc
                 )
+            )
+        elif hub_path.rstrip("/") == SERIES_HUB_JP_PATH.rstrip("/"):
+            hubs = parse_series_title_hubs_from_root(root, page_url, site_netloc)
+            hub_desc_by_region[region] = parse_series_hub_description_map_from_root(
+                root, page_url, site_netloc
             )
         else:
             hubs = parse_canon_title_hubs_from_root(root, page_url, site_netloc)
@@ -1103,7 +1202,7 @@ def scrape_canon_manifest_payload(
     )
     _log_canon_enrich_sample(region_lines)
     by_i: dict[str, tuple[dict[str, Any], str]] = {}
-    for region in ("jp", "en"):
+    for region in ("jp", "en", "series_jp"):
         for line in region_lines[region]:
             ik = line.get("i")
             if not isinstance(ik, str) or not ik.strip():
@@ -1519,7 +1618,7 @@ class JapaneseBranchHarvester:
         }
 
         print(
-            "INFO: canons — canon-hub-jp (canon-title) + canon-hub (canon-block)",
+            "INFO: canons — canon-hub-jp + series-hub-jp + canon-hub (canon-block)",
             file=sys.stderr,
         )
         canon_light, canon_meta, canon_regions = scrape_canon_manifest_payload(

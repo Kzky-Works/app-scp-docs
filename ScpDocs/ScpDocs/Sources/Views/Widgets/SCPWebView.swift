@@ -224,7 +224,12 @@ struct SCPWebView: UIViewRepresentable {
             let scrollable = max(contentH - visibleH, 0)
             let fraction: Double
             if scrollable <= 1 {
-                fraction = 1
+                // レイアウト前は scrollable が 0 に近く、未スクロールで 100% 扱いになるのを防ぐ。
+                if viewModel.isLoading || viewModel.isReaderSurfaceConcealed {
+                    fraction = 0
+                } else {
+                    fraction = 1
+                }
             } else {
                 fraction = min(max(Double(scrollView.contentOffset.y / scrollable), 0), 1)
             }

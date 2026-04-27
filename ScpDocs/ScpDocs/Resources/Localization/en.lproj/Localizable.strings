@@ -183,6 +183,7 @@
 "goi.catalog_source_tab.en" = "EN";
 "goi.catalog_source_tab.other" = "OTHER";
 "goi.catalog_source_picker.a11y" = "Group of interest source filter";
+"canon.catalog_source_tab.series_jp" = "連作-JP";
 
 "canon.hub_source_picker.a11y" = "Canon hub language";
 "canon.hub_feed.tab_empty.title" = "No canon hubs in this tab";

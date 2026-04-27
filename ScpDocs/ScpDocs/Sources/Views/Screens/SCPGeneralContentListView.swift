@@ -38,12 +38,107 @@ private enum GoICatalogSourceTab: String, CaseIterable, Identifiable {
 private enum CanonHubCatalogTab: String, CaseIterable, Identifiable {
     case jp
     case en
+    case seriesJp
     var id: String { rawValue }
     var titleLocalizationKey: String {
         switch self {
         case .jp: return LocalizationKey.goiCatalogSourceTabJP
         case .en: return LocalizationKey.goiCatalogSourceTabEN
+        case .seriesJp: return LocalizationKey.canonCatalogSourceTabSeriesJP
         }
+    }
+}
+
+// MARK: - カノンフィードリスト行（報告書フィード等と同様の区切り線のみ）
+
+private struct CanonHubFeedListRowContent: View {
+    let line: GoIFormatArticleLine
+    let contentBranch: Branch
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var descriptionForeground: Color {
+        switch colorScheme {
+        case .dark:
+            AppTheme.textPrimary.opacity(0.88)
+        default:
+            AppTheme.textPrimary.opacity(0.66)
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .center, spacing: 8) {
+                if let chip = seriesTagChipText {
+                    Text(chip)
+                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
+                        .foregroundStyle(AppTheme.brandAccent)
+                        .lineLimit(1)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                .stroke(AppTheme.brandAccent, lineWidth: max(0.5, AppTheme.borderWidthHairline))
+                        )
+                }
+                Spacer(minLength: 8)
+                if let updated = lastUpdatedLabel {
+                    Text(updated)
+                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .multilineTextAlignment(.trailing)
+                        .lineLimit(2)
+                        .monospacedDigit()
+                }
+            }
+            Text(line.t)
+                .font(AppTypography.feedListCanonHubTitle(weight: .bold))
+                .foregroundStyle(AppTheme.textPrimary)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 8)
+            Text(slugDisplay)
+                .font(AppTypography.feedListOnePointDown(.subheadline, weight: .medium))
+                .foregroundStyle(AppTheme.brandAccent)
+                .lineLimit(1)
+                .padding(.top, 4)
+            Text((line.ds ?? "").trimmingCharacters(in: .whitespacesAndNewlines))
+                .font(AppTypography.feedListOnePointDown(.subheadline, weight: .regular))
+                .foregroundStyle(descriptionForeground)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 8)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+
+    private var seriesTagChipText: String? {
+        guard let raw = line.ct?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else { return nil }
+        return raw
+    }
+
+    private var slugDisplay: String {
+        let slug = line.i.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !slug.isEmpty else { return "" }
+        return "/" + slug
+    }
+
+    private var lastUpdatedLabel: String? {
+        guard let lu = line.lu else { return nil }
+        let tz = contentBranch.catalogListingsTimeZone
+        let date = Date(timeIntervalSince1970: TimeInterval(lu))
+        let fmt = DateFormatter()
+        fmt.calendar = Calendar(identifier: .gregorian)
+        fmt.timeZone = tz
+        fmt.locale = Locale.current
+        fmt.dateFormat = "yyyy/MM/dd"
+        let dateStr = fmt.string(from: date)
+        let format = String(localized: String.LocalizationValue(LocalizationKey.canonCardLastUpdatedFormat))
+        return String(format: format, locale: .current, dateStr)
     }
 }
 
@@ -84,13 +179,52 @@ private enum JokeReportCatalogLineage {
     }
 }
 
-// MARK: - Tales: 著者別アコーディオン
+// MARK: - Tales: 著者別ミニマルリスト（カードなし）
 
 private struct MultiformTalesAuthorGroup: Identifiable {
     static let unknownAuthorID = "multiform_tales_author_unknown"
     let id: String
     let displayName: String
     let entries: [SCPGeneralContent]
+}
+
+private struct TalesMinimalListRowPressStyle: ButtonStyle {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(
+                (colorScheme == .dark ? Color.white : Color.black)
+                    .opacity(configuration.isPressed ? 0.05 : 0)
+            )
+    }
+}
+
+private struct TaleAuthorRow: View {
+    let displayName: String
+    let countLabel: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: 0) {
+                Text(displayName)
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                Spacer(minLength: 12)
+                Text(countLabel)
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundStyle(AppTheme.textSecondary)
+                    .monospacedDigit()
+                    .lineLimit(1)
+            }
+            .padding(.vertical, 14)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(TalesMinimalListRowPressStyle())
+    }
 }
 
 /// Step 4: Tale / GoI / Canon / Joke のネイティブ一覧（`SCPGeneralContent`）。
@@ -104,7 +238,6 @@ struct SCPGeneralContentListView: View {
     @Bindable var articleRepository: ArticleRepository
     @Bindable var navigationRouter: NavigationRouter
 
-    @Environment(\.colorScheme) private var colorScheme
     @Bindable private var connectivity = ConnectivityMonitor.shared
     @State private var cachedEntries: [SCPGeneralContent] = []
     @State private var goisManifest: SCPGeneralContentListPayload?
@@ -187,31 +320,35 @@ struct SCPGeneralContentListView: View {
         return raw.filter { !$0.u.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
     }
 
-    /// マニフェストの `canonRegions`、または `entries[].r`（jp/en）から組み立て。旧 JSON でも JP タブに一覧を載せてピッカーを出せる。
+    /// マニフェストの `canonRegions`、または `entries[].r`（jp / en / series_jp）から組み立て。
     private var resolvedCanonRegions: CanonRegionsLayoutPayload? {
-        if let cr = canonsManifest?.canonRegions, !cr.jp.isEmpty || !cr.en.isEmpty {
+        if let cr = canonsManifest?.canonRegions,
+           !cr.jp.isEmpty || !cr.en.isEmpty || !cr.seriesJp.isEmpty
+        {
             return cr
         }
         var jp: [GoIFormatArticleLine] = []
         var en: [GoIFormatArticleLine] = []
+        var seriesJp: [GoIFormatArticleLine] = []
         for e in cachedEntries {
             guard let line = goIFormatArticleLine(from: e) else { continue }
-            if canonHubLineageTab(e) == .en {
-                en.append(line)
-            } else {
-                jp.append(line)
+            switch canonHubLineageTab(e) {
+            case .en: en.append(line)
+            case .seriesJp: seriesJp.append(line)
+            case .jp: jp.append(line)
             }
         }
-        if jp.isEmpty && en.isEmpty { return nil }
-        return CanonRegionsLayoutPayload(jp: jp, en: en)
+        if jp.isEmpty && en.isEmpty && seriesJp.isEmpty { return nil }
+        return CanonRegionsLayoutPayload(jp: jp, en: en, seriesJp: seriesJp)
     }
 
-    /// `manifest_canons` のカノンハブ行（タブで JP / EN を切替）。
+    /// `manifest_canons` のカノンハブ行（タブで JP / EN / 連作-JP を切替）。
     private var canonV3TabHubLines: [GoIFormatArticleLine] {
         guard let r = resolvedCanonRegions else { return [] }
         switch canonHubSourceTab {
         case .jp: return r.jp
         case .en: return r.en
+        case .seriesJp: return r.seriesJp
         }
     }
 
@@ -251,7 +388,7 @@ struct SCPGeneralContentListView: View {
         }
         if kind == .canons {
             if let cr = resolvedCanonRegions {
-                let anyHub = !cr.jp.isEmpty || !cr.en.isEmpty
+                let anyHub = !cr.jp.isEmpty || !cr.en.isEmpty || !cr.seriesJp.isEmpty
                 return !anyHub && cachedEntries.isEmpty
             }
             return cachedEntries.isEmpty
@@ -338,39 +475,45 @@ struct SCPGeneralContentListView: View {
                     List {
                         ForEach(canonV3TabHubLines) { line in
                             canonHubLineRow(line: line)
-                                .indexListRowChrome()
                         }
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
                 }
             } else if kind == .tales, !listEntries.isEmpty {
-                List {
-                    ForEach(multiformTalesAuthorGroups) { group in
-                        DisclosureGroup(
-                            isExpanded: Binding(
-                                get: { expandedMultiformTalesAuthorKeys.contains(group.id) },
-                                set: { newValue in
-                                    if newValue {
-                                        Haptics.selection()
-                                        expandedMultiformTalesAuthorKeys.insert(group.id)
-                                    } else {
-                                        expandedMultiformTalesAuthorKeys.remove(group.id)
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        ForEach(multiformTalesAuthorGroups) { group in
+                            VStack(alignment: .leading, spacing: 0) {
+                                let expanded = expandedMultiformTalesAuthorKeys.contains(group.id)
+                                let countText = String(
+                                    format: String(localized: String.LocalizationValue(LocalizationKey.talesJpTaleCountFormat)),
+                                    locale: .current,
+                                    group.entries.count
+                                )
+                                TaleAuthorRow(
+                                    displayName: group.displayName,
+                                    countLabel: countText
+                                ) {
+                                    withAnimation(.easeInOut(duration: 0.15)) {
+                                        if expanded {
+                                            expandedMultiformTalesAuthorKeys.remove(group.id)
+                                        } else {
+                                            Haptics.selection()
+                                            expandedMultiformTalesAuthorKeys.insert(group.id)
+                                        }
                                     }
                                 }
-                            )
-                        ) {
-                            ForEach(group.entries, id: \.self) { row in
-                                multiformTalesArticleRow(row: row)
+                                if expanded {
+                                    ForEach(group.entries, id: \.self) { row in
+                                        multiformTalesArticleMinimalRow(row: row)
+                                    }
+                                }
                             }
-                        } label: {
-                            multiformTalesAuthorDisclosureLabel(group: group)
                         }
-                        .indexListRowChrome()
                     }
+                    .padding(.horizontal, 20)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
             } else {
                 List(Array(listEntries.enumerated()), id: \.offset) { _, row in
                     Button {
@@ -381,29 +524,45 @@ struct SCPGeneralContentListView: View {
                     } label: {
                         HStack(alignment: .top, spacing: 10) {
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(row.t)
-                                    .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
-                                    .foregroundStyle(AppTheme.textPrimary)
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(2)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                if kind == .jokes, let meta = japanSCPListMetadataStore, let oc = meta.jokeMultiformListRowObjectClass(entry: row) {
-                                    Text(jokeListObjectClassLabel(wiki: oc))
-                                        .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
-                                        .foregroundStyle(AppTheme.textSecondary)
-                                        .lineLimit(1)
-                                }
-                                if kind != .canons {
-                                    if let author = row.trimmedAuthor {
-                                        Text(author)
-                                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
-                                            .foregroundStyle(AppTheme.textSecondary)
-                                            .lineLimit(2)
-                                    } else {
-                                        Text(String(localized: String.LocalizationValue(LocalizationKey.multiformAuthorUnknown)))
-                                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .heavy))
-                                            .foregroundStyle(AppTheme.brandAccent)
+                                if kind == .jokes {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(TrifoldReportFeedRowFormatter.jokeScpNumberLine(entry: row))
+                                            .font(AppTypography.feedListOnePointDown(.subheadline, weight: .semibold))
+                                            .foregroundStyle(AppTheme.textPrimary)
+                                            .monospaced()
                                             .lineLimit(1)
+                                        Text(row.t)
+                                            .font(AppTypography.feedListOnePointDown(.body, weight: .semibold))
+                                            .foregroundStyle(AppTheme.textPrimary)
+                                            .multilineTextAlignment(.leading)
+                                            .lineLimit(3)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                        if let oc = jokeListRowObjectClassDisplay(entry: row) {
+                                            Text(oc)
+                                                .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
+                                                .foregroundStyle(AppTheme.textSecondary)
+                                                .lineLimit(1)
+                                        }
+                                    }
+                                } else {
+                                    Text(row.t)
+                                        .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
+                                        .foregroundStyle(AppTheme.textPrimary)
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(2)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    if kind != .canons {
+                                        if let author = row.trimmedAuthor {
+                                            Text(author)
+                                                .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
+                                                .foregroundStyle(AppTheme.textSecondary)
+                                                .lineLimit(2)
+                                        } else {
+                                            Text(String(localized: String.LocalizationValue(LocalizationKey.multiformAuthorUnknown)))
+                                                .font(AppTypography.feedListOnePointDown(.caption1, weight: .heavy))
+                                                .foregroundStyle(AppTheme.brandAccent)
+                                                .lineLimit(1)
+                                        }
                                     }
                                 }
                             }
@@ -494,95 +653,10 @@ struct SCPGeneralContentListView: View {
                 navigationRouter.pushArticle(url: url)
             }
         } label: {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack(alignment: .center, spacing: 8) {
-                    if let chip = canonHubSeriesTagChipText(line: line) {
-                        Text(chip)
-                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
-                            .foregroundStyle(AppTheme.brandAccent)
-                            .lineLimit(1)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .stroke(AppTheme.brandAccent, lineWidth: max(0.5, AppTheme.borderWidthHairline))
-                            )
-                    }
-                    Spacer(minLength: 8)
-                    if let updated = canonHubLastUpdatedLabel(line: line) {
-                        Text(updated)
-                            .font(AppTypography.feedListOnePointDown(.caption1, weight: .medium))
-                            .foregroundStyle(AppTheme.textSecondary)
-                            .multilineTextAlignment(.trailing)
-                            .lineLimit(2)
-                            .monospacedDigit()
-                    }
-                }
-                Text(line.t)
-                    .font(AppTypography.feedListOnePointDown(.title3, weight: .bold))
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 10)
-                Text(canonHubSlugDisplay(line: line))
-                    .font(AppTypography.feedListOnePointDown(.subheadline, weight: .medium))
-                    .foregroundStyle(AppTheme.brandAccent)
-                    .lineLimit(1)
-                    .padding(.top, 4)
-                Text((line.ds ?? "").trimmingCharacters(in: .whitespacesAndNewlines))
-                    .font(AppTypography.feedListOnePointDown(.subheadline, weight: .regular))
-                    .foregroundStyle(canonCardDescriptionForeground)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(3)
-                    .truncationMode(.tail)
-                    .frame(maxWidth: .infinity, minHeight: canonCardDescriptionBlockHeight, alignment: .topLeading)
-                    .padding(.top, 12)
-            }
-            .frame(maxWidth: .infinity, minHeight: canonHubCardMinHeight, alignment: .topLeading)
-            .padding(.vertical, 12)
-            .padding(.horizontal, 4)
+            CanonHubFeedListRowContent(line: line, contentBranch: contentBranch)
+                .padding(.vertical, 6)
         }
         .buttonStyle(.plain)
-    }
-
-    private var canonCardDescriptionForeground: Color {
-        switch colorScheme {
-        case .dark:
-            AppTheme.textSecondary.opacity(0.92)
-        default:
-            AppTheme.textPrimary.opacity(0.52)
-        }
-    }
-
-    /// 3 行分の `subheadline` 相当の最小高さ（空でも確保）。
-    private var canonCardDescriptionBlockHeight: CGFloat { 54 }
-
-    private var canonHubCardMinHeight: CGFloat { 196 }
-
-    private func canonHubSeriesTagChipText(line: GoIFormatArticleLine) -> String? {
-        guard let raw = line.ct?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else { return nil }
-        return raw
-    }
-
-    private func canonHubSlugDisplay(line: GoIFormatArticleLine) -> String {
-        let slug = line.i.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !slug.isEmpty else { return "" }
-        return "/" + slug
-    }
-
-    private func canonHubLastUpdatedLabel(line: GoIFormatArticleLine) -> String? {
-        guard let lu = line.lu else { return nil }
-        let tz = contentBranch.catalogListingsTimeZone
-        let date = Date(timeIntervalSince1970: TimeInterval(lu))
-        let fmt = DateFormatter()
-        fmt.calendar = Calendar(identifier: .gregorian)
-        fmt.timeZone = tz
-        fmt.locale = Locale.current
-        fmt.dateFormat = "yyyy/MM/dd"
-        let dateStr = fmt.string(from: date)
-        let format = String(localized: String.LocalizationValue(LocalizationKey.canonCardLastUpdatedFormat))
-        return String(format: format, locale: .current, dateStr)
     }
 
     @ViewBuilder
@@ -612,59 +686,25 @@ struct SCPGeneralContentListView: View {
     }
 
     @ViewBuilder
-    private func multiformTalesAuthorDisclosureLabel(group: MultiformTalesAuthorGroup) -> some View {
-        HStack(alignment: .center, spacing: 10) {
-            Image(systemName: "person.fill")
-                .font(AppTypography.feedListOnePointDown(.body, weight: .semibold))
-                .foregroundStyle(AppTheme.brandAccent)
-                .frame(width: 22, alignment: .center)
-            Text(group.displayName)
-                .font(AppTypography.feedListOnePointDown(.headline, weight: .semibold))
-                .foregroundStyle(AppTheme.textPrimary)
-                .multilineTextAlignment(.leading)
-            Spacer(minLength: 0)
-            Text(
-                String(
-                    format: String(localized: String.LocalizationValue(LocalizationKey.talesJpTaleCountFormat)),
-                    locale: .current,
-                    group.entries.count
-                )
-            )
-            .font(AppTypography.feedListOnePointDown(.caption1, weight: .semibold))
-            .foregroundStyle(AppTheme.textSecondary)
-            .monospacedDigit()
-        }
-        .padding(.vertical, 2)
-    }
-
-    @ViewBuilder
-    private func multiformTalesArticleRow(row: SCPGeneralContent) -> some View {
+    private func multiformTalesArticleMinimalRow(row: SCPGeneralContent) -> some View {
         Button {
             Haptics.medium()
             if let u = row.resolvedURL {
                 navigationRouter.pushArticle(url: u)
             }
         } label: {
-            HStack(alignment: .top, spacing: 10) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(row.t)
-                        .font(AppTypography.feedListOnePointDown(.headline, weight: .heavy))
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 8)
-                if let u = row.resolvedURL, articleRepository.isRead(url: u) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(AppTypography.feedListOnePointDown(.body, weight: .medium))
-                        .foregroundStyle(AppTheme.textSecondary)
-                }
-            }
-            .padding(.vertical, 6)
+            Text(row.t)
+                .font(.system(size: 15, weight: .regular))
+                .foregroundStyle(AppTheme.textPrimary)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 10)
+                .padding(.leading, 2)
+                .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .indexListRowChromeIndented()
+        .buttonStyle(TalesMinimalListRowPressStyle())
     }
 
     @ViewBuilder
@@ -786,7 +826,7 @@ struct SCPGeneralContentListView: View {
         return GoIFormatArticleLine(u: u, i: id, t: entry.t)
     }
 
-    /// `metadata.r` 由来のカノン出典（jp / en）。欠損時は JP タブへまとめる。
+    /// `metadata.r` 由来のカノン出典（jp / en / series_jp）。欠損時は JP タブへまとめる。
     private func canonHubLineageTab(_ entry: SCPGeneralContent) -> CanonHubCatalogTab {
         guard let raw = entry.r?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else {
             return .jp
@@ -795,6 +835,8 @@ struct SCPGeneralContentListView: View {
         switch lower {
         case "en", "english", "enwiki", "us", "scp-wiki", "scpen", "main":
             return .en
+        case "series_jp", "series-jp", "seriesjp", "連作-jp":
+            return .seriesJp
         default:
             return .jp
         }
@@ -847,5 +889,12 @@ struct SCPGeneralContentListView: View {
             return String(localized: String.LocalizationValue(key))
         }
         return wiki
+    }
+
+    private func jokeListRowObjectClassDisplay(entry: SCPGeneralContent) -> String? {
+        guard let meta = japanSCPListMetadataStore, let oc = meta.jokeMultiformListRowObjectClass(entry: entry) else {
+            return nil
+        }
+        return jokeListObjectClassLabel(wiki: oc)
     }
 }

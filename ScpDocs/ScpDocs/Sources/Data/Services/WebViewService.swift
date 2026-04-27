@@ -47,7 +47,8 @@ enum WebViewService {
             text: '\(palette.textHex)',
             link: '\(palette.linkHex)',
             linkHover: '\(palette.linkHoverHex)',
-            container: '\(palette.containerHex)'
+            container: '\(palette.containerHex)',
+            inset: '\(palette.insetSurfaceHex)'
           };
           var r=document.documentElement;
           if(!r){return;}

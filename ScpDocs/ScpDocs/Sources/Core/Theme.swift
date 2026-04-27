@@ -12,6 +12,8 @@ struct WebContentPalette: Equatable, Sendable {
     let linkHex: String
     let linkHoverHex: String
     let containerHex: String
+    /// 記事内の引用・パネル等（Wikidot が白背景にしているブロック）の上書き用。CleanUI.js の `inset` と同期。
+    let insetSurfaceHex: String
 }
 
 /// Phase 12.2: モダン・ブルータリズム配色（ライト確定案／ダーク新案）。
@@ -182,7 +184,8 @@ enum AppTheme {
                 textHex: "#E2E0D6",
                 linkHex: "#E2E0D6",
                 linkHoverHex: "#FFFFFF",
-                containerHex: "#121212"
+                containerHex: "#121212",
+                insetSurfaceHex: "#1C1C1E"
             )
         } else {
             WebContentPalette(
@@ -190,7 +193,8 @@ enum AppTheme {
                 textHex: "#1A1A1A",
                 linkHex: "#1A1A1A",
                 linkHoverHex: "#000000",
-                containerHex: "#F7F6F0"
+                containerHex: "#F7F6F0",
+                insetSurfaceHex: "#F7F6F0"
             )
         }
     }
@@ -381,6 +385,13 @@ enum AppTypography {
         let size = max(6, base.pointSize - 1)
         return Font.system(size: size, weight: weight, design: .default)
     }
+
+    /// カノンハブカード見出し: 一覧用 `title3` 相当からさらに 2pt 小さく（Dynamic Type 追従）。
+    static func feedListCanonHubTitle(weight: Font.Weight = .bold) -> Font {
+        let base = UIFont.preferredFont(forTextStyle: .title3)
+        let size = max(6, base.pointSize - 3)
+        return Font.system(size: size, weight: weight, design: .default)
+    }
 #else
     static var homeBranchTitleRowReservedHeight: CGFloat { 34 }
 
@@ -393,6 +404,10 @@ enum AppTypography {
     }
 
     static func randomPanelDiceIconPointSize() -> CGFloat { 32 }
+
+    static func feedListCanonHubTitle(weight: Font.Weight = .bold) -> Font {
+        .title3.weight(weight)
+    }
 #endif
 }
 

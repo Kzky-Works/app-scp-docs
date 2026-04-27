@@ -80,7 +80,7 @@ struct ArticleView: View {
         return CatalogFeedNavigator.inferCatalogFeed(for: shareURL) != nil
     }
 
-    /// `CatalogFeedNavigator.nextArticleURL` と同一条件。終端では `nil` のため NEXT を出さない（案C）。マルチフォームは常に `nil`（Step 4）。
+    /// `CatalogFeedNavigator.nextArticleURL` と同一条件（主番号の次、終端は `nil`）。マルチフォームは常に `nil`（Step 4）。
     private var postReadCatalogNextURL: URL? {
         guard let feedCache = scpArticleFeedCacheRepository else { return nil }
         let kind = CatalogFeedNavigator.effectiveKind(
@@ -237,9 +237,10 @@ struct ArticleView: View {
                 addedReadingSeconds: secs
             )
         }
-        .onChange(of: webViewModel.scrollDepthFraction) { _, fraction in
-            articleDetailViewModel.handleScrollDepthFraction(fraction)
-            scheduleScrollDepthPersist(fraction)
+        .onChange(of: webViewModel.scrollDepthFraction) { oldFraction, newFraction in
+            articleDetailViewModel.handleScrollDepthFraction(newFraction)
+            scheduleScrollDepthPersist(newFraction)
+            revealRatingBarIfUserScrolledPastThreshold(oldFraction: oldFraction, newFraction: newFraction)
         }
         .onChange(of: webViewModel.pageTitle) { _, newTitle in
             articleRepository.updateCachedPageTitle(newTitle, for: shareURL)
@@ -263,9 +264,6 @@ struct ArticleView: View {
                 }
             }
         }
-        .onChange(of: articleDetailViewModel.ratingBarRevealToken) { _, _ in
-            showRatingBar = true
-        }
         .onChange(of: homeViewModel.fontSizeMultiplier) { _, newValue in
             webViewModel.readerFontSizeMultiplier = newValue
             webViewModel.applyReaderFontPresentation(endsReaderTypographyConceal: false)
@@ -285,6 +283,14 @@ struct ArticleView: View {
         if clamped < hi, prev >= hi {
             OfflineStore.shared.deleteHTML(for: url)
         }
+    }
+
+    /// 保存深度の復元では開かない。本文スクロールで閾値を下から上に跨いだときだけ自動表示する。
+    private func revealRatingBarIfUserScrolledPastThreshold(oldFraction: Double, newFraction: Double) {
+        let threshold = ArticleDetailViewModel.autoReadCompletionThreshold
+        guard oldFraction < threshold && newFraction >= threshold else { return }
+        guard webViewModel.lastScrollDepthMutationSource != .persistedPositionRestore else { return }
+        showRatingBar = true
     }
 
     // MARK: - Wikidot メタデータ（タグ逆引き）
