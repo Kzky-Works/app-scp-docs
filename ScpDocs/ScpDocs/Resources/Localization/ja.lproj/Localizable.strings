@@ -169,6 +169,28 @@
 "int.catalog_branch_chip.vn" = "VN";
 "int.catalog_branch_chip.other" = "その他";
 
+/* Native SCP-JP / SCP feed band pickers */
+"feed.trifold.series_picker.caption" = "シリーズ（1000 件ブロック）";
+"feed.trifold.hundred_picker.caption" = "区間（100 件）";
+"feed.trifold.hundred.range_format" = "%@–%@";
+"feed.trifold.band_filter.empty.title" = "この区間に報告書がありません";
+"feed.trifold.band_filter.empty.subtitle" = "別のシリーズまたは区間を選んでください。";
+"feed.trifold.jp.series_1" = "シリーズⅠ";
+"feed.trifold.jp.series_2" = "シリーズⅡ";
+"feed.trifold.jp.series_3" = "シリーズⅢ";
+"feed.trifold.jp.series_4" = "シリーズⅣ";
+"feed.trifold.jp.series_5" = "シリーズⅤ";
+"feed.trifold.en.series_1" = "シリーズ1";
+"feed.trifold.en.series_2" = "シリーズ2";
+"feed.trifold.en.series_3" = "シリーズ3";
+"feed.trifold.en.series_4" = "シリーズ4";
+"feed.trifold.en.series_5" = "シリーズ5";
+"feed.trifold.en.series_6" = "シリーズ6";
+"feed.trifold.en.series_7" = "シリーズ7";
+"feed.trifold.en.series_8" = "シリーズ8";
+"feed.trifold.en.series_9" = "シリーズ9";
+"feed.trifold.en.series_10" = "シリーズⅩ";
+
 /* Joke catalog (JP / 本家) */
 "joke.catalog_origin.jp" = "JP";
 "joke.catalog_origin.main" = "本家";

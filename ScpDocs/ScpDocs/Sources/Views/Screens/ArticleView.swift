@@ -52,6 +52,11 @@ struct ArticleView: View {
         webViewModel.currentURL ?? entryURL
     }
 
+    /// 職員日誌・続きから読む・スクロール深度は常に `entryURL`。インWiki遷移中は `shareURL` がずれる。
+    private var isViewingEntryDocument: Bool {
+        ArticleRepository.storageKey(for: shareURL) == ArticleRepository.storageKey(for: entryURL)
+    }
+
     private var articleRatingBinding: Binding<Double> {
         Binding(
             get: { articleRepository.ratingScore(for: shareURL) },
@@ -237,9 +242,11 @@ struct ArticleView: View {
         }
         .onDisappear {
             scrollDepthPersistTask?.cancel()
-            articleRepository.updateReadingScrollDepth(webViewModel.scrollDepthFraction, for: shareURL)
-            let key = ArticleRepository.storageKey(for: shareURL)
-            let scroll = articleRepository.readingScrollDepth(for: shareURL)
+            if isViewingEntryDocument {
+                articleRepository.updateReadingScrollDepth(webViewModel.scrollDepthFraction, for: entryURL)
+            }
+            let key = ArticleRepository.storageKey(for: entryURL)
+            let scroll = articleRepository.readingScrollDepth(for: entryURL)
             let secs = sessionStartedAt.map { Date().timeIntervalSince($0) } ?? 0
             try? personnelReadingJournal?.persistVisitEnd(
                 normalizedURLKey: key,
@@ -252,16 +259,18 @@ struct ArticleView: View {
             scheduleScrollDepthPersist(newFraction)
         }
         .onChange(of: webViewModel.pageTitle) { _, newTitle in
-            articleRepository.updateCachedPageTitle(newTitle, for: shareURL)
+            guard isViewingEntryDocument else { return }
+            articleRepository.updateCachedPageTitle(newTitle, for: entryURL)
         }
         .onChange(of: webViewModel.isLoading) { _, loading in
             guard !loading else { return }
-            let key = ArticleRepository.storageKey(for: shareURL)
+            guard isViewingEntryDocument else { return }
+            let key = ArticleRepository.storageKey(for: entryURL)
             guard lastFirstImageProbeStorageKey != key else { return }
             lastFirstImageProbeStorageKey = key
-            if articleRepository.cachedFirstImageURL(for: shareURL) != nil { return }
+            if articleRepository.cachedFirstImageURL(for: entryURL) != nil { return }
             webViewModel.probeFirstContentImageURL { url in
-                articleRepository.updateCachedFirstImageURL(url, for: shareURL)
+                articleRepository.updateCachedFirstImageURL(url, for: entryURL)
             }
         }
         .onChange(of: articleDetailViewModel.transientToastToken) { _, _ in
@@ -581,11 +590,12 @@ struct ArticleView: View {
     // MARK: - Step 3: スクロール永続化（スロットリング）とポスト・リーディング
 
     private func scheduleScrollDepthPersist(_ fraction: Double) {
+        guard isViewingEntryDocument else { return }
         scrollDepthPersistTask?.cancel()
         scrollDepthPersistTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled else { return }
-            articleRepository.updateReadingScrollDepth(fraction, for: shareURL)
+            articleRepository.updateReadingScrollDepth(fraction, for: entryURL)
         }
     }
 

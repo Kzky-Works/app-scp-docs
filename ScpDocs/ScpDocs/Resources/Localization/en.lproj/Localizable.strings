@@ -169,6 +169,28 @@
 "int.catalog_branch_chip.vn" = "VN";
 "int.catalog_branch_chip.other" = "Other";
 
+/* Native SCP-JP / SCP feed band pickers */
+"feed.trifold.series_picker.caption" = "Series (1000-block)";
+"feed.trifold.hundred_picker.caption" = "Segment (100 each)";
+"feed.trifold.hundred.range_format" = "%@–%@";
+"feed.trifold.band_filter.empty.title" = "No reports in this segment";
+"feed.trifold.band_filter.empty.subtitle" = "Choose another series or hundred-block segment.";
+"feed.trifold.jp.series_1" = "Series I";
+"feed.trifold.jp.series_2" = "Series II";
+"feed.trifold.jp.series_3" = "Series III";
+"feed.trifold.jp.series_4" = "Series IV";
+"feed.trifold.jp.series_5" = "Series V";
+"feed.trifold.en.series_1" = "Series 1";
+"feed.trifold.en.series_2" = "Series 2";
+"feed.trifold.en.series_3" = "Series 3";
+"feed.trifold.en.series_4" = "Series 4";
+"feed.trifold.en.series_5" = "Series 5";
+"feed.trifold.en.series_6" = "Series 6";
+"feed.trifold.en.series_7" = "Series 7";
+"feed.trifold.en.series_8" = "Series 8";
+"feed.trifold.en.series_9" = "Series 9";
+"feed.trifold.en.series_10" = "Series X";
+
 /* Joke catalog (JP branch vs main -J) */
 "joke.catalog_origin.jp" = "JP";
 "joke.catalog_origin.main" = "Main";

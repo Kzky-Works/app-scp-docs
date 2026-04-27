@@ -114,6 +114,7 @@ private struct CanonHubFeedListRowContent: View {
                 .padding(.top, 8)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
+        .contentShape(Rectangle())
     }
 
     private var seriesTagChipText: String? {
@@ -573,6 +574,8 @@ struct SCPGeneralContentListView: View {
                                     .foregroundStyle(AppTheme.textSecondary)
                             }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
                         .padding(.vertical, 6)
                     }
                     .buttonStyle(.plain)
@@ -640,6 +643,8 @@ struct SCPGeneralContentListView: View {
                         .foregroundStyle(AppTheme.textSecondary)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
             .padding(.vertical, 6)
         }
         .buttonStyle(.plain)
@@ -680,6 +685,8 @@ struct SCPGeneralContentListView: View {
                         .foregroundStyle(AppTheme.textSecondary)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
             .padding(.vertical, 6)
         }
         .buttonStyle(.plain)

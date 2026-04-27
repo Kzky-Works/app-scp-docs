@@ -5,7 +5,7 @@ foundation-tales-jp（著者層）を統合し list/jp/*.json を生成する。
 
 マニフェスト（schemaVersion 2）: `manifest_scp-*.json` / `manifest_tales.json` /
 `manifest_gois.json` / `manifest_canons.json` / `manifest_jokes.json` に entries（u,i,t）と
-スパース metadata（主キー i）を出力する。listVersion は前回出力と差分が無い場合は据え置き。
+スパース metadata（主キー i；jokes は報告書と同様に `c` を page-tags から付与し得る）を出力する。listVersion は前回出力と差分が無い場合は据え置き。
 GoI（`manifest_gois.json`）のみ schemaVersion 3: `goi-formats-jp` の h1/h2 構造に基づき `en` / `jp` / `other` の団体行（団体名 + ハブ `u` のみ。ハブのない団体は除外）を `goiRegions` に格納。フラット `entries` / `metadata` は空。詳細は同梱 `docs/GOI_MANIFEST_V3_ja.md`。
 
 Canon（`manifest_canons.json`）: `canon-hub-jp`（`div.canon-title` 内）、`series-hub-jp`（`div.series-title` 内）、`canon-hub`（`div.canon-block` 内 h1/h2 リンク）からハブを収集し、
@@ -382,30 +382,66 @@ OC_TAG_TO_DISPLAY = {
     "esoteric-class": "Esoteric",
 }
 
+# タグ一覧は件数で複数ページ化される。1 ページ目のみだと後方ページの記事に `c` が付かない（例: JP Keter の SCP-003-JP）。
+MAX_OBJECT_CLASS_TAG_LIST_PAGES = 256
+
+
+def wikidot_tag_list_total_pages(html: str) -> int:
+    """`system:page-tags` の pager から総ページ数（日本支部: ページ 1 / N、本家: page 1 of N）。無ければ 1。"""
+    m = re.search(r'class="pager-no"[^>]*>\s*ページ\s+\d+\s*/\s*(\d+)\s*<', html, re.I)
+    if m:
+        return max(1, int(m.group(1)))
+    m = re.search(r'class="pager-no"[^>]*>\s*page\s+\d+\s+of\s+(\d+)\s*<', html, re.I)
+    if m:
+        return max(1, int(m.group(1)))
+    return 1
+
 
 def map_object_class_from_tag_pages(session: requests.Session, cfg: BranchConfig, paths: set[str]) -> dict[str, str]:
     """属性層: system:page-tags/tag/<class> に掲載された記事パス → OC（先に列挙したタグを優先）。"""
     base = cfg.site_host.rstrip("/")
     path_to_class: dict[str, str] = {}
-    for tag in OBJECT_CLASS_TAGS:
-        url = f"{base}/system:page-tags/tag/{tag}"
-        try:
-            html = fetch_html(session, url, retries=4)
-        except Exception as ex:
-            print(f"WARN: OC tag page {tag}: {ex}", file=sys.stderr)
-            continue
+    base_netloc = urlparse(base).netloc
+
+    def ingest_tag_page_html(html: str, oc_display: str) -> None:
         soup = BeautifulSoup(html, "html.parser")
-        oc_display = OC_TAG_TO_DISPLAY.get(tag, tag.replace("-", " ").title())
         for a in soup.find_all("a", href=True):
             raw = (a.get("href") or "").strip()
             pu = urlparse(urljoin(base + "/", raw))
-            if pu.netloc and pu.netloc != urlparse(base).netloc:
+            if pu.netloc and pu.netloc != base_netloc:
                 continue
             pth = pu.path or ""
             if pth not in paths:
                 continue
             if pth not in path_to_class:
                 path_to_class[pth] = oc_display
+
+    for tag in OBJECT_CLASS_TAGS:
+        first_url = f"{base}/system:page-tags/tag/{tag}"
+        try:
+            first_html = fetch_html(session, first_url, retries=4)
+        except Exception as ex:
+            print(f"WARN: OC tag page {tag}: {ex}", file=sys.stderr)
+            continue
+        total = wikidot_tag_list_total_pages(first_html)
+        if total > MAX_OBJECT_CLASS_TAG_LIST_PAGES:
+            print(
+                f"WARN: OC tag {tag}: pager reports {total} pages; capping at {MAX_OBJECT_CLASS_TAG_LIST_PAGES}",
+                file=sys.stderr,
+            )
+            total = MAX_OBJECT_CLASS_TAG_LIST_PAGES
+        oc_display = OC_TAG_TO_DISPLAY.get(tag, tag.replace("-", " ").title())
+        for page in range(1, total + 1):
+            if page == 1:
+                html = first_html
+            else:
+                page_url = f"{base}/system:page-tags/tag/{tag}/p/{page}"
+                try:
+                    html = fetch_html(session, page_url, retries=4)
+                except Exception as ex:
+                    print(f"WARN: OC tag page {tag} p/{page}: {ex}", file=sys.stderr)
+                    break
+            ingest_tag_page_html(html, oc_display)
     return path_to_class
 
 
@@ -642,25 +678,19 @@ def _page_link_excluded(path: str) -> bool:
     return False
 
 
-def extract_page_content_link_map(
-    session: requests.Session, cfg: BranchConfig, page_path: str
-) -> dict[str, str]:
-    """#page-content 内の同一サイト単一スラッグへのリンク → {正規パス: 表示テキスト}。"""
-    base = cfg.site_host.rstrip("/")
-    url = cfg.abs_url(page_path)
-    html = fetch_html(session, url)
-    soup = BeautifulSoup(html, "html.parser")
-    root = soup.select_one("#page-content") or soup.body
+def page_content_link_map_from_root(root, page_url: str, base: str) -> dict[str, str]:
+    """#page-content 相当 root 内の同一サイト単一スラッグへのリンク → {正規パス: 表示テキスト}。"""
     out: dict[str, str] = {}
     if root is None:
         return out
+    base_netloc = urlparse(base).netloc
     for a in root.find_all("a", href=True):
         raw = (a.get("href") or "").strip().split("#")[0]
         if not raw or raw.startswith("javascript:"):
             continue
-        absu = urljoin(url, raw)
+        absu = urljoin(page_url, raw)
         pu = urlparse(absu)
-        if pu.netloc and pu.netloc != urlparse(base).netloc:
+        if pu.netloc and pu.netloc != base_netloc:
             continue
         p = pu.path or "/"
         if p == "/" or _page_link_excluded(p):
@@ -678,6 +708,18 @@ def extract_page_content_link_map(
     return out
 
 
+def extract_page_content_link_map(
+    session: requests.Session, cfg: BranchConfig, page_path: str
+) -> dict[str, str]:
+    """#page-content 内の同一サイト単一スラッグへのリンク → {正規パス: 表示テキスト}。"""
+    base = cfg.site_host.rstrip("/")
+    url = cfg.abs_url(page_path)
+    html = fetch_html(session, url)
+    soup = BeautifulSoup(html, "html.parser")
+    root = soup.select_one("#page-content") or soup.body
+    return page_content_link_map_from_root(root, url, base)
+
+
 def is_joke_article_path(path: str) -> bool:
     pl = path.lower()
     if pl in JOKE_HUB_PATHS_LOWER:
@@ -693,23 +735,67 @@ def is_joke_article_path(path: str) -> bool:
     return False
 
 
-def scrape_joke_index_entries(session: requests.Session, cfg: BranchConfig) -> list[dict[str, Any]]:
-    merged: dict[str, str] = {}
-    for hub in JOKE_INDEX_PATHS:
-        part = extract_page_content_link_map(session, cfg, hub)
-        for p, t in part.items():
-            if not is_joke_article_path(p):
-                continue
-            prev = merged.get(p)
-            if prev is None or len(t) > len(prev):
-                merged[p] = t
+def _fallback_joke_title(path: str) -> str:
+    """一覧からタイトルが取れないときの表示用（インテル系 `_fallback_int_title` に相当）。"""
+    p = (path or "").rstrip("/").lstrip("/").lower()
+    if not p:
+        return ""
+    if p.startswith("scp-"):
+        return "SCP-" + p[4:].upper()
+    return p.upper()
+
+
+def _merge_joke_article_row(
+    merged: dict[str, ArticleRow], pth: str, title: str, base: str
+) -> None:
+    """同一パスはより長いタイトルを採用（ハブ間・li/リンク突合のマージに使用）。"""
+    t = (title or "").strip()
+    if not t:
+        t = _fallback_joke_title(pth)
+    i = pth.lstrip("/").lower()
+    u = base + pth
+    prev = merged.get(pth)
+    if prev is None or len(t) > len(prev.t):
+        merged[pth] = ArticleRow(path=pth, u=u, i=i, t=t)
+
+
+def scrape_joke_article_rows(session: requests.Session, cfg: BranchConfig) -> dict[str, ArticleRow]:
+    """
+    joke-scps / joke-scps-jp: 一覧は `<li>` で `SCP-… - 作品名` と出る箇子が多い。
+    リンク本文だけ取る `extract_page_content_link_map` だと t が欠けるため、
+    scp-series / intl 同様 `extract_title_from_li` を優先し、無ければアンカー本文を使う。
+    同一取得 HTML 内で、li で取れなかったジョークパスをリンクマップで補完する。
+    """
     base = cfg.site_host.rstrip("/")
-    out: list[dict[str, Any]] = []
-    for path, title in sorted(merged.items(), key=lambda x: x[0]):
-        i = path.lstrip("/").lower()
-        u = base + path
-        out.append({"u": u, "i": i, "t": title})
-    return out
+    merged: dict[str, ArticleRow] = {}
+    for hub in JOKE_INDEX_PATHS:
+        url = cfg.abs_url(hub)
+        html = fetch_html(session, url)
+        soup = BeautifulSoup(html, "html.parser")
+        root = soup.select_one("#page-content") or soup.body
+        if root is None:
+            continue
+        from_li: set[str] = set()
+        for li in root.find_all("li"):
+            a = li.find("a", href=True)
+            if not a:
+                continue
+            href = (a.get("href") or "").strip()
+            pu = urlparse(urljoin(base + "/", href))
+            pth = pu.path or "/"
+            if not is_joke_article_path(pth):
+                continue
+            t = extract_title_from_li(li) or a.get_text(" ", strip=True) or ""
+            _merge_joke_article_row(merged, pth, t, base)
+            from_li.add(pth)
+        # リンク群だけに載るジョークを補完。`li` では `作品名` が ` - ` 以降に出るが
+        # アンカー本文の方が文字数が長いため、上書き禁止（SCP-067-J 等）。
+        link_map = page_content_link_map_from_root(root, url, base)
+        for pth, t in link_map.items():
+            if not is_joke_article_path(pth) or pth in from_li:
+                continue
+            _merge_joke_article_row(merged, pth, t, base)
+    return merged
 
 
 def _canon_valid_hub_path(
@@ -1399,7 +1485,7 @@ def tales_raw_to_manifest_parts(raw: list[dict[str, Any]]) -> tuple[list[dict[st
 def simple_multiform_raw_to_manifest_parts(
     raw: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Canon / Joke 等: u,i,t のみ（metadata 空）。"""
+    """entries が u,i,t のみの raw 行 → light entries + 空 metadata。"""
     light: list[dict[str, Any]] = []
     for e in raw:
         if not isinstance(e, dict):
@@ -1625,8 +1711,14 @@ class JapaneseBranchHarvester:
             self.session, cfg
         )
 
-        print("INFO: jokes — joke-scps + joke-scps-jp", file=sys.stderr)
-        joke_entries = scrape_joke_index_entries(self.session, cfg)
+        print("INFO: jokes — joke-scps + joke-scps-jp (li-based titles like series)", file=sys.stderr)
+        joke_rows = scrape_joke_article_rows(self.session, cfg)
+        print("INFO: attribute layer — joke object class (page-tags)", file=sys.stderr)
+        joke_paths = set(joke_rows.keys())
+        oc_joke = map_object_class_from_tag_pages(self.session, cfg, joke_paths)
+        for p, row in joke_rows.items():
+            if not row.c and p in oc_joke:
+                row.c = oc_joke[p]
 
         man_jp = os.path.join(cfg.output_dir, "manifest_scp-jp.json")
         man_main = os.path.join(cfg.output_dir, "manifest_scp-main.json")
@@ -1646,7 +1738,7 @@ class JapaneseBranchHarvester:
         write_manifest(man_tales, tl, tm)
         write_goi_manifest_v3(man_gois, goi_payload)
         write_canon_manifest(man_canons, canon_light, canon_meta, canon_regions)
-        jl, jm = simple_multiform_raw_to_manifest_parts(joke_entries)
+        jl, jm = trifold_rows_to_manifest_parts(joke_rows)
         write_manifest(man_jokes, jl, jm)
 
         print(
