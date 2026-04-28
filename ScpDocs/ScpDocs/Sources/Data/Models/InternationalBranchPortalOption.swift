@@ -8,7 +8,6 @@ struct InternationalBranchPortalOption: Identifiable, Sendable {
     private let filterRule: FilterRule
 
     private enum FilterRule: Sendable, Equatable, Hashable {
-        case all
         case codes(Set<String>)
         case portuguese
         case traditionalChinese
@@ -65,8 +64,6 @@ struct InternationalBranchPortalOption: Identifiable, Sendable {
 
     func matchesCatalogEntry(_ article: SCPArticle) -> Bool {
         switch filterRule {
-        case .all:
-            return true
         case .codes(let codes):
             guard let tail = SCPIntSlugLanguageTail.tailTokens(from: article) else { return false }
             return !Set(tail).isDisjoint(with: codes)
@@ -89,12 +86,6 @@ struct InternationalBranchPortalOption: Identifiable, Sendable {
     }
 
     static let ordered: [InternationalBranchPortalOption] = [
-        InternationalBranchPortalOption(
-            id: "all",
-            chipTitleLocalizationKey: LocalizationKey.intCatalogBranchChipAll,
-            portalURL: URL(string: "https://scp-int.wikidot.com/")!,
-            filterRule: .all
-        ),
         InternationalBranchPortalOption(
             id: "ru",
             chipTitleLocalizationKey: LocalizationKey.intCatalogBranchChipRU,

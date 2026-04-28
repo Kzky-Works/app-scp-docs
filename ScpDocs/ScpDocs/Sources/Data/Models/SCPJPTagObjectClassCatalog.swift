@@ -101,11 +101,15 @@ enum SCPJPTagObjectClassCatalog: Sendable {
 
     // MARK: - Private
 
+    /// フィード／Wiki 由来の表記を行定義の Wiki 表記へ寄せる（`wikiTitlesSemanticallyEqual` とは相互再帰しない）。
     private static func normalizeIncomingClass(_ raw: String) -> String {
         let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        let tLower = t.lowercased()
+        let tSlugish = tLower.replacingOccurrences(of: " ", with: "-")
         for row in rows {
-            if wikiTitlesSemanticallyEqual(t, row.wikiEqualityTitle) { return row.wikiEqualityTitle }
-            if t.lowercased() == row.slug { return row.wikiEqualityTitle }
+            if t.caseInsensitiveCompare(row.wikiEqualityTitle) == .orderedSame { return row.wikiEqualityTitle }
+            if tLower == row.slug { return row.wikiEqualityTitle }
+            if tSlugish == row.slug { return row.wikiEqualityTitle }
         }
         return t
     }

@@ -59,19 +59,14 @@ struct RatingControlView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
-            VStack(alignment: .leading, spacing: 16) {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(String(localized: String.LocalizationValue(LocalizationKey.articleRatingCardTitle)))
                     .font(.headline)
                     .foregroundStyle(AppTheme.ratingAnalyticsInk)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(String(localized: String.LocalizationValue(LocalizationKey.articleRatingCardSubtitle)))
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 2) {
                     ReferenceStyleTickedSlider(
                         value: visualScore,
                         chromaActive: chromaActive,
@@ -101,7 +96,7 @@ struct RatingControlView: View {
                         }
                     )
                     .frame(height: 40)
-                    .padding(.top, 18)
+                    .padding(.top, 4)
 
                     trackLabelsRow
                 }
@@ -117,7 +112,8 @@ struct RatingControlView: View {
             .animation(.easeOut(duration: 0.2), value: ringProgress)
             .animation(.easeOut(duration: 0.2), value: visualScore)
         }
-        .padding(16)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
         .background(AppTheme.cardStandard)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
@@ -145,12 +141,12 @@ struct RatingControlView: View {
                         .font(.system(size: 10, weight: .medium, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(AppTheme.ratingAnalyticsInk.opacity(0.45))
-                        .position(x: knobCenterX(score: Double(i), width: w), y: 8)
+                        .position(x: knobCenterX(score: Double(i), width: w), y: 6)
                 }
             }
-            .frame(width: w, height: 16)
+            .frame(width: w, height: 12)
         }
-        .frame(height: 16)
+        .frame(height: 12)
     }
 
     private func knobCenterX(score: Double, width: CGFloat) -> CGFloat {
@@ -300,8 +296,8 @@ private struct RatingScoreRingView: View {
     let arcColor: Color
     let centerStrong: Bool
 
-    private let lineWidth: CGFloat = 8
-    private let size: CGFloat = 90
+    private let lineWidth: CGFloat = 7
+    private let size: CGFloat = 84
 
     var body: some View {
         ZStack {
@@ -314,7 +310,7 @@ private struct RatingScoreRingView: View {
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-            VStack(spacing: 2) {
+            VStack(spacing: 1) {
                 Text(centerPrimary)
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .monospacedDigit()

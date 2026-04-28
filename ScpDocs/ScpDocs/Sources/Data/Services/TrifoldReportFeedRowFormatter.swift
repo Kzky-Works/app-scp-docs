@@ -37,7 +37,7 @@ enum TrifoldReportFeedRowFormatter: Sendable {
         case .en:
             n = scpNumberFromMainSlug(article.i)
         case .int:
-            n = internationalPrimaryScpNumber(article)
+            return internationalScpSlugDisplay(from: article, fallbackSlug: article.i)
         case .tales, .gois, .canons, .jokes:
             n = nil
         }
@@ -47,12 +47,28 @@ enum TrifoldReportFeedRowFormatter: Sendable {
         return fallbackTrifoldId(article.i)
     }
 
+    /// 国際一覧: `scp-NNN-ru` / `scp-cn-NNN` 等スラッグをその並び・支部コードごとに表記する。
+    private static func internationalScpSlugDisplay(from article: SCPArticle, fallbackSlug: String) -> String {
+        if let line = internationalDisplayLineFromIntlSlug(listSlug(from: article)) {
+            return line
+        }
+        if let line = internationalDisplayLineFromIntlSlug(fallbackSlug.lowercased()) {
+            return line
+        }
+        if let n = internationalPrimaryScpNumber(article) {
+            return formattedScpNumberCore(n)
+        }
+        return fallbackTrifoldId(fallbackSlug)
+    }
+
     // MARK: - ジョーク（`SCPGeneralContent`）
 
-    /// ジョーク報告書の 1 段目。`scp-NNN-j` / `scp-NNN-jp-j` から `SCP-NNN-J` を生成。
+    /// ジョーク報告書の 1 段目。`scp-NNN-j` → `SCP-NNN-J`、`scp-NNN-jp-j` → `SCP-NNN-JP-J`。
     static func jokeScpNumberLine(entry: SCPGeneralContent) -> String {
-        if let n = jokeScpNumber(entry: entry) {
-            return "\(formattedScpNumberCore(n))-J"
+        let slug = jokeResolvedSlug(entry: entry)
+        if let n = jokeNumberFromSlug(slug) {
+            let suffix = slug.lowercased().hasSuffix("-jp-j") ? "-JP-J" : "-J"
+            return "\(formattedScpNumberCore(n))\(suffix)"
         }
         return jokeFallbackSlug(entry)
     }
@@ -60,13 +76,16 @@ enum TrifoldReportFeedRowFormatter: Sendable {
     // MARK: - Internals
 
     private static func formattedScpNumberCore(_ n: Int) -> String {
-        let core = n < 1000 ? String(format: "%03d", n) : String(n)
-        return "SCP-\(core)"
+        "SCP-\(scpDigitsSegment(n))"
     }
 
     private static func fallbackTrifoldId(_ raw: String) -> String {
         let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         return t.isEmpty ? "SCP" : t
+    }
+
+    private static func scpDigitsSegment(_ n: Int) -> String {
+        n < 1000 ? String(format: "%03d", n) : String(n)
     }
 
     private static func jokeFallbackSlug(_ entry: SCPGeneralContent) -> String {
@@ -86,7 +105,7 @@ enum TrifoldReportFeedRowFormatter: Sendable {
         let lower = i.lowercased()
         guard lower.hasSuffix("-jp") else { return nil }
         let digits = lower.dropLast(3).dropFirst(4).filter(\.isNumber)
-        guard !digits.isEmpty, let n = Int(String(digits)), n > 0, n <= 4999 else { return nil }
+        guard !digits.isEmpty, let n = Int(String(digits)), n > 0, n <= SCPJPSeries.canonicalTrifoldReportNumberUpperBound else { return nil }
         return n
     }
 
@@ -94,7 +113,7 @@ enum TrifoldReportFeedRowFormatter: Sendable {
         let lower = i.lowercased()
         guard lower.hasPrefix("scp-"), !lower.contains("-jp") else { return nil }
         let tail = String(lower.dropFirst(4))
-        guard !tail.contains("-"), tail.allSatisfy(\.isNumber), let n = Int(tail), n > 0, n <= 4999 else { return nil }
+        guard !tail.contains("-"), tail.allSatisfy(\.isNumber), let n = Int(tail), n > 0, n <= SCPJPSeries.canonicalTrifoldReportNumberUpperBound else { return nil }
         return n
     }
 
@@ -113,6 +132,32 @@ enum TrifoldReportFeedRowFormatter: Sendable {
             }
         }
         return article.i.lowercased()
+    }
+
+    /// 国際スラッグのパス側を読みやすく表示（桁は本一覧と同一の桁揃え、支部コード・接尾辞はスラッグ順で大文字）。
+    private static func internationalDisplayLineFromIntlSlug(_ rawLowercased: String) -> String? {
+        var s = rawLowercased
+        if let h = s.firstIndex(of: "#") {
+            s = String(s[..<h])
+        }
+        guard s.hasPrefix("scp-"), s.count > 4 else { return nil }
+        let body = String(s.dropFirst(4))
+        let segments = body.split(separator: "-").map(String.init).filter { !$0.isEmpty }
+        guard !segments.isEmpty else { return nil }
+        guard segments.contains(where: { $0.allSatisfy(\.isNumber) }) else { return nil }
+
+        var out: [String] = []
+        out.reserveCapacity(segments.count)
+        for seg in segments {
+            if seg.allSatisfy(\.isNumber) {
+                guard let n = Int(seg), n > 0 else { continue }
+                out.append(scpDigitsSegment(n))
+            } else if !seg.isEmpty {
+                out.append(seg.uppercased())
+            }
+        }
+        guard !out.isEmpty else { return nil }
+        return "SCP-" + out.joined(separator: "-")
     }
 
     /// `scp-NNN-ru` / `scp-cn-NNN` 等: 国際支部カタログの主番号。
@@ -134,17 +179,14 @@ enum TrifoldReportFeedRowFormatter: Sendable {
         return nil
     }
 
-    private static func jokeScpNumber(entry: SCPGeneralContent) -> Int? {
-        let slug: String
+    private static func jokeResolvedSlug(entry: SCPGeneralContent) -> String {
         if let s = entry.i, !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            slug = s
-        } else {
-            let t = entry.u.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !t.isEmpty, let url = URL(string: t) else { return nil }
-            let p = url.path.split(separator: "/").map(String.init).filter { !$0.isEmpty }
-            slug = p.last ?? ""
+            return s
         }
-        return jokeNumberFromSlug(slug)
+        let t = entry.u.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !t.isEmpty, let url = URL(string: t) else { return "" }
+        let p = url.path.split(separator: "/").map(String.init).filter { !$0.isEmpty }
+        return p.last ?? ""
     }
 
     private static func jokeNumberFromSlug(_ slug: String) -> Int? {

@@ -17,6 +17,7 @@ struct ArticleView: View {
     @State private var lastFirstImageProbeStorageKey: String?
     @State private var sessionStartedAt: Date?
     @State private var scrollDepthPersistTask: Task<Void, Never>?
+    @State private var readerBottomChromeMeasure: CGFloat = 0
 
     @Bindable var connectivity = ConnectivityMonitor.shared
 
@@ -106,6 +107,11 @@ struct ArticleView: View {
         return CatalogFeedNavigator.nextArticleURL(after: shareURL, kind: k, feedCache: feedCache)
     }
 
+    /// `.safeAreaInset` 下部帯＋念のための余白。`WKWebView` の下端インセットへ渡し本文と重なりを防ぐ。
+    private var webViewReaderBottomInset: CGFloat {
+        readerBottomChromeMeasure + 24
+    }
+
     var body: some View {
         ZStack {
             AppTheme.backgroundPrimary
@@ -120,7 +126,8 @@ struct ArticleView: View {
                         readerBottomNavExpanded = false
                         showRatingBar = false
                     }
-                    : nil
+                    : nil,
+                readerBottomChromeInset: webViewReaderBottomInset
             )
                 .opacity(webViewModel.isReaderSurfaceConcealed ? 0 : 1)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -203,6 +210,14 @@ struct ArticleView: View {
                 articleMetadataStripView
             }
             .animation(.easeInOut(duration: 0.22), value: shouldShowRatingControl)
+            .background(
+                GeometryReader { proxy in
+                    Color.clear.preference(key: ArticleReaderChromeHeightPreferenceKey.self, value: proxy.size.height)
+                }
+            )
+        }
+        .onPreferenceChange(ArticleReaderChromeHeightPreferenceKey.self) { height in
+            readerBottomChromeMeasure = height
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
@@ -453,24 +468,86 @@ struct ArticleView: View {
             .buttonStyle(.plain)
             .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavCollapseA11y)))
 
-            HStack(spacing: 4) {
-                Button {
-                    Haptics.medium()
-                    navigationRouter.pop()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
+            HStack(spacing: 2) {
+                ArticleReaderNavLabeledColumn(captionKey: LocalizationKey.articleReaderNavCaptionBack) {
+                    Button {
+                        Haptics.medium()
+                        navigationRouter.pop()
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavBackA11y)))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReaderNavBackA11y)))
 
-                readerFontMenuCompact
-                ratingNavButton
-                readLaterNavButton
-                shareNavButton
+                ArticleReaderNavLabeledColumn(captionKey: LocalizationKey.articleReaderNavCaptionFontSize) {
+                    readerFontSizeMenu
+                }
+
+                ArticleReaderNavLabeledColumn(captionKey: LocalizationKey.articleReaderNavCaptionRating) {
+                    Button {
+                        Haptics.medium()
+                        showRatingBar.toggle()
+                    } label: {
+                        Image(systemName: showRatingBar ? "gauge.with.dots.needle.bottom.67percent" : "gauge.with.dots.needle.bottom.50percent")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(showRatingBar ? AppTheme.brandAccent : AppTheme.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleRatingNavAccessibility)))
+                }
+
+                ArticleReaderNavLabeledColumn(captionKey: LocalizationKey.articleReaderNavCaptionFavorite) {
+                    Button {
+                        Haptics.medium()
+                        articleRepository.toggleFavorite(url: shareURL)
+                    } label: {
+                        Image(systemName: articleRepository.isFavorite(url: shareURL) ? "bookmark.fill" : "bookmark")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(articleRepository.isFavorite(url: shareURL) ? AppTheme.brandAccent : AppTheme.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleFavoriteNavAccessibility)))
+                }
+
+                ArticleReaderNavLabeledColumn(captionKey: LocalizationKey.articleReaderNavCaptionReadLater) {
+                    Button {
+                        Haptics.medium()
+                        articleRepository.toggleReadLater(url: shareURL)
+                    } label: {
+                        Image(systemName: articleRepository.isReadLater(url: shareURL) ? "tray.full" : "tray")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(articleRepository.isReadLater(url: shareURL) ? AppTheme.brandAccent : AppTheme.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReadLaterNavAccessibility)))
+                }
+
+                ArticleReaderNavLabeledColumn(captionKey: LocalizationKey.articleReaderNavCaptionShare) {
+                    ShareLink(item: shareURL) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
+                    }
+                    .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarShare)))
+                }
             }
         }
         .padding(.vertical, 12)
@@ -483,95 +560,55 @@ struct ArticleView: View {
         )
     }
 
-    private var ratingNavButton: some View {
-        Button {
-            Haptics.medium()
-            showRatingBar.toggle()
-        } label: {
-            Image(systemName: showRatingBar ? "gauge.with.dots.needle.bottom.67percent" : "gauge.with.dots.needle.bottom.50percent")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(showRatingBar ? AppTheme.brandAccent : AppTheme.textPrimary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleRatingNavAccessibility)))
-    }
-
-    /// 右端から共有・ここ・評価…の順のため、共有の左隣に配置。
-    private var readLaterNavButton: some View {
-        Button {
-            Haptics.medium()
-            articleRepository.toggleReadLater(url: shareURL)
-        } label: {
-            Image(systemName: articleRepository.isReadLater(url: shareURL) ? "tray.full" : "tray")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(articleRepository.isReadLater(url: shareURL) ? AppTheme.brandAccent : AppTheme.textPrimary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleReadLaterNavAccessibility)))
-    }
-
-    private var readerFontMenuCompact: some View {
+    private var readerFontSizeMenu: some View {
         Menu {
-            Text("\(Int((homeViewModel.fontSizeMultiplier * 100).rounded()))%")
-                .font(.body.monospacedDigit())
-            Button {
-                adjustReaderFont(by: -0.05)
-            } label: {
-                Label(
-                    String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderSmaller)),
-                    systemImage: "minus.circle"
-                )
-            }
-            Button {
-                adjustReaderFont(by: 0.05)
-            } label: {
-                Label(
-                    String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderLarger)),
-                    systemImage: "plus.circle"
-                )
-            }
-            Slider(
-                value: Binding(
-                    get: { homeViewModel.fontSizeMultiplier },
-                    set: { newValue in
-                        let before = homeViewModel.fontSizeMultiplier
-                        homeViewModel.updateFontSizeMultiplier(newValue)
-                        guard homeViewModel.fontSizeMultiplier != before else { return }
-                        Haptics.light()
-                    }
-                ),
-                in: 0.75 ... 2.0,
-                step: 0.05
-            )
-            .tint(AppTheme.brandAccent)
+            readerFontMenuContents
         } label: {
             Image(systemName: "textformat.size")
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(AppTheme.textPrimary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
+                .padding(.vertical, 8)
                 .contentShape(Rectangle())
         }
         .menuActionDismissBehavior(.disabled)
         .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderAccessibility)))
     }
 
-    private var shareNavButton: some View {
-        ShareLink(item: shareURL) {
-            Image(systemName: "square.and.arrow.up")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(AppTheme.textPrimary)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .contentShape(Rectangle())
+    @ViewBuilder
+    private var readerFontMenuContents: some View {
+        Text("\(Int((homeViewModel.fontSizeMultiplier * 100).rounded()))%")
+            .font(.body.monospacedDigit())
+        Button {
+            adjustReaderFont(by: -0.05)
+        } label: {
+            Label(
+                String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderSmaller)),
+                systemImage: "minus.circle"
+            )
         }
-        .accessibilityLabel(String(localized: String.LocalizationValue(LocalizationKey.articleToolbarShare)))
+        Button {
+            adjustReaderFont(by: 0.05)
+        } label: {
+            Label(
+                String(localized: String.LocalizationValue(LocalizationKey.articleQuickReaderLarger)),
+                systemImage: "plus.circle"
+            )
+        }
+        Slider(
+            value: Binding(
+                get: { homeViewModel.fontSizeMultiplier },
+                set: { newValue in
+                    let before = homeViewModel.fontSizeMultiplier
+                    homeViewModel.updateFontSizeMultiplier(newValue)
+                    guard homeViewModel.fontSizeMultiplier != before else { return }
+                    Haptics.light()
+                }
+            ),
+            in: 0.75 ... 2.0,
+            step: 0.05
+        )
+        .tint(AppTheme.brandAccent)
     }
 
     private func adjustReaderFont(by delta: Double) {
@@ -689,5 +726,32 @@ struct ArticleView: View {
         }
         guard let url else { return }
         navigationRouter.replaceTopArticle(with: url)
+    }
+}
+
+private struct ArticleReaderNavLabeledColumn<Content: View>: View {
+    let captionKey: String
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        VStack(spacing: 4) {
+            content()
+            Text(String(localized: String.LocalizationValue(captionKey)))
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(AppTheme.textSecondary.opacity(0.88))
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct ArticleReaderChromeHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }

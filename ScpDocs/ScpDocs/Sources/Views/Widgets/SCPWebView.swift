@@ -12,6 +12,8 @@ struct SCPWebView: UIViewRepresentable {
     var showsNativeVerticalScrollIndicator: Bool = true
     /// 記事の下部リーダーナビを展開した状態で、本文（Web）をタップしたときに閉じる処理。`nil` のときは無効。
     var onReaderChromeDismissTap: (() -> Void)? = nil
+    /// `ArticleView` の `.safeAreaInset` 下帯の高さ。本文末尾が評価バー等と重ならないよう `scrollView` の下端インセットに反映する。
+    var readerBottomChromeInset: CGFloat = 0
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -51,8 +53,22 @@ struct SCPWebView: UIViewRepresentable {
             viewModel.applyWebContentPalette(palette)
         }
         viewModel.flushPendingCommands(into: webView)
+        Self.applyReaderBottomChromeInset(to: webView.scrollView, inset: readerBottomChromeInset)
         context.coordinator.syncNavigationChrome(for: webView)
         context.coordinator.syncReaderChromeDismissTap(on: webView, handler: onReaderChromeDismissTap)
+    }
+
+    private static func applyReaderBottomChromeInset(to scrollView: UIScrollView, inset: CGFloat) {
+        var content = scrollView.contentInset
+        if abs(content.bottom - inset) > 0.5 {
+            content.bottom = inset
+            scrollView.contentInset = content
+        }
+        var indicators = scrollView.verticalScrollIndicatorInsets
+        if abs(indicators.bottom - inset) > 0.5 {
+            indicators.bottom = inset
+            scrollView.verticalScrollIndicatorInsets = indicators
+        }
     }
 
     private static func applyChromeColors(to webView: WKWebView) {
@@ -221,9 +237,11 @@ struct SCPWebView: UIViewRepresentable {
             guard let viewModel else { return }
             let contentH = scrollView.contentSize.height
             let visibleH = scrollView.bounds.height
-            let scrollable = max(contentH - visibleH, 0)
+            let naturalScrollable = max(contentH - visibleH, 0)
+            let bottomChrome = scrollView.adjustedContentInset.bottom
+            let paddedScrollable = naturalScrollable + bottomChrome
             let fraction: Double
-            if scrollable <= 1 {
+            if naturalScrollable <= 1 {
                 // レイアウト前は contentSize が小さく、未スクロールで 100% 扱いになると評価バーが誤表示される。
                 if viewModel.isLoading || viewModel.isReaderSurfaceConcealed {
                     fraction = 0
@@ -234,7 +252,7 @@ struct SCPWebView: UIViewRepresentable {
                     fraction = 1
                 }
             } else {
-                fraction = min(max(Double(scrollView.contentOffset.y / scrollable), 0), 1)
+                fraction = min(max(Double(scrollView.contentOffset.y / paddedScrollable), 0), 1)
             }
             viewModel.updateScrollDepthFraction(fraction)
         }

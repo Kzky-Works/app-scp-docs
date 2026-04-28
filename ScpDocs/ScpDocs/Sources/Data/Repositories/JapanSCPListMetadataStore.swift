@@ -98,7 +98,7 @@ final class JapanSCPListMetadataStore {
         return SCPJPTagObjectClassCatalog.resolvedWikiObjectClass(catalogOrFeedClass: article.c, tags: merged)
     }
 
-    /// ジョーク物マニフェスト一覧: `jp_tag` 優先（マニフェストに `c` は通常無し）。
+    /// ジョーク物マニフェスト一覧: `jp_tag` 優先、`manifest_jokes` の metadata `c` を反映。
     func jokeMultiformListRowObjectClass(entry: SCPGeneralContent) -> String? {
         let slug: String
         if let i = entry.i?.trimmingCharacters(in: .whitespacesAndNewlines), !i.isEmpty {
@@ -108,7 +108,7 @@ final class JapanSCPListMetadataStore {
         }
         let mapTags = tagsFromJPTagMap(articleId: slug)
         let merged = coalescedFromMapAndFeed(mapTags: mapTags, feedTags: entry.g)
-        return SCPJPTagObjectClassCatalog.resolvedWikiObjectClass(catalogOrFeedClass: nil, tags: merged)
+        return SCPJPTagObjectClassCatalog.resolvedWikiObjectClass(catalogOrFeedClass: entry.c, tags: merged)
     }
 
     private static func slugFromMultiformURLString(_ raw: String) -> String {
@@ -229,14 +229,19 @@ final class JapanSCPListMetadataStore {
                 return (a.g, a.c)
             }
         case .jokeJp:
-            let idLower: String
+            let jpJokeIdLower: String
+            let enStyleJokeIdLower: String
             if parsed.scpNumber < 1000 {
-                idLower = String(format: "scp-%03d-j", parsed.scpNumber).lowercased()
+                jpJokeIdLower = String(format: "scp-%03d-jp-j", parsed.scpNumber).lowercased()
+                enStyleJokeIdLower = String(format: "scp-%03d-j", parsed.scpNumber).lowercased()
             } else {
-                idLower = "scp-\(parsed.scpNumber)-j".lowercased()
+                jpJokeIdLower = "scp-\(parsed.scpNumber)-jp-j".lowercased()
+                enStyleJokeIdLower = "scp-\(parsed.scpNumber)-j".lowercased()
             }
-            for a in fc.loadPersistedPayload(kind: .jp)?.entries ?? [] {
-                if a.i.lowercased() == idLower { return (a.g, a.c) }
+            for e in fc.loadPersistedGeneralMultiformPayload(kind: .jokes)?.entries ?? [] {
+                guard let raw = e.i?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else { continue }
+                let lid = raw.lowercased()
+                if lid == jpJokeIdLower || lid == enStyleJokeIdLower { return (e.g, e.c) }
             }
         }
         return ([], nil)
@@ -296,7 +301,7 @@ final class JapanSCPListMetadataStore {
         let lower = i.lowercased()
         guard lower.hasSuffix("-jp") else { return nil }
         let digits = lower.dropLast(3).dropFirst(4).filter(\.isNumber)
-        guard !digits.isEmpty, let n = Int(String(digits)), n > 0, n <= 4999 else { return nil }
+        guard !digits.isEmpty, let n = Int(String(digits)), n > 0, n <= SCPJPSeries.canonicalTrifoldReportNumberUpperBound else { return nil }
         return n
     }
 
@@ -304,7 +309,7 @@ final class JapanSCPListMetadataStore {
         let lower = i.lowercased()
         guard lower.hasPrefix("scp-"), !lower.contains("-jp") else { return nil }
         let tail = String(lower.dropFirst(4))
-        guard !tail.contains("-"), tail.allSatisfy(\.isNumber), let n = Int(tail), n > 0, n <= 4999 else { return nil }
+        guard !tail.contains("-"), tail.allSatisfy(\.isNumber), let n = Int(tail), n > 0, n <= SCPJPSeries.canonicalTrifoldReportNumberUpperBound else { return nil }
         return n
     }
 
@@ -408,13 +413,13 @@ final class JapanSCPListMetadataStore {
         let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !t.isEmpty else { return nil }
         if t.allSatisfy(\.isNumber) {
-            guard let v = Int(t), v > 0, v <= 4999 else { return nil }
+            guard let v = Int(t), v > 0, v <= SCPJPSeries.canonicalTrifoldReportNumberUpperBound else { return nil }
             return v
         }
         let lower = t.lowercased()
         if lower.hasPrefix("scp-") {
             let digits = lower.dropFirst(4).filter(\.isNumber)
-            guard !digits.isEmpty, let v = Int(String(digits)), v > 0, v <= 4999 else { return nil }
+            guard !digits.isEmpty, let v = Int(String(digits)), v > 0, v <= SCPJPSeries.canonicalTrifoldReportNumberUpperBound else { return nil }
             return v
         }
         return nil

@@ -1,8 +1,8 @@
 import Foundation
 
-/// SCP-JP 報告書の Wikidot シリーズ（各 1000 件ブロック）。
+/// SCP-JP 報告書の Wikidot シリーズ（Ⅰのみ 999 件、Ⅱ以降は各 1000 件のブロック）。
 enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
-    /// JP-I（001-JP 〜 999-JP）
+    /// JP-I（001-JP 〜 999-JP）。シリーズⅠのみ 3 桁レンジ。
     case series1 = 0
     /// JP-II（1000-JP 〜 1999-JP）
     case series2 = 1
@@ -12,8 +12,21 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
     case series4 = 3
     /// JP-V（4000-JP 〜 4999-JP）
     case series5 = 4
+    /// JP-VI（5000-JP 〜 5999-JP）— 一覧ページ未整備の場合はインデックスでは `scp-series-jp-5` 等へのフォールバックがあり得る。
+    case series6 = 5
+    /// JP-VII（6000-JP 〜 6999-JP）
+    case series7 = 6
+    /// JP-VIII（7000-JP 〜 7999-JP）
+    case series8 = 7
+    /// JP-IX（8000-JP 〜 8999-JP）
+    case series9 = 8
+    /// JP-X（9000-JP 〜 9999-JP）
+    case series10 = 9
 
     var id: Int { rawValue }
+
+    /// 一覧・インデックスで扱う主番号の上限（現メインリストの末尾ブロック）。
+    static let canonicalTrifoldReportNumberUpperBound = 9999
 
     /// 報告書番号の範囲（両端含む）。
     var scpNumberRange: ClosedRange<Int> {
@@ -23,6 +36,11 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case .series3: 2000 ... 2999
         case .series4: 3000 ... 3999
         case .series5: 4000 ... 4999
+        case .series6: 5000 ... 5999
+        case .series7: 6000 ... 6999
+        case .series8: 7000 ... 7999
+        case .series9: 8000 ... 8999
+        case .series10: 9000 ... 9999
         }
     }
 
@@ -64,10 +82,15 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case .series3: LocalizationKey.categorySeriesJP3
         case .series4: LocalizationKey.categorySeriesJP4
         case .series5: LocalizationKey.categorySeriesJP5
+        case .series6: LocalizationKey.categorySeriesJP6
+        case .series7: LocalizationKey.categorySeriesJP7
+        case .series8: LocalizationKey.categorySeriesJP8
+        case .series9: LocalizationKey.categorySeriesJP9
+        case .series10: LocalizationKey.categorySeriesJP10
         }
     }
 
-    /// 英語アーカイヴの 1000 件ブロックピッカー用（001–4999）。
+    /// 英語アーカイヴのシリーズブロックピッカー用（Ⅰのみ 999 番まで、その他は 1000 件ブロック）。
     var englishThousandBlockLocalizationKey: String {
         switch self {
         case .series1: LocalizationKey.archiveEnSeriesBlock1
@@ -75,10 +98,15 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case .series3: LocalizationKey.archiveEnSeriesBlock3
         case .series4: LocalizationKey.archiveEnSeriesBlock4
         case .series5: LocalizationKey.archiveEnSeriesBlock5
+        case .series6: LocalizationKey.archiveEnSeriesBlock6
+        case .series7: LocalizationKey.archiveEnSeriesBlock7
+        case .series8: LocalizationKey.archiveEnSeriesBlock8
+        case .series9: LocalizationKey.archiveEnSeriesBlock9
+        case .series10: LocalizationKey.archiveEnSeriesBlock10
         }
     }
 
-    /// シリーズに対応する Wikidot 一覧ページ（参照用・外部ブラウザ用）。
+    /// シリーズに対応する Wikidot 一覧ページ（参照用・外部ブラウザ用）。JP-VI 以降の専用ハブが未整備の場合は末尾ブロック一覧へフォールバックする。
     var wikidotSeriesIndexURL: URL {
         let path: String
         switch self {
@@ -86,7 +114,8 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case .series2: path = "scp-series-jp-2"
         case .series3: path = "scp-series-jp-3"
         case .series4: path = "scp-series-jp-4"
-        case .series5: path = "scp-series-jp-5"
+        case .series5, .series6, .series7, .series8, .series9, .series10:
+            path = "scp-series-jp-5"
         }
         return URL(string: "https://scp-jp.wikidot.com/\(path)")!
     }
@@ -111,6 +140,11 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case .series3: path = "scp-series-3"
         case .series4: path = "scp-series-4"
         case .series5: path = "scp-series-5"
+        case .series6: path = "scp-series-6"
+        case .series7: path = "scp-series-7"
+        case .series8: path = "scp-series-8"
+        case .series9: path = "scp-series-9"
+        case .series10: path = "scp-series-10"
         }
         return URL(string: "https://scp-wiki.wikidot.com/\(path)")!
     }
@@ -124,6 +158,11 @@ enum SCPJPSeries: Int, CaseIterable, Identifiable, Hashable, Sendable {
         case .series3: path = "scp-series-3"
         case .series4: path = "scp-series-4"
         case .series5: path = "scp-series-5"
+        case .series6: path = "scp-series-6"
+        case .series7: path = "scp-series-7"
+        case .series8: path = "scp-series-8"
+        case .series9: path = "scp-series-9"
+        case .series10: path = "scp-series-10"
         }
         return URL(string: "https://scp-jp.wikidot.com/\(path)")!
     }
@@ -157,4 +196,3 @@ struct JapanSCPArchiveEntry: Identifiable, Hashable, Sendable {
         self.tags = tags
     }
 }
-

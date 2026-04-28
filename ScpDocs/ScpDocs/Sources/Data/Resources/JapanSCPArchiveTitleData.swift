@@ -8,7 +8,7 @@ enum JapanSCPArchiveTitleData: Sendable {
             return series1[scpNumber]
         case .series5:
             return series5[scpNumber]
-        case .series2, .series3, .series4:
+        case .series2, .series3, .series4, .series6, .series7, .series8, .series9, .series10:
             return nil
         }
     }

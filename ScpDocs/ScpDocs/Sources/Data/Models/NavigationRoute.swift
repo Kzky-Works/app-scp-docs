@@ -16,9 +16,9 @@ enum NavigationRoute: Hashable, Sendable {
     case home
     /// 報告書アーカイヴ（100 番ブロック）。`branchId` は `BranchIdentifier`（JP / EN など）。
     case archiveIndex(branchId: String)
-    /// SCP-JP：001–4999 を 1000 刻み・100 刻みピッカーで閲覧。
+    /// SCP-JP：001–9999 をシリーズ / 100 刻みピッカーで閲覧。
     case scpJapanArchive(ScpArchiveListSeed)
-    /// 本家メインリストの日本語訳（scp-jp）：001–4999 を SCP-JP と同じピッカーで閲覧。
+    /// 本家メインリストの日本語訳（scp-jp）：001–9999 を SCP-JP と同じピッカーで閲覧。
     case scpEnglishArchive(ScpArchiveListSeed)
     /// SCP ライブラリ（物語 / カノン / 連作）の中間階層。
     case libraryIndex

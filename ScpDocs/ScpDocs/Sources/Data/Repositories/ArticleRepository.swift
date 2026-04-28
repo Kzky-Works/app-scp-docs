@@ -28,6 +28,10 @@ protocol ArticleRepositoryProtocol: AnyObject {
     func toggleReadLater(url: URL)
     func isReadLater(url: URL) -> Bool
     func allReadLater() -> [URL]
+    /// 星評価とは独立したブックマーク（書庫「お気に入り」）。
+    func toggleFavorite(url: URL)
+    func isFavorite(url: URL) -> Bool
+    func allFavorites() -> [URL]
     /// `threshold`（既定 4.0）以上の評価を削除し、該当ページのオフライン HTML を削除する。
     func clearRatingsFromThresholdAndSnapshots(_ threshold: Double)
     func readingScrollDepth(for url: URL) -> Double
@@ -39,7 +43,7 @@ protocol ArticleRepositoryProtocol: AnyObject {
 }
 
 /// `UserDefaults` ベースのレーティング・閲覧履歴。既読相当は `ratingScore > 0`。
-/// 旧ブックマーク／お気に入りはレーティング ≥ 4.0 とオフライン保存へ統合した。
+/// 星 L≥4 のリストとは別に、手動の「お気に入り」（ブックマーク）を `favoriteURLKeys` で保持する。
 @Observable
 @MainActor
 final class ArticleRepository: ArticleRepositoryProtocol {
@@ -47,6 +51,7 @@ final class ArticleRepository: ArticleRepositoryProtocol {
         static let readURLs = "article.read_urls"
         static let historyURLs = "article.history_urls"
         static let readLaterURLs = "article.read_later_urls"
+        static let favoriteURLs = "article.favorite_urls"
         static let bookmarkURLs = "article.bookmark_urls"
         static let ratingByURL = "article.rating_by_url"
         static let didMigrateToRatingV1 = "article.migrate_rating_v1"
@@ -61,11 +66,14 @@ final class ArticleRepository: ArticleRepositoryProtocol {
     private let defaults: UserDefaults
     private let maxHistoryEntries: Int
     private let maxReadLaterEntries: Int
+    private let maxFavoriteEntries: Int
     private let offlineStore: OfflineStore
 
     private(set) var historyURLKeys: [String]
     /// 追加が新しい順の「後で読む」リスト。
     private(set) var readLaterURLKeys: [String]
+    /// 星評価とは別の「お気に入り」（ブックマーク）。追加が新しい順。
+    private(set) var favoriteURLKeys: [String]
     /// 正規化 URL キー → 0.0...5.0
     private(set) var ratingByURLKey: [String: Double]
     /// 記事 URL キー → 縦スクロール進捗 0...1（ホーム「続きから読む」用）。
@@ -77,6 +85,7 @@ final class ArticleRepository: ArticleRepositoryProtocol {
         self.defaults = defaults
         self.maxHistoryEntries = max(1, maxHistoryEntries)
         self.maxReadLaterEntries = max(1, maxHistoryEntries)
+        self.maxFavoriteEntries = max(1, maxHistoryEntries)
         self.offlineStore = offlineStore
 
         if let history = defaults.array(forKey: StorageKey.historyURLs) as? [String] {
@@ -88,6 +97,11 @@ final class ArticleRepository: ArticleRepositoryProtocol {
             self.readLaterURLKeys = later
         } else {
             self.readLaterURLKeys = []
+        }
+        if let fav = defaults.array(forKey: StorageKey.favoriteURLs) as? [String] {
+            self.favoriteURLKeys = fav
+        } else {
+            self.favoriteURLKeys = []
         }
 
         self.ratingByURLKey = Self.loadRatingDictionary(from: defaults)
@@ -247,6 +261,30 @@ final class ArticleRepository: ArticleRepositoryProtocol {
 
     func allReadLater() -> [URL] {
         readLaterURLKeys.compactMap { URL(string: $0) }
+    }
+
+    func toggleFavorite(url: URL) {
+        let key = Self.storageKey(for: url)
+        var next = favoriteURLKeys
+        if let idx = next.firstIndex(of: key) {
+            next.remove(at: idx)
+        } else {
+            next.removeAll { $0 == key }
+            next.insert(key, at: 0)
+            if next.count > maxFavoriteEntries {
+                next = Array(next.prefix(maxFavoriteEntries))
+            }
+        }
+        favoriteURLKeys = next
+        defaults.set(favoriteURLKeys, forKey: StorageKey.favoriteURLs)
+    }
+
+    func isFavorite(url: URL) -> Bool {
+        favoriteURLKeys.contains(Self.storageKey(for: url))
+    }
+
+    func allFavorites() -> [URL] {
+        favoriteURLKeys.compactMap { URL(string: $0) }
     }
 
     func clearRatingsFromThresholdAndSnapshots(_ threshold: Double) {

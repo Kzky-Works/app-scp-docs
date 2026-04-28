@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// SCP-JP / SCP（英語）共通：001–4999 を一覧し、1000 刻み・100 刻みの 2 段ピッカーで移動。
+/// SCP-JP / SCP（英語）共通：001–9999 を一覧し、シリーズ選択と 100 刻みピッカーで移動（シリーズⅠは 001–999）。
 struct ArchiveArticleListView: View {
     enum Kind: Hashable, Sendable {
         case japan

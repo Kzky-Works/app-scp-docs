@@ -103,7 +103,9 @@ final class WebViewModel {
         let sv = webView.scrollView
         let contentH = sv.contentSize.height
         let visibleH = sv.bounds.height
-        let scrollable = max(contentH - visibleH, 0)
+        let naturalScrollable = max(contentH - visibleH, 0)
+        let bottomChrome = sv.adjustedContentInset.bottom
+        let scrollable = naturalScrollable + bottomChrome
         guard scrollable > 1 else {
             scrollRestoreAttemptCount += 1
             if scrollRestoreAttemptCount >= 5 {

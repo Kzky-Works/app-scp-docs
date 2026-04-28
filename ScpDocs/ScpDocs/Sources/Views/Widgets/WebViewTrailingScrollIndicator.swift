@@ -96,13 +96,16 @@ final class TrailingScrollBarUIView: UIView {
 
         let contentH = sv.contentSize.height
         let visibleH = sv.bounds.height
-        guard contentH > visibleH + 0.5 else {
+        let naturalScrollable = max(contentH - visibleH, 0)
+        let bottomChrome = sv.adjustedContentInset.bottom
+        let scrollable = max(naturalScrollable + bottomChrome, 0)
+        guard scrollable > 0.5 else {
             thumbLayer.isHidden = true
             return
         }
 
-        let scrollable = max(contentH - visibleH, 1)
-        let progress = min(max(sv.contentOffset.y / scrollable, 0), 1)
+        let scrollableForProgress = max(scrollable, 1)
+        let progress = min(max(sv.contentOffset.y / scrollableForProgress, 0), 1)
         let thumbH = max(minimumThumbHeight, bounds.height * (visibleH / contentH))
         let maxY = max(bounds.height - thumbH, 0)
         let y = progress * maxY

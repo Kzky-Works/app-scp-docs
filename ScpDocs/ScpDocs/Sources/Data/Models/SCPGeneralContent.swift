@@ -3,6 +3,8 @@ import Foundation
 // MARK: - Manifest (schema 2) DTO
 
 struct SCPGeneralContentManifestMetadata: Codable, Sendable, Equatable {
+    /// ジョーク報告書のオブジェクトクラス（`manifest_jokes.json` metadata の `c`）。
+    var c: String?
     var a: String?
     var o: String?
     var g: [String]?
@@ -121,6 +123,8 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
     var o: String?
     /// タグ。
     var g: [String]
+    /// オブジェクトクラス等（ジョーク報告書の metadata `c`）。
+    var c: String?
     /// 安定識別子（マニフェスト `entries[].i`）。従来 JSON では省略可。
     var i: String?
     /// 出典・系列タブ用（主に GoI）。`metadata[].r` またはフラット `r`。
@@ -132,16 +136,18 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         case a
         case o
         case g
+        case c
         case i
         case r
     }
 
-    init(u: String, t: String, a: String? = nil, o: String? = nil, g: [String] = [], i: String? = nil, r: String? = nil) {
+    init(u: String, t: String, a: String? = nil, o: String? = nil, g: [String] = [], c: String? = nil, i: String? = nil, r: String? = nil) {
         self.u = u
         self.t = t
         self.a = Self.trimmedOptional(a)
         self.o = Self.trimmedOptional(o)
         self.g = Self.normalizedTags(g)
+        self.c = Self.trimmedOptional(c)
         self.i = Self.trimmedOptional(i)
         self.r = Self.trimmedOptional(r)
     }
@@ -153,6 +159,7 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         a = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .a))
         o = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .o))
         g = Self.normalizedTags(try container.decodeIfPresent([String].self, forKey: .g) ?? [])
+        c = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .c))
         i = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .i))
         r = Self.trimmedOptional(try container.decodeIfPresent(String.self, forKey: .r))
     }
@@ -166,6 +173,7 @@ struct SCPGeneralContent: Codable, Sendable, Hashable, Equatable {
         if !g.isEmpty {
             try container.encode(g, forKey: .g)
         }
+        try container.encodeIfPresent(c, forKey: .c)
         try container.encodeIfPresent(i, forKey: .i)
         try container.encodeIfPresent(r, forKey: .r)
     }
@@ -258,6 +266,7 @@ struct SCPGeneralContentListPayload: Codable, Sendable, Equatable {
                     a: m?.a,
                     o: m?.o,
                     g: m?.g ?? [],
+                    c: m?.c,
                     i: lite.i,
                     r: m?.r
                 )

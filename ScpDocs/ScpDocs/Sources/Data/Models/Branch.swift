@@ -63,6 +63,11 @@ struct Branch: Sendable, Equatable, Identifiable {
             BranchHomeCategory(id: "en_series_3", titleLocalizationKey: LocalizationKey.categoryENSeries3, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-3")!),
             BranchHomeCategory(id: "en_series_4", titleLocalizationKey: LocalizationKey.categoryENSeries4, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-4")!),
             BranchHomeCategory(id: "en_series_5", titleLocalizationKey: LocalizationKey.categoryENSeries5, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-5")!),
+            BranchHomeCategory(id: "en_series_6", titleLocalizationKey: LocalizationKey.categoryENSeries6, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-6")!),
+            BranchHomeCategory(id: "en_series_7", titleLocalizationKey: LocalizationKey.categoryENSeries7, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-7")!),
+            BranchHomeCategory(id: "en_series_8", titleLocalizationKey: LocalizationKey.categoryENSeries8, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-8")!),
+            BranchHomeCategory(id: "en_series_9", titleLocalizationKey: LocalizationKey.categoryENSeries9, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-9")!),
+            BranchHomeCategory(id: "en_series_10", titleLocalizationKey: LocalizationKey.categoryENSeries10, url: URL(string: "https://scp-wiki.wikidot.com/scp-series-10")!),
             BranchHomeCategory(id: "en_tales", titleLocalizationKey: LocalizationKey.categoryENTales, url: URL(string: "https://scp-wiki.wikidot.com/foundation-tales")!),
             BranchHomeCategory(id: "en_licensing", titleLocalizationKey: LocalizationKey.categoryENLicensing, url: URL(string: "https://scp-wiki.wikidot.com/licensing-guide")!)
         ]

@@ -125,17 +125,19 @@ enum SCPArchiveSegmentBuilder {
         case 3000 ..< 4000:
             path = "scp-series-4"
         case 4000 ..< 5000:
-            path = "scp-series-4"
-        case 5000 ..< 6000:
             path = "scp-series-5"
-        case 6000 ..< 7000:
+        case 5000 ..< 6000:
             path = "scp-series-6"
-        case 7000 ..< 8000:
+        case 6000 ..< 7000:
             path = "scp-series-7"
-        case 8000 ..< 9000:
+        case 7000 ..< 8000:
             path = "scp-series-8"
+        case 8000 ..< 9000:
+            path = "scp-series-9"
+        case 9000 ..< 10_000:
+            path = "scp-series-10"
         default:
-            path = "scp-series"
+            path = "scp-series-10"
         }
         let fragment: String
         if blockStart == 0 {
@@ -160,7 +162,7 @@ enum SCPArchiveSegmentBuilder {
             path = "scp-series-jp-3"
         case 3000 ..< 4000:
             path = "scp-series-jp-4"
-        case 4000 ..< 9000:
+        case 4000 ..< 10_000:
             path = "scp-series-jp-5"
         default:
             path = "scp-series-jp"

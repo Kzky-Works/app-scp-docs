@@ -1,7 +1,9 @@
 import SwiftUI
 
 private enum LibrarySegment: Int, CaseIterable, Identifiable {
-    /// レーティング L≥4.0（旧お気に入り／オフライン優先リスト相当）。
+    /// ブックマーク（星評価とは独立）。
+    case favorites
+    /// レーティング L≥4.0。
     case highRated
     case readLater
     case history
@@ -18,6 +20,8 @@ struct LibraryView: View {
 
     private var urls: [URL] {
         switch segment {
+        case .favorites:
+            articleRepository.allFavorites()
         case .highRated:
             articleRepository.urlsWithRating(atLeast: ArticleRepository.libraryHighRatedThreshold)
         case .readLater:
@@ -29,6 +33,8 @@ struct LibraryView: View {
 
     private var emptyTitle: String {
         switch segment {
+        case .favorites:
+            String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyFavoritesTitle))
         case .highRated:
             String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyBookmarksTitle))
         case .readLater:
@@ -40,6 +46,8 @@ struct LibraryView: View {
 
     private var emptyDescription: String {
         switch segment {
+        case .favorites:
+            String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyFavoritesDescription))
         case .highRated:
             String(localized: String.LocalizationValue(LocalizationKey.libraryEmptyBookmarksDescription))
         case .readLater:
@@ -51,6 +59,8 @@ struct LibraryView: View {
 
     private var emptyStateIcon: String {
         switch segment {
+        case .favorites:
+            "bookmark.fill"
         case .highRated:
             "gauge.with.dots.needle.bottom.67percent"
         case .readLater:
@@ -68,6 +78,8 @@ struct LibraryView: View {
             List {
                 Section {
                     Picker("", selection: $segment) {
+                        Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentFavorites)))
+                            .tag(LibrarySegment.favorites)
                         Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentBookmarks)))
                             .tag(LibrarySegment.highRated)
                         Text(String(localized: String.LocalizationValue(LocalizationKey.librarySegmentReadLater)))

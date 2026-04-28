@@ -12,6 +12,11 @@
 "category.series_jp_3" = "SCP-JP 一覧（2000–2999）";
 "category.series_jp_4" = "SCP-JP 一覧（3000–3999）";
 "category.series_jp_5" = "SCP-JP 一覧（4000–4999）";
+"category.series_jp_6" = "SCP-JP 一覧（5000–5999）";
+"category.series_jp_7" = "SCP-JP 一覧（6000–6999）";
+"category.series_jp_8" = "SCP-JP 一覧（7000–7999）";
+"category.series_jp_9" = "SCP-JP 一覧（8000–8999）";
+"category.series_jp_10" = "SCP-JP 一覧（9000–9999）";
 "category.tales_jp" = "財団物語（日本支部）";
 "category.credits" = "翻訳クレジット";
 
@@ -26,7 +31,12 @@
 "category.en.series_2" = "SCP シリーズ II（1000–1999）";
 "category.en.series_3" = "SCP シリーズ III（2000–2999）";
 "category.en.series_4" = "SCP シリーズ IV（3000–3999）";
-"category.en.series_5" = "SCP シリーズ V（5000–5999）";
+"category.en.series_5" = "SCP シリーズ V（4000–4999）";
+"category.en.series_6" = "SCP シリーズ VI（5000–5999）";
+"category.en.series_7" = "SCP シリーズ VII（6000–6999）";
+"category.en.series_8" = "SCP シリーズ VIII（7000–7999）";
+"category.en.series_9" = "SCP シリーズ IX（8000–8999）";
+"category.en.series_10" = "SCP シリーズ X（9000–9999）";
 "category.en.tales" = "財団物語（英語）";
 "category.en.licensing" = "ライセンスガイド";
 
@@ -58,9 +68,12 @@
 
 /* Library */
 "library.title" = "書庫";
+"library.segment.favorites" = "お気に入り";
 "library.segment.bookmarks" = "高評価（L≥4）";
 "library.segment.history" = "履歴";
 "library.segment.read_later" = "後で読む";
+"library.empty.favorites.title" = "お気に入りはまだありません";
+"library.empty.favorites.description" = "記事画面の展開ナビからブックマークを追加できます。評価が低くても登録できます。";
 "library.empty.read_later.title" = "後で読むはありません";
 "library.empty.read_later.description" = "記事の操作バーから追加できます。";
 "library.empty.bookmarks.title" = "まだありません";
@@ -152,7 +165,6 @@
 "int.catalog_branch_picker.caption" = "末尾コードで絞り込み";
 "int.catalog_branch_filter.empty.title" = "このコードの記事がありません";
 "int.catalog_branch_filter.empty.subtitle" = "別の支部を選ぶか、同期後にキャッシュを確認してください。";
-"int.catalog_branch_chip.all" = "すべて";
 "int.catalog_branch_chip.ru" = "RU";
 "int.catalog_branch_chip.ko" = "KO";
 "int.catalog_branch_chip.cn" = "CN";
@@ -170,25 +182,30 @@
 "int.catalog_branch_chip.other" = "その他";
 
 /* Native SCP-JP / SCP feed band pickers */
-"feed.trifold.series_picker.caption" = "シリーズ（1000 件ブロック）";
-"feed.trifold.hundred_picker.caption" = "区間（100 件）";
+"feed.trifold.series_picker.caption" = "シリーズ（Ⅰは001–999、その他は1000件ごと）";
+"feed.trifold.hundred_picker.caption" = "ブロック（100件ごと）";
 "feed.trifold.hundred.range_format" = "%@–%@";
-"feed.trifold.band_filter.empty.title" = "この区間に報告書がありません";
-"feed.trifold.band_filter.empty.subtitle" = "別のシリーズまたは区間を選んでください。";
+"feed.trifold.band_filter.empty.title" = "このブロックに報告書がありません";
+"feed.trifold.band_filter.empty.subtitle" = "別のシリーズまたはブロックを選んでください。";
 "feed.trifold.jp.series_1" = "シリーズⅠ";
 "feed.trifold.jp.series_2" = "シリーズⅡ";
 "feed.trifold.jp.series_3" = "シリーズⅢ";
 "feed.trifold.jp.series_4" = "シリーズⅣ";
 "feed.trifold.jp.series_5" = "シリーズⅤ";
-"feed.trifold.en.series_1" = "シリーズ1";
-"feed.trifold.en.series_2" = "シリーズ2";
-"feed.trifold.en.series_3" = "シリーズ3";
-"feed.trifold.en.series_4" = "シリーズ4";
-"feed.trifold.en.series_5" = "シリーズ5";
-"feed.trifold.en.series_6" = "シリーズ6";
-"feed.trifold.en.series_7" = "シリーズ7";
-"feed.trifold.en.series_8" = "シリーズ8";
-"feed.trifold.en.series_9" = "シリーズ9";
+"feed.trifold.jp.series_6" = "シリーズⅥ";
+"feed.trifold.jp.series_7" = "シリーズⅦ";
+"feed.trifold.jp.series_8" = "シリーズⅧ";
+"feed.trifold.jp.series_9" = "シリーズⅨ";
+"feed.trifold.jp.series_10" = "シリーズⅩ";
+"feed.trifold.en.series_1" = "シリーズⅠ";
+"feed.trifold.en.series_2" = "シリーズⅡ";
+"feed.trifold.en.series_3" = "シリーズⅢ";
+"feed.trifold.en.series_4" = "シリーズⅣ";
+"feed.trifold.en.series_5" = "シリーズⅤ";
+"feed.trifold.en.series_6" = "シリーズⅥ";
+"feed.trifold.en.series_7" = "シリーズⅦ";
+"feed.trifold.en.series_8" = "シリーズⅧ";
+"feed.trifold.en.series_9" = "シリーズⅨ";
 "feed.trifold.en.series_10" = "シリーズⅩ";
 
 /* Joke catalog (JP / 本家) */
@@ -224,9 +241,9 @@
 
 /* Home dashboard（6 ピラー） */
 "home.section.jp_archive.title" = "SCP-JP";
-"home.section.jp_archive.subtitle" = "日本支部 001–4999（1000 / 100 のピッカー）";
+"home.section.jp_archive.subtitle" = "日本支部 001–9999（シリーズ / 100 件ピッカー・Ⅰは001–999）";
 "home.section.en_archive.title" = "SCP";
-"home.section.en_archive.subtitle" = "本家メインリスト和訳 001–4999（1000 / 100 のピッカー・SCP-JP と同じ操作）";
+"home.section.en_archive.subtitle" = "本家メインリスト和訳 001–9999（SCP-JP と同じピッカー）";
 "home.section.scp_library.title" = "SCPライブラリ";
 "home.section.scp_library.subtitle" = "書庫タブで物語・カノン・連作（ネイティブ一覧）";
 "home.section.international.title" = "SCP国際版";
@@ -315,8 +332,8 @@
 "archive.title.en" = "SCP";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
 "archive.jp.series_list.title" = "SCP-JP シリーズ";
-"archive.jp.series_picker.accessibility" = "シリーズ（1000件ブロック）";
-"archive.jp.segment_picker.accessibility" = "100件セグメント";
+"archive.jp.series_picker.accessibility" = "シリーズ（1000件ごと）";
+"archive.jp.segment_picker.accessibility" = "ブロック（100件ごと）";
 "archive.jp.open_wiki_index" = "Wiki の一覧ページを開く";
 "archive.jp.scp.row_title_format" = "SCP-%@-JP";
 "archive.jp.article.title_unknown" = "[DATA UNKNOWN]";
@@ -325,8 +342,13 @@
 "archive.en.series_block.3" = "シリーズ III（2000–2999）";
 "archive.en.series_block.4" = "シリーズ IV（3000–3999）";
 "archive.en.series_block.5" = "シリーズ V（4000–4999）";
-"archive.en.series_picker.accessibility" = "シリーズ（1000件ブロック）";
-"archive.en.segment_picker.accessibility" = "100件セグメント";
+"archive.en.series_block.6" = "シリーズ VI（5000–5999）";
+"archive.en.series_block.7" = "シリーズ VII（6000–6999）";
+"archive.en.series_block.8" = "シリーズ VIII（7000–7999）";
+"archive.en.series_block.9" = "シリーズ IX（8000–8999）";
+"archive.en.series_block.10" = "シリーズ X（9000–9999）";
+"archive.en.series_picker.accessibility" = "シリーズ（1000件ごと）";
+"archive.en.segment_picker.accessibility" = "ブロック（100件ごと）";
 "archive.en.open_wiki_index" = "Wiki の一覧ページを開く";
 "archive.en.scp.row_title_format" = "SCP-%@";
 "archive.article.title_unknown" = "[DATA UNKNOWN]";
@@ -542,6 +564,12 @@
 "article.reader_nav.tap_hint" = "タップでナビ表示";
 "article.reader_nav.collapse.a11y" = "ナビを閉じる";
 "article.reader_nav.back.a11y" = "一覧に戻る";
+"article.reader_nav.caption.back" = "戻る";
+"article.reader_nav.caption.font_size" = "表示サイズ";
+"article.reader_nav.caption.rating" = "評価";
+"article.reader_nav.caption.favorite" = "お気に入り";
+"article.reader_nav.caption.read_later" = "後で読む";
+"article.reader_nav.caption.share" = "共有";
 "article.toolbar.bookmark" = "お気に入り";
 "article.quick_reader.accessibility" = "文字サイズ";
 "article.quick_reader.larger" = "大きく";
@@ -560,11 +588,11 @@
 
 "article.rating.unset_short" = "—";
 "article.rating.card_title" = "記事の評価をつけてください";
-"article.rating.card_subtitle" = "0.1刻みで評価できます";
 "article.rating.scale_max" = "/ 5.0";
 "article.rating.a11y" = "報告書レーティング";
 "article.rating.nav_accessibility" = "評価バーの表示／非表示";
 "article.read_later.nav_accessibility" = "後で読むに追加または解除";
+"article.favorite.nav_accessibility" = "お気に入りに追加または解除";
 "article.auto_archive.toast_format" = "アーカイブ完了：L%.1f";
 "settings.section.webview_debug" = "WebView 切り分け";
 "settings.webview.minimal_toggle" = "最小の WebView（注入スクリプトなし）";
@@ -615,6 +643,6 @@
 "tales.jp.refresh.a11y" = "著者一覧を再読み込み";
 "tales.jp.empty" = "著者が見つかりません";
 "tales.jp.empty.hint" = "ウィキ側のページ形式が変わった可能性があります。";
-"tales.jp.empty_segment" = "この区間に該当する著者がありません";
+"tales.jp.empty_segment" = "このブロックに該当する著者がありません";
 "tales.jp.no_tales_under_author" = "この著者についてリンクされた Tale を読み取れませんでした。";
 "tales.jp.tale_count_format" = "%lld 件";

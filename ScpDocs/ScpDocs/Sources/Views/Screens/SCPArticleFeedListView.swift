@@ -3,11 +3,11 @@ import SwiftUI
 import UIKit
 #endif
 
-/// SCP-JP / 本家 SCP フィードの下段: 1000 件ブロック内を「全体」または 100 件刻みで絞り込む。
+/// SCP-JP / 本家 SCP フィードの下段: シリーズ帯・100 件ブロックで絞り込む。
 private enum MainlistThousandSubband: Equatable {
-    /// 選択中シリーズの 1000 件（例: 001–1000）すべて。
+    /// 選択中シリーズの全件（シリーズⅠは 001–999、その他は該当千番台すべて）。
     case fullThousand
-    /// シリーズ内の 100 件ブロック（0…9 → 先頭から 10 区間）。
+    /// シリーズ内の 100 件ブロック（0…9）。
     case hundred(Int)
 }
 
@@ -22,8 +22,8 @@ struct SCPArticleFeedListView: View {
 
     @Bindable private var connectivity = ConnectivityMonitor.shared
     @State private var cachedEntries: [SCPArticle] = []
-    @State private var intBranchFilterID: String = "all"
-    /// SCP-JP / 本家 SCP フィード: 1000 件単位（シリーズ Ⅰ–Ⅴ / 1–Ⅹ）の先頭インデックス（0 始まり）。
+    @State private var intBranchFilterID: String = "ru"
+    /// ネイティブ SCP-JP / SCP フィード下部: シリーズⅠは 001–999、その他は各 1000 件の帯。
     @State private var mainlistSeriesBandIndex: Int = 0
     @State private var mainlistThousandSubband: MainlistThousandSubband = .fullThousand
 
@@ -70,18 +70,26 @@ struct SCPArticleFeedListView: View {
         return !cachedEntries.isEmpty && catalogListEntries.isEmpty
     }
 
-    private var mainlistSelectedNumberRange: ClosedRange<Int> {
-        let s = mainlistSeriesBandIndex
-        switch mainlistThousandSubband {
+    /// 帯インデックス `s` とサブブロックに対応する SCP 主番号レンジ（シリーズⅠのみ 001–999）。
+    private func mainlistResolvedNumberRange(seriesBandIndex s: Int, subband: MainlistThousandSubband) -> ClosedRange<Int> {
+        switch subband {
         case .fullThousand:
-            let lo = s * 1000 + 1
-            let hi = (s + 1) * 1000
-            return lo...hi
+            if s == 0 { return 1 ... 999 }
+            return (s * 1000) ... (s * 1000 + 999)
         case .hundred(let h):
-            let lo = s * 1000 + h * 100 + 1
-            let hi = s * 1000 + (h + 1) * 100
-            return lo...hi
+            if s == 0 {
+                let lo = h * 100 + 1
+                let hi = min(999, (h + 1) * 100)
+                return lo ... hi
+            }
+            let lo = s * 1000 + h * 100
+            let hi = min(s * 1000 + 999, lo + 99)
+            return lo ... hi
         }
+    }
+
+    private var mainlistSelectedNumberRange: ClosedRange<Int> {
+        mainlistResolvedNumberRange(seriesBandIndex: mainlistSeriesBandIndex, subband: mainlistThousandSubband)
     }
 
     private func mainlistBandFilteredArticles(from entries: [SCPArticle]) -> [SCPArticle] {
@@ -95,8 +103,7 @@ struct SCPArticleFeedListView: View {
 
     private var mainlistSeriesBandCount: Int {
         switch kind {
-        case .jp: 5
-        case .en: 10
+        case .jp, .en: 10
         default: 0
         }
     }
@@ -322,6 +329,11 @@ struct SCPArticleFeedListView: View {
         case (.jp, 2): LocalizationKey.feedTrifoldJpSeries3
         case (.jp, 3): LocalizationKey.feedTrifoldJpSeries4
         case (.jp, 4): LocalizationKey.feedTrifoldJpSeries5
+        case (.jp, 5): LocalizationKey.feedTrifoldJpSeries6
+        case (.jp, 6): LocalizationKey.feedTrifoldJpSeries7
+        case (.jp, 7): LocalizationKey.feedTrifoldJpSeries8
+        case (.jp, 8): LocalizationKey.feedTrifoldJpSeries9
+        case (.jp, 9): LocalizationKey.feedTrifoldJpSeries10
         case (.en, 0): LocalizationKey.feedTrifoldEnSeries1
         case (.en, 1): LocalizationKey.feedTrifoldEnSeries2
         case (.en, 2): LocalizationKey.feedTrifoldEnSeries3
@@ -339,18 +351,24 @@ struct SCPArticleFeedListView: View {
 
     private func mainlistFullThousandRangeTitle() -> String {
         let s = mainlistSeriesBandIndex
-        let lo = s * 1000 + 1
-        let hi = (s + 1) * 1000
+        let lo: Int
+        let hi: Int
+        if s == 0 {
+            lo = 1
+            hi = 999
+        } else {
+            lo = s * 1000
+            hi = s * 1000 + 999
+        }
         let format = String(localized: String.LocalizationValue(LocalizationKey.feedTrifoldHundredRangeFormat))
         return String(format: format, scpOrdinalListToken(lo), scpOrdinalListToken(hi))
     }
 
     private func mainlistHundredChipTitle(hundredIndex: Int) -> String {
         let s = mainlistSeriesBandIndex
-        let lo = s * 1000 + hundredIndex * 100 + 1
-        let hi = s * 1000 + (hundredIndex + 1) * 100
+        let range = mainlistResolvedNumberRange(seriesBandIndex: s, subband: .hundred(hundredIndex))
         let format = String(localized: String.LocalizationValue(LocalizationKey.feedTrifoldHundredRangeFormat))
-        return String(format: format, scpOrdinalListToken(lo), scpOrdinalListToken(hi))
+        return String(format: format, scpOrdinalListToken(range.lowerBound), scpOrdinalListToken(range.upperBound))
     }
 
     private func isMainlistHundredChipSelected(_ h: Int) -> Bool {

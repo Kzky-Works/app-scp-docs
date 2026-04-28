@@ -12,6 +12,11 @@
 "category.series_jp_3" = "SCP-JP (2000–2999)";
 "category.series_jp_4" = "SCP-JP (3000–3999)";
 "category.series_jp_5" = "SCP-JP (4000–4999)";
+"category.series_jp_6" = "SCP-JP (5000–5999)";
+"category.series_jp_7" = "SCP-JP (6000–6999)";
+"category.series_jp_8" = "SCP-JP (7000–7999)";
+"category.series_jp_9" = "SCP-JP (8000–8999)";
+"category.series_jp_10" = "SCP-JP (9000–9999)";
 "category.tales_jp" = "Foundation Tales (JP)";
 "category.credits" = "Translation credits";
 
@@ -26,7 +31,12 @@
 "category.en.series_2" = "SCP Series II (1000–1999)";
 "category.en.series_3" = "SCP Series III (2000–2999)";
 "category.en.series_4" = "SCP Series IV (3000–3999)";
-"category.en.series_5" = "SCP Series V (5000–5999)";
+"category.en.series_5" = "SCP Series V (4000–4999)";
+"category.en.series_6" = "SCP Series VI (5000–5999)";
+"category.en.series_7" = "SCP Series VII (6000–6999)";
+"category.en.series_8" = "SCP Series VIII (7000–7999)";
+"category.en.series_9" = "SCP Series IX (8000–8999)";
+"category.en.series_10" = "SCP Series X (9000–9999)";
 "category.en.tales" = "Foundation Tales";
 "category.en.licensing" = "Licensing guide";
 
@@ -58,9 +68,12 @@
 
 /* Library */
 "library.title" = "Library";
+"library.segment.favorites" = "Favorites";
 "library.segment.bookmarks" = "Highly rated (L≥4)";
 "library.segment.history" = "History";
 "library.segment.read_later" = "Read later";
+"library.empty.favorites.title" = "No favorites yet";
+"library.empty.favorites.description" = "Add bookmarks from the expanded reader toolbar. Ratings do not matter.";
 "library.empty.read_later.title" = "Nothing saved for later";
 "library.empty.read_later.description" = "Add pages from the article action bar.";
 "library.empty.bookmarks.title" = "Nothing here yet";
@@ -152,7 +165,6 @@
 "int.catalog_branch_picker.caption" = "Filter by tail language code";
 "int.catalog_branch_filter.empty.title" = "No articles for this code";
 "int.catalog_branch_filter.empty.subtitle" = "Pick another branch chip or sync and check the cache.";
-"int.catalog_branch_chip.all" = "All";
 "int.catalog_branch_chip.ru" = "RU";
 "int.catalog_branch_chip.ko" = "KO";
 "int.catalog_branch_chip.cn" = "CN";
@@ -170,25 +182,30 @@
 "int.catalog_branch_chip.other" = "Other";
 
 /* Native SCP-JP / SCP feed band pickers */
-"feed.trifold.series_picker.caption" = "Series (1000-block)";
-"feed.trifold.hundred_picker.caption" = "Segment (100 each)";
+"feed.trifold.series_picker.caption" = "Series (I: 001–999; II–X: 1000 each)";
+"feed.trifold.hundred_picker.caption" = "Block (every 100)";
 "feed.trifold.hundred.range_format" = "%@–%@";
-"feed.trifold.band_filter.empty.title" = "No reports in this segment";
-"feed.trifold.band_filter.empty.subtitle" = "Choose another series or hundred-block segment.";
+"feed.trifold.band_filter.empty.title" = "No reports in this block";
+"feed.trifold.band_filter.empty.subtitle" = "Choose another series or block.";
 "feed.trifold.jp.series_1" = "Series I";
 "feed.trifold.jp.series_2" = "Series II";
 "feed.trifold.jp.series_3" = "Series III";
 "feed.trifold.jp.series_4" = "Series IV";
 "feed.trifold.jp.series_5" = "Series V";
-"feed.trifold.en.series_1" = "Series 1";
-"feed.trifold.en.series_2" = "Series 2";
-"feed.trifold.en.series_3" = "Series 3";
-"feed.trifold.en.series_4" = "Series 4";
-"feed.trifold.en.series_5" = "Series 5";
-"feed.trifold.en.series_6" = "Series 6";
-"feed.trifold.en.series_7" = "Series 7";
-"feed.trifold.en.series_8" = "Series 8";
-"feed.trifold.en.series_9" = "Series 9";
+"feed.trifold.jp.series_6" = "Series VI";
+"feed.trifold.jp.series_7" = "Series VII";
+"feed.trifold.jp.series_8" = "Series VIII";
+"feed.trifold.jp.series_9" = "Series IX";
+"feed.trifold.jp.series_10" = "Series X";
+"feed.trifold.en.series_1" = "Series I";
+"feed.trifold.en.series_2" = "Series II";
+"feed.trifold.en.series_3" = "Series III";
+"feed.trifold.en.series_4" = "Series IV";
+"feed.trifold.en.series_5" = "Series V";
+"feed.trifold.en.series_6" = "Series VI";
+"feed.trifold.en.series_7" = "Series VII";
+"feed.trifold.en.series_8" = "Series VIII";
+"feed.trifold.en.series_9" = "Series IX";
 "feed.trifold.en.series_10" = "Series X";
 
 /* Joke catalog (JP branch vs main -J) */
@@ -224,9 +241,9 @@
 
 /* Home dashboard (six pillars) */
 "home.section.jp_archive.title" = "SCP-JP";
-"home.section.jp_archive.subtitle" = "Japanese branch reports 001–4999 (1000 / 100 pickers)";
+"home.section.jp_archive.subtitle" = "Japanese branch reports 001–9999 (series / 100 pickers — Series I is 001–999)";
 "home.section.en_archive.title" = "SCP";
-"home.section.en_archive.subtitle" = "Mainlist Japanese translations 001–4999 (1000 / 100 pickers — same UX as SCP-JP)";
+"home.section.en_archive.subtitle" = "Mainlist Japanese translations 001–9999 (same pickers as SCP-JP)";
 "home.section.scp_library.title" = "SCP Library";
 "home.section.scp_library.subtitle" = "Tales, canons, and series — opens in the Library tab";
 "home.section.international.title" = "SCP INTERNATIONAL";
@@ -315,8 +332,8 @@
 "archive.title.en" = "SCP";
 "archive.segment.label_template" = "SCP-%1$@–%2$@";
 "archive.jp.series_list.title" = "SCP-JP series";
-"archive.jp.series_picker.accessibility" = "Series (1000-block)";
-"archive.jp.segment_picker.accessibility" = "Hundred-block segment";
+"archive.jp.series_picker.accessibility" = "Series (every 1000)";
+"archive.jp.segment_picker.accessibility" = "Block (every 100)";
 "archive.jp.open_wiki_index" = "Open list on wiki";
 "archive.jp.scp.row_title_format" = "SCP-%@-JP";
 "archive.jp.article.title_unknown" = "[DATA UNKNOWN]";
@@ -325,8 +342,13 @@
 "archive.en.series_block.3" = "Series III (2000–2999)";
 "archive.en.series_block.4" = "Series IV (3000–3999)";
 "archive.en.series_block.5" = "Series V (4000–4999)";
-"archive.en.series_picker.accessibility" = "Series (1000-block)";
-"archive.en.segment_picker.accessibility" = "Hundred-block segment";
+"archive.en.series_block.6" = "Series VI (5000–5999)";
+"archive.en.series_block.7" = "Series VII (6000–6999)";
+"archive.en.series_block.8" = "Series VIII (7000–7999)";
+"archive.en.series_block.9" = "Series IX (8000–8999)";
+"archive.en.series_block.10" = "Series X (9000–9999)";
+"archive.en.series_picker.accessibility" = "Series (every 1000)";
+"archive.en.segment_picker.accessibility" = "Block (every 100)";
 "archive.en.open_wiki_index" = "Open list on wiki";
 "archive.en.scp.row_title_format" = "SCP-%@";
 "archive.article.title_unknown" = "[DATA UNKNOWN]";
@@ -542,6 +564,12 @@
 "article.reader_nav.tap_hint" = "Tap to show navigation";
 "article.reader_nav.collapse.a11y" = "Hide navigation bar";
 "article.reader_nav.back.a11y" = "Back to list";
+"article.reader_nav.caption.back" = "Back";
+"article.reader_nav.caption.font_size" = "Text size";
+"article.reader_nav.caption.rating" = "Rating";
+"article.reader_nav.caption.favorite" = "Favorites";
+"article.reader_nav.caption.read_later" = "Read later";
+"article.reader_nav.caption.share" = "Share";
 "article.toolbar.bookmark" = "Bookmark";
 "article.quick_reader.accessibility" = "Text size";
 "article.quick_reader.larger" = "Larger";
@@ -560,11 +588,11 @@
 
 "article.rating.unset_short" = "—";
 "article.rating.card_title" = "Rate this article";
-"article.rating.card_subtitle" = "Adjust in 0.1 steps.";
 "article.rating.scale_max" = "/ 5.0";
 "article.rating.a11y" = "Article rating";
 "article.rating.nav_accessibility" = "Show or hide rating bar";
 "article.read_later.nav_accessibility" = "Add or remove read later";
+"article.favorite.nav_accessibility" = "Add or remove favorite";
 "article.auto_archive.toast_format" = "Archived: L%.1f";
 /* Settings */
 "settings.section.webview_debug" = "WebView troubleshooting";
@@ -616,6 +644,6 @@
 "tales.jp.refresh.a11y" = "Reload author list";
 "tales.jp.empty" = "No authors found";
 "tales.jp.empty.hint" = "The wiki page may have changed format.";
-"tales.jp.empty_segment" = "No authors in this section";
+"tales.jp.empty_segment" = "No authors in this block";
 "tales.jp.no_tales_under_author" = "No linked tales were parsed for this author.";
 "tales.jp.tale_count_format" = "%lld tales";

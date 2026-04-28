@@ -62,6 +62,11 @@ SERIES_MAIN: list[tuple[int, str]] = [
     (2, "/scp-series-3"),
     (3, "/scp-series-4"),
     (4, "/scp-series-5"),
+    (5, "/scp-series-6"),
+    (6, "/scp-series-7"),
+    (7, "/scp-series-8"),
+    (8, "/scp-series-9"),
+    (9, "/scp-series-10"),
 ]
 
 SCP_JP_HREF = re.compile(r"^/scp-(\d+)-jp$")
@@ -236,12 +241,18 @@ class SeriesRange:
 
 
 def range_for_series(series: int) -> SeriesRange:
+    """シリーズⅠのみ 001–999。その他は Wikidot 慣例どおり各 1000 件ずつ。"""
     m = {
         0: SeriesRange(1, 999),
         1: SeriesRange(1000, 1999),
         2: SeriesRange(2000, 2999),
         3: SeriesRange(3000, 3999),
         4: SeriesRange(4000, 4999),
+        5: SeriesRange(5000, 5999),
+        6: SeriesRange(6000, 6999),
+        7: SeriesRange(7000, 7999),
+        8: SeriesRange(8000, 8999),
+        9: SeriesRange(9000, 9999),
     }
     return m[series]
 
